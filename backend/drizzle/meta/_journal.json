@@ -1,0 +1,97 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1737314712539,
+      "tag": "0000_huge_callisto",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1737319259915,
+      "tag": "0001_little_sphinx",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1737322005295,
+      "tag": "0002_dark_lilandra",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1737327357350,
+      "tag": "0003_curvy_johnny_blaze",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1737354763338,
+      "tag": "0004_shallow_skullbuster",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1737356732806,
+      "tag": "0005_wide_mentor",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1737405005082,
+      "tag": "0006_wandering_shockwave",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1737420371549,
+      "tag": "0007_free_devos",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1737487862432,
+      "tag": "0008_faulty_pete_wisdom",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1737502535833,
+      "tag": "0009_next_mockingbird",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1778085754825,
+      "tag": "0010_yellow_vermin",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1783031551742,
+      "tag": "0011_late_zarek",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1783446976220,
+      "tag": "0012_material_proteus",
+      "breakpoints": true
+    }
+  ]
+}

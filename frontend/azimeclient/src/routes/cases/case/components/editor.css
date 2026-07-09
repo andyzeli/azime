@@ -1,0 +1,23 @@
+.ProseMirror {
+    > * + * {
+      margin-top: 0.75em;
+    }
+    
+    ul, ol {
+      padding: 0 1rem;
+    }
+  
+    h1 {
+      font-size: 2em;
+      font-weight: bold;
+    }
+  
+    h2 {
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+  
+    p {
+      margin: 1em 0;
+    }
+  }

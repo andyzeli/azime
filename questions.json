@@ -1,0 +1,204 @@
+{
+    "guardrails": [
+      {
+        "id": "q1",
+        "scale": "yesNo",
+        "text": "Does the claimant require supportive or maintenance care for their condition?",
+        "report_section": "Future Care",
+        "type": "decision",
+        "canonical": {
+          "No": "Supportive or maintenance care is not required at this time.",
+          "Yes": "Supportive or maintenance care is required."
+        }
+      },
+      {
+        "id": "q2",
+        "scale": "yesNo",
+        "text": "Is additional or future treatment medically necessary?",
+        "report_section": "Future Care",
+        "type": "decision",
+        "canonical": {
+          "No": "No additional or future treatment is medically necessary at this time.",
+          "Yes": "Additional or future treatment is medically necessary."
+        }
+      },
+
+      {
+        "id": "q3",
+        "scale": "threeState",
+        "text": "Are there pre-existing conditions?",
+        "report_section": "History and Records Review",
+        "type": "indeterminate_allowed",
+        "canonical": {
+          "No": "No pre-existing conditions are identified.",
+          "Unknown": "The presence of pre-existing conditions cannot be determined.",
+          "Yes": "Pre-existing conditions are present."
+        }
+      },
+      {
+        "id": "q4",
+        "scale": "threeState",
+        "text": "Has MMI been reached?",
+        "report_section": "MMI and Prognosis",
+        "type": "decision",
+        "canonical": {
+          "No": "Maximum medical improvement (MMI) has not been reached.",
+          "Unknown": "MMI status cannot be determined.",
+          "Yes": "Maximum medical improvement (MMI) has been reached."
+        }
+      },
+      {
+        "id": "q5",
+        "scale": "threeState",
+        "text": "Is surgery indicated?",
+        "report_section": "Treatment Recommendations",
+        "type": "decision",
+        "canonical": {
+          "No": "Surgery is not indicated.",
+          "Unknown": "Surgical indication cannot be determined.",
+          "Yes": "Surgery is indicated."
+        }
+      },
+      {
+        "id": "q6",
+        "scale": "threeState",
+        "text": "Are there significant lifestyle, psychosocial, or comorbid factors affecting the claimant's recovery?",
+        "report_section": "Other Factors",
+        "type": "indeterminate_allowed",
+        "canonical": {
+          "No": "No significant lifestyle, psychosocial, or comorbid factors affecting recovery are identified.",
+          "Unknown": "The presence of significant lifestyle, psychosocial, or comorbid factors affecting recovery cannot be determined based on the provided materials.",
+          "Yes": "Significant lifestyle, psychosocial, or comorbid factors affecting recovery are present."
+        }
+      },
+      {
+        "id": "q7",
+        "scale": "threeState",
+        "text": "Is the claimant capable of returning to full-duty work?",
+        "report_section": "Work Capacity",
+        "type": "decision",
+        "canonical": {
+          "No": "The claimant is not currently capable of returning to full-duty work.",
+          "Unknown": "Work capacity for full-duty return cannot be determined.",
+          "Yes": "The claimant is capable of returning to full-duty work."
+        }
+      },
+
+      {
+        "id": "q8",
+        "scale": "fiveAgree",
+        "text": "Patient is compliant with treatment plan",
+        "report_section": "Treatment Course",
+        "type": "descriptive",
+        "canonical": {
+          "Strongly Disagree": "The claimant is non-compliant with the treatment plan.",
+          "Disagree": "The claimant appears generally non-compliant with the treatment plan.",
+          "Neutral": "Treatment compliance cannot be clearly determined with reasonable certainty.",
+          "Agree": "The claimant appears generally compliant with the treatment plan.",
+          "Strongly Agree": "The claimant appears consistently compliant with the treatment plan."
+        }
+      },
+      {
+        "id": "q9",
+        "scale": "fiveAgree",
+        "text": "How well do the imaging results and diagnostic tests support the diagnoses",
+        "report_section": "Diagnostics",
+        "type": "descriptive",
+        "canonical": {
+          "Strongly Disagree": "The imaging and diagnostic testing provide minimal support for the stated diagnoses.",
+          "Disagree": "The imaging and diagnostic testing provide limited support for the stated diagnoses.",
+          "Neutral": "The imaging and diagnostic testing provide mixed or indeterminate support for the stated diagnoses.",
+          "Agree": "The imaging and diagnostic testing provide good support for the stated diagnoses.",
+          "Strongly Agree": "The imaging and diagnostic testing provide strong support for the stated diagnoses."
+        }
+      },
+      {
+        "id": "q10",
+        "scale": "fiveAgree",
+        "text": "Patient understands treatment goals",
+        "report_section": "Treatment Course",
+        "type": "descriptive",
+        "canonical": {
+          "Strongly Disagree": "The claimant does not appear to understand the treatment goals.",
+          "Disagree": "The claimant appears to have limited understanding of the treatment goals.",
+          "Neutral": "The claimant's understanding of treatment goals cannot be clearly determined.",
+          "Agree": "The claimant appears to understand the treatment goals.",
+          "Strongly Agree": "The claimant appears to clearly understand the treatment goals."
+        }
+      },
+
+      {
+        "id": "q11",
+        "scale": "fiveAppropriate",
+        "text": "Were the treatments received appropriate and necessary for the claimant's condition",
+        "report_section": "Treatment Course",
+        "type": "descriptive",
+        "canonical": {
+          "Not Appropriate": "The treatments received were not appropriate or medically necessary for the claimant's condition.",
+          "Somewhat Appropriate": "The treatments received were only somewhat appropriate and/or necessary for the claimant's condition.",
+          "Appropriate": "The treatments received were appropriate and medically necessary for the claimant's condition.",
+          "Mostly Appropriate": "The treatments received were mostly appropriate and medically necessary for the claimant's condition.",
+          "Completely Appropriate": "The treatments received were completely appropriate and medically necessary for the claimant's condition."
+        }
+      },
+
+      {
+        "id": "q12",
+        "scale": "fiveLikelihood",
+        "text": "How likely is it that the claimant's diagnoses are directly related to the incident",
+        "report_section": "Causation",
+        "type": "decision",
+        "canonical": {
+          "Very Low": "It is very unlikely that the claimant's diagnoses are directly related to the reported incident.",
+          "Low": "It is unlikely that the claimant's diagnoses are directly related to the reported incident.",
+          "Medium": "It is possible that the claimant's diagnoses are directly related to the reported incident; however, this is not definitive based on the provided materials.",
+          "High": "It is likely that the claimant's diagnoses are directly related to the reported incident.",
+          "Very High": "It is very likely that the claimant's diagnoses are directly related to the reported incident."
+        }
+      },
+      {
+        "id": "q13",
+        "scale": "fiveLikelihood",
+        "text": "How likely is it that the claimant has permanent impairment resulting from the injury",
+        "report_section": "Impairment",
+        "type": "decision",
+        "canonical": {
+          "Very Low": "It is very unlikely that the claimant has permanent impairment resulting from the injury.",
+          "Low": "It is unlikely that the claimant has permanent impairment resulting from the injury.",
+          "Medium": "It is possible that the claimant has permanent impairment resulting from the injury; however, this is not definitive based on the provided materials.",
+          "High": "It is likely that the claimant has permanent impairment resulting from the injury.",
+          "Very High": "It is very likely that the claimant has permanent impairment resulting from the injury."
+        }
+      },
+      {
+        "id": "q14",
+        "scale": "fiveLikelihood",
+        "text": "How likely is it that the claimant's current condition is primarily caused by the reported incident?",
+        "report_section": "Causation",
+        "type": "decision",
+        "canonical": {
+          "Very Low": "It is very unlikely that the claimant's current condition is primarily caused by the reported incident.",
+          "Low": "It is unlikely that the claimant's current condition is primarily caused by the reported incident.",
+          "Medium": "It is possible that the claimant's current condition is primarily caused by the reported incident; however, this is not definitive based on the provided materials.",
+          "High": "It is likely that the claimant's current condition is primarily caused by the reported incident.",
+          "Very High": "It is very likely that the claimant's current condition is primarily caused by the reported incident."
+        }
+      },
+
+      {
+        "id": "q15",
+        "scale": "fiveSeverity",
+        "text": "To what extent does the claimant have physical limitations as a result of the injury",
+        "report_section": "Functional Status",
+        "type": "descriptive",
+        "canonical": {
+          "None": "The claimant has no physical limitations attributable to the injury.",
+          "Mild": "The claimant has mild physical limitations attributable to the injury.",
+          "Moderate": "The claimant has moderate physical limitations attributable to the injury.",
+          "Severe": "The claimant has severe physical limitations attributable to the injury.",
+          "Very Severe": "The claimant has very severe physical limitations attributable to the injury."
+        }
+      }
+    ]
+  }
+  
