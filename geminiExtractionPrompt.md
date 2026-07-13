@@ -18,7 +18,7 @@ Anti-Hallucination (Canonical Blanks): If data is missing for a specific field, 
 
 No External Knowledge: Do not "diagnose" the patient yourself. If a clinical finding is not in the text, it does not exist for this report.
 
-Citation Requirement: Every clinical claim (including items within arrays) MUST include a bracketed page citation, e.g., [p. 14].
+Citation Requirement: Every clinical claim (including items within arrays) MUST include a bracketed page citation, e.g., evidence: [{ page: int, quote: string }]. -- verbatim quote
 
 Markdown Integrity: Use Markdown (###, \*\*, lists) inside string fields to maintain visual hierarchy for the reviewing physician. For example, "plan of care" is a simple string field, but of course we want markdown sections for visual clarity, like if provider had sections like "short term goals" and "long term goals" within Plan section.
 
