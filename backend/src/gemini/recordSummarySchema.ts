@@ -4,7 +4,7 @@ const simpleStringField = z.string();
 
 const diagnosisSchema = z.object({
   name: simpleStringField,
-  icd: simpleStringField,
+  icd: simpleStringField.nullable(),
   description: simpleStringField,
 });
 
@@ -31,15 +31,11 @@ const functionalLimitationSchema = z.object({
   status: simpleStringField,
 });
 
-const workStatusSchema = z.object({
-  asOfdate: simpleStringField,
-  status: simpleStringField,
-});
-
 const sourceMetadataSchema = z.object({
   recordId: z.number().int(),
   fileName: simpleStringField,
   providerName: simpleStringField,
+  //providerType: simpleStringField,
   documentType: simpleStringField,
 });
 
@@ -47,36 +43,40 @@ const findingsSchema = z.object({
   subjective: simpleStringField,
   objective: simpleStringField,
   plan: simpleStringField,
-  outcome: simpleStringField,
 });
 
 const backgroundSchema = z.object({
-  incidentDate: simpleStringField,
-  incidentDescription: simpleStringField,
-  pastMedicalHistory: simpleStringField,
-  allergies: simpleStringField,
+  incidentDate: simpleStringField.nullable(),
+  incidentDescription: simpleStringField.nullable(),
+  pastMedicalHistory: simpleStringField.nullable(),
+  allergies: simpleStringField.nullable(),
 });
 
-export const geminiRecordSummaryPayloadSchema = z.object({
-  datesOfService: z.array(simpleStringField),
-  background: backgroundSchema,
+//export const gemini
+
+export const geminiEncounterSummaryPayloadSchema = z.object({
+  dateOfService: simpleStringField,
+  // background: backgroundSchema.nullable(),
   findings: findingsSchema,
-  diagnoses: z.array(diagnosisSchema),
-  treatmentsTried: z.array(treatmentSchema),
-  imagingFindings: z.array(imagingFindingSchema),
+  diagnoses: z.array(diagnosisSchema).nullable(),
   functionalLimitations: z.array(functionalLimitationSchema),
   medications: z.array(medicationSchema),
-  workStatus: z.array(workStatusSchema),
+  workStatus: simpleStringField.nullable(),
 });
-
+export const geminiProviderSummaryPayloadSchema = z.object({
+  encounters: z.array(geminiEncounterSummaryPayloadSchema),
+  background: backgroundSchema,
+  treatmentsTried: z.array(treatmentSchema),
+  imagingFindings: z.array(imagingFindingSchema),
+});
 export const storedRecordSummarySchema =
-  geminiRecordSummaryPayloadSchema.extend({
+  geminiProviderSummaryPayloadSchema.extend({
     schemaVersion: z.literal("v1"),
     sourceMetadata: sourceMetadataSchema,
   });
 
-export type GeminiRecordSummaryPayload = z.infer<
-  typeof geminiRecordSummaryPayloadSchema
+export type GeminiProviderSummaryPayload = z.infer<
+  typeof geminiProviderSummaryPayloadSchema
 >;
 
 export type StoredRecordSummary = z.infer<typeof storedRecordSummarySchema>;

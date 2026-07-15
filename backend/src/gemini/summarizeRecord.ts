@@ -6,8 +6,8 @@ import {
   extractionSystemPrompt,
 } from "./prompts.js";
 import {
-  geminiRecordSummaryPayloadSchema,
-  geminiRecordSummaryResponseSchema,
+  geminiProviderSummaryPayloadSchema,
+  geminiProviderSummaryResponseSchema,
   storedRecordSummarySchema,
 } from "./schemas.js";
 import { StoredRecordSummary } from "./types.js";
@@ -38,7 +38,7 @@ export const summarizeRecord = async (
     config: {
       systemInstruction: extractionSystemPrompt,
       responseMimeType: "application/json",
-      responseSchema: geminiRecordSummaryResponseSchema,
+      responseSchema: geminiProviderSummaryResponseSchema,
     },
   });
 
@@ -55,10 +55,10 @@ export const summarizeRecord = async (
     throw new Error("Gemini returned invalid JSON");
   }
 
-  let payload: ReturnType<typeof geminiRecordSummaryPayloadSchema.parse>;
+  let payload: ReturnType<typeof geminiProviderSummaryPayloadSchema.parse>;
 
   try {
-    payload = geminiRecordSummaryPayloadSchema.parse(parsedJson);
+    payload = geminiProviderSummaryPayloadSchema.parse(parsedJson);
   } catch (error) {
     if (error instanceof ZodError) {
       console.error("Gemini JSON failed payload validation:", error.flatten());
@@ -77,7 +77,8 @@ export const summarizeRecord = async (
         recordId: record.id,
         fileName: record.name ?? "",
         providerName: record.providerName ?? "",
-        documentType: record.documentType ?? "",
+        //providerType: record.providerType ?? "",
+        documentType: record.documentType ?? "", //use as providerType
       },
     });
   } catch (error) {

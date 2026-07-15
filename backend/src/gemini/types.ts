@@ -5,6 +5,6 @@ export type {
   StoredAggregateSummary,
 } from "./aggregateSummarySchema.js";
 export type {
-  GeminiRecordSummaryPayload,
+  GeminiProviderSummaryPayload,
   StoredRecordSummary,
 } from "./recordSummarySchema.js";

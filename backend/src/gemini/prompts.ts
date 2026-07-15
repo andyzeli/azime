@@ -15,7 +15,7 @@ Operational guardrails:
   - For missing objects, return {}.
   - For missing strings, return "".
 - Do not use outside medical knowledge to infer unstated diagnoses.
-- Every clinical claim, including claims inside array items, must include a bracketed page citation like [p. 14].
+- Every clinical claim, including claims inside array items, must include a bracketed page citation like "evidence: [{ page: int, quote: string }]".
 - Use Markdown (headings, lists, etc) inside string fields when it improves readability for the reviewing physician.
 - Return only JSON that matches the provided response schema.
 
