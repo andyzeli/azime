@@ -39,6 +39,51 @@ import RecordSummaryView from "./RecordSummaryView";
 import AggregateSummaryView from "./AggregateSummaryView";
 import PatientQuestionnairesPanel from "./PatientQuestionnairesPanel";
 
+const documentTypeLabels: Record<string, string> = {
+  progress_note: "Progress note",
+  therapy_note: "Therapy note",
+  imaging_report: "Imaging report",
+  procedure_report: "Procedure report",
+  legal_summary: "Legal summary",
+  workstatus_accommodation: "Work status / accommodation",
+  other: "Other",
+};
+
+const metadataString = (metadata: unknown, key: string) => {
+  if (!metadata || typeof metadata !== "object" || Array.isArray(metadata)) {
+    return "";
+  }
+
+  const value = (metadata as Record<string, unknown>)[key];
+  return typeof value === "string" ? value : "";
+};
+
+const recordDisplayLabel = (record: {
+  id: number;
+  name: string | null;
+  providerName: string | null;
+  documentType: string | null;
+  eventDate: string | null;
+  metadata: unknown;
+}) => {
+  const typeLabel = record.documentType
+    ? documentTypeLabels[record.documentType] ?? record.documentType
+    : "";
+  const sourceName =
+    metadataString(record.metadata, "providerName") ||
+    metadataString(record.metadata, "providerOrFacility") ||
+    metadataString(record.metadata, "performingProvider") ||
+    metadataString(record.metadata, "author") ||
+    metadataString(record.metadata, "lawFirm") ||
+    record.providerName ||
+    "";
+  const details = [record.eventDate, typeLabel, sourceName].filter(Boolean);
+
+  return details.length > 0
+    ? details.join(" · ")
+    : record.name || `Record ${record.id}`;
+};
+
 const CaseDetail = ({ caseId }: { caseId: string }) => {
   const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
   const [openingRecordId, setOpeningRecordId] = useState<number | null>(null);
@@ -436,14 +481,12 @@ const CaseDetail = ({ caseId }: { caseId: string }) => {
             ) : null}
           </div>
 
-          <p>Per Provier</p>
+          <p>Source documents</p>
           {records?.map((record) => (
             <Collapsible key={record.id}>
               <CollapsibleTrigger className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
                 <span className="font-bold text-gray-700">
-                  {record.providerName
-                    ? `${record.providerName} - ${record.documentType}`
-                    : record.name || `Record ${record.id}`}
+                  {recordDisplayLabel(record)}
                 </span>
                 <svg
                   className="w-5 h-5 text-gray-500"

@@ -1,6 +1,7 @@
 import { relations } from "drizzle-orm";
 import {
   pgTable,
+  date,
   serial,
   text,
   varchar,
@@ -11,6 +12,7 @@ import {
   uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { InferSelectModel, InferInsertModel } from "drizzle-orm";
+import type { RecordDocumentMetadata } from "../records/documentMetadata.js";
 
 export const MockAuthUsers = pgTable("auth_users", {
   id: uuid("id").primaryKey(),
@@ -102,6 +104,8 @@ export const Records = pgTable("record", {
   providerName: text("provider_name"),
   documentGroup: text("document_group"),
   documentType: text("document_type"),
+  eventDate: date("event_date"),
+  metadata: jsonb("metadata").$type<RecordDocumentMetadata>(),
 });
 export type Records = InferSelectModel<typeof Records>;
 export type NewRecords = InferInsertModel<typeof Records>;

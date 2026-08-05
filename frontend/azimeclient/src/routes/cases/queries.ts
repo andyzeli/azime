@@ -12,6 +12,7 @@ import type {
   QuestionnaireDefinition,
   QuestionnaireType,
 } from "../../../../../backend/src/questionnaires/definitions";
+import type { CompleteRecordUploadInput } from "../../../../../backend/src/records/documentMetadata";
 import {
   storedAggregateSummarySchema,
   type StoredAggregateSummary,
@@ -196,13 +197,9 @@ export const createRecordUpload = async (payload: {
     .then((r) => r.data);
 };
 
-export const completeRecordUpload = async (payload: {
-  caseId: number;
-  objectKey: string;
-  name: string;
-  providerName?: string;
-  documentType?: "pcp" | "specialist" | "legal" | "imaging" | "therapy";
-}) => {
+export const completeRecordUpload = async (
+  payload: CompleteRecordUploadInput,
+) => {
   return axios
     .post(`${API_BASE_URL}/uploads/complete`, payload)
     .then((r) => r.data);

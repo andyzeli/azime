@@ -16,10 +16,7 @@ export const registerRoutes = (app: FastifyInstance) => {
   app.post("/cases", caseController.newHandler);
   app.get("/cases", caseController.getHandler);
   app.get("/cases/:id", caseController.getByIdHandler);
-  app.post(
-    "/cases/:caseId/aggregate-summary",
-    caseAggregateSummaryController.createHandler,
-  );
+
   app.get(
     "/cases/:caseId/questionnaires",
     patientQuestionnaireController.listByCaseHandler,
@@ -44,14 +41,23 @@ export const registerRoutes = (app: FastifyInstance) => {
   app.get("/records", recordsController.getByIdHandler);
   app.get(
     "/records/:recordId/download-url",
-    recordsController.getDownloadUrlHandler
+    recordsController.getDownloadUrlHandler,
   );
-  app.post("/records/:recordId/summarize", recordsController.summarizeByRecordIdHandler);
+  app.post(
+    "/records/:recordId/summarize",
+    recordsController.summarizeByRecordIdHandler,
+  );
   app.delete("/records/:recordId", recordsController.deleteByRecordIdHandler);
 
   app.get("/casesummaries", caseSummaryController.getByIdHandler);
   app.post("/casesummaries", caseSummaryController.newHandler);
   app.delete("/casesummaries/:id", caseSummaryController.deleteHandler);
+
+  app.post(
+    "/cases/:caseId/aggregate-summary",
+    caseAggregateSummaryController.createHandler,
+  );
+
   app.post("/uploads/sign", uploadController.signUploadHandler);
   app.post("/uploads/complete", uploadController.completeUploadHandler);
   //app.get("/records", (req, res) => console.log(req.query));

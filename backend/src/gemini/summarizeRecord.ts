@@ -1,28 +1,37 @@
 import { Records } from "../db/schema.js";
+import { getDocumentSourceName } from "../records/documentMetadata.js";
 import { getGcsFileUri } from "../storage/googleCloudStorage.js";
 import { getGeminiClient, getGeminiModelName } from "./client.js";
+import type { DocumentType } from "../records/documentMetadata.js";
+import { buildExtractionPrompt } from "./buildExtraction.js";
 import {
-  buildExtractionUserPrompt,
-  extractionSystemPrompt,
-} from "./prompts.js";
-import {
-  geminiProviderSummaryPayloadSchema,
-  geminiProviderSummaryResponseSchema,
-  storedRecordSummarySchema,
-} from "./schemas.js";
-import { StoredRecordSummary } from "./types.js";
-import { ZodError } from "zod";
+  createStoredSchema,
+  getExtractionConfig,
+  type StoredExtraction,
+} from "./registry.js";
+//import { StoredRecordSummary } from "./types.js";
+import { ZodError, z } from "zod";
 
-export const summarizeRecord = async (
-  record: Records,
-): Promise<StoredRecordSummary> => {
+export const summarizeRecord = async <T extends DocumentType>(
+  record: Records & { documentType: T },
+): Promise<StoredExtraction<T>> => {
   if (!record.url) {
     throw new Error("Record is missing a storage object key");
   }
 
   const client = getGeminiClient();
-  const prompt = buildExtractionUserPrompt(record);
+  const prompt = buildExtractionPrompt({
+    documentType: record.documentType as DocumentType,
+    date: record.eventDate ?? null,
+    documentMetadata: record.metadata ?? null,
+    source: getDocumentSourceName(record.metadata) ?? null,
+  });
   const fileUri = getGcsFileUri(record.url);
+
+  const config = getExtractionConfig(record.documentType as DocumentType);
+  const storedSchema = createStoredSchema(config.schema);
+
+  const respJsonSchema = toGeminiResponseSchema(config.schema);
 
   const response = await client.models.generateContent({
     model: getGeminiModelName(),
@@ -36,9 +45,10 @@ export const summarizeRecord = async (
       prompt,
     ],
     config: {
-      systemInstruction: extractionSystemPrompt,
+      systemInstruction: config.systemPrompt,
       responseMimeType: "application/json",
-      responseSchema: geminiProviderSummaryResponseSchema,
+      responseSchema: respJsonSchema,
+      temperature: 0.1,
     },
   });
 
@@ -55,10 +65,10 @@ export const summarizeRecord = async (
     throw new Error("Gemini returned invalid JSON");
   }
 
-  let payload: ReturnType<typeof geminiProviderSummaryPayloadSchema.parse>;
+  let payload: ReturnType<typeof config.schema.parse>;
 
   try {
-    payload = geminiProviderSummaryPayloadSchema.parse(parsedJson);
+    payload = config.schema.parse(parsedJson);
   } catch (error) {
     if (error instanceof ZodError) {
       console.error("Gemini JSON failed payload validation:", error.flatten());
@@ -70,17 +80,20 @@ export const summarizeRecord = async (
   }
 
   try {
-    return storedRecordSummarySchema.parse({
+    return storedSchema.parse({
       ...payload,
       schemaVersion: "v1",
       sourceMetadata: {
         recordId: record.id,
         fileName: record.name ?? "",
-        providerName: record.providerName ?? "",
+        providerName:
+          getDocumentSourceName(record.metadata) || record.providerName || "",
         //providerType: record.providerType ?? "",
         documentType: record.documentType ?? "", //use as providerType
+        eventDate: record.eventDate ?? "",
+        metadata: record.metadata ?? {},
       },
-    });
+    }) as StoredExtraction<T>;
   } catch (error) {
     if (error instanceof ZodError) {
       console.error("Stored summary failed validation:", error.flatten());
@@ -91,3 +104,9 @@ export const summarizeRecord = async (
     throw error;
   }
 };
+
+function toGeminiResponseSchema(schema: z.ZodType) {
+  return z.toJSONSchema(schema);
+}
+
+//export type StoredRecordSummary = z.infer<typeof storedSchema>;

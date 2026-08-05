@@ -7,6 +7,7 @@ import {
   createSignedUploadUrl,
   objectExists,
 } from "../storage/googleCloudStorage.js";
+import { completeRecordUploadSchema } from "../records/documentMetadata.js";
 
 const signUploadSchema = z.object({
   caseId: z.number().int().positive(),
@@ -14,27 +15,14 @@ const signUploadSchema = z.object({
   contentType: z.literal("application/pdf"),
 });
 
-const completeUploadSchema = z.object({
-  caseId: z.number().int().positive(),
-  objectKey: z.string().min(1),
-  name: z.string().min(1),
-  providerName: z.string().trim().optional(),
-  documentType: z
-    .enum(["pcp", "specialist", "legal", "imaging", "therapy"])
-    .optional(),
-});
-
 export const uploadController = {
-  signUploadHandler: async (
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) => {
+  signUploadHandler: async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const data = signUploadSchema.parse(request.body);
       const objectKey = createObjectKey(data.caseId, data.fileName);
       const uploadUrl = await createSignedUploadUrl(
         objectKey,
-        data.contentType
+        data.contentType,
       );
 
       return reply.send({ objectKey, uploadUrl });
@@ -46,10 +34,10 @@ export const uploadController = {
 
   completeUploadHandler: async (
     request: FastifyRequest,
-    reply: FastifyReply
+    reply: FastifyReply,
   ) => {
     try {
-      const data = completeUploadSchema.parse(request.body);
+      const data = completeRecordUploadSchema.parse(request.body);
       const uploaded = await objectExists(data.objectKey);
 
       if (!uploaded) {
@@ -64,8 +52,9 @@ export const uploadController = {
           caseId: data.caseId,
           url: data.objectKey,
           name: data.name,
-          providerName: data.providerName || null,
-          documentType: data.documentType || null,
+          eventDate: data.eventDate,
+          documentType: data.documentType,
+          metadata: data.metadata,
         })
         .returning();
 

@@ -1,12 +1,13 @@
 import type { PatientCase, Records } from "../db/schema.js";
+import { getDocumentSourceName } from "../records/documentMetadata.js";
 import {
   aggregateSummaryInputSchema,
   storedRecordSummarySchema,
-} from "./schemas.js";
+} from "./schemas_old.js";
 
 type AggregateInputRecord = Pick<
   Records,
-  "id" | "name" | "providerName" | "documentType" | "summary"
+  "id" | "name" | "providerName" | "documentType" | "metadata" | "summary"
 >;
 
 export const buildAggregateSummaryInput = ({
@@ -19,7 +20,8 @@ export const buildAggregateSummaryInput = ({
   const providerSummaries = records.map((record) => ({
     recordId: record.id,
     fileName: record.name ?? "",
-    providerName: record.providerName ?? "",
+    providerName:
+      getDocumentSourceName(record.metadata) || record.providerName || "",
     documentType: record.documentType ?? "",
     summary: storedRecordSummarySchema.parse(record.summary),
   }));

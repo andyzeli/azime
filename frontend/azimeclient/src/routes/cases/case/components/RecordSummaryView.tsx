@@ -127,7 +127,7 @@ const RecordSummaryView = ({ summary, parseError }: RecordSummaryViewProps) => {
 
   return (
     <div className="space-y-4">
-      <Section title="Overview" defaultOpen>
+      {/* <Section title="Overview" defaultOpen>
         <DetailGrid
           fields={[
             {
@@ -135,7 +135,7 @@ const RecordSummaryView = ({ summary, parseError }: RecordSummaryViewProps) => {
               value: summary.datesOfService.join(", "),
             },
             {
-              label: "Provider",
+              label: "Provider", 
               value: summary.sourceMetadata.providerName,
             },
             {
@@ -151,19 +151,19 @@ const RecordSummaryView = ({ summary, parseError }: RecordSummaryViewProps) => {
           fields={[
             {
               label: "Incident Date",
-              value: summary.background.incidentDate,
+              value: summary.background.incidentDate || "",
             },
             {
               label: "Incident Description",
-              value: summary.background.incidentDescription,
+              value: summary.background.incidentDescription || "",
             },
             {
               label: "Past Medical History",
-              value: summary.background.pastMedicalHistory,
+              value: summary.background.pastMedicalHistory || "",
             },
             {
               label: "Allergies",
-              value: summary.background.allergies,
+              value: summary.background.allergies || "" ,
             },
           ]}
         />
@@ -242,7 +242,7 @@ const RecordSummaryView = ({ summary, parseError }: RecordSummaryViewProps) => {
           }))}
           emptyLabel="No work status captured."
         />
-      </Section>
+      </Section> */}
     </div>
   );
 };

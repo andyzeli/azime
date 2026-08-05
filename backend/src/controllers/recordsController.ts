@@ -7,6 +7,7 @@ import {
   deleteObject,
 } from "../storage/googleCloudStorage.js";
 import { summarizeRecord } from "../gemini/summarizeRecord.js";
+import { DocumentType } from "../records/documentMetadata.js";
 
 export const recordsController = {
   getByIdHandler: async (
@@ -51,7 +52,10 @@ export const recordsController = {
         })
         .where(eq(Records.id, recordId));
 
-      const summary = await summarizeRecord(record);
+      const summary = await summarizeRecord({
+        ...record,
+        documentType: record.documentType as DocumentType,
+      });
 
       await db
         .update(Records)

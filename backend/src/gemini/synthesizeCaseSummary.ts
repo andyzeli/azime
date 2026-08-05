@@ -3,12 +3,12 @@ import { getGeminiClient, getGeminiModelName } from "./client.js";
 import {
   buildSynthesisUserPrompt,
   synthesisSystemPrompt,
-} from "./prompts.js";
+} from "./synthesisPrompt.js";
 import {
   geminiAggregateSummaryPayloadSchema,
   geminiAggregateSummaryResponseSchema,
   storedAggregateSummarySchema,
-} from "./schemas.js";
+} from "./schemas_old.js";
 import type { AggregateSummaryInput, StoredAggregateSummary } from "./types.js";
 
 export const synthesizeCaseSummary = async (
