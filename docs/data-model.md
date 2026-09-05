@@ -18,6 +18,21 @@ Stores:
 - GCP object reference
 - upload metadata
 
+## Case Provider
+
+A case-scoped individual provider or facility referenced by medical documents.
+
+Stores:
+
+- UUID
+- case ID
+- name
+- kind (`individual` or `facility`)
+- discipline
+
+Encounter, therapy, surgery, and intervention documents reference a case
+provider through a relational foreign key.
+
 ## Document Extraction
 
 Structured facts extracted from one document as an Event.
@@ -35,13 +50,7 @@ AI-generated and non-authoritative.
 
 Case-level output generated from document extractions.
 
-May contain:
-
-- summary
-- timeline
-- contradictions
-- missing information
-- suggested MMI status and reasoning
+- Data model still in progress
 
 AI-generated and non-authoritative.
 

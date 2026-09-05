@@ -1,0 +1,1 @@
+ALTER TABLE "record" DROP COLUMN "provider_name";

@@ -1,2 +1,0 @@
-ALTER TABLE "clinicalnote" ADD COLUMN "case_id" integer;--> statement-breakpoint
-ALTER TABLE "clinicalnote" ADD CONSTRAINT "clinicalnote_case_id_patientcase_id_fk" FOREIGN KEY ("case_id") REFERENCES "public"."patientcase"("id") ON DELETE no action ON UPDATE no action;

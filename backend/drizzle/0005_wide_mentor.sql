@@ -1,1 +1,0 @@
-ALTER TABLE "patientcase" RENAME COLUMN "status" TO "case_status";

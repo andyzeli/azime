@@ -1,6 +1,6 @@
 {
-  "id": "4e0b472c-1488-4199-b9fa-0d7eb28ad33e",
-  "prevId": "a94cec11-5ebc-4129-bb68-1618829fb540",
+  "id": "1972b0f1-d7f1-4003-aca2-19bb0a8dbeaa",
+  "prevId": "07a5360c-d270-482f-ad16-5ed6e480da75",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -185,21 +185,151 @@
           "primaryKey": false,
           "notNull": false
         },
-        "web": {
-          "name": "web",
+        "website": {
+          "name": "website",
           "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "url": {
-          "name": "url",
-          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         }
       },
       "indexes": {},
       "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.case_pre_exam_analysis": {
+      "name": "case_pre_exam_analysis",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "case_id": {
+          "name": "case_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "analysis": {
+          "name": "analysis",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "case_pre_exam_analysis_case_id_unique": {
+          "name": "case_pre_exam_analysis_case_id_unique",
+          "columns": [
+            {
+              "expression": "case_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "case_pre_exam_analysis_case_id_patientcase_id_fk": {
+          "name": "case_pre_exam_analysis_case_id_patientcase_id_fk",
+          "tableFrom": "case_pre_exam_analysis",
+          "tableTo": "patientcase",
+          "columnsFrom": [
+            "case_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.case_records_summary": {
+      "name": "case_records_summary",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "case_id": {
+          "name": "case_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "summary": {
+          "name": "summary",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "case_records_summary_case_id_unique": {
+          "name": "case_records_summary_case_id_unique",
+          "columns": [
+            {
+              "expression": "case_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "case_records_summary_case_id_patientcase_id_fk": {
+          "name": "case_records_summary_case_id_patientcase_id_fk",
+          "tableFrom": "case_records_summary",
+          "tableTo": "patientcase",
+          "columnsFrom": [
+            "case_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -215,6 +345,12 @@
           "type": "serial",
           "primaryKey": false,
           "notNull": true
+        },
+        "case_id": {
+          "name": "case_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
         },
         "apt": {
           "name": "apt",
@@ -243,6 +379,19 @@
       },
       "indexes": {},
       "foreignKeys": {
+        "clinicalnote_case_id_patientcase_id_fk": {
+          "name": "clinicalnote_case_id_patientcase_id_fk",
+          "tableFrom": "clinicalnote",
+          "tableTo": "patientcase",
+          "columnsFrom": [
+            "case_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
         "clinicalnote_apt_appointments_id_fk": {
           "name": "clinicalnote_apt_appointments_id_fk",
           "tableFrom": "clinicalnote",
@@ -346,6 +495,145 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.pain_disability_questionnaire": {
+      "name": "pain_disability_questionnaire",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "case_id": {
+          "name": "case_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "appointment_id": {
+          "name": "appointment_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "access_token": {
+          "name": "access_token",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'in_progress'"
+        },
+        "responses": {
+          "name": "responses",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::jsonb"
+        },
+        "total_score": {
+          "name": "total_score",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "functional_score": {
+          "name": "functional_score",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "psychosocial_score": {
+          "name": "psychosocial_score",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "instrument_version": {
+          "name": "instrument_version",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pdq-v1'"
+        },
+        "completed_at": {
+          "name": "completed_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "pdq_access_token_idx": {
+          "name": "pdq_access_token_idx",
+          "columns": [
+            {
+              "expression": "access_token",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "pain_disability_questionnaire_case_id_patientcase_id_fk": {
+          "name": "pain_disability_questionnaire_case_id_patientcase_id_fk",
+          "tableFrom": "pain_disability_questionnaire",
+          "tableTo": "patientcase",
+          "columnsFrom": [
+            "case_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "pain_disability_questionnaire_appointment_id_appointments_id_fk": {
+          "name": "pain_disability_questionnaire_appointment_id_appointments_id_fk",
+          "tableFrom": "pain_disability_questionnaire",
+          "tableTo": "appointments",
+          "columnsFrom": [
+            "appointment_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.patientcase": {
       "name": "patientcase",
       "schema": "",
@@ -382,6 +670,12 @@
         },
         "case_type": {
           "name": "case_type",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "case_status": {
+          "name": "case_status",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
@@ -422,6 +716,138 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.patient_questionnaire_instance": {
+      "name": "patient_questionnaire_instance",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "case_id": {
+          "name": "case_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "appointment_id": {
+          "name": "appointment_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "type": {
+          "name": "type",
+          "type": "varchar(80)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "access_token": {
+          "name": "access_token",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'in_progress'"
+        },
+        "responses": {
+          "name": "responses",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::jsonb"
+        },
+        "scores": {
+          "name": "scores",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "instrument_version": {
+          "name": "instrument_version",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "completed_at": {
+          "name": "completed_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "patient_questionnaire_access_token_idx": {
+          "name": "patient_questionnaire_access_token_idx",
+          "columns": [
+            {
+              "expression": "access_token",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "patient_questionnaire_instance_case_id_patientcase_id_fk": {
+          "name": "patient_questionnaire_instance_case_id_patientcase_id_fk",
+          "tableFrom": "patient_questionnaire_instance",
+          "tableTo": "patientcase",
+          "columnsFrom": [
+            "case_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "patient_questionnaire_instance_appointment_id_appointments_id_fk": {
+          "name": "patient_questionnaire_instance_appointment_id_appointments_id_fk",
+          "tableFrom": "patient_questionnaire_instance",
+          "tableTo": "appointments",
+          "columnsFrom": [
+            "appointment_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.record": {
       "name": "record",
       "schema": "",
@@ -432,8 +858,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "case": {
-          "name": "case",
+        "case_id": {
+          "name": "case_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -446,19 +872,56 @@
         },
         "summary": {
           "name": "summary",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "summary_status": {
+          "name": "summary_status",
           "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pending'"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "provider_name": {
+          "name": "provider_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "document_type": {
+          "name": "document_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "event_date": {
+          "name": "event_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "metadata": {
+          "name": "metadata",
+          "type": "jsonb",
           "primaryKey": false,
           "notNull": false
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "record_case_patientcase_id_fk": {
-          "name": "record_case_patientcase_id_fk",
+        "record_case_id_patientcase_id_fk": {
+          "name": "record_case_id_patientcase_id_fk",
           "tableFrom": "record",
           "tableTo": "patientcase",
           "columnsFrom": [
-            "case"
+            "case_id"
           ],
           "columnsTo": [
             "id"

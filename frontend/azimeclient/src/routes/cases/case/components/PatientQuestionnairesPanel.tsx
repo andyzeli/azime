@@ -1,8 +1,4 @@
-import {
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import {
@@ -40,14 +36,16 @@ const getStatusClassName = (status: string) => {
 
 export default function PatientQuestionnairesPanel({
   caseId,
+  embedded = false,
 }: {
   caseId: string;
+  embedded?: boolean;
 }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [selectedType, setSelectedType] =
     useState<QuestionnaireType>("pain_disability");
-  const { data: questionnaires } = useSuspenseQuery(
+  const questionnairesQuery = useQuery(
     patientQuestionnairesQueryOptions(caseId),
   );
 
@@ -100,7 +98,13 @@ export default function PatientQuestionnairesPanel({
   };
 
   return (
-    <div className="mb-8 rounded-lg bg-white p-6 shadow-md">
+    <div
+      className={
+        embedded
+          ? "border-b border-slate-200 pb-6"
+          : "mb-8 rounded-lg bg-white p-6 shadow-md"
+      }
+    >
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <h2 className="text-xl font-semibold text-gray-800">
@@ -152,12 +156,18 @@ export default function PatientQuestionnairesPanel({
       ) : null}
 
       <div className="mt-5 space-y-2">
-        {questionnaires.length === 0 ? (
+        {questionnairesQuery.isPending ? (
+          <p className="text-sm text-slate-500">Loading questionnaires…</p>
+        ) : questionnairesQuery.isError ? (
+          <p className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+            Failed to load patient questionnaires.
+          </p>
+        ) : questionnairesQuery.data.length === 0 ? (
           <p className="rounded-lg border border-dashed border-slate-300 p-4 text-sm text-slate-500">
             No patient questionnaires have been started for this case.
           </p>
         ) : (
-          questionnaires.map((questionnaire) => {
+          questionnairesQuery.data.map((questionnaire) => {
             const title =
               questionnaire.definition?.title ?? "Patient Questionnaire";
             const score = questionnaire.scores;

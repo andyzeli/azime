@@ -4,7 +4,8 @@ export const documentTypeSchema = z.enum([
   "encounter",
   "therapy_note",
   "imaging_report",
-  "procedure_report",
+  "surgery_report",
+  "intervention_report",
   "generic", //other
   "incident_report",
   "job_description",
@@ -15,19 +16,9 @@ export const documentTypeSchema = z.enum([
 const requiredText = z.string().trim().min(1);
 const optionalText = z.string().trim().min(1).optional();
 
-export const encounterMetadataSchema = z
-  .object({
-    providerType: requiredText,
-    providerName: requiredText,
-  })
-  .strict();
+export const encounterMetadataSchema = z.object({}).strict();
 
-export const therapyNoteMetadataSchema = z
-  .object({
-    therapyType: z.enum(["pt", "ot", "chiro"]),
-    providerOrFacility: requiredText,
-  })
-  .strict();
+export const therapyNoteMetadataSchema = z.object({}).strict();
 
 export const imagingReportMetadataSchema = z
   .object({
@@ -36,12 +27,9 @@ export const imagingReportMetadataSchema = z
   })
   .strict();
 
-export const procedureReportMetadataSchema = z
-  .object({
-    procedureType: requiredText,
-    performingProvider: requiredText,
-  })
-  .strict();
+export const surgeryReportMetadataSchema = z.object({}).strict();
+
+export const interventionReportMetadataSchema = z.object({}).strict();
 
 export const legalSummaryMetadataSchema = z
   .object({
@@ -67,6 +55,7 @@ export const completeRecordUploadSchema = z.discriminatedUnion("documentType", [
     .object({
       ...uploadBaseShape,
       documentType: z.literal("encounter"),
+      providerId: z.string().uuid(),
       metadata: encounterMetadataSchema,
     })
     .strict(),
@@ -74,6 +63,7 @@ export const completeRecordUploadSchema = z.discriminatedUnion("documentType", [
     .object({
       ...uploadBaseShape,
       documentType: z.literal("therapy_note"),
+      providerId: z.string().uuid(),
       metadata: therapyNoteMetadataSchema,
     })
     .strict(),
@@ -87,8 +77,17 @@ export const completeRecordUploadSchema = z.discriminatedUnion("documentType", [
   z
     .object({
       ...uploadBaseShape,
-      documentType: z.literal("procedure_report"),
-      metadata: procedureReportMetadataSchema,
+      documentType: z.literal("surgery_report"),
+      providerId: z.string().uuid(),
+      metadata: surgeryReportMetadataSchema,
+    })
+    .strict(),
+  z
+    .object({
+      ...uploadBaseShape,
+      documentType: z.literal("intervention_report"),
+      providerId: z.string().uuid(),
+      metadata: interventionReportMetadataSchema,
     })
     .strict(),
   z
@@ -127,36 +126,11 @@ export type RecordDocumentMetadata =
   | z.infer<typeof encounterMetadataSchema>
   | z.infer<typeof therapyNoteMetadataSchema>
   | z.infer<typeof imagingReportMetadataSchema>
-  | z.infer<typeof procedureReportMetadataSchema>
+  | z.infer<typeof surgeryReportMetadataSchema>
+  | z.infer<typeof interventionReportMetadataSchema>
   | z.infer<typeof legalSummaryMetadataSchema>
   | z.infer<typeof emptyDocumentMetadataSchema>;
 
 export type CompleteRecordUploadInput = z.infer<
   typeof completeRecordUploadSchema
 >;
-
-export const getDocumentSourceName = (
-  metadata: RecordDocumentMetadata | null,
-) => {
-  if (!metadata) {
-    return "";
-  }
-
-  const values = metadata as Record<string, unknown>;
-  const sourceNameKeys = [
-    "providerName",
-    "providerOrFacility",
-    "performingProvider",
-    "author",
-    "lawFirm",
-  ];
-
-  for (const key of sourceNameKeys) {
-    const value = values[key];
-    if (typeof value === "string" && value.trim()) {
-      return value.trim();
-    }
-  }
-
-  return "";
-};

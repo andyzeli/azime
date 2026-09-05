@@ -1,46 +1,44 @@
 import { ChangeEvent, useRef, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import type {
-  CompleteRecordUploadInput,
-  DocumentType,
-} from "../../../../../../../backend/src/records/documentMetadata";
-import { completeRecordUpload, createRecordUpload } from "../../queries";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { CaseProvider } from "../../../../../../../backend/src/db/schema";
+import type { CompleteRecordUploadInput } from "../../../../../../../backend/src/records/documentMetadata";
+import type { CreateCaseProviderInput } from "../../../../../../../backend/src/providers/caseProvider";
+import {
+  caseProvidersQueryOptions,
+  completeRecordUpload,
+  createCaseProvider,
+  createRecordUpload,
+} from "../../queries";
 
-const documentTypeOptions: Array<{ value: DocumentType; label: string }> = [
-  { value: "progress_note", label: "Progress note" },
+type UploadDocumentType = CompleteRecordUploadInput["documentType"];
+
+const documentTypeOptions: Array<{
+  value: UploadDocumentType;
+  label: string;
+}> = [
+  { value: "encounter", label: "Encounter" },
   { value: "therapy_note", label: "Therapy note" },
   { value: "imaging_report", label: "Imaging report" },
-  { value: "procedure_report", label: "Procedure report" },
+  { value: "surgery_report", label: "Surgery report" },
+  { value: "intervention_report", label: "Intervention report" },
   { value: "legal_summary", label: "Legal summary" },
-  {
-    value: "workstatus_accommodation",
-    label: "Work status / accommodation",
-  },
-  { value: "other", label: "Other" },
+  { value: "workstatus", label: "Work status / accommodation" },
+  { value: "incident_report", label: "Incident report" },
+  { value: "generic", label: "Other" },
 ];
 
 type UploadFormFields = {
-  providerType: string;
-  providerName: string;
-  therapyType: "" | "pt" | "ot" | "chiro";
-  providerOrFacility: string;
+  providerId: string;
   modality: string;
   region: string;
-  procedureType: string;
-  performingProvider: string;
   author: string;
   lawFirm: string;
 };
 
 const emptyFormFields: UploadFormFields = {
-  providerType: "",
-  providerName: "",
-  therapyType: "",
-  providerOrFacility: "",
+  providerId: "",
   modality: "",
   region: "",
-  procedureType: "",
-  performingProvider: "",
   author: "",
   lawFirm: "",
 };
@@ -48,35 +46,44 @@ const emptyFormFields: UploadFormFields = {
 const inputClassName =
   "w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200";
 
-const eventDateLabel: Record<DocumentType, string> = {
-  progress_note: "Date of service",
+const eventDateLabel: Record<UploadDocumentType, string> = {
+  encounter: "Date of service",
   therapy_note: "Therapy session date",
   imaging_report: "Imaging date",
-  procedure_report: "Procedure date",
+  surgery_report: "Procedure date",
+  intervention_report: "Intervention date",
   legal_summary: "Summary / letter date",
-  workstatus_accommodation: "Issued / effective date",
-  other: "Event date",
+  workstatus: "Issued / effective date",
+  incident_report: "Incident date",
+  generic: "Event date",
 };
 
+export const providerDisciplineOptions = [
+  { value: "primary_care", label: "Primary Care" },
+  { value: "orthopedics", label: "Orthopedics" },
+  { value: "physical_therapy", label: "Physical Therapy" },
+  { value: "occupational_therapy", label: "Occupational Therapy" },
+  { value: "sports_medicine", label: "Sports Medicine" },
+  { value: "chiropractic", label: "Chiropractic" },
+] as const;
+
 const metadataIsComplete = (
-  documentType: DocumentType | "",
+  documentType: UploadDocumentType | "",
   fields: UploadFormFields,
 ) => {
   switch (documentType) {
-    case "progress_note":
-      return Boolean(fields.providerType.trim() && fields.providerName.trim());
+    case "encounter":
     case "therapy_note":
-      return Boolean(fields.therapyType && fields.providerOrFacility.trim());
+    case "surgery_report":
+    case "intervention_report":
+      return Boolean(fields.providerId);
     case "imaging_report":
       return Boolean(fields.modality.trim() && fields.region.trim());
-    case "procedure_report":
-      return Boolean(
-        fields.procedureType.trim() && fields.performingProvider.trim(),
-      );
     case "legal_summary":
       return Boolean(fields.author.trim() || fields.lawFirm.trim());
-    case "workstatus_accommodation":
-    case "other":
+    case "workstatus":
+    case "incident_report":
+    case "generic":
       return true;
     default:
       return false;
@@ -95,32 +102,25 @@ const buildCompleteUploadPayload = ({
   objectKey: string;
   name: string;
   eventDate: string;
-  documentType: DocumentType;
+  documentType: UploadDocumentType;
   fields: UploadFormFields;
 }): CompleteRecordUploadInput => {
   const common = { caseId, objectKey, name, eventDate };
 
   switch (documentType) {
-    case "progress_note":
+    case "encounter":
       return {
         ...common,
         documentType,
-        metadata: {
-          providerType: fields.providerType.trim(),
-          providerName: fields.providerName.trim(),
-        },
+        providerId: fields.providerId,
+        metadata: {},
       };
     case "therapy_note":
-      if (!fields.therapyType) {
-        throw new Error("Therapy type is required");
-      }
       return {
         ...common,
         documentType,
-        metadata: {
-          therapyType: fields.therapyType,
-          providerOrFacility: fields.providerOrFacility.trim(),
-        },
+        providerId: fields.providerId,
+        metadata: {},
       };
     case "imaging_report":
       return {
@@ -131,14 +131,19 @@ const buildCompleteUploadPayload = ({
           region: fields.region.trim(),
         },
       };
-    case "procedure_report":
+    case "surgery_report":
       return {
         ...common,
         documentType,
-        metadata: {
-          procedureType: fields.procedureType.trim(),
-          performingProvider: fields.performingProvider.trim(),
-        },
+        providerId: fields.providerId,
+        metadata: {},
+      };
+    case "intervention_report":
+      return {
+        ...common,
+        documentType,
+        providerId: fields.providerId,
+        metadata: {},
       };
     case "legal_summary":
       return {
@@ -149,16 +154,199 @@ const buildCompleteUploadPayload = ({
           ...(fields.lawFirm.trim() ? { lawFirm: fields.lawFirm.trim() } : {}),
         },
       };
-    case "workstatus_accommodation":
-    case "other":
+    case "workstatus":
+    case "incident_report":
+    case "generic":
       return { ...common, documentType, metadata: {} };
   }
+};
+
+const emptyProviderInput: CreateCaseProviderInput = {
+  name: "",
+  kind: "individual",
+  discipline: "",
+};
+
+const ChooseOrCreateProviderForm = ({
+  caseId,
+  value,
+  onChange,
+}: {
+  caseId: number;
+  value: string;
+  onChange: (providerId: string) => void;
+}) => {
+  const [isAdding, setIsAdding] = useState(false);
+  const [newProvider, setNewProvider] =
+    useState<CreateCaseProviderInput>(emptyProviderInput);
+
+  const queryClient = useQueryClient();
+  const providersQuery = useQuery(caseProvidersQueryOptions(caseId));
+  const createProviderMutation = useMutation({
+    mutationFn: (input: CreateCaseProviderInput) =>
+      createCaseProvider(caseId, input),
+    onSuccess: (provider) => {
+      queryClient.setQueryData<CaseProvider[]>(
+        ["caseProviders", { caseId }],
+        (current) =>
+          [
+            ...(current ?? []).filter(({ id }) => id !== provider.id),
+            provider,
+          ].sort((left, right) => left.name.localeCompare(right.name)),
+      );
+      onChange(provider.id);
+      setNewProvider(emptyProviderInput);
+      setIsAdding(false);
+    },
+  });
+
+  const canCreate = Boolean(
+    newProvider.name.trim() && newProvider.discipline.trim(),
+  );
+
+  return (
+    <div className="space-y-3 sm:col-span-2">
+      <div className="space-y-1">
+        <span className="text-sm font-medium text-slate-700">
+          Provider or facility
+        </span>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          {providersQuery.isError ? (
+            <div className="flex-1 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+              Existing providers are unavailable.
+            </div>
+          ) : (
+            <select
+              value={value}
+              onChange={(event) => {
+                setIsAdding(false);
+                onChange(event.target.value);
+              }}
+              disabled={providersQuery.isPending}
+              className={`${inputClassName} flex-1 bg-white`}
+            >
+              <option value="">
+                {providersQuery.isPending
+                  ? "Loading providers..."
+                  : "Choose a provider"}
+              </option>
+              {providersQuery.data?.map((provider) => (
+                <option key={provider.id} value={provider.id}>
+                  {provider.name} · {provider.discipline}
+                </option>
+              ))}
+            </select>
+          )}
+          <button
+            type="button"
+            onClick={() => {
+              onChange("");
+              createProviderMutation.reset();
+              setIsAdding(true);
+            }}
+            className="shrink-0 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+          >
+            Add new provider
+          </button>
+        </div>
+        {providersQuery.isError ? (
+          <p className="text-sm text-red-600" role="alert">
+            Could not load this case&apos;s provider list. You can still add a
+            new provider.
+          </p>
+        ) : null}
+      </div>
+
+      {isAdding ? (
+        <div className="grid gap-3 rounded-md border border-slate-200 bg-slate-50 p-3 sm:grid-cols-2">
+          <label className="flex flex-col gap-1 text-sm font-medium text-slate-700">
+            Name
+            <input
+              value={newProvider.name}
+              onChange={(event) =>
+                setNewProvider((current) => ({
+                  ...current,
+                  name: event.target.value,
+                }))
+              }
+              placeholder="Provider or facility name"
+              className={inputClassName}
+            />
+          </label>
+          <label className="flex flex-col gap-1 text-sm font-medium text-slate-700">
+            Kind
+            <select
+              value={newProvider.kind}
+              onChange={(event) =>
+                setNewProvider((current) => ({
+                  ...current,
+                  kind: event.target.value as CreateCaseProviderInput["kind"],
+                }))
+              }
+              className={`${inputClassName} bg-white`}
+            >
+              <option value="individual">Individual</option>
+              <option value="facility">Facility</option>
+            </select>
+          </label>
+          <label className="flex flex-col gap-1 text-sm font-medium text-slate-700 sm:col-span-2">
+            Discipline
+            <select
+              value={newProvider.discipline}
+              onChange={(event) =>
+                setNewProvider((current) => ({
+                  ...current,
+                  discipline: event.target.value,
+                }))
+              }
+              className={`${inputClassName} bg-white`}
+            >
+              <option value="">Select a discipline</option>
+              {providerDisciplineOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <div className="flex items-center gap-3 sm:col-span-2">
+            <button
+              type="button"
+              disabled={!canCreate || createProviderMutation.isPending}
+              onClick={() => createProviderMutation.mutate(newProvider)}
+              className="rounded-md bg-slate-800 px-3 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:bg-slate-300"
+            >
+              {createProviderMutation.isPending
+                ? "Adding provider..."
+                : "Add provider"}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setIsAdding(false);
+                setNewProvider(emptyProviderInput);
+                createProviderMutation.reset();
+              }}
+              className="text-sm font-medium text-slate-600 hover:text-slate-900"
+            >
+              Cancel
+            </button>
+          </div>
+          {createProviderMutation.isError ? (
+            <p className="text-sm text-red-600 sm:col-span-2">
+              Failed to add provider. Please try again.
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
+  );
 };
 
 export const OurUploadButton = ({ caseId }: { caseId: number }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [eventDate, setEventDate] = useState("");
-  const [documentType, setDocumentType] = useState<DocumentType | "">("");
+  const [documentType, setDocumentType] = useState<UploadDocumentType | "">("");
   const [fields, setFields] = useState<UploadFormFields>(emptyFormFields);
   const inputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
@@ -257,7 +445,7 @@ export const OurUploadButton = ({ caseId }: { caseId: number }) => {
           <select
             value={documentType}
             onChange={(event) => {
-              setDocumentType(event.target.value as DocumentType | "");
+              setDocumentType(event.target.value as UploadDocumentType | "");
               setFields(emptyFormFields);
             }}
             className={`${inputClassName} bg-white`}
@@ -281,65 +469,15 @@ export const OurUploadButton = ({ caseId }: { caseId: number }) => {
           />
         </label>
 
-        {documentType === "progress_note" ? (
-          <>
-            <label className="flex flex-col gap-1 text-sm font-medium text-slate-700">
-              Provider type
-              <input
-                value={fields.providerType}
-                onChange={(event) =>
-                  updateField("providerType", event.target.value)
-                }
-                placeholder="e.g. Orthopedist"
-                className={inputClassName}
-              />
-            </label>
-            <label className="flex flex-col gap-1 text-sm font-medium text-slate-700">
-              Provider name
-              <input
-                value={fields.providerName}
-                onChange={(event) =>
-                  updateField("providerName", event.target.value)
-                }
-                placeholder="Provider name"
-                className={inputClassName}
-              />
-            </label>
-          </>
-        ) : null}
-
-        {documentType === "therapy_note" ? (
-          <>
-            <label className="flex flex-col gap-1 text-sm font-medium text-slate-700">
-              Therapy type
-              <select
-                value={fields.therapyType}
-                onChange={(event) =>
-                  updateField(
-                    "therapyType",
-                    event.target.value as UploadFormFields["therapyType"],
-                  )
-                }
-                className={`${inputClassName} bg-white`}
-              >
-                <option value="">Select therapy type</option>
-                <option value="pt">Physical therapy</option>
-                <option value="ot">Occupational therapy</option>
-                <option value="chiro">Chiropractic</option>
-              </select>
-            </label>
-            <label className="flex flex-col gap-1 text-sm font-medium text-slate-700">
-              Provider or facility
-              <input
-                value={fields.providerOrFacility}
-                onChange={(event) =>
-                  updateField("providerOrFacility", event.target.value)
-                }
-                placeholder="Provider or facility name"
-                className={inputClassName}
-              />
-            </label>
-          </>
+        {documentType === "encounter" ||
+        documentType === "therapy_note" ||
+        documentType === "surgery_report" ||
+        documentType === "intervention_report" ? (
+          <ChooseOrCreateProviderForm
+            caseId={caseId}
+            value={fields.providerId}
+            onChange={(providerId) => updateField("providerId", providerId)}
+          />
         ) : null}
 
         {documentType === "imaging_report" ? (
@@ -361,33 +499,6 @@ export const OurUploadButton = ({ caseId }: { caseId: number }) => {
                 value={fields.region}
                 onChange={(event) => updateField("region", event.target.value)}
                 placeholder="e.g. Lumbar spine"
-                className={inputClassName}
-              />
-            </label>
-          </>
-        ) : null}
-
-        {documentType === "procedure_report" ? (
-          <>
-            <label className="flex flex-col gap-1 text-sm font-medium text-slate-700">
-              Procedure type
-              <input
-                value={fields.procedureType}
-                onChange={(event) =>
-                  updateField("procedureType", event.target.value)
-                }
-                placeholder="Procedure type"
-                className={inputClassName}
-              />
-            </label>
-            <label className="flex flex-col gap-1 text-sm font-medium text-slate-700">
-              Performing provider
-              <input
-                value={fields.performingProvider}
-                onChange={(event) =>
-                  updateField("performingProvider", event.target.value)
-                }
-                placeholder="Performing provider"
                 className={inputClassName}
               />
             </label>

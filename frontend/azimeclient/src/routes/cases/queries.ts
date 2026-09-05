@@ -2,8 +2,8 @@ import axios from "redaxios";
 import { queryOptions } from "@tanstack/react-query";
 import {
   CaseContacts,
+  CaseProvider,
   CaseRecordsSummary,
-  NewCaseRecordsSummary,
   PatientQuestionnaireInstance,
   PatientCase,
   Records,
@@ -13,18 +13,25 @@ import type {
   QuestionnaireType,
 } from "../../../../../backend/src/questionnaires/definitions";
 import type { CompleteRecordUploadInput } from "../../../../../backend/src/records/documentMetadata";
+import type { CreateCaseProviderInput } from "../../../../../backend/src/providers/caseProvider";
 import {
-  storedAggregateSummarySchema,
-  type StoredAggregateSummary,
-} from "../../../../../backend/src/gemini/aggregateSummarySchema";
+  safeParseStoredExtraction,
+  type AnyStoredExtraction,
+} from "../../../../../backend/src/ai/gemini/registry";
 import {
-  storedRecordSummarySchema,
-  type StoredRecordSummary,
-} from "../../../../../backend/src/gemini/recordSummarySchema";
+  storedCaseClinicalSummarySchema,
+  type StoredCaseClinicalSummary,
+} from "../../../../../backend/src/ai/clinicalSummarySchema";
+import {
+  storedPreExamAnalysisSchema,
+  type StoredPreExamAnalysis,
+} from "../../../../../backend/src/ai/preExamAnalysisSchema";
+import {
+  storedRefinedAnalysisSchema,
+  type StoredRefinedAnalysis,
+} from "../../../../../backend/src/ai/refinedAnalysisSchema";
 import { NewPatientCase } from "./case/components/NewCaseForm";
 export class NotFoundError extends Error {}
-
-export const AGGREGATE_SUMMARY_SECTION = "ai_aggregate_summary";
 
 type CaseType = PatientCase;
 type Provider = {
@@ -61,15 +68,36 @@ export type PatientQuestionnaireWithCase =
     } | null;
   };
 
-export type RecordWithParsedSummary = Records & {
-  parsedSummary: StoredRecordSummary | null;
+export type RecordWithProvider = Records & {
+  provider: Pick<CaseProvider, "id" | "name" | "kind" | "discipline"> | null;
+};
+
+export type RecordWithParsedSummary = RecordWithProvider & {
+  parsedSummary: AnyStoredExtraction | null;
   summaryParseError: string | null;
 };
 
 export type CaseSummaryWithParsedAggregate = CaseRecordsSummary & {
-  isAggregateSummary: boolean;
-  parsedAggregateSummary: StoredAggregateSummary | null;
+  parsedAggregateSummary: StoredCaseClinicalSummary | null;
   aggregateSummaryParseError: string | null;
+};
+
+type StoredAnalysisResponse = {
+  id: number;
+  caseId: number;
+  analysis: unknown;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PreExamAnalysisWithParsedArtifact = StoredAnalysisResponse & {
+  parsedAnalysis: StoredPreExamAnalysis | null;
+  analysisParseError: string | null;
+};
+
+export type RefinedAnalysisWithParsedArtifact = StoredAnalysisResponse & {
+  parsedAnalysis: StoredRefinedAnalysis | null;
+  analysisParseError: string | null;
 };
 
 const fetchCases = async () => {
@@ -83,7 +111,7 @@ const API_BASE_URL = "http://localhost:4000";
 
 export const fetchMessage = async () => {
   await new Promise((r) => setTimeout(r, 500));
-  return axios.get<any>(API_BASE_URL).then((r) => r.data);
+  return axios.get<{ message: string }>(API_BASE_URL).then((r) => r.data);
 };
 export const fetOpts = () =>
   queryOptions({
@@ -98,7 +126,6 @@ const fetchCase = async (caseId: string) => {
     .get<DbPatientCase>(`${API_BASE_URL}/cases/${caseId}`)
     .then((r) => r.data);
 
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!post) {
     throw new NotFoundError(`Post with id "${caseId}" not found!`);
   }
@@ -121,61 +148,98 @@ export const createCase = async (newcase: NewPatientCase) => {
   return axios.post(`${API_BASE_URL}/cases`, newcase);
 };
 
-export const fetchCaseSummaries = async (caseId: string) => {
+export const fetchCaseSummary = async (caseId: string) => {
   return axios
-    .get<
-      Array<CaseRecordsSummary>
-    >(`${API_BASE_URL}/casesummaries?caseId=${caseId}`)
-    .then((r) =>
-      r.data.map<CaseSummaryWithParsedAggregate>((summary) => {
-        if (summary.section !== AGGREGATE_SUMMARY_SECTION) {
-          return {
-            ...summary,
-            isAggregateSummary: false,
-            parsedAggregateSummary: null,
-            aggregateSummaryParseError: null,
-          };
-        }
+    .get<CaseRecordsSummary | null>(
+      `${API_BASE_URL}/casesummaries?caseId=${caseId}`,
+    )
+    .then((r): CaseSummaryWithParsedAggregate | null => {
+      if (!r.data) {
+        return null;
+      }
 
-        try {
-          const parsedJson = JSON.parse(summary.summary ?? "null") as unknown;
-          const parsedAggregate =
-            storedAggregateSummarySchema.safeParse(parsedJson);
+      const parsedAggregate = storedCaseClinicalSummarySchema.safeParse(
+        r.data.summary,
+      );
 
-          return {
-            ...summary,
-            isAggregateSummary: true,
-            parsedAggregateSummary: parsedAggregate.success
-              ? parsedAggregate.data
-              : null,
-            aggregateSummaryParseError: parsedAggregate.success
-              ? null
-              : parsedAggregate.error.issues[0]?.message ??
-                "Invalid aggregate summary payload",
-          };
-        } catch {
-          return {
-            ...summary,
-            isAggregateSummary: true,
-            parsedAggregateSummary: null,
-            aggregateSummaryParseError: "Aggregate summary is not valid JSON",
-          };
-        }
-      }),
-    );
-};
-export const createManualCaseSummary = async (
-  caseSummary: NewCaseRecordsSummary,
-) => {
-  return axios.post(`${API_BASE_URL}/casesummaries`, caseSummary);
-};
-export const deleteManualCaseSummary = async (caseSummary: number) => {
-  return axios.delete(`${API_BASE_URL}/casesummaries/${caseSummary}`);
+      return {
+        ...r.data,
+        parsedAggregateSummary: parsedAggregate.success
+          ? parsedAggregate.data
+          : null,
+        aggregateSummaryParseError: parsedAggregate.success
+          ? null
+          : (parsedAggregate.error.issues[0]?.message ??
+            "Invalid aggregate summary payload"),
+      };
+    });
 };
 export const caseSummaryQueryOptions = (caseId: string) =>
   queryOptions({
     queryKey: ["caseSummary", { caseId }],
-    queryFn: () => fetchCaseSummaries(caseId),
+    queryFn: () => fetchCaseSummary(caseId),
+  });
+
+export const fetchPreExamAnalysis = async (caseId: string) => {
+  return axios
+    .get<StoredAnalysisResponse | null>(
+      `${API_BASE_URL}/cases/${caseId}/pre-exam-analysis`,
+    )
+    .then((response): PreExamAnalysisWithParsedArtifact | null => {
+      if (!response.data) {
+        return null;
+      }
+
+      const parsedAnalysis = storedPreExamAnalysisSchema.safeParse(
+        response.data.analysis,
+      );
+
+      return {
+        ...response.data,
+        parsedAnalysis: parsedAnalysis.success ? parsedAnalysis.data : null,
+        analysisParseError: parsedAnalysis.success
+          ? null
+          : (parsedAnalysis.error.issues[0]?.message ??
+            "Invalid pre-exam analysis payload"),
+      };
+    });
+};
+
+export const preExamAnalysisQueryOptions = (caseId: string) =>
+  queryOptions({
+    queryKey: ["preExamAnalysis", { caseId }],
+    queryFn: () => fetchPreExamAnalysis(caseId),
+  });
+
+export const fetchRefinedAnalysis = async (caseId: string) => {
+  return axios
+    .get<StoredAnalysisResponse | null>(
+      `${API_BASE_URL}/cases/${caseId}/refined-analysis`,
+    )
+    .then((response): RefinedAnalysisWithParsedArtifact | null => {
+      if (!response.data) {
+        return null;
+      }
+
+      const parsedAnalysis = storedRefinedAnalysisSchema.safeParse(
+        response.data.analysis,
+      );
+
+      return {
+        ...response.data,
+        parsedAnalysis: parsedAnalysis.success ? parsedAnalysis.data : null,
+        analysisParseError: parsedAnalysis.success
+          ? null
+          : (parsedAnalysis.error.issues[0]?.message ??
+            "Invalid refined analysis payload"),
+      };
+    });
+};
+
+export const refinedAnalysisQueryOptions = (caseId: string) =>
+  queryOptions({
+    queryKey: ["refinedAnalysis", { caseId }],
+    queryFn: () => fetchRefinedAnalysis(caseId),
   });
 
 export const recordsQueryOptions = (caseId: string) =>
@@ -183,6 +247,25 @@ export const recordsQueryOptions = (caseId: string) =>
     queryKey: ["records", { caseId }],
     queryFn: () => fetchRecords(caseId),
   });
+
+export const fetchCaseProviders = async (caseId: number) =>
+  axios
+    .get<CaseProvider[]>(`${API_BASE_URL}/cases/${caseId}/providers`)
+    .then((response) => response.data);
+
+export const caseProvidersQueryOptions = (caseId: number) =>
+  queryOptions({
+    queryKey: ["caseProviders", { caseId }],
+    queryFn: () => fetchCaseProviders(caseId),
+  });
+
+export const createCaseProvider = async (
+  caseId: number,
+  input: CreateCaseProviderInput,
+) =>
+  axios
+    .post<CaseProvider>(`${API_BASE_URL}/cases/${caseId}/providers`, input)
+    .then((response) => response.data);
 
 export const createRecordUpload = async (payload: {
   caseId: number;
@@ -222,20 +305,20 @@ export const summarizeRecord = async (recordId: number) => {
 };
 export const deleteRecord = async (recordId: number) => {
   return axios
-    .delete<{ recordId: number; deleted: boolean }>(
-      `${API_BASE_URL}/records/${recordId}`,
-    )
+    .delete<{
+      recordId: number;
+      deleted: boolean;
+    }>(`${API_BASE_URL}/records/${recordId}`)
     .then((r) => r.data);
 };
 export const summarizeCase = async (caseId: number) => {
   return axios
     .post<{
       caseId: number;
-      providerSummaryCount: number;
-      aggregateSummary: StoredAggregateSummary;
+      sourceRecordCount: number;
+      aggregateSummary: StoredCaseClinicalSummary;
       storage: {
         caseSummaryId: number | null;
-        section: string;
       };
     }>(`${API_BASE_URL}/cases/${caseId}/aggregate-summary`)
     .then((r) => r.data);
@@ -243,9 +326,9 @@ export const summarizeCase = async (caseId: number) => {
 
 export const fetchPatientQuestionnaires = async (caseId: string) => {
   return axios
-    .get<Array<PatientQuestionnaireWithDefinition>>(
-      `${API_BASE_URL}/cases/${caseId}/questionnaires`,
-    )
+    .get<
+      Array<PatientQuestionnaireWithDefinition>
+    >(`${API_BASE_URL}/cases/${caseId}/questionnaires`)
     .then((r) => r.data);
 };
 
@@ -279,9 +362,7 @@ export const fetchPatientQuestionnaireByToken = async (accessToken: string) => {
     .then((r) => r.data);
 };
 
-export const patientQuestionnaireByTokenQueryOptions = (
-  accessToken: string,
-) =>
+export const patientQuestionnaireByTokenQueryOptions = (accessToken: string) =>
   queryOptions({
     queryKey: ["patientQuestionnaire", { accessToken }],
     queryFn: () => fetchPatientQuestionnaireByToken(accessToken),
@@ -301,9 +382,10 @@ export const submitPatientQuestionnaire = async (payload: {
 
 export const deletePatientQuestionnaire = async (questionnaireId: number) => {
   return axios
-    .delete<{ questionnaireId: number; deleted: boolean }>(
-      `${API_BASE_URL}/questionnaires/${questionnaireId}`,
-    )
+    .delete<{
+      questionnaireId: number;
+      deleted: boolean;
+    }>(`${API_BASE_URL}/questionnaires/${questionnaireId}`)
     .then((r) => r.data);
 };
 
@@ -311,16 +393,25 @@ const fetchRecords = async (caseId: string) => {
   console.info(`Fetching case with id ${caseId}...`);
   //await new Promise((r) => setTimeout(r, 500));
   const post = await axios
-    .get<Array<Records>>(`${API_BASE_URL}/records?caseId=${caseId}`)
+    .get<Array<RecordWithProvider>>(`${API_BASE_URL}/records?caseId=${caseId}`)
     .then((r) => r.data);
 
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!post) {
     throw new NotFoundError(`Post with id "${caseId}" not found!`);
   }
 
   return post.map<RecordWithParsedSummary>((record) => {
-    const parsedSummary = storedRecordSummarySchema.safeParse(record.summary);
+    if (record.summary == null) {
+      return {
+        ...record,
+        parsedSummary: null,
+        summaryParseError: null,
+      };
+    }
+    const parsedSummary = safeParseStoredExtraction(
+      record.documentType,
+      record.summary,
+    );
 
     if (!parsedSummary.success && record.summary != null) {
       console.warn("Record summary did not match storedRecordSummarySchema", {
@@ -334,7 +425,7 @@ const fetchRecords = async (caseId: string) => {
       parsedSummary: parsedSummary.success ? parsedSummary.data : null,
       summaryParseError: parsedSummary.success
         ? null
-        : parsedSummary.error.issues[0]?.message ?? "Invalid summary payload",
+        : (parsedSummary.error.issues[0]?.message ?? "Invalid summary payload"),
     };
   });
 };

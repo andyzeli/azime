@@ -12,7 +12,15 @@ import {
   uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { InferSelectModel, InferInsertModel } from "drizzle-orm";
-import type { RecordDocumentMetadata } from "../records/documentMetadata.js";
+import type {
+  RecordDocumentMetadata,
+  DocumentType,
+} from "../records/documentMetadata.js";
+import type { StoredCaseClinicalSummary } from "../ai/clinicalSummarySchema.js";
+import type { PhysicianSteering } from "../ai/physicianSteeringSchema.js";
+import type { StoredPreExamAnalysis } from "../ai/preExamAnalysisSchema.js";
+import type { StoredProviderSummaries } from "../ai/providerSummarySchema.js";
+import type { StoredRefinedAnalysis } from "../ai/refinedAnalysisSchema.js";
 
 export const MockAuthUsers = pgTable("auth_users", {
   id: uuid("id").primaryKey(),
@@ -51,6 +59,18 @@ export const PatientCase = pgTable("patientcase", {
 export type PatientCase = InferSelectModel<typeof PatientCase>;
 export type NewPatientCase = InferInsertModel<typeof PatientCase>;
 
+export const CaseProviders = pgTable("case_providers", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  caseId: integer("case_id")
+    .notNull()
+    .references(() => PatientCase.id),
+  name: text("name").notNull(),
+  kind: text("kind").$type<"individual" | "facility">().notNull(),
+  discipline: text("discipline").notNull(),
+});
+export type CaseProvider = InferSelectModel<typeof CaseProviders>;
+export type NewCaseProvider = InferInsertModel<typeof CaseProviders>;
+
 export const PatientCaseRelations = relations(PatientCase, ({ one }) => ({
   caseContact: one(CaseContacts, {
     fields: [PatientCase.caseContact],
@@ -64,14 +84,92 @@ export const PatientCaseRelations = relations(PatientCase, ({ one }) => ({
   }),
 }));
 
-export const CaseRecordsSummary = pgTable("case_records_summary", {
-  id: serial("id").primaryKey(),
-  caseId: integer("case_id").references(() => PatientCase.id),
-  section: varchar("section", { length: 255 }), // per provider, other sections. use as Title of Section "sectionType"
-  summary: text("summary"),
-});
+export const CaseRecordsSummary = pgTable(
+  "case_records_summary",
+  {
+    id: serial("id").primaryKey(),
+    caseId: integer("case_id")
+      .notNull()
+      .references(() => PatientCase.id),
+    summary: jsonb("summary").$type<StoredCaseClinicalSummary>().notNull(),
+  },
+  (table) => ({
+    caseIdUniqueIdx: uniqueIndex("case_records_summary_case_id_unique").on(
+      table.caseId,
+    ),
+  }),
+);
 export type CaseRecordsSummary = InferSelectModel<typeof CaseRecordsSummary>;
-export type NewCaseRecordsSummary = InferInsertModel<typeof CaseRecordsSummary>;
+
+export const CaseProviderSummaries = pgTable("case_provider_summaries", {
+  caseId: integer("case_id")
+    .primaryKey()
+    .references(() => PatientCase.id),
+  summary: jsonb("summary").$type<StoredProviderSummaries>().notNull(),
+});
+export type CaseProviderSummaries = InferSelectModel<
+  typeof CaseProviderSummaries
+>;
+
+export const CasePreExamAnalysis = pgTable(
+  "case_pre_exam_analysis",
+  {
+    id: serial("id").primaryKey(),
+    caseId: integer("case_id")
+      .notNull()
+      .references(() => PatientCase.id),
+    analysis: jsonb("analysis").$type<StoredPreExamAnalysis>().notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => ({
+    caseIdUniqueIdx: uniqueIndex("case_pre_exam_analysis_case_id_unique").on(
+      table.caseId,
+    ),
+  }),
+);
+export type CasePreExamAnalysis = InferSelectModel<typeof CasePreExamAnalysis>;
+
+export const CasePhysicianSteering = pgTable(
+  "case_physician_steering",
+  {
+    id: serial("id").primaryKey(),
+    caseId: integer("case_id")
+      .notNull()
+      .references(() => PatientCase.id),
+    steering: jsonb("steering").$type<PhysicianSteering>().notNull(),
+    revision: integer("revision").notNull().default(1),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => ({
+    caseIdUniqueIdx: uniqueIndex("case_physician_steering_case_id_unique").on(
+      table.caseId,
+    ),
+  }),
+);
+export type CasePhysicianSteering = InferSelectModel<
+  typeof CasePhysicianSteering
+>;
+
+export const CaseRefinedAnalysis = pgTable(
+  "case_refined_analysis",
+  {
+    id: serial("id").primaryKey(),
+    caseId: integer("case_id")
+      .notNull()
+      .references(() => PatientCase.id),
+    analysis: jsonb("analysis").$type<StoredRefinedAnalysis>().notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => ({
+    caseIdUniqueIdx: uniqueIndex("case_refined_analysis_case_id_unique").on(
+      table.caseId,
+    ),
+  }),
+);
+export type CaseRefinedAnalysis = InferSelectModel<typeof CaseRefinedAnalysis>;
 
 export const Appointment = pgTable("appointments", {
   id: serial("id").primaryKey(),
@@ -101,9 +199,8 @@ export const Records = pgTable("record", {
   summary: jsonb("summary"),
   summaryStatus: text("summary_status").notNull().default("pending"),
   name: text("name"),
-  providerName: text("provider_name"),
-  documentGroup: text("document_group"),
-  documentType: text("document_type"),
+  providerId: uuid("provider_id").references(() => CaseProviders.id),
+  documentType: text("document_type").$type<DocumentType>().notNull(),
   eventDate: date("event_date"),
   metadata: jsonb("metadata").$type<RecordDocumentMetadata>(),
 });
@@ -112,6 +209,19 @@ export type NewRecords = InferInsertModel<typeof Records>;
 export const RecordRelations = relations(Records, ({ one }) => ({
   case: one(PatientCase, {
     fields: [Records.caseId],
+    references: [PatientCase.id],
+    relationName: "case",
+  }),
+  provider: one(CaseProviders, {
+    fields: [Records.providerId],
+    references: [CaseProviders.id],
+    relationName: "provider",
+  }),
+}));
+
+export const CaseProviderRelations = relations(CaseProviders, ({ one }) => ({
+  case: one(PatientCase, {
+    fields: [CaseProviders.caseId],
     references: [PatientCase.id],
     relationName: "case",
   }),
@@ -124,21 +234,18 @@ export const ClinicalNote = pgTable("clinicalnote", {
   audioUrl: varchar("audio_url", { length: 255 }),
   note: text("note"),
 });
-export const ClinicalNoteRelations = relations(
-  ClinicalNote,
-  ({ one }) => ({
-    apt: one(Appointment, {
-      fields: [ClinicalNote.apt],
-      references: [Appointment.id],
-      relationName: "apt",
-    }),
-    caseId: one(PatientCase, {
-      fields: [ClinicalNote.caseId],
-      references: [PatientCase.id],
-      relationName: "caseId",
-    }),
+export const ClinicalNoteRelations = relations(ClinicalNote, ({ one }) => ({
+  apt: one(Appointment, {
+    fields: [ClinicalNote.apt],
+    references: [Appointment.id],
+    relationName: "apt",
   }),
-);
+  caseId: one(PatientCase, {
+    fields: [ClinicalNote.caseId],
+    references: [PatientCase.id],
+    relationName: "caseId",
+  }),
+}));
 
 export type PainDisabilityQuestionnaireResponse = {
   itemId: string;
@@ -185,10 +292,12 @@ export const PainDisabilityQuestionnaire = pgTable(
     accessTokenIdx: uniqueIndex("pdq_access_token_idx").on(table.accessToken),
   }),
 );
-export type PainDisabilityQuestionnaire =
-  InferSelectModel<typeof PainDisabilityQuestionnaire>;
-export type NewPainDisabilityQuestionnaire =
-  InferInsertModel<typeof PainDisabilityQuestionnaire>;
+export type PainDisabilityQuestionnaire = InferSelectModel<
+  typeof PainDisabilityQuestionnaire
+>;
+export type NewPainDisabilityQuestionnaire = InferInsertModel<
+  typeof PainDisabilityQuestionnaire
+>;
 
 export const PainDisabilityQuestionnaireRelations = relations(
   PainDisabilityQuestionnaire,

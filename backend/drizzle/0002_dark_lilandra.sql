@@ -1,1 +1,0 @@
-ALTER TABLE "patientcase" ADD COLUMN "case_type" varchar(255);

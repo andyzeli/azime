@@ -1,11 +1,16 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { and, asc, eq, isNotNull } from "drizzle-orm";
 import { db } from "../db/index.js";
-import { CaseRecordsSummary, PatientCase, Records } from "../db/schema.js";
-import { buildAggregateSummaryInput } from "../gemini/buildAggregateSummaryInput.js";
-import { synthesizeCaseSummary } from "../gemini/synthesizeCaseSummary.js";
-
-const AGGREGATE_SUMMARY_SECTION = "ai_aggregate_summary";
+import {
+  CaseProviderSummaries,
+  CaseProviders,
+  CaseRecordsSummary,
+  PatientCase,
+  Records,
+} from "../db/schema.js";
+import { makeCaseSummary } from "../ai/makeCaseSummary.js";
+import { makeProviderSummaries } from "../ai/makeProviderSummaries.js";
+import { safeParseStoredExtraction } from "../ai/gemini/registry.js";
 
 export const caseAggregateSummaryController = {
   createHandler: async (
@@ -28,8 +33,21 @@ export const caseAggregateSummaryController = {
       }
 
       const completedRecords = await db
-        .select()
+        .select({
+          id: Records.id,
+          documentType: Records.documentType,
+          eventDate: Records.eventDate,
+          metadata: Records.metadata,
+          summary: Records.summary,
+          provider: {
+            id: CaseProviders.id,
+            name: CaseProviders.name,
+            kind: CaseProviders.kind,
+            discipline: CaseProviders.discipline,
+          },
+        })
         .from(Records)
+        .leftJoin(CaseProviders, eq(Records.providerId, CaseProviders.id))
         .where(
           and(
             eq(Records.caseId, caseId),
@@ -37,68 +55,78 @@ export const caseAggregateSummaryController = {
             isNotNull(Records.summary),
           ),
         )
-        .orderBy(
-          asc(Records.providerName),
-          asc(Records.name),
-          asc(Records.id),
-        );
+        .orderBy(asc(Records.eventDate), asc(Records.id));
 
       if (completedRecords.length === 0) {
         return reply.code(400).send({
-          error: "No completed provider summaries found for this case",
+          error: "No completed record extractions found for this case",
         });
       }
 
-      const aggregateInput = buildAggregateSummaryInput({
-        patientCase,
-        records: completedRecords,
+      const aggregateInput = completedRecords.map((record) => {
+        const parsedSummary = safeParseStoredExtraction(
+          record.documentType,
+          record.summary,
+        );
+
+        if (!parsedSummary.success) {
+          console.error(
+            `Stored extraction for record ${record.id} failed validation:`,
+            parsedSummary.error.flatten(),
+          );
+          throw new Error(
+            `Stored extraction for record ${record.id} is invalid`,
+          );
+        }
+
+        return {
+          documentId: record.id,
+          documentType: record.documentType,
+          date: record.eventDate,
+          documentMetadata: record.metadata,
+          provider: record.provider,
+          summary: parsedSummary.data,
+        };
       });
 
-      const aggregateSummary = await synthesizeCaseSummary(aggregateInput);
-      const serializedSummary = JSON.stringify(aggregateSummary, null, 2);
+      const [aggregateSummary, providerSummaries] = await Promise.all([
+        makeCaseSummary(aggregateInput),
+        makeProviderSummaries(aggregateInput),
+      ]);
 
-      const existingAggregateSummary = await db.query.CaseRecordsSummary.findFirst(
-        {
-          where: and(
-            eq(CaseRecordsSummary.caseId, caseId),
-            eq(CaseRecordsSummary.section, AGGREGATE_SUMMARY_SECTION),
-          ),
-        },
-      );
-
-      let caseSummaryId: number | null = null;
-
-      if (existingAggregateSummary) {
-        await db
-          .update(CaseRecordsSummary)
-          .set({
-            summary: serializedSummary,
-          })
-          .where(eq(CaseRecordsSummary.id, existingAggregateSummary.id));
-
-        caseSummaryId = existingAggregateSummary.id;
-      } else {
-        const insertedSummaries = await db
+      const storage = await db.transaction(async (transaction) => {
+        const storedSummaries = await transaction
           .insert(CaseRecordsSummary)
           .values({
             caseId,
-            section: AGGREGATE_SUMMARY_SECTION,
-            summary: serializedSummary,
+            summary: aggregateSummary,
+          })
+          .onConflictDoUpdate({
+            target: CaseRecordsSummary.caseId,
+            set: { summary: aggregateSummary },
           })
           .returning({ id: CaseRecordsSummary.id });
 
-        caseSummaryId = insertedSummaries[0]?.id ?? null;
-      }
+        await transaction
+          .insert(CaseProviderSummaries)
+          .values({ caseId, summary: providerSummaries })
+          .onConflictDoUpdate({
+            target: CaseProviderSummaries.caseId,
+            set: { summary: providerSummaries },
+          });
+
+        return {
+          caseSummaryId: storedSummaries[0]?.id ?? null,
+          providerSummariesCaseId: caseId,
+        };
+      });
 
       return reply.send({
         caseId,
-        providerSummaryCount: aggregateInput.providerSummaries.length,
-        aggregateInput,
+        sourceRecordCount: aggregateInput.length,
         aggregateSummary,
-        storage: {
-          caseSummaryId,
-          section: AGGREGATE_SUMMARY_SECTION,
-        },
+        providerSummaries,
+        storage,
       });
     } catch (error) {
       console.error(error);

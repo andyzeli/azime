@@ -1,12 +1,12 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { db } from "../db/index.js";
-import { Records } from "../db/schema.js";
+import { CaseProviders, Records } from "../db/schema.js";
 import { eq } from "drizzle-orm";
 import {
   createSignedDownloadUrl,
   deleteObject,
 } from "../storage/googleCloudStorage.js";
-import { summarizeRecord } from "../gemini/summarizeRecord.js";
+import { summarizeRecord } from "../ai/gemini/summarizeRecord.js";
 import { DocumentType } from "../records/documentMetadata.js";
 
 export const recordsController = {
@@ -16,10 +16,25 @@ export const recordsController = {
   ) => {
     const caseId = Number(request.query.caseId);
     try {
-      const records = await db.query.Records.findMany({
-        where: eq(Records.caseId, caseId),
-      });
-      return reply.send(records);
+      const records = await db
+        .select({
+          record: Records,
+          provider: {
+            id: CaseProviders.id,
+            name: CaseProviders.name,
+            kind: CaseProviders.kind,
+            discipline: CaseProviders.discipline,
+          },
+        })
+        .from(Records)
+        .leftJoin(CaseProviders, eq(Records.providerId, CaseProviders.id))
+        .where(eq(Records.caseId, caseId));
+
+      const response = records.map(({ record, provider }) => ({
+        ...record,
+        provider,
+      }));
+      return reply.send(response);
     } catch (error) {
       console.log(error, "is the error");
       return reply.code(500).send({ error: "Failed to fetch records" });

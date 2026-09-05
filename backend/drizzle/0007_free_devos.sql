@@ -1,1 +1,0 @@
-ALTER TABLE "record" ADD COLUMN "name" text;

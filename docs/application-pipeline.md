@@ -9,14 +9,12 @@
 3. **Case-level AI synthesis**
    The extracted facts from all documents are passed (via SQL) into a second AI workflow using Gemini, ChatGPT, or Claude. This workflow produces a case clinical summary structured output with fields such as:
    - case summary;
-   - clinical timeline;
    - consolodated diagnoses;
    - provider summaries;
-   - other "rollups" like deduplicated imaging findings
 
 4. **Case-level AI analysis**
-   The extracted facts first two AI passes feed into a third AI workflow using Gemini, ChatGPT, or Claude. This workflow produces structured outputs such as:
-   - unresolved recommendations;
+   The extracted facts first two AI passes feed into another AI workflow (two ai passes and physician steering from ui) using Gemini, ChatGPT, or Claude. This workflow produces structured outputs such as:
+   - treatment analysis (actual vs possible);
    - contradictions or inconsistencies;
    - missing information;
    - suggested MMI status and supporting reasoning.
