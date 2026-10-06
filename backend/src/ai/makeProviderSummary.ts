@@ -12,7 +12,7 @@ import {
   storedProviderSummaryItemSchema,
   type ProviderSummary,
   type ProviderSummaryProvider,
-} from "./providerSummarySchema.js";
+} from "@azime/contracts";
 
 type GeneratedResponse = {
   text: string;

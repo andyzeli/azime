@@ -7,9 +7,11 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "test:record-presentation": "node --test tests/recordPresentation.test.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@azime/contracts": "workspace:*",
     "@radix-ui/react-collapsible": "^1.1.2",
     "@radix-ui/react-dialog": "^1.1.4",
     "@radix-ui/react-label": "^2.1.1",

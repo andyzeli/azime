@@ -1,5 +1,6 @@
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
+  check,
   pgTable,
   date,
   serial,
@@ -9,18 +10,32 @@ import {
   integer,
   jsonb,
   uuid,
+  primaryKey,
   uniqueIndex,
+  index,
 } from "drizzle-orm/pg-core";
 import { InferSelectModel, InferInsertModel } from "drizzle-orm";
+import type {
+  ProviderDiscipline,
+  ProviderKind,
+  Region,
+  PhysicianSteering,
+  StoredCaseClinicalSummary,
+  StoredPreExamAnalysis,
+  StoredProviderSummaries,
+  RefinedAnalysisInputSnapshot,
+  VisitDocumentation,
+  PostExamInputSnapshot,
+  StoredPostExamAnalysis,
+} from "@azime/contracts";
+import type { PreExamInputSnapshot } from "../ai/preExamInputSnapshot.js";
 import type {
   RecordDocumentMetadata,
   DocumentType,
 } from "../records/documentMetadata.js";
-import type { StoredCaseClinicalSummary } from "../ai/clinicalSummarySchema.js";
-import type { PhysicianSteering } from "../ai/physicianSteeringSchema.js";
-import type { StoredPreExamAnalysis } from "../ai/preExamAnalysisSchema.js";
-import type { StoredProviderSummaries } from "../ai/providerSummarySchema.js";
 import type { StoredRefinedAnalysis } from "../ai/refinedAnalysisSchema.js";
+
+//supported regions
 
 export const MockAuthUsers = pgTable("auth_users", {
   id: uuid("id").primaryKey(),
@@ -55,6 +70,12 @@ export const PatientCase = pgTable("patientcase", {
   caseContact: integer("case_contact").references(() => CaseContacts.id),
   caseType: varchar("case_type", { length: 255 }),
   caseStatus: varchar("case_status", { length: 255 }),
+  injuryType: varchar("injury_type", { length: 50 })
+    .$type<"specific" | "cumulative" | "undetermined">()
+    .notNull()
+    .default("specific"),
+  dateOfInjury: date("date_of_injury"),
+  regions: text("regions").array().$type<Region[]>().notNull().default([]),
 });
 export type PatientCase = InferSelectModel<typeof PatientCase>;
 export type NewPatientCase = InferInsertModel<typeof PatientCase>;
@@ -65,8 +86,8 @@ export const CaseProviders = pgTable("case_providers", {
     .notNull()
     .references(() => PatientCase.id),
   name: text("name").notNull(),
-  kind: text("kind").$type<"individual" | "facility">().notNull(),
-  discipline: text("discipline").notNull(),
+  kind: text("kind").$type<ProviderKind>().notNull(),
+  discipline: text("discipline").$type<ProviderDiscipline>().notNull(),
 });
 export type CaseProvider = InferSelectModel<typeof CaseProviders>;
 export type NewCaseProvider = InferInsertModel<typeof CaseProviders>;
@@ -118,14 +139,16 @@ export const CasePreExamAnalysis = pgTable(
     caseId: integer("case_id")
       .notNull()
       .references(() => PatientCase.id),
-    analysis: jsonb("analysis").$type<StoredPreExamAnalysis>().notNull(),
+    region: text("region").$type<Region>(),
+    inputSnapshot: jsonb("input_snapshot").$type<PreExamInputSnapshot>(),
+    analysis: jsonb("analysis").$type<StoredPreExamAnalysis>(),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
   (table) => ({
-    caseIdUniqueIdx: uniqueIndex("case_pre_exam_analysis_case_id_unique").on(
-      table.caseId,
-    ),
+    caseIdRegionUniqueIdx: uniqueIndex(
+      "case_pre_exam_analysis_case_id_region_unique",
+    ).on(table.caseId, table.region),
   }),
 );
 export type CasePreExamAnalysis = InferSelectModel<typeof CasePreExamAnalysis>;
@@ -137,15 +160,16 @@ export const CasePhysicianSteering = pgTable(
     caseId: integer("case_id")
       .notNull()
       .references(() => PatientCase.id),
+    region: text("region").$type<Region>(),
     steering: jsonb("steering").$type<PhysicianSteering>().notNull(),
     revision: integer("revision").notNull().default(1),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
   (table) => ({
-    caseIdUniqueIdx: uniqueIndex("case_physician_steering_case_id_unique").on(
-      table.caseId,
-    ),
+    caseIdUniqueIdx: uniqueIndex(
+      "case_physician_steering_case_id_region_id_unique",
+    ).on(table.caseId, table.region),
   }),
 );
 export type CasePhysicianSteering = InferSelectModel<
@@ -170,6 +194,59 @@ export const CaseRefinedAnalysis = pgTable(
   }),
 );
 export type CaseRefinedAnalysis = InferSelectModel<typeof CaseRefinedAnalysis>;
+
+// One current exam prep (refined analysis) per case/region, replaced only after a
+// successful run. The legacy case-only table above remains available.
+export const CaseRefinedPreExamAnalysis = pgTable(
+  "case_refined_pre_exam_analysis",
+  {
+    id: serial("id").primaryKey(),
+    caseId: integer("case_id")
+      .notNull()
+      .references(() => PatientCase.id),
+    region: text("region").$type<Region>().notNull(),
+    inputSnapshot: jsonb("input_snapshot")
+      .$type<RefinedAnalysisInputSnapshot>()
+      .notNull(),
+    analysis: jsonb("analysis").$type<StoredRefinedAnalysis>().notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => ({
+    caseRegionUnique: uniqueIndex(
+      "case_refined_pre_exam_analysis_case_region_unique",
+    ).on(table.caseId, table.region),
+  }),
+);
+export type CaseRefinedPreExamAnalysis = InferSelectModel<
+  typeof CaseRefinedPreExamAnalysis
+>;
+
+// One visit per case; it feeds each region's post-exam analysis.
+export const CaseVisitDocumentation = pgTable("case_visit_documentation", {
+  id: serial("id").primaryKey(),
+  caseId: integer("case_id").notNull().references(() => PatientCase.id),
+  documentation: jsonb("documentation").$type<VisitDocumentation>().notNull(),
+  revision: integer("revision").notNull().default(1),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (table) => ({
+  caseUnique: uniqueIndex("case_visit_documentation_case_unique").on(table.caseId),
+}));
+export type CaseVisitDocumentation = InferSelectModel<typeof CaseVisitDocumentation>;
+
+export const CasePostExamAnalysis = pgTable("case_post_exam_analysis", {
+  id: serial("id").primaryKey(),
+  caseId: integer("case_id").notNull().references(() => PatientCase.id),
+  region: text("region").$type<Region>().notNull(),
+  inputSnapshot: jsonb("input_snapshot").$type<PostExamInputSnapshot>().notNull(),
+  analysis: jsonb("analysis").$type<StoredPostExamAnalysis>(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (table) => ({
+  caseRegionIdx: index("case_post_exam_analysis_case_region_idx").on(table.caseId, table.region, table.id),
+}));
+export type CasePostExamAnalysis = InferSelectModel<typeof CasePostExamAnalysis>;
 
 export const Appointment = pgTable("appointments", {
   id: serial("id").primaryKey(),
@@ -206,6 +283,34 @@ export const Records = pgTable("record", {
 });
 export type Records = InferSelectModel<typeof Records>;
 export type NewRecords = InferInsertModel<typeof Records>;
+
+export const DiagnosisMentions = pgTable(
+  "diagnosis_mentions",
+  {
+    id: serial("id").primaryKey(),
+    caseId: integer("case_id")
+      .notNull()
+      .references(() => PatientCase.id),
+    recordId: integer("record_id")
+      .notNull()
+      .references(() => Records.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    icd: text("icd"),
+    // 'unresolved' is a valid extraction value, so this is not a taxonomy FK.
+    region: text("region").notNull(),
+    canonicalDx: text("canonical_dx").notNull(),
+    evidencePage: integer("evidence_page").notNull(),
+    evidenceQuote: text("evidence_quote").notNull(),
+    eventDate: date("event_date"),
+  },
+  (table) => ({
+    caseIdIdx: index("diagnosis_mentions_case_id_idx").on(table.caseId),
+    recordIdIdx: index("diagnosis_mentions_record_id_idx").on(table.recordId),
+  }),
+);
+export type DiagnosisMention = InferSelectModel<typeof DiagnosisMentions>;
+export type NewDiagnosisMention = InferInsertModel<typeof DiagnosisMentions>;
+
 export const RecordRelations = relations(Records, ({ one }) => ({
   case: one(PatientCase, {
     fields: [Records.caseId],
@@ -387,3 +492,90 @@ export const GenReport = pgTable("gen_report", {
   type: varchar("type", { length: 255 }),
   report: text("report"),
 });
+
+export const CanonicalDiagnoses = pgTable("canonical_diagnoses", {
+  id: text("id").primaryKey(), //generated by offline project
+  regionId: text("region_id").notNull(), // lumbar
+  label: text("label").notNull(), //stenosis
+  definition: text("definition"),
+  icdPrefixes: text("icd_prefixes").array().notNull(),
+});
+export type CanonicalDiagnosis = InferSelectModel<typeof CanonicalDiagnoses>;
+export type NewCanonicalDiagnosis = InferInsertModel<typeof CanonicalDiagnoses>;
+
+export const Treatments = pgTable(
+  "treatments",
+  {
+    id: text("id").primaryKey(),
+    region: text("region"),
+    category: text("category")
+      .$type<
+        "conservative" | "medication" | "injection" | "surgical" | "multimodal"
+      >()
+      .notNull(),
+    label: text("label").notNull(),
+  },
+  (table) => ({
+    categoryCheck: check(
+      "treatments_category_check",
+      sql`${table.category} in ('conservative', 'medication', 'injection', 'surgical', 'multimodal')`,
+    ),
+  }),
+);
+export type Treatment = InferSelectModel<typeof Treatments>;
+export type NewTreatment = InferInsertModel<typeof Treatments>;
+
+export const TreatmentAliases = pgTable(
+  "treatment_aliases",
+  {
+    treatmentId: text("treatment_id")
+      .notNull()
+      .references(() => Treatments.id),
+    alias: text("alias").notNull(),
+  },
+  (table) => ({
+    pk: primaryKey({ columns: [table.treatmentId, table.alias] }),
+  }),
+);
+export type TreatmentAlias = InferSelectModel<typeof TreatmentAliases>;
+export type NewTreatmentAlias = InferInsertModel<typeof TreatmentAliases>;
+
+export const Sources = pgTable("sources", {
+  id: text("id").primaryKey(),
+  ref: text("ref").notNull(),
+  edition: text("edition").notNull(),
+});
+export type Source = InferSelectModel<typeof Sources>;
+export type NewSource = InferInsertModel<typeof Sources>;
+
+export const LadderEntries = pgTable("ladder_entries", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  regionId: text("region_id"),
+  canonicalDxId: text("canonical_dx_id")
+    .notNull()
+    .references(() => CanonicalDiagnoses.id),
+  treatmentId: text("treatment_id")
+    .notNull()
+    .references(() => Treatments.id),
+  applicability: text("applicability"),
+  adequacy: text("adequacy"),
+});
+export type LadderEntry = InferSelectModel<typeof LadderEntries>;
+export type NewLadderEntry = InferInsertModel<typeof LadderEntries>;
+
+export const LadderEntrySources = pgTable(
+  "ladder_entry_sources",
+  {
+    ladderEntryId: uuid("ladder_entry_id")
+      .notNull()
+      .references(() => LadderEntries.id),
+    sourceId: text("source_id")
+      .notNull()
+      .references(() => Sources.id),
+  },
+  (table) => ({
+    pk: primaryKey({ columns: [table.ladderEntryId, table.sourceId] }),
+  }),
+);
+export type LadderEntrySource = InferSelectModel<typeof LadderEntrySources>;
+export type NewLadderEntrySource = InferInsertModel<typeof LadderEntrySources>;

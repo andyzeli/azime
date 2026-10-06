@@ -1,19 +1,19 @@
 import OpenAI from "openai";
-import { randomUUID } from "node:crypto";
 import { ZodError, z } from "zod";
 import {
   buildSynthesisUserPrompt,
   caseSummarySystemPrompt,
-  type CaseSummaryInput,
 } from "./clinicalSummaryPrompt.js";
+import type { DocumentExtractionArtifacts } from "../queries/caseArtifactQueries.js";
 import {
   caseClinicalSummarySchema,
   caseSummaryProviderSchema,
   storedCaseClinicalSummarySchema,
   type CaseSummaryProvider,
   type StoredCaseClinicalSummary,
-} from "./clinicalSummarySchema.js";
+} from "@azime/contracts";
 import { getGeminiClient, getGeminiModelName } from "./gemini/client.js";
+import { PatientCase } from "../db/schema.js";
 
 type GeneratedResponse = {
   model: string;
@@ -101,10 +101,12 @@ const generateWithOpenAI = async (
 };
 
 export const makeCaseSummary = async (
-  aggregateInput: CaseSummaryInput,
+  aggregateInput: DocumentExtractionArtifacts,
+  caseBaseData: Partial<PatientCase>,
 ): Promise<StoredCaseClinicalSummary> => {
   const provider = getCaseSummaryProvider();
-  const prompt = buildSynthesisUserPrompt(aggregateInput);
+  const prompt = buildSynthesisUserPrompt(aggregateInput, caseBaseData);
+
   const response =
     provider === "openai"
       ? await generateWithOpenAI(prompt)
@@ -123,10 +125,10 @@ export const makeCaseSummary = async (
 
     return storedCaseClinicalSummarySchema.parse({
       ...payload,
-      treatmentHistory: payload.treatmentHistory.map((treatment) => ({
-        ...treatment,
-        id: randomUUID(),
-      })),
+      // treatmentHistory: payload.treatmentHistory.map((treatment) => ({
+      //   ...treatment,
+      //   id: randomUUID(),
+      // })),
       schemaVersion: "v2",
       sourceMetadata: {
         provider,

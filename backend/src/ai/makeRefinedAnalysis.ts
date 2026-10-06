@@ -20,20 +20,14 @@ type GeneratedResponse = {
   text: string;
 };
 
-export type RefinedAnalysisSources = {
-  preExamAnalysisId: number;
-  physicianSteeringId: number;
-  physicianSteeringRevision: number;
-};
-
 const toResponseJsonSchema = (schema: z.ZodType) =>
   z.toJSONSchema(schema, { target: "draft-7" });
 
-const assertRefinedAnalysisReady = () => {
-  throw new NotImplementedError(
-    "makeRefinedAnalysis is scaffolded but its prompt and response schema are not implemented",
-  );
-};
+// const assertRefinedAnalysisReady = () => {
+//   throw new NotImplementedError(
+//     "makeRefinedAnalysis is scaffolded but its prompt and response schema are not implemented",
+//   );
+// };
 
 const getRefinedAnalysisProvider = (): RefinedAnalysisProvider => {
   const provider = process.env.REFINED_ANALYSIS_PROVIDER ?? "gemini";
@@ -41,7 +35,7 @@ const getRefinedAnalysisProvider = (): RefinedAnalysisProvider => {
 };
 
 const generateWithGemini = async (
-  prompt: string,
+  prompt: string
 ): Promise<GeneratedResponse> => {
   const model =
     process.env.REFINED_ANALYSIS_GEMINI_MODEL ?? getGeminiModelName();
@@ -64,20 +58,20 @@ const generateWithGemini = async (
 };
 
 const generateWithOpenAI = async (
-  prompt: string,
+  prompt: string
 ): Promise<GeneratedResponse> => {
   const model = process.env.REFINED_ANALYSIS_OPENAI_MODEL;
   const apiKey = process.env.OPENAI_API_KEY;
 
   if (!model) {
     throw new Error(
-      "REFINED_ANALYSIS_OPENAI_MODEL is required when REFINED_ANALYSIS_PROVIDER=openai",
+      "REFINED_ANALYSIS_OPENAI_MODEL is required when REFINED_ANALYSIS_PROVIDER=openai"
     );
   }
 
   if (!apiKey) {
     throw new Error(
-      "OPENAI_API_KEY is required when REFINED_ANALYSIS_PROVIDER=openai",
+      "OPENAI_API_KEY is required when REFINED_ANALYSIS_PROVIDER=openai"
     );
   }
 
@@ -104,10 +98,9 @@ const generateWithOpenAI = async (
 };
 
 export const makeRefinedAnalysis = async (
-  input: RefinedAnalysisInput,
-  sources: RefinedAnalysisSources,
+  input: RefinedAnalysisInput
 ): Promise<StoredRefinedAnalysis> => {
-  assertRefinedAnalysisReady();
+  //assertRefinedAnalysisReady();
 
   const provider = getRefinedAnalysisProvider();
   const prompt = buildRefinedAnalysisUserPrompt(input);
@@ -129,24 +122,24 @@ export const makeRefinedAnalysis = async (
 
     return storedRefinedAnalysisSchema.parse({
       ...payload,
-      schemaVersion: "draft-v1",
+      visitPriority: payload.visitPriority.map((priority, index) => ({
+        ...priority,
+        id: `priority-${index}`,
+      })),
+      schemaVersion: "draft-v2",
       sourceMetadata: {
         provider,
         model: response.model,
-        caseSummaryId: input.caseSummary.caseSummaryId,
-        preExamAnalysisId: sources.preExamAnalysisId,
-        physicianSteeringId: sources.physicianSteeringId,
-        physicianSteeringRevision: sources.physicianSteeringRevision,
       },
     });
   } catch (error) {
     if (error instanceof ZodError) {
       console.error(
         `${provider} refined analysis failed schema validation:`,
-        error.flatten(),
+        error.flatten()
       );
       throw new Error(
-        `${provider} refined analysis did not match the expected schema`,
+        `${provider} refined analysis did not match the expected schema`
       );
     }
 

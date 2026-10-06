@@ -14,16 +14,6 @@ The application includes:
 
 For deeper product context, see the files under `docs/`.
 
-## Stack
-
-- TypeScript
-- React
-- TanStack Router
-- Fastify
-- PostgreSQL
-- Drizzle ORM
-- Zod
-
 ## Development Guidelines
 
 - Prefer simple, explicit implementations (don't be overly defensive)
@@ -44,8 +34,8 @@ When modifying an AI workflow:
 
 ## Documentation
 
-If given a broad task, consult the relevant documentation before making workflow or architecture changes, or if you need context:
+For further context on workflow and architecture, check the following documents:
 
-- `docs/product-overview.md`
-- `docs/application-pipeline.md`
-- `docs/data-model.md`
+- `docs/product-overview.md` for high level "why" of the project.
+- `docs/application-pipeline.md` for general flow of product
+- `docs/pipeline-detail.md` for more detailed pipeline description

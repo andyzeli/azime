@@ -1,12 +1,10 @@
 import OpenAI from "openai";
-import { randomUUID } from "node:crypto";
 import { ZodError, z } from "zod";
 import { NotImplementedError } from "../errors/notImplementedError.js";
 import { getGeminiClient, getGeminiModelName } from "./gemini/client.js";
 import {
   buildPreExamAnalysisUserPrompt,
-  preExamAnalysisSystemPrompt,
-  type PreExamAnalysisInput,
+  buildPEASystemPrompt,
 } from "./preExamAnalysisPrompt.js";
 import {
   preExamAnalysisProviderSchema,
@@ -14,7 +12,9 @@ import {
   storedPreExamAnalysisSchema,
   type PreExamAnalysisProvider,
   type StoredPreExamAnalysis,
-} from "./preExamAnalysisSchema.js";
+  type Region,
+} from "@azime/contracts";
+import { PreExamAnalysisInput } from "./preExamInputSnapshot.js";
 
 type GeneratedResponse = {
   model: string;
@@ -26,7 +26,7 @@ const toResponseJsonSchema = (schema: z.ZodType) =>
 
 const assertPreExamAnalysisReady = () => {
   throw new NotImplementedError(
-    "makePreExamAnalysis is scaffolded but its prompt and response schema are not implemented",
+    "makePreExamAnalysis is scaffolded but its prompt and response schema are not implemented"
   );
 };
 
@@ -37,6 +37,7 @@ const getPreExamAnalysisProvider = (): PreExamAnalysisProvider => {
 
 const generateWithGemini = async (
   prompt: string,
+  systemPrompt: string
 ): Promise<GeneratedResponse> => {
   const model =
     process.env.PRE_EXAM_ANALYSIS_GEMINI_MODEL ?? getGeminiModelName();
@@ -44,7 +45,7 @@ const generateWithGemini = async (
     model,
     contents: [prompt],
     config: {
-      systemInstruction: preExamAnalysisSystemPrompt,
+      systemInstruction: systemPrompt,
       responseMimeType: "application/json",
       responseJsonSchema: toResponseJsonSchema(preExamAnalysisSchema),
       temperature: 0.1,
@@ -60,25 +61,26 @@ const generateWithGemini = async (
 
 const generateWithOpenAI = async (
   prompt: string,
+  systemPrompt: string
 ): Promise<GeneratedResponse> => {
   const model = process.env.PRE_EXAM_ANALYSIS_OPENAI_MODEL;
   const apiKey = process.env.OPENAI_API_KEY;
 
   if (!model) {
     throw new Error(
-      "PRE_EXAM_ANALYSIS_OPENAI_MODEL is required when PRE_EXAM_ANALYSIS_PROVIDER=openai",
+      "PRE_EXAM_ANALYSIS_OPENAI_MODEL is required when PRE_EXAM_ANALYSIS_PROVIDER=openai"
     );
   }
 
   if (!apiKey) {
     throw new Error(
-      "OPENAI_API_KEY is required when PRE_EXAM_ANALYSIS_PROVIDER=openai",
+      "OPENAI_API_KEY is required when PRE_EXAM_ANALYSIS_PROVIDER=openai"
     );
   }
 
   const response = await new OpenAI({ apiKey }).responses.create({
     model,
-    instructions: preExamAnalysisSystemPrompt,
+    instructions: systemPrompt,
     input: prompt,
     store: false,
     text: {
@@ -100,19 +102,28 @@ const generateWithOpenAI = async (
 
 export const makePreExamAnalysis = async (
   input: PreExamAnalysisInput,
+  region: Region
 ): Promise<StoredPreExamAnalysis> => {
-  assertPreExamAnalysisReady();
+  //assertPreExamAnalysisReady();
 
-  if (!input.caseSummary) {
-    throw new Error("A case summary is required for pre-exam analysis");
+  if (!input) {
+    throw new Error("Document extractions are required for pre-exam analysis");
   }
 
+  ///
+
+  // Note for prompt. "if you see out-of-scope episode, choose unresolved"
+
+  ///
   const provider = getPreExamAnalysisProvider();
-  const prompt = buildPreExamAnalysisUserPrompt(input);
+  //
+  const prompt = buildPreExamAnalysisUserPrompt(input, region);
+
+  const systemPrompt = buildPEASystemPrompt(region);
   const response =
     provider === "openai"
-      ? await generateWithOpenAI(prompt)
-      : await generateWithGemini(prompt);
+      ? await generateWithOpenAI(prompt, systemPrompt)
+      : await generateWithGemini(prompt, systemPrompt);
 
   let parsedJson: unknown;
 
@@ -125,27 +136,47 @@ export const makePreExamAnalysis = async (
   try {
     const payload = preExamAnalysisSchema.parse(parsedJson);
 
+    const ladderTreatmentIds = new Set(
+      input.ladder.map((entry) => entry.treatmentId)
+    );
+    const unknownTreatmentIds = payload.treatmentAnalysis
+      .map((treatment) => treatment.treatmentId)
+      .filter((id): id is string => id !== null && !ladderTreatmentIds.has(id));
+
+    if (unknownTreatmentIds.length > 0) {
+      throw new Error(
+        `${provider} pre-exam analysis referenced treatmentIds not in the ladder: ${unknownTreatmentIds.join(", ")}`
+      );
+    }
+
     return storedPreExamAnalysisSchema.parse({
       ...payload,
-      treatmentAnalysis: payload.treatmentAnalysis.map((treatment) => ({
+      treatmentAnalysis: payload.treatmentAnalysis.map((treatment, index) => ({
         ...treatment,
-        id: randomUUID(),
+        id: `treatment-${index}`,
+      })),
+      evidenceGaps: payload.evidenceGaps.map((gap, index) => ({
+        ...gap,
+        id: `gap-${index}`,
+      })),
+      inconsistencies: payload.inconsistencies.map((inconsistency, index) => ({
+        ...inconsistency,
+        id: `inconsistent-${index}`,
       })),
       schemaVersion: "draft-v2",
       sourceMetadata: {
         provider,
         model: response.model,
-        caseSummaryId: input.caseSummary.caseSummaryId,
       },
     });
   } catch (error) {
     if (error instanceof ZodError) {
       console.error(
         `${provider} pre-exam analysis failed schema validation:`,
-        error.flatten(),
+        error.flatten()
       );
       throw new Error(
-        `${provider} pre-exam analysis did not match the expected schema`,
+        `${provider} pre-exam analysis did not match the expected schema`
       );
     }
 

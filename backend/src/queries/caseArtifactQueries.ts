@@ -1,18 +1,16 @@
 import { and, asc, eq, isNotNull } from "drizzle-orm";
 import { z } from "zod";
-import { storedCaseClinicalSummarySchema } from "../ai/clinicalSummarySchema.js";
+import {
+  getProviderDisciplineLabel,
+  storedCaseClinicalSummarySchema,
+} from "@azime/contracts";
 import {
   safeParseStoredExtraction,
   type AnyStoredExtraction,
 } from "../ai/gemini/registry.js";
 import { db } from "../db/index.js";
-import {
-  CaseProviders,
-  CaseRecordsSummary,
-  PatientCase,
-  Records,
-} from "../db/schema.js";
-import type { CaseSummaryProvider } from "../ai/clinicalSummaryPrompt.js";
+import { CaseProviders, PatientCase, Records } from "../db/schema.js";
+import { getStoredCaseSummary } from "./caseSummaryQueries.js";
 
 export const caseArtifactTypeSchema = z.enum([
   "document-extractions",
@@ -21,14 +19,23 @@ export const caseArtifactTypeSchema = z.enum([
 
 export type CaseArtifactType = z.infer<typeof caseArtifactTypeSchema>;
 
+export type CaseArtifactProvider = {
+  id: string;
+  name: string;
+  kind: "individual" | "facility";
+  discipline: string;
+};
+
 export type DocumentExtractionArtifact = {
   recordId: number;
   documentType: Records["documentType"];
   eventDate: string | null;
-  metadata: Records["metadata"];
-  provider: CaseSummaryProvider | null;
+  documentMetadata: Records["metadata"];
+  provider: CaseArtifactProvider | null;
   extraction: AnyStoredExtraction;
 };
+
+export type DocumentExtractionArtifacts = DocumentExtractionArtifact[];
 
 export type CaseSummaryArtifact = {
   caseSummaryId: number;
@@ -36,7 +43,7 @@ export type CaseSummaryArtifact = {
 };
 
 export type CaseArtifactBundle = {
-  documentExtractions: DocumentExtractionArtifact[];
+  documentExtractions: DocumentExtractionArtifacts;
   caseSummary: CaseSummaryArtifact | null;
 };
 
@@ -51,7 +58,7 @@ export const caseExists = async (caseId: number) => {
 
 export const getDocumentExtractionArtifacts = async (
   caseId: number,
-): Promise<DocumentExtractionArtifact[]> => {
+): Promise<DocumentExtractionArtifacts> => {
   const records = await db
     .select({
       id: Records.id,
@@ -91,29 +98,44 @@ export const getDocumentExtractionArtifacts = async (
       recordId: record.id,
       documentType: record.documentType,
       eventDate: record.eventDate,
-      metadata: record.metadata,
-      provider: record.provider,
+      documentMetadata: record.metadata,
+      provider: record.provider
+        ? {
+            ...record.provider,
+            discipline: getProviderDisciplineLabel(record.provider.discipline),
+          }
+        : null,
       extraction: extraction.data,
     };
   });
 };
 
+export async function getCaseBaseData(
+  caseId: number,
+): Promise<Partial<PatientCase>> {
+  const patientCase = await db.query.PatientCase.findFirst({
+    columns: { dateOfInjury: true, injuryType: true, regions: true },
+    where: eq(PatientCase.id, caseId),
+  });
+  if (!patientCase) {
+    throw new Error(`Case ${caseId} was not found`);
+  }
+
+  return patientCase;
+}
+
 export const getCaseSummaryArtifact = async (
   caseId: number,
 ): Promise<CaseSummaryArtifact | null> => {
-  const storedSummary = await db.query.CaseRecordsSummary.findFirst({
-    where: eq(CaseRecordsSummary.caseId, caseId),
-  });
+  const storedSummary = await getStoredCaseSummary(caseId);
 
   if (!storedSummary) {
     return null;
   }
 
-  const summary = storedCaseClinicalSummarySchema.parse(storedSummary.summary);
-
   return {
     caseSummaryId: storedSummary.id,
-    summary,
+    summary: storedSummary.summary,
   };
 };
 

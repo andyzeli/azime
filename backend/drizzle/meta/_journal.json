@@ -5,50 +5,36 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1786134930322,
+      "when": 1790558464884,
       "tag": "0000_baseline",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1787091996618,
-      "tag": "0001_case_summary_jsonb",
+      "when": 1790716032537,
+      "tag": "0001_refined_pre_exam_analysis",
       "breakpoints": true
     },
     {
       "idx": 2,
       "version": "7",
-      "when": 1787093489648,
-      "tag": "0002_pre_exam_analysis_scaffold",
+      "when": 1790796138494,
+      "tag": "0002_visit_documentation",
       "breakpoints": true
     },
     {
       "idx": 3,
       "version": "7",
-      "when": 1787378568456,
-      "tag": "0003_refined_analysis_scaffold",
+      "when": 1790803222715,
+      "tag": "0003_post_exam_analysis",
       "breakpoints": true
     },
     {
       "idx": 4,
       "version": "7",
-      "when": 1788416859858,
-      "tag": "0004_provider_summaries",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1788585743527,
-      "tag": "0005_same_korg",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1788585798855,
-      "tag": "0006_chemical_darkhawk",
+      "when": 1791065701046,
+      "tag": "0004_one_refined_and_case_visit",
       "breakpoints": true
     }
   ]

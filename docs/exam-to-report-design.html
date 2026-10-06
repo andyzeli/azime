@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exam-to-report implementation design</title>
+<style>
+:root{--ink:#243430;--muted:#586761;--line:#d8dfdb;--accent:#205e4d;--wash:#f1f5f2;--amber:#f8f1df}*{box-sizing:border-box}body{margin:0;background:#fafbf9;color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{max-width:1080px;margin:auto;padding:34px 30px 60px}h1{font-size:30px;line-height:1.2;margin:10px 0 14px}h2{font-size:22px;margin:0 0 13px;line-height:1.3}h3{font-size:16px;margin:19px 0 8px}p{margin:0 0 12px}a{color:var(--accent);text-underline-offset:3px}header{border-bottom:1px solid var(--line);padding-bottom:20px}.meta,small{font-size:12px;color:var(--muted)}.top,.bar{display:flex;justify-content:space-between;gap:15px;align-items:center}nav{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;margin-top:18px}section{padding-top:30px;scroll-margin-top:20px}table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;vertical-align:top;border-bottom:1px solid var(--line);padding:10px 12px}th{background:var(--wash);font-weight:600}td:first-child{font-weight:600;min-width:150px}.scroll{overflow-x:auto}code{font:12px/1.45 ui-monospace,SFMono-Regular,monospace;overflow-wrap:anywhere}.note{background:var(--wash);padding:13px 16px;border-left:3px solid #91afa0;margin:14px 0;font-size:13px}.cols{display:grid;grid-template-columns:1fr 1fr;gap:22px}ul,ol{padding-left:22px;margin:8px 0 14px}li{margin:7px 0}.small{font-size:13px}.muted{color:var(--muted)}details{border-bottom:1px solid var(--line);padding:11px 0}summary{cursor:pointer;font-weight:600;font-size:13px}details>div{padding:12px 0 3px}button,input,select,textarea{font:inherit;color:inherit}button{border:1px solid #b9c9bf;background:white;border-radius:5px;padding:7px 11px;cursor:pointer;font-size:13px}button:hover{background:var(--wash)}button[aria-pressed="true"],.primary{background:var(--accent);color:white;border-color:var(--accent)}button:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible,select:focus-visible{outline:3px solid #84b39d;outline-offset:3px}button:disabled{opacity:.55;cursor:default}.mock{margin:18px 0;border:1px solid #bdcdc3;border-radius:8px;background:white;overflow:hidden}.mock-title{padding:12px 18px;background:#edf2ee;border-bottom:1px solid var(--line);font-weight:600;font-size:14px}.mock-body{padding:20px}.field{margin-bottom:16px}.field label,.label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}.choices{display:flex;flex-wrap:wrap;gap:6px}input,select,textarea{width:100%;border:1px solid var(--line);border-radius:4px;padding:8px;background:white;font-size:13px}textarea{min-height:68px;resize:vertical}input[type=checkbox]{width:auto;margin-right:7px}.sub{font-size:12px;color:var(--muted);margin-top:5px}.panel{background:var(--wash);padding:15px}.panel h3{margin-top:0}.step{display:grid;grid-template-columns:30px 1fr;gap:10px;padding:13px 0;border-bottom:1px solid var(--line)}.step:last-child{border-bottom:0}.stepnum{width:26px;height:26px;border:1px solid #a9bfb1;border-radius:50%;text-align:center;font-size:13px;line-height:24px}.step strong{font-size:14px}.step p{font-size:13px;margin:5px 0 0}.result{padding:16px;background:var(--wash);margin-top:14px}.result-value{font-size:25px;font-weight:650}.math{font:13px/1.6 ui-monospace,SFMono-Regular,monospace}.status{font-size:13px;color:var(--accent)}.branch[hidden]{display:none}.bar{border-top:1px solid var(--line);padding-top:13px;margin-top:15px}footer{border-top:1px solid var(--line);margin-top:30px;padding-top:18px;font-size:12px;color:var(--muted)}.nowrap{white-space:nowrap}
+@media(max-width:700px){main{padding:22px 17px}.cols{grid-template-columns:1fr}h1{font-size:26px}.top,.bar{align-items:flex-start;flex-wrap:wrap}td,th{padding:8px}td:first-child{min-width:105px}.mock-body{padding:15px}}
+@media print{body{background:white;font-size:11px}main{padding:0;max-width:none}h1{font-size:25px}h2{font-size:18px}nav,#print{display:none}section{padding-top:18px}table,.small,.note{font-size:11px}.step,.result{break-inside:avoid}.branch[hidden]{display:block}.mock{break-inside:auto}footer{font-size:10px}a{color:inherit}}
+</style>
+</head>
+<body><main>
+<header>
+<div class="top"><span class="meta">AZIME · DESIGN REVISION 2 · 5 OCTOBER 2026</span><button id="print">Print / save PDF</button></div>
+<h1>Exam-to-report implementation design</h1>
+<p>Build three physician screens: <strong>Exam</strong>, <strong>Conclusions</strong> (including impairment), and <strong>Report review</strong>. Keep the existing upstream analyses. Add structured exam facts and physician decisions so drafting can use them directly.</p>
+<p class="small muted">Rating method below: AMA Sixth Edition, original 2008/2009 class-and-grade method. Store the release explicitly; the 2024 spine revision uses a different method. <a href="#sources">Sources</a></p>
+<nav aria-label="Document sections"><a href="#exam">1. Exam</a><a href="#mmi">2. MMI and care</a><a href="#opinions">3. Other opinions</a><a href="#rating">4. Impairment</a><a href="#report">5. Drafting</a><a href="#data">6. Data and build order</a></nav>
+</header>
+
+<section id="exam"><h2>1. Exam screen: note + required findings</h2>
+<p>Use the existing visit note as the main input. Beside it, show a short checklist assembled from <code>visitPriority</code>, referral-question gaps, and the facts needed by likely AMA rating rows. The physician can dictate the note or enter checklist findings directly. After dictation, extract proposed answers into the checklist; ask only about missing or conflicting items.</p>
+<div class="scroll"><table><thead><tr><th>Panel</th><th>Fields to build</th><th>Prefill and physician action</th></tr></thead><tbody>
+<tr><td>Interval history</td><td>Symptoms: better / same / worse / fluctuating; new treatment and benefit; current medications; change in work/activity.</td><td>Show the last documented state with date. Patient intake or dictation proposes today's update. Prior findings stay labeled historical.</td></tr>
+<tr><td>Function</td><td>Activity; tolerance or limit; unit; patient-reported / observed. Link selected PDQ and regional questionnaires.</td><td>Show reported limitations. Ask for actual duration or load only where needed for a work opinion or rating criterion.</td></tr>
+<tr><td>Regional examination</td><td>For lumbar cases: strength by muscle/side/grade, sensation by distribution, reflexes, gait, relevant provocative tests; other findings only when the candidate method requires them.</td><td>Current findings come from this examination. “Normal in tested groups” confirms a visible set; abnormal expands detail. Include not assessed / unable / declined.</td></tr>
+<tr><td>Priority responses</td><td>Existing focus + response/status; link to an exam finding or note passage.</td><td>Auto-match answers already in the note. Display unresolved priorities first.</td></tr>
+<tr><td>Examiner interpretation</td><td>Accepted diagnosis, level/side; clinical correlation; persistent / resolved / absent / uncertain radiculopathy when relevant.</td><td>Suggest from the note. A historical diagnosis label or MRI finding cannot fill today's clinical interpretation by itself.</td></tr>
+</tbody></table></div>
+<div class="note"><strong>Specific pre-exam query:</strong> for a lumbar disc candidate, retrieve MRI findings, any earlier objective neurological findings, surgery, and the most recent neurological exam. If earlier notes merely say “radiculopathy,” show the label and flag the supporting findings as missing. Use the retrieved findings to answer the eligibility questions in section 4.</div>
+<p class="small"><strong>Completion action:</strong> “Review conclusions” saves the note and confirmed findings, freezes a new input snapshot, and runs the post-exam proposal. Do not require the physician to re-enter the same findings on the rating screen.</p>
+</section>
+
+<section id="mmi"><h2>2. MMI and care: one decision per condition</h2>
+<p>The post-exam pass should answer a practical question: <strong>what evidence favors a plateau, and what remaining care might materially change the condition?</strong> Show its proposed MMI status, a short rationale, and the relevant treatment rows. The physician accepts or changes the conclusion.</p>
+<div class="scroll"><table><thead><tr><th>Selected status</th><th>Fields that appear</th><th>Downstream behavior</th></tr></thead><tbody>
+<tr><td>At MMI</td><td>Effective date; rationale; future care: none / supportive / other with explanation; prognosis.</td><td>Open the regional impairment worksheet. Keep supportive care available.</td></tr>
+<tr><td>Not at MMI</td><td>Recovery-directed treatment(s); expected improvement; duration; reassessment in weeks or after a named event.</td><td>Draft the care plan and state that permanent rating is deferred.</td></tr>
+<tr><td>Cannot determine</td><td>Missing information; why it changes the decision; obtain record / reassess / diagnostic recommendation; next review trigger.</td><td>Draft a qualified MMI answer and the reason rating is deferred.</td></tr>
+</tbody></table></div>
+<p class="small"><strong>Remaining care row:</strong> treatment → recovery-directed / supportive / not recommended / uncertain → reason. Carry forward the physician's reviewed applicability and adequacy. “Not tried” alone does not determine MMI. Add frequency, duration and expected benefit only for recommended care. A diagnostic recommendation must say which unanswered question it would resolve.</p>
+<div class="mock">
+<div class="mock-title">Conclusions → Lumbar → MMI and future care</div>
+<div class="mock-body"><div class="cols"><div>
+<div class="field"><span class="label">MMI status</span><div class="choices" id="mmi-options"><button data-mmi="yes" aria-pressed="true">At MMI</button><button data-mmi="no" aria-pressed="false">Not at MMI</button><button data-mmi="unknown" aria-pressed="false">Cannot determine</button></div></div>
+<div class="branch" id="branch-yes"><div class="field"><label for="mmi-date">Effective date</label><input id="mmi-date" type="date"><div class="sub">Suggest a date only when the examiner's note or accepted opinion supplies it.</div></div><div class="field"><label for="mmi-care">Future care</label><select id="mmi-care"><option>Supportive care</option><option>No additional care</option><option>Other — explain</option></select></div></div>
+<div class="branch" id="branch-no" hidden><div class="field"><label for="recovery-care">Treatment expected to improve the condition</label><input id="recovery-care" placeholder="Select a reviewed treatment or add one"></div><div class="field"><label for="benefit">Expected improvement</label><input id="benefit" placeholder="Function or symptom change expected"></div><div class="field"><label for="recheck">Reassess after</label><input id="recheck" placeholder="Treatment course / number of weeks / event"></div></div>
+<div class="branch" id="branch-unknown" hidden><div class="field"><label for="missing">Missing information</label><input id="missing" placeholder="What prevents the MMI decision?"></div><div class="field"><label for="resolve">How and when to resolve it</label><input id="resolve" placeholder="Record request / examination / study / review date"></div></div>
+<div class="field"><label for="mmi-reason">Rationale</label><textarea id="mmi-reason" placeholder="Proposed explanation from the post-exam analysis"></textarea></div>
+</div><aside class="panel"><h3>Basis for proposed status</h3><p class="small">List supporting and opposing evidence here, each linked to its source.</p><p class="small">For an unresolved treatment, show its expected role: additional recovery, symptom maintenance, or unclear. The physician decides whether it changes MMI.</p><p class="small">Group conditions only when the same decision applies. If cervical is at MMI and lumbar is not, preserve both statuses in the report.</p></aside></div>
+<div class="bar"><span class="status" id="mmi-result" aria-live="polite">Next: complete the lumbar impairment worksheet.</span></div>
+</div></div>
+</section>
+
+<section id="opinions"><h2>3. Remaining physician opinions</h2>
+<p>Put these below MMI on the same Conclusions screen. Show proposed answers only when supported by the examiner's note or reviewed evidence. Expand details on selection; approve the displayed conclusions together.</p>
+<div class="scroll"><table><thead><tr><th>Decision</th><th>Controls</th><th>What the system can supply</th></tr></thead><tbody>
+<tr><td>Diagnosis and causation<br><small>q3, q9, q12, q14</small></td><td>Per diagnosis: accepted / rejected / uncertain; new injury / aggravation / unrelated / uncertain; incident primary cause: yes / no / uncertain; rationale. For aggravation, temporary / permanent / uncertain and resolution date if supported.</td><td>Mechanism, onset, prior symptoms, imaging and competing explanations. Suggest explanatory text after the physician selects the relationship. No computed causation probability.</td></tr>
+<tr><td>Past treatment<br><small>q8, q11</small></td><td>Approve treatment-specific necessity and appropriateness, with exceptions. Adherence: supported / concerns / unknown; reasons or barriers.</td><td>Reviewed treatment rows, episodes, response and documented participation. Adequacy of a trial does not itself establish necessity.</td></tr>
+<tr><td>Future care and surgery<br><small>q1, q2, q5</small></td><td>Reuse MMI care rows. Surgery: indicated / not indicated / uncertain; procedure or specialty, purpose and basis if indicated.</td><td>Carry through accepted recommendations; do not ask the same question again elsewhere.</td></tr>
+<tr><td>Work capacity and function<br><small>q7, q15</small></td><td>Full duty / modified duty / off work / uncertain. Restriction rows: activity, maximum, unit, frequency, duration/review date. Temporary / permanent / uncertain.</td><td>Latest work status and extracted job demands beside today's function. “Retain prior restrictions” copies visible restrictions for approval. Missing job demands limit a full-duty opinion.</td></tr>
+<tr><td>Other factors and understanding<br><small>q6, q10</small></td><td>Recovery factors: present / absent / unknown + effect. Treatment-goal understanding: demonstrated / concerns / not assessed.</td><td>Relevant documented factors and visit responses. Ask in the visit if required by the referral; do not infer understanding from attendance.</td></tr>
+</tbody></table></div>
+<p class="small">MMI supplies q4. The rating supplies q13. Replace the existing five-point opinion scales with these actual decisions; retain question IDs for mapping. If apportionment is requested, add a separate supported opinion and basis rather than deriving a percentage from the presence of degeneration.</p>
+</section>
+
+<section id="rating"><h2>4. AMA impairment: what to build</h2>
+<p><strong>Build a regional worksheet that asks clinical questions and derives the rating coordinates.</strong> The default view should show the selected diagnosis, the facts responsible for its classification, any unanswered criterion, and the resulting percentage. Put numeric modifier controls in an expanded “Rating detail” view.</p>
+<h3>4.1 Explain the four rating terms in the UI</h3>
+<div class="scroll"><table><thead><tr><th>Term</th><th>Meaning</th><th>Example of system behavior</th></tr></thead><tbody>
+<tr><td>Diagnosis row</td><td>The condition being rated within the regional table.</td><td>Canonical “disc herniation” retrieves candidate rows. Check each row's entry criteria and footnotes before selecting it.</td></tr>
+<tr><td>Class</td><td>The severity category within that diagnosis row. It sets the available impairment range.</td><td>Use confirmed clinical criteria to select the class. Do not ask the physician to choose an unexplained number.</td></tr>
+<tr><td>Grade</td><td>The position A–E within the selected class. The original method generally starts at C and adjusts using eligible modifiers.</td><td>Calculate the movement after functional history, examination and clinical studies are assessed.</td></tr>
+<tr><td>Impairment percentage</td><td>The value at the selected row + class + grade, in the unit specified by the table.</td><td>Read the percentage from that cell. A one-grade change is not necessarily one percentage point.</td></tr>
+</tbody></table></div>
+
+<h3>4.2 Assemble the inputs before opening the worksheet</h3>
+<div class="scroll"><table><thead><tr><th>Input</th><th>Retrieval / processing</th><th>Physician sees</th></tr></thead><tbody>
+<tr><td>Diagnosis candidates</td><td><code>getDxSupport(caseId)</code> → filter to region → map canonical diagnosis to possible AMA rows.</td><td>Accepted diagnosis first; alternative candidates collapsed. Mention count is context, not diagnostic confidence.</td></tr>
+<tr><td>Relevant studies</td><td><code>getCompletedStudies(caseId)</code> returns report narratives. Extract proposed level, side, lesion and concordance facts with record references; retrieve encounter mentions separately when a standalone study is absent.</td><td>“MRI: L5–S1 herniation” with the underlying excerpt. A query cannot derive clinical concordance from body-site text alone.</td></tr>
+<tr><td>Prior neurological findings</td><td>Read encounter <code>objective</code>/<code>assessment</code> narratives and relevant surgery reports. Propose dated findings separately from diagnosis labels.</td><td>“Prior deficit documented” with its source, or “Only a diagnosis label found.” This is a new focused extraction, not a field already provided by <code>DxSupport</code>.</td></tr>
+<tr><td>Current examination</td><td>Use confirmed regional findings and the examiner's interpretation from the visit.</td><td>Which findings remain and which resolved. Missing detail links back to the exact exam field.</td></tr>
+<tr><td>Functional history</td><td>Use current activity limitations, history and the selected questionnaire. Apply the chosen AMA method's instrument and consistency rules.</td><td>Proposed functional category plus supporting answers; accept / change / insufficient information.</td></tr>
+</tbody></table></div>
+<p class="small"><strong>Existing questionnaire change:</strong> <a href="../backend/src/questionnaires/definitions.ts">definitions.ts</a> uses abbreviated PDQ prompts and an answered-item denominator. Verify the administered instrument, item wording, anchors, completeness and scoring before mapping it to AMA criteria. Until then, retain it as patient-reported function. The app's regional questionnaires should not be treated as validated named instruments without verification.</p>
+
+<h3>4.3 Clinical questions determine the row and class</h3>
+<p class="small">For a lumbar disc candidate, the worksheet needs the history of objective radiculopathy, its current status, clinical correlation, levels/sides involved, and relevant surgery. Present these as labeled choices with source-backed selections. Then apply the full table criteria. A single question such as “radiculopathy present?” is too coarse.</p>
+<div class="note"><strong>Why this matters:</strong> MRI herniation alone may follow the nonspecific-pain pathway. Prior objective radiculopathy, now resolved, can qualify for the disc-herniation Class 1 pathway. Retrieve the historical findings. <a href="#case-source">[2]</a></div>
+<p class="small"><strong>Row selection:</strong> preserve all accepted clinical diagnoses, but select the ratable diagnosis according to the regional rules. Do not automatically select the most frequent diagnosis or add ratings for every label. If two candidates remain plausible, show the precise criterion distinguishing them and ask the examiner.</p>
+
+<h3>4.4 Convert clinical findings to modifiers</h3>
+<p class="small">For the original Sixth Edition method, the potential modifiers are <strong>functional history (GMFH)</strong>, <strong>physical examination (GMPE)</strong>, and <strong>clinical studies (GMCS)</strong>. Each comes from its own criteria. The number describes a category; it is neither a percentage nor a confidence score.</p>
+<div class="scroll"><table><thead><tr><th>Physician-facing control</th><th>System behavior</th></tr></thead><tbody>
+<tr><td>Function: proposed category + evidence</td><td>Use history and the applicable instrument to propose GMFH. Apply reliability/consistency rules before using it. A PDQ score cannot simply become a percentage or generic 0–4 modifier.</td></tr>
+<tr><td>Exam: confirmed current findings</td><td>Map the measured findings to GMPE using the selected chapter. Show which findings determined the category. Reuse the exam entry rather than asking for a number.</td></tr>
+<tr><td>Studies: findings and relationship to diagnosis</td><td>Map qualifying study findings to GMCS. Apply the specific exclusion rules. Evidence supporting the diagnosis does not automatically mean the entire studies modifier is excluded.</td></tr>
+<tr><td>Missing / excluded</td><td>Store these separately. Excluded means the rules say to omit that term, with a reason. Missing means it has not been established; ask for the fact or apply an explicitly permitted method. Neither means zero.</td></tr>
+</tbody></table></div>
+<p class="small">Calculate the sum of eligible <code>(modifier − class)</code> terms. Move that many grades from C, subject to the selected method's limits and exceptions, then retrieve the cell's percentage. Expose this arithmetic under the clinical answers so the physician can inspect it. <a href="#formula-source">[3]</a></p>
+
+<h3>4.5 Worked worksheet: resolved lumbar radiculopathy</h3>
+<p class="small">Use published teaching case 5 to test the complete sequence below, from clinical facts to percentage. <a href="#case-source">[2]</a></p>
+<div class="mock"><div class="mock-title">Conclusions → Lumbar → Impairment · MMI confirmed</div><div class="mock-body">
+<div class="cols"><div>
+<div class="step"><span class="stepnum">1</span><div><strong>Diagnosis and history</strong><p>Lumbar disc herniation; prior objective radiculopathy at the corresponding level.</p><details><summary>Source and selection</summary><div class="small">Show the historical neurological examination and MRI excerpt beside the accepted diagnosis. These establish the candidate pathway; the examiner confirms their clinical relationship.</div></details></div></div>
+<div class="step"><span class="stepnum">2</span><div><strong>Current status → Class 1</strong><p>Radiculopathy resolved; no current pain or neurological deficit.</p><details><summary>Why the rating does not default to zero</summary><div class="small">The selected disc-herniation pathway accounts for the documented prior radiculopathy. Current absence of symptoms alone does not select Class 0.</div></details></div></div>
+<div class="step"><span class="stepnum">3</span><div><strong>Modifiers from the reviewed findings</strong><p>Function: 0 · Exam: 0 · Studies: 2.</p><details><summary>Show how each input is used</summary><div class="small">All three terms are used in this case. The form displays the corresponding table criteria and evidence, with a Change action per item.</div></details></div></div>
+</div><aside>
+<div class="panel"><h3>Calculation</h3><p class="small">Class = 1. Start at grade C.</p><div class="math">Function: 0 − 1 = −1<br>Exam: &nbsp;&nbsp;&nbsp;0 − 1 = −1<br>Studies: &nbsp;2 − 1 = +1<br><strong>Net adjustment = −1</strong></div><p class="small" style="margin-top:12px">Move one grade down: <strong>C → B</strong>.<br>Look up grade B in the selected Class 1 row.</p></div>
+<div class="result"><div class="result-value">6% WPI</div><div class="small">Lumbar disc-herniation row<br>Table 17-4 · Class 1 · Grade B</div></div>
+<p class="sub">WPI = whole-person impairment. Store this value separately from any incident-attribution or apportionment opinion.</p>
+</aside></div>
+<div class="bar"><span class="small">The physician reviews these selections together. A changed input recalculates the worksheet and requires approval again.</span></div>
+</div></div>
+<p class="small"><strong>Default UI behavior:</strong> if every required fact is present and only one candidate fits, open this completed worksheet with one “Approve rating” action. If a criterion is missing, replace only that item with its clinical question. Keep table browsing and numeric overrides in the expanded detail view; an override requires a reason.</p>
+
+<h3>4.6 Rating rules and stored output</h3>
+<p class="small">Add a small versioned reference module per supported region: canonical-diagnosis-to-row mapping; entry and class criteria; modifier criteria and exclusions; grade-to-value lookup; units; combination/conversion rules; exact table/footnote references. Validate the licensed content against known worked cases. This is the part queries and AI cannot supply on demand.</p>
+<p class="small">Save <code>methodVersion, region, diagnosisId, rowId, class, criteriaAnswers, modifiers[{value, status, reason, evidenceRefs}], adjustment, grade, impairmentValue, impairmentUnit, approval</code>. For multiple regions, preserve component worksheets and apply permitted combination rules rather than adding percentages. A condition not at MMI remains deferred; a permitted partial rating must identify its limited scope.</p>
+</section>
+
+<section id="report"><h2>5. Report drafting and review</h2>
+<p>Build an explicit <strong>question-to-decision map</strong>. For each referral question, store the original wording, subparts, linked decision IDs, and answer status. The 15 canonical questions provide the default topic map; bespoke questions add requirements instead of disappearing into the standard list.</p>
+<div class="scroll"><table><thead><tr><th>Report section</th><th>Inputs</th><th>Generation</th></tr></thead><tbody>
+<tr><td>History and record review</td><td>Existing case summary, treatment episodes, studies and source records.</td><td>Condense the relevant chronology with record references. Distinguish the claimant's account from documented history.</td></tr>
+<tr><td>Current examination</td><td>Visit note, confirmed findings, function and questionnaires.</td><td>Generate the subjective/objective/functional narrative from today's inputs.</td></tr>
+<tr><td>Opinions</td><td>Approved diagnosis, causation, MMI, prognosis, care and work decisions.</td><td>Reuse exact decisions; AI writes their explanation from the approved rationale and cited facts.</td></tr>
+<tr><td>Impairment</td><td>Approved worksheet or reason deferred.</td><td>Insert method, criteria, calculation and result deterministically; narrative explains their application.</td></tr>
+<tr><td>Referral answers</td><td>Original questions + linked decisions.</td><td>For each question: direct answer, basis, limitation if any. Preserve distinctions such as “contributed” versus “primary cause.”</td></tr>
+</tbody></table></div>
+<p class="small"><strong>Review screen:</strong> report on the left; referral coverage on the right. Clicking an answer opens its decision and evidence. Highlight unanswered subparts and conflicts. A missing opinion can become an explicitly approved “cannot determine” answer with a reason. Check dates, percentages, units and reference IDs against the saved packet before displaying the draft.</p>
+<p class="small"><strong>Editing:</strong> a changed clinical conclusion must update its decision before regenerating linked sections. Preserve physician prose edits for reconciliation. Changing an exam fact or rating input marks dependent approvals stale. Final sign-off freezes the report and its inputs.</p>
+</section>
+
+<section id="data"><h2>6. Data additions and implementation order</h2>
+<div class="scroll"><table><thead><tr><th>Build</th><th>Concrete change</th><th>Done when</th></tr></thead><tbody>
+<tr><td>1. Exam inputs</td><td>Extend <code>VisitDocumentation</code> with regional findings, function and clinical interpretations. Keep the existing note and priority-response model.</td><td>One dictated note populates proposed fields; the physician only corrects or completes the missing items.</td></tr>
+<tr><td>2. Post-exam proposal and decisions</td><td>Finish the placeholder prompt and output schema together. Add remaining-care disposition, prognosis, diagnostics, reassessment and unresolved questions. Store approved physician decisions separately from AI proposals.</td><td>MMI yes/no/unknown produces the right fields and supports every standard question. No → care and review plan; yes → rating.</td></tr>
+<tr><td>3. One lumbar rating method</td><td>Add focused historical-finding extraction, verified questionnaire handling, a licensed reference module and deterministic calculator. Persist full worksheets.</td><td>Known cases reproduce their reference results; exclusions, missing criteria, changed inputs and multiple diagnoses behave correctly.</td></tr>
+<tr><td>4. Draft and review</td><td>Create a frozen report packet and structured drafting output with section/answer references. Add coverage and consistency checks.</td><td>Every referral subpart has an answer or an approved limitation; all opinions and numbers trace back to the packet.</td></tr>
+</tbody></table></div>
+<details><summary>Minimal shared records to add</summary><div class="small">
+<p><code>ExamFact</code>: region, finding key, side/level, value/unit, current versus historical date, assessment status, source reference, confirmation.</p>
+<p><code>PhysicianDecision</code>: topic, diagnosis/region scope, selected value, conditional details, rationale, evidence references, approval, input revision.</p>
+<p><code>UnresolvedQuestion</code>: topic, missing fact, affected decision or rating criterion, resolution action, status.</p>
+<p><code>ReferralAnswer</code>: original question/subpart, decision IDs, answer text, references, answered / limited / deferred.</p>
+<p><code>ReportPacket</code>: source revisions, approved decisions, approved worksheets and referral mapping. Reuse the current snapshot/revision approach.</p>
+</div></details>
+</section>
+
+<footer id="sources"><p><strong>Repository basis:</strong> <a href="typeflow.md">typeflow.md</a>, <a href="../questions.json">questions.json</a>, <a href="../packages/contracts/src/visitDocumentation.ts">visit contract</a>, <a href="../packages/contracts/src/postExamAnalysis.ts">post-exam contract</a>, <a href="../backend/src/queries/dxSupport.ts">diagnosis query</a>, <a href="../backend/src/queries/completedStudies.ts">study query</a>, <a href="../backend/src/questionnaires/definitions.ts">questionnaire definitions</a>.</p>
+<p>[1] <a href="https://www.ama-assn.org/practice-management/ama-guides/ama-guides-evaluation-permanent-impairment-overview">AMA Guides overview</a> and <a href="https://pubmed.ncbi.nlm.nih.gov/38729185/">Sixth 2024 methodology study</a>: MMI prerequisite and release-specific methods.</p>
+<p id="case-source">[2] <a href="https://www.tn.gov/content/dam/tn/workforce/documents/phys-con/17aAMA_6_-_Guides-SpineCaseScenarios_-_Talmage.pdf">Hazlewood, Talmage and Eskay-Auerbach: Sixth Edition spinal case examples</a>, cases 1–5, especially case 5 on PDF pages 14–15: row/class distinctions and the 6% worked result.</p>
+<p id="formula-source">[3] <a href="https://www.dol.gov/sites/dolgov/files/ecab/decisions/2018/Dec/17-1961.pdf">DOL Sixth Edition decision</a>: class/modifier adjustment formula. Implement chapter-specific rules from the selected Guides release.</p>
+</footer>
+</main>
+<script>
+(() => {
+ const messages = {yes:'Next: complete the lumbar impairment worksheet.', no:'Report: include the recovery plan and defer permanent rating.', unknown:'Report: explain the missing information and defer permanent rating.'};
+ document.querySelectorAll('[data-mmi]').forEach(button => button.addEventListener('click', () => {
+  const selected = button.dataset.mmi;
+  document.querySelectorAll('[data-mmi]').forEach(other => other.setAttribute('aria-pressed', String(other === button)));
+  document.querySelectorAll('.branch').forEach(panel => { panel.hidden = panel.id !== 'branch-' + selected; });
+  document.getElementById('mmi-result').textContent = messages[selected];
+ }));
+ let priorDetails;
+ window.addEventListener('beforeprint', () => {
+  priorDetails = [...document.querySelectorAll('details')].map(detail => [detail, detail.open]);
+  priorDetails.forEach(([detail]) => {detail.open = true;});
+ });
+ window.addEventListener('afterprint', () => priorDetails?.forEach(([detail, open]) => {detail.open = open;}));
+ document.getElementById('print').addEventListener('click', () => window.print());
+})();
+</script>
+</body></html>

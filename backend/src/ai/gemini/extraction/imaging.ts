@@ -46,7 +46,7 @@ export const imagingSchema = z.object({
 export const imagingSystemPrompt = `
 You are a specialized medical records data extractor.
 
-Your task is to analyze a raw standalone imaging report (EMR output pdf) from radiologist (or similar specialist) and extract data into a strictly structured JSON format.
+Your task is to analyze a raw standalone imaging report from radiologist (or similar specialist) and extract data into a strictly structured JSON format.
 
 CONCEPTUAL MAPPING AUTONOMY:
 The source documents may vary in format and may include headers, tables, and repeated sections,

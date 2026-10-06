@@ -6,6 +6,11 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "test:extraction": "pnpm run build && node --test tests/extractionSchemas.test.mjs",
+    "test:summary-card": "pnpm --filter @azime/contracts build && pnpm run build && node --test tests/caseSummaryCard.test.mjs",
+    "test:steering": "pnpm --filter @azime/contracts build && pnpm run build && node --test tests/physicianSteering.test.mjs",
+    "test:refined-analysis": "pnpm --filter @azime/contracts build && pnpm run build && node --test tests/refinedAnalysis.test.mjs",
+    "test:visit-documentation": "pnpm --filter @azime/contracts build && pnpm run build && node --test tests/visitDocumentation.test.mjs",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
     "dev": "NODE_ENV=development node dist/index.js",
@@ -14,12 +19,15 @@
     "push": "drizzle-kit push",
     "studio": "drizzle-kit studio",
     "migrate": "drizzle-kit migrate",
-    "seed": "npx tsx ./server/db/seed.ts"
+    "seed": "npx tsx ./server/db/seed.ts",
+    "reference-data:validate": "pnpm run build && node dist/db/referenceData/importReferenceData.js --validate-only",
+    "reference-data:import": "pnpm run build && node dist/db/referenceData/importReferenceData.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@azime/contracts": "workspace:*",
     "@fastify/cors": "^10.0.2",
     "@google-cloud/storage": "^7.16.0",
     "@google/genai": "^1.52.0",

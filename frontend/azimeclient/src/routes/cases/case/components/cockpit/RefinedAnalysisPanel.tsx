@@ -1,66 +1,167 @@
-import { useQuery } from "@tanstack/react-query";
-import { refinedAnalysisQueryOptions } from "../../../queries";
+import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { supportedRegions, type Region } from "@azime/contracts";
+import {
+  caseQueryOptions,
+  generateRefinedAnalysis,
+  refinedAnalysisQueryOptions,
+} from "../../../queries";
 import { CockpitSection } from "./CockpitLayout";
 
+const errorMessage = (error: unknown) =>
+  (error as { data?: { error?: string } } | null)?.data?.error ??
+  "Request failed";
+
 export default function RefinedAnalysisPanel({ caseId }: { caseId: string }) {
-  const analysisQuery = useQuery(refinedAnalysisQueryOptions(caseId));
-
-  if (analysisQuery.isPending) {
-    return (
-      <CockpitSection
-        id="refined-analysis"
-        title="Refined Analysis"
-        description="Analysis refined by the case artifacts and physician steering."
-      >
-        <p className="text-sm text-slate-500">Loading refined analysis…</p>
-      </CockpitSection>
-    );
-  }
-
-  if (analysisQuery.isError) {
-    return (
-      <CockpitSection
-        id="refined-analysis"
-        title="Refined Analysis"
-        description="Analysis refined by the case artifacts and physician steering."
-      >
-        <p className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-          Failed to load refined analysis.
-        </p>
-      </CockpitSection>
-    );
-  }
-
-  const storedAnalysis = analysisQuery.data;
+  const caseQuery = useQuery(caseQueryOptions(caseId));
+  const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
+  const regions = caseQuery.data?.regions ?? [];
+  const region =
+    selectedRegion && regions.includes(selectedRegion)
+      ? selectedRegion
+      : regions[0];
 
   return (
     <CockpitSection
       id="refined-analysis"
       title="Refined Analysis"
-      description="Analysis refined by the case artifacts and physician steering."
+      description="Case context, Pass 2 timeline, and physician-reviewed pre-exam analysis."
     >
-      {!storedAnalysis ? (
-        <p className="rounded-lg border border-dashed border-slate-300 p-4 text-sm text-slate-500">
-          Refined analysis has not been generated for this case.
-        </p>
-      ) : storedAnalysis.analysisParseError ? (
-        <p className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-          Stored refined analysis is invalid:{" "}
-          {storedAnalysis.analysisParseError}
+      {caseQuery.isPending ? (
+        <p className="text-sm text-slate-500">Loading case…</p>
+      ) : caseQuery.isError ? (
+        <p className="text-sm text-red-600">Failed to load case.</p>
+      ) : !region ? (
+        <p className="text-sm text-slate-500">
+          Add body regions to prepare Refined Analysis.
         </p>
       ) : (
-        <div className="space-y-3">
-          <div className="flex flex-wrap gap-x-5 gap-y-1 text-xs text-slate-500">
-            <span>Artifact #{storedAnalysis.id}</span>
-            <span>
-              Updated {new Date(storedAnalysis.updatedAt).toLocaleString()}
-            </span>
+        <div className="space-y-4">
+          <div className="flex gap-2">
+            {regions.map((value) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setSelectedRegion(value)}
+                className={`rounded-full border px-3 py-1 text-sm ${value === region ? "border-blue-300 bg-blue-50 text-blue-800" : "border-slate-200 text-slate-700"}`}
+              >
+                {supportedRegions.find((item) => item.value === value)?.label ??
+                  value}
+              </button>
+            ))}
           </div>
-          <pre className="max-h-[32rem] overflow-auto rounded-lg bg-slate-950 p-4 text-xs leading-5 text-slate-100">
-            {JSON.stringify(storedAnalysis.parsedAnalysis, null, 2)}
-          </pre>
+          <RegionalRefinedAnalysis
+            key={`${caseId}:${region}`}
+            caseId={caseId}
+            region={region}
+          />
         </div>
       )}
     </CockpitSection>
+  );
+}
+
+function RegionalRefinedAnalysis({
+  caseId,
+  region,
+}: {
+  caseId: string;
+  region: Region;
+}) {
+  const queryClient = useQueryClient();
+  const options = refinedAnalysisQueryOptions(caseId, region);
+  const analysisQuery = useQuery(options);
+  const [referralDraft, setReferralDraft] = useState<string | null>(null);
+  const stored = analysisQuery.data;
+  const referralText =
+    referralDraft ??
+    stored?.inputSnapshot.input.referralQuestions.join("\n") ??
+    "";
+  const generateMutation = useMutation({
+    mutationFn: () =>
+      generateRefinedAnalysis(
+        caseId,
+        region,
+        referralText
+          .split("\n")
+          .map((question) => question.trim())
+          .filter(Boolean),
+      ),
+    onSuccess: (result) => {
+      queryClient.setQueryData(options.queryKey, result);
+      setReferralDraft(null);
+    },
+  });
+
+  if (analysisQuery.isPending)
+    return <p className="text-sm text-slate-500">Loading Refined Analysis…</p>;
+
+  return (
+    <div className="space-y-3">
+      {analysisQuery.isError ? (
+        <p className="text-sm text-red-600">
+          Failed to load Refined Analysis: {errorMessage(analysisQuery.error)}
+        </p>
+      ) : null}
+      <label className="block space-y-1 text-sm">
+        <span>Referral questions (optional, one per line)</span>
+        <textarea
+          aria-label="Referral questions"
+          value={referralText}
+          onChange={(event) => setReferralDraft(event.target.value)}
+          disabled={generateMutation.isPending}
+          className="min-h-24 w-full rounded-md border border-slate-300 p-3"
+        />
+      </label>
+      <div className="flex flex-wrap items-center gap-3">
+        <button
+          type="button"
+          disabled={generateMutation.isPending}
+          onClick={() => generateMutation.mutate()}
+          className="rounded-md bg-emerald-700 px-3 py-1.5 text-sm text-white disabled:bg-emerald-300"
+        >
+          {generateMutation.isPending
+            ? "Generating..."
+            : stored
+              ? "Regenerate"
+              : "Generate"}
+        </button>
+      </div>
+      <div className="flex flex-wrap gap-x-5 gap-y-1 text-xs text-slate-500">
+        <span>Analysis: {stored ? `#${stored.id}` : "not generated"}</span>
+        {stored ? (
+          <span>Updated {new Date(stored.updatedAt).toLocaleString()}</span>
+        ) : null}
+      </div>
+      <p className="text-xs text-slate-500">
+        Generating builds a fresh input from the case summary, physician review
+        and referral questions, and replaces the result only if the run succeeds.
+      </p>
+      {generateMutation.isError ? (
+        <p className="text-sm text-red-600">
+          Analysis failed: {errorMessage(generateMutation.error)}
+        </p>
+      ) : null}
+      {stored ? (
+        <>
+          <div className="space-y-2">
+            <h3 className="text-sm font-semibold text-slate-800">
+              Refined Analysis Input Snapshot
+            </h3>
+            <pre className="max-h-[32rem] overflow-auto rounded-lg bg-slate-950 p-4 text-xs leading-5 text-slate-100">
+              {JSON.stringify(stored.inputSnapshot, null, 2)}
+            </pre>
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-sm font-semibold text-slate-800">
+              Refined Analysis Output
+            </h3>
+            <pre className="max-h-[32rem] overflow-auto rounded-lg bg-slate-950 p-4 text-xs leading-5 text-slate-100">
+              {JSON.stringify(stored.analysis, null, 2)}
+            </pre>
+          </div>
+        </>
+      ) : null}
+    </div>
   );
 }

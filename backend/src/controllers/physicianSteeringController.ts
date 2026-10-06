@@ -1,10 +1,11 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { ZodError } from "zod";
 import {
-  assertPhysicianSteeringReady,
-  physicianSteeringSchema,
-} from "../ai/physicianSteeringSchema.js";
-import { NotImplementedError } from "../errors/notImplementedError.js";
+  savePhysicianSteeringRequestSchema,
+  supportedRegions,
+  type Region,
+} from "@azime/contracts";
+import { PhysicianSteeringError } from "../ai/physicianSteeringSchema.js";
 import { caseExists } from "../queries/caseArtifactQueries.js";
 import {
   getPhysicianSteering,
@@ -16,15 +17,24 @@ const parseCaseId = (value: string) => {
   return Number.isInteger(caseId) && caseId > 0 ? caseId : null;
 };
 
+const parseRegion = (value: string): Region | null =>
+  supportedRegions.some((region) => region.value === value)
+    ? (value as Region)
+    : null;
+
 export const physicianSteeringController = {
   getByCaseIdHandler: async (
-    request: FastifyRequest<{ Params: { caseId: string } }>,
+    request: FastifyRequest<{ Params: { caseId: string; region: string } }>,
     reply: FastifyReply,
   ) => {
     const caseId = parseCaseId(request.params.caseId);
+    const region = parseRegion(request.params.region);
 
     if (!caseId) {
       return reply.code(400).send({ error: "Invalid case id" });
+    }
+    if (!region) {
+      return reply.code(400).send({ error: "Invalid region" });
     }
 
     try {
@@ -32,7 +42,7 @@ export const physicianSteeringController = {
         return reply.code(404).send({ error: "Case not found" });
       }
 
-      return reply.send(await getPhysicianSteering(caseId));
+      return reply.send(await getPhysicianSteering(caseId, region));
     } catch (error) {
       console.error(error);
       return reply
@@ -43,15 +53,19 @@ export const physicianSteeringController = {
 
   upsertHandler: async (
     request: FastifyRequest<{
-      Params: { caseId: string };
+      Params: { caseId: string; region: string };
       Body: unknown;
     }>,
     reply: FastifyReply,
   ) => {
     const caseId = parseCaseId(request.params.caseId);
+    const region = parseRegion(request.params.region);
 
     if (!caseId) {
       return reply.code(400).send({ error: "Invalid case id" });
+    }
+    if (!region) {
+      return reply.code(400).send({ error: "Invalid region" });
     }
 
     try {
@@ -59,13 +73,12 @@ export const physicianSteeringController = {
         return reply.code(404).send({ error: "Case not found" });
       }
 
-      assertPhysicianSteeringReady();
-      const steering = physicianSteeringSchema.parse(request.body);
+      const input = savePhysicianSteeringRequestSchema.parse(request.body);
 
-      return reply.send(await upsertPhysicianSteering(caseId, steering));
+      return reply.send(await upsertPhysicianSteering(caseId, region, input));
     } catch (error) {
-      if (error instanceof NotImplementedError) {
-        return reply.code(501).send({ error: error.message });
+      if (error instanceof PhysicianSteeringError) {
+        return reply.code(error.statusCode).send({ error: error.message });
       }
 
       if (error instanceof ZodError) {

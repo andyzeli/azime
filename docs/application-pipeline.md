@@ -1,4 +1,4 @@
-## AI + CRUD Application Pipeline
+## AI + CRUD Application Pipeline - 10-thousand foot level
 
 1. **Document ingestion**
    Staff splits the raw medical-record packet into individual document types, such as encounter notes, therapy visits, imaging reports, work-status reports, and procedure reports. The application uploads each document to GCP and stores its metadata in PostgreSQL.
@@ -10,11 +10,11 @@
    The extracted facts from all documents are passed (via SQL) into a second AI workflow using Gemini, ChatGPT, or Claude. This workflow produces a case clinical summary structured output with fields such as:
    - case summary;
    - consolodated diagnoses;
-   - provider summaries;
+   - Patient status trajectory (symptoms, etc)
 
 4. **Case-level AI analysis**
-   The extracted facts first two AI passes feed into another AI workflow (two ai passes and physician steering from ui) using Gemini, ChatGPT, or Claude. This workflow produces structured outputs such as:
-   - treatment analysis (actual vs possible);
+   The extracted facts are also fed into another AI workflow (two ai passes and physician steering from ui) using Gemini, ChatGPT, or Claude. This workflow produces structured outputs such as:
+   - treatment analysis (what has been tried and status, what should be tried);
    - contradictions or inconsistencies;
    - missing information;
    - suggested MMI status and supporting reasoning.

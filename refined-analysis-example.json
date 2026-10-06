@@ -1,0 +1,157 @@
+{
+  "input": {
+    "caseContext": {
+      "caseType": "Workers compensation — fictional example",
+      "injuryType": "specific",
+      "dateOfInjury": "2026-02-03"
+    },
+    "scope": {
+      "region": "lumbar_spine",
+      "diagnoses": ["lumbar_strain"]
+    },
+    "referralQuestions": [
+      "What limitations persist, and how have they changed during recovery?"
+    ],
+    "caseSummary": {
+      "incidentNarrative": "The patient reported low back pain after lifting a box at work.",
+      "statusTimeline": [
+        {
+          "recordId": "record-001",
+          "date": "2026-02-05",
+          "providerName": "Dr. Morgan Example",
+          "providerType": "Occupational medicine",
+          "subjective": "Low back pain rated 7/10 without leg symptoms.",
+          "objective": "Lumbar flexion 40 degrees with pain; lower-extremity strength 5/5.",
+          "functional": "Reports sitting tolerance of 20 minutes; assigned modified duty."
+        },
+        {
+          "recordId": "record-002",
+          "date": "2026-03-19",
+          "providerName": "Alex Example, PT",
+          "providerType": "Physical therapy",
+          "subjective": "Low back pain rated 3/10 at the final documented therapy visit.",
+          "objective": "Lumbar flexion 60 degrees with mild discomfort; lower-extremity strength 5/5.",
+          "functional": "Reports sitting tolerance of 45 minutes and walking for 30 minutes."
+        },
+        {
+          "recordId": "record-003",
+          "date": "2026-04-16",
+          "providerName": "Dr. Morgan Example",
+          "providerType": "Occupational medicine",
+          "subjective": "Low back pain rated 5/10; says improvement after therapy was temporary.",
+          "objective": null,
+          "functional": "Reports difficulty with prolonged sitting; modified duty continued without updated tolerances."
+        }
+      ],
+      "caseWideSummary": "The patient received occupational medicine care and eight physical therapy visits for a lumbar strain. Therapy records describe reduced pain and improved sitting tolerance. At a later follow-up, the patient reported recurrent symptoms, but current tolerances and examination findings were not documented.",
+      "psychosocialFactors": null
+    },
+    "reviewedAnalysis": {
+      "treatmentIssues": [
+        {
+          "id": "11111111-1111-4111-8111-111111111111",
+          "treatmentId": "lumbar_home_exercise",
+          "treatment": "Home exercise program",
+          "source": "taxonomy",
+          "category": null,
+          "recordStatus": "Unclear",
+          "recordDetail": "Exercises taught during therapy; subsequent use and response not documented.",
+          "episodeIds": ["episode-pt-001"],
+          "assessments": [
+            {
+              "canonicalDx": "lumbar_strain",
+              "applicability": {
+                "value": "applicable",
+                "rationale": "The documented therapy plan included a home exercise program for the lumbar strain.",
+                "source": "ai",
+                "reviewStatus": "agree",
+                "note": null
+              },
+              "adequacy": {
+                "value": "unclear",
+                "rationale": "The records do not establish how the program was used after supervised therapy ended.",
+                "source": "physician",
+                "reviewStatus": "override",
+                "note": "Clarify what the patient continued and whether it helped."
+              }
+            }
+          ],
+          "dispositionReviewed": true,
+          "physicianNote": "Explore any practical barriers to continuing the exercises."
+        }
+      ],
+      "treatmentContext": [
+        {
+          "id": "22222222-2222-4222-8222-222222222222",
+          "treatment": "Supervised physical therapy",
+          "canonicalDx": "lumbar_strain",
+          "recordDetail": "Eight visits over six weeks; pain and sitting tolerance improved by the last documented visit."
+        }
+      ],
+      "treatmentNotes": [
+        {
+          "id": "22222222-2222-4222-8222-222222222222",
+          "treatment": "Supervised physical therapy",
+          "canonicalDx": "lumbar_strain",
+          "field": "adequacy",
+          "note": "Course appears adequate; durability of benefit remains uncertain."
+        }
+      ],
+      "inconsistencies": [
+        {
+          "id": "33333333-3333-4333-8333-333333333333",
+          "description": "Therapy documented improved sitting tolerance, while the later office note describes persistent sitting difficulty without quantifying it.",
+          "type": "Record",
+          "reviewed": true,
+          "physicianNote": "May reflect a change over time rather than conflicting accounts."
+        }
+      ],
+      "evidenceGaps": [
+        {
+          "id": "44444444-4444-4444-8444-444444444444",
+          "gap": "No updated examination findings or quantified activity tolerances after therapy ended.",
+          "significance": "The persistence of the documented gains cannot be established.",
+          "reviewed": false,
+          "physicianNote": null
+        }
+      ],
+      "physicianNotes": "Focus on current function and whether the gains reported during therapy lasted."
+    }
+  },
+  "output": {
+    "trajectoryAnalysis": {
+      "subjectiveTrajectory": {
+        "direction": "Fluctuating",
+        "evidenceQuality": "Moderate",
+        "interpretation": "Reported pain decreased from 7/10 in February to 3/10 in March, then increased to 5/10 in April. This supports initial improvement followed by partial recurrence; symptoms at today's encounter remain to be established."
+      },
+      "functionalTrajectory": {
+        "direction": "Improving",
+        "evidenceQuality": "Sparse",
+        "interpretation": "Reported sitting tolerance increased from 20 to 45 minutes during therapy. Later sitting difficulty was not quantified, so the durability of that improvement is uncertain. Continued modified duty alone does not establish unchanged capacity."
+      },
+      "objectiveTrajectory": {
+        "direction": "Improving",
+        "evidenceQuality": "Sparse",
+        "interpretation": "Documented lumbar flexion increased from 40 to 60 degrees between February and March, with strength remaining 5/5. These observations came from different providers, and no later examination establishes whether the change persisted."
+      }
+    },
+    "visitPriority": [
+      {
+        "focus": "Clarify whether the sitting and walking gains reported during therapy persisted.",
+        "whyItMatters": "Retained activity gains despite recurrent pain would suggest a different functional course from loss of those gains. The April note does not distinguish these possibilities.",
+        "suggestedApproach": "Ask about current sitting and walking tolerances, compare them with the March report, and clarify which work activities remain difficult and why."
+      },
+      {
+        "focus": "Establish current examination findings in the setting of recurrent symptoms.",
+        "whyItMatters": "The latest symptom report has no accompanying examination findings. Current findings may help clarify whether the earlier objective improvement remains apparent, while recognizing differences between examiners.",
+        "suggestedApproach": "Perform a focused lumbar examination guided by the current history and document findings relevant to the previously recorded motion limitation and any reported leg symptoms."
+      },
+      {
+        "focus": "Clarify the home exercise course after supervised therapy ended.",
+        "whyItMatters": "The record does not show whether exercises continued, helped, or became difficult to perform. Those answers would clarify treatment response and the uncertainty in the supplied adequacy assessment.",
+        "suggestedApproach": "Ask which exercises were continued, their perceived effect, and any barriers or symptoms that changed participation."
+      }
+    ]
+  }
+}

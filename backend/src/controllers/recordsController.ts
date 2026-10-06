@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { db } from "../db/index.js";
-import { CaseProviders, Records } from "../db/schema.js";
+import { CaseProviders, DiagnosisMentions, Records } from "../db/schema.js";
 import { eq } from "drizzle-orm";
 import {
   createSignedDownloadUrl,
@@ -8,6 +8,7 @@ import {
 } from "../storage/googleCloudStorage.js";
 import { summarizeRecord } from "../ai/gemini/summarizeRecord.js";
 import { DocumentType } from "../records/documentMetadata.js";
+import { buildDiagnosisMentions } from "../records/diagnosisMentions.js";
 
 export const recordsController = {
   getByIdHandler: async (
@@ -71,14 +72,22 @@ export const recordsController = {
         ...record,
         documentType: record.documentType as DocumentType,
       });
+      const diagnosisMentions = buildDiagnosisMentions(record, summary);
 
-      await db
-        .update(Records)
-        .set({
-          summary: summary,
-          summaryStatus: "completed",
-        })
-        .where(eq(Records.id, recordId));
+      await db.transaction(async (transaction) => {
+        await transaction
+          .update(Records)
+          .set({ summary, summaryStatus: "completed" })
+          .where(eq(Records.id, recordId));
+
+        await transaction
+          .delete(DiagnosisMentions)
+          .where(eq(DiagnosisMentions.recordId, recordId));
+
+        if (diagnosisMentions.length > 0) {
+          await transaction.insert(DiagnosisMentions).values(diagnosisMentions);
+        }
+      });
 
       return reply.send({
         recordId,
@@ -138,11 +147,13 @@ export const recordsController = {
         where: eq(Records.id, recordId),
       });
 
-      if (!record?.url) {
+      if (!record) {
         return reply.code(404).send({ error: "Record not found" });
       }
 
-      await deleteObject(record.url);
+      if (record.url) {
+        await deleteObject(record.url);
+      }
 
       await db.delete(Records).where(eq(Records.id, recordId));
 

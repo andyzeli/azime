@@ -1,11 +1,11 @@
-import type { CaseSummaryInput } from "./clinicalSummaryPrompt.js";
+import type { DocumentExtractionArtifacts } from "../queries/caseArtifactQueries.js";
 import { makeProviderSummary } from "./makeProviderSummary.js";
 import type { ProviderSummaryInput } from "./providerSummaryPrompt.js";
 import {
   storedProviderSummariesSchema,
   type ProviderSummary,
   type StoredProviderSummaries,
-} from "./providerSummarySchema.js";
+} from "@azime/contracts";
 
 const getConcurrency = () => {
   const concurrency = Number(process.env.PROVIDER_SUMMARY_CONCURRENCY ?? 4);
@@ -17,8 +17,8 @@ const getConcurrency = () => {
   return concurrency;
 };
 
-export const groupCaseSummaryInputByProvider = (
-  input: CaseSummaryInput,
+export const groupDocumentExtractionArtifactsByProvider = (
+  input: DocumentExtractionArtifacts
 ): ProviderSummaryInput[] => {
   const groups = new Map<string, ProviderSummaryInput>();
 
@@ -34,27 +34,28 @@ export const groupCaseSummaryInputByProvider = (
     } else {
       groups.set(record.provider.id, {
         providerName: record.provider.name,
+        providerDiscipline: record.provider.discipline,
         records: [record],
       });
     }
   }
 
   return [...groups.values()].sort((left, right) =>
-    left.providerName.localeCompare(right.providerName),
+    left.providerName.localeCompare(right.providerName)
   );
 };
 
 export const makeProviderSummaries = async (
-  input: CaseSummaryInput,
+  input: DocumentExtractionArtifacts
 ): Promise<StoredProviderSummaries> => {
-  const providerGroups = groupCaseSummaryInputByProvider(input);
+  const providerGroups = groupDocumentExtractionArtifactsByProvider(input);
   const concurrency = getConcurrency();
   const providerSummaries: ProviderSummary[] = [];
 
   for (let index = 0; index < providerGroups.length; index += concurrency) {
     const batch = providerGroups.slice(index, index + concurrency);
     providerSummaries.push(
-      ...(await Promise.all(batch.map(makeProviderSummary))),
+      ...(await Promise.all(batch.map(makeProviderSummary)))
     );
   }
 

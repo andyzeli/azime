@@ -2,34 +2,45 @@ import axios from "redaxios";
 import { queryOptions } from "@tanstack/react-query";
 import {
   CaseContacts,
-  CaseProvider,
-  CaseRecordsSummary,
   PatientQuestionnaireInstance,
   PatientCase,
   Records,
 } from "../../../../../backend/src/db/schema";
+import {
+  caseProviderListSchema,
+  caseProviderSchema,
+  caseInjuryDetailsSchema,
+  caseSummaryResponseSchema,
+  caseSummaryCardResponseSchema,
+  refinedAnalysisResponseSchema,
+  generateRefinedAnalysisRequestSchema,
+  physicianSteeringResponseSchema,
+  savePhysicianSteeringRequestSchema,
+  preExamAnalysisResponseSchema,
+  providerSummariesResponseSchema,
+  type CaseSummaryResponse,
+  type Region,
+  type StoredCaseClinicalSummary,
+  type CaseInjuryDetails,
+  type CaseProviderDto,
+  type CreateCaseProviderInput,
+  type SavePhysicianSteeringRequest,
+  visitDocumentationResponseSchema,
+  canonicalDiagnosisListSchema,
+  saveVisitDocumentationRequestSchema,
+  generatePostExamAnalysisRequestSchema,
+  postExamAnalysisResponseSchema,
+  type SaveVisitDocumentationRequest,
+} from "@azime/contracts";
 import type {
   QuestionnaireDefinition,
   QuestionnaireType,
 } from "../../../../../backend/src/questionnaires/definitions";
 import type { CompleteRecordUploadInput } from "../../../../../backend/src/records/documentMetadata";
-import type { CreateCaseProviderInput } from "../../../../../backend/src/providers/caseProvider";
 import {
   safeParseStoredExtraction,
   type AnyStoredExtraction,
 } from "../../../../../backend/src/ai/gemini/registry";
-import {
-  storedCaseClinicalSummarySchema,
-  type StoredCaseClinicalSummary,
-} from "../../../../../backend/src/ai/clinicalSummarySchema";
-import {
-  storedPreExamAnalysisSchema,
-  type StoredPreExamAnalysis,
-} from "../../../../../backend/src/ai/preExamAnalysisSchema";
-import {
-  storedRefinedAnalysisSchema,
-  type StoredRefinedAnalysis,
-} from "../../../../../backend/src/ai/refinedAnalysisSchema";
 import { NewPatientCase } from "./case/components/NewCaseForm";
 export class NotFoundError extends Error {}
 
@@ -47,7 +58,7 @@ type DbPatientCase = {
   caseContact: Partial<CaseContacts>;
   caseType: string | null;
   status: string | null;
-};
+} & CaseInjuryDetails;
 
 export type PatientQuestionnaireDefinition = Omit<
   QuestionnaireDefinition,
@@ -69,7 +80,7 @@ export type PatientQuestionnaireWithCase =
   };
 
 export type RecordWithProvider = Records & {
-  provider: Pick<CaseProvider, "id" | "name" | "kind" | "discipline"> | null;
+  provider: CaseProviderDto | null;
 };
 
 export type RecordWithParsedSummary = RecordWithProvider & {
@@ -77,34 +88,15 @@ export type RecordWithParsedSummary = RecordWithProvider & {
   summaryParseError: string | null;
 };
 
-export type CaseSummaryWithParsedAggregate = CaseRecordsSummary & {
-  parsedAggregateSummary: StoredCaseClinicalSummary | null;
+export type CaseSummaryWithParsedAggregate = {
+  parsedAggregateSummary: CaseSummaryResponse["summary"] | null;
   aggregateSummaryParseError: string | null;
-};
-
-type StoredAnalysisResponse = {
-  id: number;
-  caseId: number;
-  analysis: unknown;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type PreExamAnalysisWithParsedArtifact = StoredAnalysisResponse & {
-  parsedAnalysis: StoredPreExamAnalysis | null;
-  analysisParseError: string | null;
-};
-
-export type RefinedAnalysisWithParsedArtifact = StoredAnalysisResponse & {
-  parsedAnalysis: StoredRefinedAnalysis | null;
-  analysisParseError: string | null;
 };
 
 const fetchCases = async () => {
   console.info("Fetching cases...");
   await new Promise((r) => setTimeout(r, 500));
   const response = await axios.get<Array<CaseType>>(`${API_BASE_URL}/cases`);
-  console.log("Cases response:", response.data);
   return response.data;
 };
 const API_BASE_URL = "http://localhost:4000";
@@ -148,24 +140,27 @@ export const createCase = async (newcase: NewPatientCase) => {
   return axios.post(`${API_BASE_URL}/cases`, newcase);
 };
 
+export const updateCaseInjuryDetails = async (
+  caseId: string,
+  input: CaseInjuryDetails
+) =>
+  axios
+    .put<unknown>(`${API_BASE_URL}/cases/${caseId}`, input)
+    .then((response) => caseInjuryDetailsSchema.parse(response.data));
+
 export const fetchCaseSummary = async (caseId: string) => {
   return axios
-    .get<CaseRecordsSummary | null>(
-      `${API_BASE_URL}/casesummaries?caseId=${caseId}`,
-    )
+    .get<unknown>(`${API_BASE_URL}/cases/${caseId}/case-summary`)
     .then((r): CaseSummaryWithParsedAggregate | null => {
       if (!r.data) {
         return null;
       }
 
-      const parsedAggregate = storedCaseClinicalSummarySchema.safeParse(
-        r.data.summary,
-      );
+      const parsedAggregate = caseSummaryResponseSchema.safeParse(r.data);
 
       return {
-        ...r.data,
         parsedAggregateSummary: parsedAggregate.success
-          ? parsedAggregate.data
+          ? parsedAggregate.data.summary
           : null,
         aggregateSummaryParseError: parsedAggregate.success
           ? null
@@ -180,67 +175,148 @@ export const caseSummaryQueryOptions = (caseId: string) =>
     queryFn: () => fetchCaseSummary(caseId),
   });
 
-export const fetchPreExamAnalysis = async (caseId: string) => {
-  return axios
-    .get<StoredAnalysisResponse | null>(
-      `${API_BASE_URL}/cases/${caseId}/pre-exam-analysis`,
-    )
-    .then((response): PreExamAnalysisWithParsedArtifact | null => {
-      if (!response.data) {
-        return null;
-      }
-
-      const parsedAnalysis = storedPreExamAnalysisSchema.safeParse(
-        response.data.analysis,
-      );
-
-      return {
-        ...response.data,
-        parsedAnalysis: parsedAnalysis.success ? parsedAnalysis.data : null,
-        analysisParseError: parsedAnalysis.success
-          ? null
-          : (parsedAnalysis.error.issues[0]?.message ??
-            "Invalid pre-exam analysis payload"),
-      };
-    });
-};
-
-export const preExamAnalysisQueryOptions = (caseId: string) =>
+export const caseSummaryCardQueryOptions = (caseId: string) =>
   queryOptions({
-    queryKey: ["preExamAnalysis", { caseId }],
-    queryFn: () => fetchPreExamAnalysis(caseId),
+    queryKey: ["caseSummaryCard", { caseId }],
+    queryFn: () =>
+      axios
+        .get<unknown>(`${API_BASE_URL}/cases/${caseId}/case-summary/card`)
+        .then((response) => caseSummaryCardResponseSchema.parse(response.data)),
   });
 
-export const fetchRefinedAnalysis = async (caseId: string) => {
-  return axios
-    .get<StoredAnalysisResponse | null>(
-      `${API_BASE_URL}/cases/${caseId}/refined-analysis`,
-    )
-    .then((response): RefinedAnalysisWithParsedArtifact | null => {
-      if (!response.data) {
-        return null;
-      }
+export const fetchProviderSummaries = async (caseId: string) =>
+  axios
+    .get<unknown>(`${API_BASE_URL}/cases/${caseId}/provider-summaries`)
+    .then((response) =>
+      providerSummariesResponseSchema.nullable().parse(response.data)
+    );
 
-      const parsedAnalysis = storedRefinedAnalysisSchema.safeParse(
-        response.data.analysis,
-      );
+export const providerSummariesQueryOptions = (caseId: string) =>
+  queryOptions({
+    queryKey: ["providerSummaries", { caseId }],
+    queryFn: () => fetchProviderSummaries(caseId),
+  });
 
-      return {
-        ...response.data,
-        parsedAnalysis: parsedAnalysis.success ? parsedAnalysis.data : null,
-        analysisParseError: parsedAnalysis.success
-          ? null
-          : (parsedAnalysis.error.issues[0]?.message ??
-            "Invalid refined analysis payload"),
-      };
-    });
+export const fetchPreExamAnalysis = async (caseId: string, region: Region) =>
+  axios
+    .get<unknown>(`${API_BASE_URL}/cases/${caseId}/pre-exam-analysis/${region}`)
+    .then((response) =>
+      preExamAnalysisResponseSchema.nullable().parse(response.data)
+    );
+
+export const preExamAnalysisQueryOptions = (caseId: string, region: Region) =>
+  queryOptions({
+    queryKey: ["preExamAnalysis", { caseId, region }],
+    queryFn: () => fetchPreExamAnalysis(caseId, region),
+  });
+
+export const takePreExamSnapshot = async (
+  caseId: string,
+  region: Region,
+  selectedDiagnoses?: string[]
+) =>
+  axios.post(
+    `${API_BASE_URL}/cases/${caseId}/pre-exam-analysis/${region}/snapshot`,
+    selectedDiagnoses === undefined ? {} : { selectedDiagnoses }
+  );
+
+interface InputSnapshot {
+  scope: {
+    region: Region;
+    diagnoses: string[];
+  };
+  ladder: unknown[];
+  treatmentEpisodes: unknown[];
+  currentMedications: unknown[];
+  completedStudies: unknown[];
+  workStatusHistory: unknown[];
+  supportingRecords: unknown[];
+}
+
+export type PreExamSnapshotResponse = {
+  caseId: number;
+  region: Region;
+  inputSnapshot: InputSnapshot | null;
+  availableDiagnoses: string[];
 };
 
-export const refinedAnalysisQueryOptions = (caseId: string) =>
+export const fetchPreExamSnapshot = async (caseId: string, region: Region) =>
+  axios
+    .get<PreExamSnapshotResponse>(
+      `${API_BASE_URL}/cases/${caseId}/pre-exam-analysis/${region}/snapshot`
+    )
+    .then((response) => response.data);
+
+export const preExamSnapshotQueryOptions = (caseId: string, region: Region) =>
   queryOptions({
-    queryKey: ["refinedAnalysis", { caseId }],
-    queryFn: () => fetchRefinedAnalysis(caseId),
+    queryKey: ["preExamSnapshot", { caseId, region }],
+    queryFn: () => fetchPreExamSnapshot(caseId, region),
   });
+
+export const generatePreExamAnalysis = async (caseId: string, region: Region) =>
+  axios.post(`${API_BASE_URL}/cases/${caseId}/pre-exam-analysis/${region}`);
+
+export const fetchPhysicianSteering = async (caseId: string, region: Region) =>
+  axios
+    .get<unknown>(
+      `${API_BASE_URL}/cases/${caseId}/physician-steering/${region}`
+    )
+    .then((response) =>
+      physicianSteeringResponseSchema.nullable().parse(response.data)
+    );
+
+export const physicianSteeringQueryOptions = (
+  caseId: string,
+  region: Region,
+  preExamAnalysisUpdatedAt?: string
+) =>
+  queryOptions({
+    queryKey: [
+      "physicianSteering",
+      { caseId, region },
+      preExamAnalysisUpdatedAt,
+    ],
+    queryFn: () => fetchPhysicianSteering(caseId, region),
+  });
+
+export const savePhysicianSteering = async (
+  caseId: string,
+  region: Region,
+  input: SavePhysicianSteeringRequest
+) =>
+  axios
+    .put<unknown>(
+      `${API_BASE_URL}/cases/${caseId}/physician-steering/${region}`,
+      savePhysicianSteeringRequestSchema.parse(input)
+    )
+    .then((response) => physicianSteeringResponseSchema.parse(response.data));
+
+export const fetchRefinedAnalysis = async (caseId: string, region: Region) =>
+  axios
+    .get<unknown>(`${API_BASE_URL}/cases/${caseId}/refined-analysis/${region}`)
+    .then((response) =>
+      refinedAnalysisResponseSchema.nullable().parse(response.data)
+    );
+
+export const refinedAnalysisQueryOptions = (caseId: string, region: Region) =>
+  queryOptions({
+    queryKey: ["refinedAnalysis", { caseId, region }],
+    queryFn: () => fetchRefinedAnalysis(caseId, region),
+  });
+
+// Builds the input from saved steering, runs exam prep, and replaces the region's
+// current result only when the run succeeds.
+export const generateRefinedAnalysis = async (
+  caseId: string,
+  region: Region,
+  referralQuestions: string[] = []
+) =>
+  axios
+    .post<unknown>(
+      `${API_BASE_URL}/cases/${caseId}/refined-analysis/${region}`,
+      generateRefinedAnalysisRequestSchema.parse({ referralQuestions })
+    )
+    .then((response) => refinedAnalysisResponseSchema.parse(response.data));
 
 export const recordsQueryOptions = (caseId: string) =>
   queryOptions({
@@ -250,8 +326,8 @@ export const recordsQueryOptions = (caseId: string) =>
 
 export const fetchCaseProviders = async (caseId: number) =>
   axios
-    .get<CaseProvider[]>(`${API_BASE_URL}/cases/${caseId}/providers`)
-    .then((response) => response.data);
+    .get<unknown>(`${API_BASE_URL}/cases/${caseId}/providers`)
+    .then((response) => caseProviderListSchema.parse(response.data));
 
 export const caseProvidersQueryOptions = (caseId: number) =>
   queryOptions({
@@ -261,11 +337,11 @@ export const caseProvidersQueryOptions = (caseId: number) =>
 
 export const createCaseProvider = async (
   caseId: number,
-  input: CreateCaseProviderInput,
+  input: CreateCaseProviderInput
 ) =>
   axios
-    .post<CaseProvider>(`${API_BASE_URL}/cases/${caseId}/providers`, input)
-    .then((response) => response.data);
+    .post<unknown>(`${API_BASE_URL}/cases/${caseId}/providers`, input)
+    .then((response) => caseProviderSchema.parse(response.data));
 
 export const createRecordUpload = async (payload: {
   caseId: number;
@@ -281,12 +357,35 @@ export const createRecordUpload = async (payload: {
 };
 
 export const completeRecordUpload = async (
-  payload: CompleteRecordUploadInput,
+  payload: CompleteRecordUploadInput
 ) => {
   return axios
     .post(`${API_BASE_URL}/uploads/complete`, payload)
     .then((r) => r.data);
 };
+
+export type TestRecordFixtureSummary = {
+  id: string;
+  label: string;
+  description: string;
+  documentType: string;
+  eventDate: string;
+};
+
+export const fetchTestRecordFixtures = async () =>
+  axios
+    .get<
+      TestRecordFixtureSummary[]
+    >(`${API_BASE_URL}/test-data/record-fixtures`)
+    .then((response) => response.data);
+
+export const createTestRecord = async (payload: {
+  caseId: number;
+  fixtureId: string;
+}) =>
+  axios
+    .post(`${API_BASE_URL}/test-data/records`, payload)
+    .then((response) => response.data);
 
 export const fetchRecordDownloadUrl = async (recordId: number) => {
   return axios
@@ -349,7 +448,7 @@ export const createPatientQuestionnaire = async (payload: {
       {
         type: payload.type,
         appointmentId: payload.appointmentId ?? null,
-      },
+      }
     )
     .then((r) => r.data);
 };
@@ -357,7 +456,7 @@ export const createPatientQuestionnaire = async (payload: {
 export const fetchPatientQuestionnaireByToken = async (accessToken: string) => {
   return axios
     .get<PatientQuestionnaireWithCase>(
-      `${API_BASE_URL}/questionnaires/${accessToken}`,
+      `${API_BASE_URL}/questionnaires/${accessToken}`
     )
     .then((r) => r.data);
 };
@@ -375,7 +474,7 @@ export const submitPatientQuestionnaire = async (payload: {
   return axios
     .post<PatientQuestionnaireWithDefinition>(
       `${API_BASE_URL}/questionnaires/${payload.accessToken}/submit`,
-      { responses: payload.responses },
+      { responses: payload.responses }
     )
     .then((r) => r.data);
 };
@@ -410,7 +509,7 @@ const fetchRecords = async (caseId: string) => {
     }
     const parsedSummary = safeParseStoredExtraction(
       record.documentType,
-      record.summary,
+      record.summary
     );
 
     if (!parsedSummary.success && record.summary != null) {
@@ -429,3 +528,72 @@ const fetchRecords = async (caseId: string) => {
     };
   });
 };
+
+export const canonicalDiagnosesQueryOptions = (region: Region) =>
+  queryOptions({
+    queryKey: ["canonicalDiagnoses", { region }],
+    queryFn: () =>
+      axios
+        .get<unknown>(`${API_BASE_URL}/regions/${region}/canonical-diagnoses`)
+        .then((response) => canonicalDiagnosisListSchema.parse(response.data)),
+    staleTime: Infinity,
+  });
+
+export const visitQueryOptions = (caseId: string) =>
+  queryOptions({
+    queryKey: ["visit", { caseId }],
+    queryFn: () =>
+      axios
+        .get<unknown>(`${API_BASE_URL}/cases/${caseId}/visit`)
+        .then((response) =>
+          visitDocumentationResponseSchema.nullable().parse(response.data)
+        ),
+  });
+
+export const saveVisit = (
+  caseId: string,
+  input: SaveVisitDocumentationRequest
+) =>
+  axios
+    .put<unknown>(
+      `${API_BASE_URL}/cases/${caseId}/visit`,
+      saveVisitDocumentationRequestSchema.parse(input)
+    )
+    .then((response) => visitDocumentationResponseSchema.parse(response.data));
+
+export const postExamAnalysisQueryOptions = (
+  caseId: string,
+  region: Region,
+  snapshotId?: number
+) =>
+  queryOptions({
+    queryKey: ["postExamAnalysis", { caseId, region, snapshotId }],
+    queryFn: () =>
+      axios
+        .get<unknown>(
+          `${API_BASE_URL}/cases/${caseId}/post-exam-analysis/${region}${snapshotId === undefined ? "" : `?snapshotId=${snapshotId}`}`
+        )
+        .then((response) =>
+          postExamAnalysisResponseSchema.nullable().parse(response.data)
+        ),
+  });
+
+// The note, PDQ and questionnaires come from the case's saved visit.
+export const takePostExamSnapshot = (caseId: string, region: Region) =>
+  axios
+    .post<unknown>(
+      `${API_BASE_URL}/cases/${caseId}/post-exam-analysis/${region}/snapshot`
+    )
+    .then((response) => postExamAnalysisResponseSchema.parse(response.data));
+
+export const generatePostExamAnalysis = (
+  caseId: string,
+  region: Region,
+  snapshotId: number
+) =>
+  axios
+    .post<unknown>(
+      `${API_BASE_URL}/cases/${caseId}/post-exam-analysis/${region}`,
+      generatePostExamAnalysisRequestSchema.parse({ snapshotId })
+    )
+    .then((response) => postExamAnalysisResponseSchema.parse(response.data));

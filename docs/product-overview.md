@@ -21,5 +21,5 @@ We can make an app that handles all of the grunt work of the "Before", so the do
 
 1. AI extraction (triggered from ui) of messy docs to structured facts --> clean UI display (helps our doc and our downstream processes)
 2. Second and Third AI passes for aggregation, summarization and case Analysis
-3. Smartly designed UI and CRUD portion of the app that receives doctor input and applies it to case, building our final "decision object" (mmi or impairment)
+3. Smartly designed UI and CRUD portion of the app (a "Cockpit") that receives doctor input and applies it to case, building our final "decision object" (mmi or impairment)
 4. AI report writer (triggered from ui) writes the report for doc acceptance

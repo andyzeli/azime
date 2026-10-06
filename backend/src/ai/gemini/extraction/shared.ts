@@ -18,20 +18,46 @@ export const evidence = z
     "Source evidence supporting this specific extracted item. The quote must come directly from the document and should be the smallest useful passage that clearly supports the extraction",
   );
 
-export const diagnosisSchema = z
-  .object({
-    evidence: evidence,
-    name: strfield.describe("The name of the diagnosis."),
-    icd: strfield
-      .nullable()
-      .describe(
-        "The ICD code for the diagnosis, if available. If not available, this field should be null.",
-      ),
-    //  description: strfield,
-  })
-  .describe(
-    "A diagnosis explicitly documented in this encounter. The evidence must support this specific diagnosis.",
-  );
+const diagnosisShape = {
+  evidence: evidence,
+  name: strfield.describe("The name of the diagnosis."),
+  icd: strfield
+    .nullable()
+    .describe(
+      "The ICD code for the diagnosis, if available. If not available, this field should be null.",
+    ),
+};
+
+const diagnosisDescription =
+  "A diagnosis explicitly documented in the source document. evidence, name, and icd must reflect the record without adding a diagnosis. name may be a concise rendering of the documented diagnosis rather than a verbatim copy. Use clinical knowledge only to map that documented diagnosis to the best-fitting canonicalDx category supplied in the allowed enum, which is of the form 'region.diagnosis' - the region prefixes to assist selection. Use unresolved when no category clearly applies; do not force a mapping";
+
+export const diagnosisSchema = z.object({
+  ...diagnosisShape,
+  region: z.string().min(1),
+  canonicalDx: z.string().min(1),
+});
+
+export const buildDiagnosisSchema = (canonicalDxValues: string[]) =>
+  z
+    .object({
+      ...diagnosisShape,
+      canonicalDx: z
+        .enum(["unresolved", ...canonicalDxValues])
+        .describe(
+          "The canonical diagnosis label with its region prefix (e.g. 'lumbar.stenosis') selected from the supplied taxonomy, or 'unresolved' when none applies.",
+        ),
+    })
+    .describe(diagnosisDescription);
+
+export const regionSchema = z.string().min(1);
+
+export const buildRegionsSchema = (regions: string[]) =>
+  z
+    .enum(["other_body_part", "unclear", ...regions])
+    .describe(
+      "Map the explicitly documented anatomical site to an allowed case region. Use 'other_body_part' when the site is known but outside the allowed case regions, or 'unclear' when the region cannot be determined. Do not infer the treated region solely from diagnosis presence.",
+    );
+
 export const medicationSchema = z.object({
   evidence: evidence,
   name: strfield.describe("The name of the medication."),
@@ -89,10 +115,80 @@ export const functionalLimitationSchema = z
   );
 
 export const procedureItemSchema = z.object({
-  name: z
-    .string()
-    .describe("Name of the procedure, injection, or intervention performed."),
+  name: z.string().describe("Name of the procedure performed"),
   bodySite: z
     .string()
     .describe("Anatomical site (e.g., 'Left Knee', 'L4-L5 epidural space')."),
+  region: regionSchema,
 });
+export const buildProcedureItemSchema = (regions: string[]) =>
+  procedureItemSchema.extend({
+    region: buildRegionsSchema(regions),
+  });
+
+export const treatmentPerformedSchema = z.object({
+  name: z.string().describe("Name of the procedure performed"),
+  bodySite: z
+    .string()
+    .describe(
+      "Anatomical site (e.g., 'Left Knee', 'L4-L5 epidural space') of the procedure performed.",
+    ),
+  region: regionSchema,
+  treatmentType: z
+    .enum([
+      "injection",
+      "ablation",
+      "aspiration",
+      "manipulation",
+      "immobilization",
+      "modality",
+      "Other",
+      "Unknown",
+    ])
+    .describe(
+      "Choose most appropriate category for the treatment, or use 'Unknown' if none of the options fit. use 'modality' for Electircal stim, therapeutic ultrasound, thermal agents, mechanical traction or light therapy ",
+    ),
+  laterality: z
+    .enum([
+      "left",
+      "right",
+      "bilateral",
+      "midline",
+      "not_applicable",
+      "unclear",
+    ])
+    .describe(
+      "The documented laterality of the procedure. Use 'unclear' if laterality cannot be determined from the record.",
+    ),
+  guidanceMethod: z
+    .enum(["fluoroscopy", "ultrasound", "CT", "none", "other", "unclear"])
+    .describe(
+      "The imaging or procedural guidance method documented for the procedure.",
+    ),
+  medicationsInjected: z
+    .array(
+      z.object({
+        name: z.string().describe("The injected medication or agent."),
+        dose: z
+          .string()
+          .describe(
+            "The documented dose, concentration, or volume, if provided.",
+          ),
+      }),
+    )
+    .describe(
+      "Medications or agents administered during the procedure, such as corticosteroid, local anesthetic, or contrast. Use empty array if not applicable",
+    ),
+  immediate_response: z
+    .string()
+    .describe("Verbatim stated immediate response, if documented. "),
+  complications: z
+    .string()
+    .describe(
+      "Explicitly stated complications during or immediately after the procedure",
+    ),
+});
+export const buildTreatmentPerformedSchema = (regions: string[]) =>
+  treatmentPerformedSchema.extend({
+    region: buildRegionsSchema(regions),
+  });

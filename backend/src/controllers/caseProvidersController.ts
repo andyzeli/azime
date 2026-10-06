@@ -1,8 +1,12 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { asc, eq } from "drizzle-orm";
+import {
+  caseProviderListSchema,
+  caseProviderSchema,
+  createCaseProviderInputSchema,
+} from "@azime/contracts";
 import { db } from "../db/index.js";
 import { CaseProviders, PatientCase } from "../db/schema.js";
-import { createCaseProviderSchema } from "../providers/caseProvider.js";
 
 const parseCaseId = (value: string) => {
   const caseId = Number(value);
@@ -21,12 +25,12 @@ export const caseProvidersController = {
     }
 
     try {
-      return reply.send(
-        await db.query.CaseProviders.findMany({
-          where: eq(CaseProviders.caseId, caseId),
-          orderBy: [asc(CaseProviders.name)],
-        }),
-      );
+      const providers = await db.query.CaseProviders.findMany({
+        where: eq(CaseProviders.caseId, caseId),
+        orderBy: [asc(CaseProviders.name)],
+      });
+
+      return reply.send(caseProviderListSchema.parse(providers));
     } catch (error) {
       console.error(error);
       return reply.code(500).send({ error: "Failed to fetch providers" });
@@ -44,7 +48,7 @@ export const caseProvidersController = {
     }
 
     try {
-      const input = createCaseProviderSchema.parse(request.body);
+      const input = createCaseProviderInputSchema.parse(request.body);
       const patientCase = await db.query.PatientCase.findFirst({
         columns: { id: true },
         where: eq(PatientCase.id, caseId),
@@ -59,7 +63,7 @@ export const caseProvidersController = {
         .values({ caseId, ...input })
         .returning();
 
-      return reply.code(201).send(provider);
+      return reply.code(201).send(caseProviderSchema.parse(provider));
     } catch (error) {
       console.error(error);
       return reply.code(400).send({ error: "Failed to create provider" });

@@ -3,7 +3,7 @@ import { contactController } from "../controllers/contactController.js";
 import { caseController } from "../controllers/caseController.js";
 import { caseAggregateSummaryController } from "../controllers/caseAggregateSummaryController.js";
 import { recordsController } from "../controllers/recordsController.js";
-import { caseSummaryController } from "../controllers/cSummController.js";
+
 import { uploadController } from "../controllers/uploadController.js";
 import { patientQuestionnaireController } from "../controllers/patientQuestionnaireController.js";
 import { caseArtifactsController } from "../controllers/caseArtifactsController.js";
@@ -12,6 +12,10 @@ import { preExamAnalysisController } from "../controllers/preExamAnalysisControl
 import { providerSummariesController } from "../controllers/providerSummariesController.js";
 import { refinedAnalysisController } from "../controllers/refinedAnalysisController.js";
 import { caseProvidersController } from "../controllers/caseProvidersController.js";
+import { testRecordsController } from "../controllers/testRecordsController.js";
+import { visitDocumentationController } from "../controllers/visitDocumentationController.js";
+import { canonicalDiagnosesController } from "../controllers/canonicalDiagnosesController.js";
+import { postExamAnalysisController } from "../controllers/postExamAnalysisController.js";
 
 export const registerRoutes = (app: FastifyInstance) => {
   app.get("/", async () => ({ message: "Server is running!" }));
@@ -22,6 +26,8 @@ export const registerRoutes = (app: FastifyInstance) => {
   app.post("/cases", caseController.newHandler);
   app.get("/cases", caseController.getHandler);
   app.get("/cases/:id", caseController.getByIdHandler);
+  app.put("/cases/:id", caseController.updateHandler);
+
   app.get("/cases/:caseId/providers", caseProvidersController.listHandler);
   app.post("/cases/:caseId/providers", caseProvidersController.createHandler);
 
@@ -57,7 +63,15 @@ export const registerRoutes = (app: FastifyInstance) => {
   );
   app.delete("/records/:recordId", recordsController.deleteByRecordIdHandler);
 
-  app.get("/casesummaries", caseSummaryController.getByCaseIdHandler);
+  app.get(
+    "/cases/:caseId/case-summary",
+    caseAggregateSummaryController.getByCaseIdHandler,
+  );
+
+  app.get(
+    "/cases/:caseId/case-summary/card",
+    caseAggregateSummaryController.getCardHandler,
+  );
 
   app.post(
     "/cases/:caseId/aggregate-summary",
@@ -77,32 +91,57 @@ export const registerRoutes = (app: FastifyInstance) => {
     caseArtifactsController.getDeterministicSignalsHandler,
   );
   app.get(
-    "/cases/:caseId/pre-exam-analysis",
+    "/cases/:caseId/pre-exam-analysis/:region",
     preExamAnalysisController.getByCaseIdHandler,
   );
   app.post(
-    "/cases/:caseId/pre-exam-analysis",
+    "/cases/:caseId/pre-exam-analysis/:region",
     preExamAnalysisController.createHandler,
   );
+  app.post(
+    "/cases/:caseId/pre-exam-analysis/:region/snapshot",
+    preExamAnalysisController.takeSnapshotHandler,
+  );
   app.get(
-    "/cases/:caseId/physician-steering",
+    "/cases/:caseId/pre-exam-analysis/:region/snapshot",
+    preExamAnalysisController.getSnapshotHandler,
+  );
+  app.get(
+    "/cases/:caseId/physician-steering/:region",
     physicianSteeringController.getByCaseIdHandler,
   );
   app.put(
-    "/cases/:caseId/physician-steering",
+    "/cases/:caseId/physician-steering/:region",
     physicianSteeringController.upsertHandler,
   );
   app.get(
-    "/cases/:caseId/refined-analysis",
+    "/cases/:caseId/refined-analysis/:region",
     refinedAnalysisController.getByCaseIdHandler,
   );
   app.post(
-    "/cases/:caseId/refined-analysis",
+    "/cases/:caseId/refined-analysis/:region",
     refinedAnalysisController.createHandler,
   );
 
   app.post("/uploads/sign", uploadController.signUploadHandler);
+  app.get("/regions/:region/canonical-diagnoses", canonicalDiagnosesController.getByRegionHandler);
+  app.get("/cases/:caseId/visit", visitDocumentationController.getHandler);
+  app.put("/cases/:caseId/visit", visitDocumentationController.saveHandler);
+  app.post("/cases/:caseId/post-exam-analysis/:region/snapshot", postExamAnalysisController.takeSnapshotHandler);
+  app.post("/cases/:caseId/post-exam-analysis/:region", postExamAnalysisController.createHandler);
+  app.get("/cases/:caseId/post-exam-analysis/:region", postExamAnalysisController.getByCaseIdHandler);
   app.post("/uploads/complete", uploadController.completeUploadHandler);
+
+  if (
+    process.env.NODE_ENV === "development" ||
+    process.env.ENABLE_TEST_DATA === "true"
+  ) {
+    app.get(
+      "/test-data/record-fixtures",
+      testRecordsController.listFixturesHandler,
+    );
+    app.post("/test-data/records", testRecordsController.createHandler);
+  }
   //app.get("/records", (req, res) => console.log(req.query));
 
   //app.post("/upload", upController.uploadHandler);

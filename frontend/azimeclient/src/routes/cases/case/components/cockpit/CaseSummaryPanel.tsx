@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   caseSummaryQueryOptions,
+  providerSummariesQueryOptions,
   recordsQueryOptions,
   summarizeCase,
 } from "../../../queries";
@@ -11,16 +12,24 @@ export default function CaseSummaryPanel({ caseId }: { caseId: string }) {
   const queryClient = useQueryClient();
   const recordsQuery = useQuery(recordsQueryOptions(caseId));
   const caseSummaryQuery = useQuery(caseSummaryQueryOptions(caseId));
+  const providerSummariesQuery = useQuery(
+    providerSummariesQueryOptions(caseId),
+  );
 
   const summaryMutation = useMutation({
     mutationFn: summarizeCase,
     mutationKey: ["cases", "aggregate-summary"],
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["caseSummary"] });
+      queryClient.invalidateQueries({ queryKey: ["providerSummaries"] });
     },
   });
 
-  if (recordsQuery.isPending || caseSummaryQuery.isPending) {
+  if (
+    recordsQuery.isPending ||
+    caseSummaryQuery.isPending ||
+    providerSummariesQuery.isPending
+  ) {
     return (
       <CockpitSection
         id="case-summary"
@@ -32,7 +41,11 @@ export default function CaseSummaryPanel({ caseId }: { caseId: string }) {
     );
   }
 
-  if (recordsQuery.isError || caseSummaryQuery.isError) {
+  if (
+    recordsQuery.isError ||
+    caseSummaryQuery.isError ||
+    providerSummariesQuery.isError
+  ) {
     return (
       <CockpitSection
         id="case-summary"
@@ -48,6 +61,8 @@ export default function CaseSummaryPanel({ caseId }: { caseId: string }) {
 
   const records = recordsQuery.data;
   const caseSummary = caseSummaryQuery.data;
+  const providerSummaries =
+    providerSummariesQuery.data?.summary.providerSummaries ?? [];
   const completedExtractionCount = records.filter(
     (record) => record.summaryStatus === "completed",
   ).length;
@@ -109,6 +124,27 @@ export default function CaseSummaryPanel({ caseId }: { caseId: string }) {
           parseError={caseSummary?.aggregateSummaryParseError}
         />
       )}
+      {providerSummaries.length > 0 ? (
+        <div className="mt-4 space-y-3">
+          <h3 className="text-xs font-medium uppercase tracking-wide text-slate-500">
+            Provider Summaries
+          </h3>
+          {providerSummaries.map((provider) => (
+            <div
+              key={provider.providerName}
+              className="rounded-md border border-slate-200 bg-white p-4"
+            >
+              <h4 className="font-medium text-slate-900">
+                {provider.providerName}
+              </h4>
+              <p className="text-xs text-slate-500">{provider.dateRange}</p>
+              <p className="mt-2 whitespace-pre-wrap text-sm text-slate-800">
+                {provider.providerSummary}
+              </p>
+            </div>
+          ))}
+        </div>
+      ) : null}
       {summaryMutation.isError ? (
         <p className="mt-3 text-sm text-red-600">
           Failed to generate aggregate summary. Please try again.

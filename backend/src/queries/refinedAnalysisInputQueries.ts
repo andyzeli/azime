@@ -1,57 +1,66 @@
-import type { RefinedAnalysisInput } from "../ai/refinedAnalysisPrompt.js";
-import type { RefinedAnalysisSources } from "../ai/makeRefinedAnalysis.js";
+import { eq } from "drizzle-orm";
+import type { Region, RefinedAnalysisInputSnapshot } from "@azime/contracts";
+import { db } from "../db/index.js";
+import { PatientCase } from "../db/schema.js";
+import { buildRefinedAnalysisInputSnapshot } from "../ai/refinedAnalysisInputSnapshot.js";
 import { MissingPrerequisiteError } from "../errors/missingPrerequisiteError.js";
-import { getCaseArtifactBundle } from "./caseArtifactQueries.js";
-import { getDeterministicSignals } from "./deterministicSignalQueries.js";
+import { getStoredCaseSummary } from "./caseSummaryQueries.js";
 import { getPhysicianSteering } from "./physicianSteeringQueries.js";
 import { getStoredPreExamAnalysis } from "./preExamAnalysisQueries.js";
 
-export type RefinedAnalysisInputBundle = {
-  input: RefinedAnalysisInput;
-  sources: RefinedAnalysisSources;
-};
-
-export const getRefinedAnalysisInput = async (
+export async function getRefinedAnalysisInput(
   caseId: number,
-): Promise<RefinedAnalysisInputBundle> => {
-  const [artifacts, storedPreExamAnalysis, storedPhysicianSteering] =
-    await Promise.all([
-      getCaseArtifactBundle(caseId),
-      getStoredPreExamAnalysis(caseId),
-      getPhysicianSteering(caseId),
-    ]);
+  region: Region,
+  referralQuestions: string[] = []
+): Promise<RefinedAnalysisInputSnapshot> {
+  const [patientCase, caseSummary, preExam, steering] = await Promise.all([
+    db.query.PatientCase.findFirst({
+      columns: {
+        caseType: true,
+        injuryType: true,
+        dateOfInjury: true,
+        regions: true,
+      },
+      where: eq(PatientCase.id, caseId),
+    }),
+    getStoredCaseSummary(caseId),
+    getStoredPreExamAnalysis(caseId, region),
+    getPhysicianSteering(caseId, region),
+  ]);
 
-  if (!artifacts.caseSummary) {
+  if (!patientCase?.regions.includes(region)) {
+    throw new MissingPrerequisiteError("Region is not in scope for this case");
+  }
+  if (!caseSummary) {
     throw new MissingPrerequisiteError(
-      "Generate the case summary before refined analysis",
+      "Generate the case summary before taking a refined analysis snapshot"
+    );
+  }
+  if (!preExam?.analysis || !preExam.inputSnapshot) {
+    throw new MissingPrerequisiteError(
+      "Generate the regional pre-exam analysis before taking a refined analysis snapshot"
+    );
+  }
+  if (!steering) {
+    throw new MissingPrerequisiteError(
+      "Save physician steering before taking a refined analysis snapshot"
     );
   }
 
-  if (!storedPreExamAnalysis) {
-    throw new MissingPrerequisiteError(
-      "Generate the pre-exam analysis before refined analysis",
-    );
-  }
-
-  if (!storedPhysicianSteering) {
-    throw new MissingPrerequisiteError(
-      "Save physician steering before refined analysis",
-    );
-  }
-
-  const deterministicSignals = await getDeterministicSignals(artifacts);
-
-  return {
-    input: {
-      caseSummary: artifacts.caseSummary,
-      deterministicSignals,
-      preExamAnalysis: storedPreExamAnalysis.analysis,
-      physicianSteering: storedPhysicianSteering.steering,
+  return buildRefinedAnalysisInputSnapshot({
+    caseContext: {
+      caseType: patientCase.caseType,
+      injuryType: patientCase.injuryType,
+      dateOfInjury: patientCase.dateOfInjury,
     },
-    sources: {
-      preExamAnalysisId: storedPreExamAnalysis.id,
-      physicianSteeringId: storedPhysicianSteering.id,
-      physicianSteeringRevision: storedPhysicianSteering.revision,
+    scope: preExam.inputSnapshot.scope,
+    caseSummary,
+    preExam: {
+      id: preExam.id,
+      updatedAt: preExam.updatedAt.toISOString(),
+      analysis: preExam.analysis,
     },
-  };
-};
+    steering,
+    referralQuestions,
+  });
+}

@@ -151,7 +151,7 @@ export default function RecordsPanel({ caseId }: { caseId: string }) {
 
   const handleDeleteRecord = (recordId: number) => {
     const confirmed = window.confirm(
-      "Delete this document? This removes the uploaded file from storage.",
+      "Delete this record? Its uploaded PDF will also be removed when present.",
     );
 
     if (confirmed) {
@@ -192,32 +192,40 @@ export default function RecordsPanel({ caseId }: { caseId: string }) {
                     >
                       {getSummaryStatusLabel(record.summaryStatus)}
                     </span>
-                    <button
-                      type="button"
-                      onClick={() => summarizeMutation.mutate(record.id)}
-                      disabled={
-                        summarizeMutation.isPending &&
-                        summarizeMutation.variables === record.id
-                      }
-                      className="text-sm font-medium text-emerald-700 hover:text-emerald-900 disabled:text-emerald-300"
-                    >
-                      {summarizeMutation.isPending &&
-                      summarizeMutation.variables === record.id
-                        ? "Summarizing..."
-                        : record.summaryStatus === "completed"
-                          ? "Re-run"
-                          : "Summarize"}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleViewDocument(record.id)}
-                      disabled={openingRecordId === record.id}
-                      className="text-sm font-medium text-blue-600 hover:text-blue-800 disabled:text-blue-300"
-                    >
-                      {openingRecordId === record.id
-                        ? "Opening..."
-                        : "View PDF"}
-                    </button>
+                    {record.url ? (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => summarizeMutation.mutate(record.id)}
+                          disabled={
+                            summarizeMutation.isPending &&
+                            summarizeMutation.variables === record.id
+                          }
+                          className="text-sm font-medium text-emerald-700 hover:text-emerald-900 disabled:text-emerald-300"
+                        >
+                          {summarizeMutation.isPending &&
+                          summarizeMutation.variables === record.id
+                            ? "Summarizing..."
+                            : record.summaryStatus === "completed"
+                              ? "Re-run"
+                              : "Summarize"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleViewDocument(record.id)}
+                          disabled={openingRecordId === record.id}
+                          className="text-sm font-medium text-blue-600 hover:text-blue-800 disabled:text-blue-300"
+                        >
+                          {openingRecordId === record.id
+                            ? "Opening..."
+                            : "View PDF"}
+                        </button>
+                      </>
+                    ) : (
+                      <span className="text-xs font-medium uppercase tracking-wide text-amber-700">
+                        Test data
+                      </span>
+                    )}
                     <button
                       type="button"
                       onClick={() => handleDeleteRecord(record.id)}

@@ -1,14 +1,20 @@
 import { ChangeEvent, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { CaseProvider } from "../../../../../../../backend/src/db/schema";
+import {
+  getProviderDisciplineLabel,
+  providerDisciplineOptions,
+  type CaseProviderDto,
+  type CreateCaseProviderInput,
+  type ProviderDiscipline,
+} from "@azime/contracts";
 import type { CompleteRecordUploadInput } from "../../../../../../../backend/src/records/documentMetadata";
-import type { CreateCaseProviderInput } from "../../../../../../../backend/src/providers/caseProvider";
 import {
   caseProvidersQueryOptions,
   completeRecordUpload,
   createCaseProvider,
   createRecordUpload,
 } from "../../queries";
+import { TestRecordUploader } from "./TestRecordUploader";
 
 type UploadDocumentType = CompleteRecordUploadInput["documentType"];
 
@@ -57,15 +63,6 @@ const eventDateLabel: Record<UploadDocumentType, string> = {
   incident_report: "Incident date",
   generic: "Event date",
 };
-
-export const providerDisciplineOptions = [
-  { value: "primary_care", label: "Primary Care" },
-  { value: "orthopedics", label: "Orthopedics" },
-  { value: "physical_therapy", label: "Physical Therapy" },
-  { value: "occupational_therapy", label: "Occupational Therapy" },
-  { value: "sports_medicine", label: "Sports Medicine" },
-  { value: "chiropractic", label: "Chiropractic" },
-] as const;
 
 const metadataIsComplete = (
   documentType: UploadDocumentType | "",
@@ -161,7 +158,11 @@ const buildCompleteUploadPayload = ({
   }
 };
 
-const emptyProviderInput: CreateCaseProviderInput = {
+type ProviderFormFields = Omit<CreateCaseProviderInput, "discipline"> & {
+  discipline: ProviderDiscipline | "";
+};
+
+const emptyProviderInput: ProviderFormFields = {
   name: "",
   kind: "individual",
   discipline: "",
@@ -178,7 +179,7 @@ const ChooseOrCreateProviderForm = ({
 }) => {
   const [isAdding, setIsAdding] = useState(false);
   const [newProvider, setNewProvider] =
-    useState<CreateCaseProviderInput>(emptyProviderInput);
+    useState<ProviderFormFields>(emptyProviderInput);
 
   const queryClient = useQueryClient();
   const providersQuery = useQuery(caseProvidersQueryOptions(caseId));
@@ -186,7 +187,7 @@ const ChooseOrCreateProviderForm = ({
     mutationFn: (input: CreateCaseProviderInput) =>
       createCaseProvider(caseId, input),
     onSuccess: (provider) => {
-      queryClient.setQueryData<CaseProvider[]>(
+      queryClient.setQueryData<CaseProviderDto[]>(
         ["caseProviders", { caseId }],
         (current) =>
           [
@@ -232,7 +233,8 @@ const ChooseOrCreateProviderForm = ({
               </option>
               {providersQuery.data?.map((provider) => (
                 <option key={provider.id} value={provider.id}>
-                  {provider.name} · {provider.discipline}
+                  {provider.name} ·{" "}
+                  {getProviderDisciplineLabel(provider.discipline)}
                 </option>
               ))}
             </select>
@@ -296,7 +298,7 @@ const ChooseOrCreateProviderForm = ({
               onChange={(event) =>
                 setNewProvider((current) => ({
                   ...current,
-                  discipline: event.target.value,
+                  discipline: event.target.value as ProviderDiscipline | "",
                 }))
               }
               className={`${inputClassName} bg-white`}
@@ -313,7 +315,14 @@ const ChooseOrCreateProviderForm = ({
             <button
               type="button"
               disabled={!canCreate || createProviderMutation.isPending}
-              onClick={() => createProviderMutation.mutate(newProvider)}
+              onClick={() => {
+                if (newProvider.discipline) {
+                  createProviderMutation.mutate({
+                    ...newProvider,
+                    discipline: newProvider.discipline,
+                  });
+                }
+              }}
               className="rounded-md bg-slate-800 px-3 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:bg-slate-300"
             >
               {createProviderMutation.isPending
@@ -544,6 +553,7 @@ export const OurUploadButton = ({ caseId }: { caseId: number }) => {
       >
         {isUploading ? "Uploading..." : "Choose and upload PDF"}
       </button>
+      {import.meta.env.DEV ? <TestRecordUploader caseId={caseId} /> : null}
     </div>
   );
 };

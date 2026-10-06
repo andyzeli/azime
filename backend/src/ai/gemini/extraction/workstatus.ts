@@ -4,7 +4,7 @@ import { strfield } from "./shared.js";
 export const workStatusSystemPrompt = `
 You are a specialized medical records summarizer and data extractor.
 
-Your task is to analyze a raw standalone work status or accommodation report extract data into a strictly structured JSON format.
+Your task is to analyze a raw standalone work status or accommodation report and extract data into a strictly structured JSON format.
 
 CONCEPTUAL MAPPING AUTONOMY:
 The source documents may vary in format and may include headers, tables, or simple prose.
@@ -21,15 +21,17 @@ Operational guardrails:
 `;
 
 export const workStatusReportSchema = z.object({
-  reportDate: strfield.describe(
-    "The date of the work status report, if explicitly stated in the record.",
-  ),
-  status: z.enum(["full_duty", "modified_duty", "off_work", "unknown"]),
+  // reportDate: strfield.describe(
+  //   "The date of the work status report, if explicitly stated in the record.",
+  // ),
   restrictions: z
     .array(z.string())
     .describe(
       "Itemized list of explicit physical restrictions (e.g., 'No lifting > 10 lbs', 'No bending/stooping', 'Must sit 15 mins every hour').",
     ),
+  status: z
+    .enum(["full_duty", "modified_duty", "off_work", "unknown"])
+    .describe("category of work status most applicable"),
   effectiveFrom: strfield
     .optional()
     .describe("Start date of accomodation: dd/mm/yyyy"),

@@ -18,14 +18,33 @@ import {
 
 import "./index.css";
 import { casesRoute } from "./routes/cases/cases";
+import { pCasesRoute } from "./routes/p_cases/p_cases";
 import { fetchMessage } from "./routes/cases/queries";
 import { caseRoute, casesIndexRoute } from "./routes/cases/case";
+import { pCasesIndexRoute, pCaseRoute } from "./routes/p_cases/p_case";
+import {
+  pCaseIndexRoute,
+  pRecordsRoute,
+  pSummaryRoute,
+  pAnalysisRoute,
+  pExamPrepRoute,
+  pVisitRoute,
+} from "./routes/p_cases/p_case/tabs";
 import {
   layoutARoute,
   layoutBRoute,
   billingRoute,
   billingIndexRoute,
 } from "./routes/billing";
+import {
+  mockPreExamRoute,
+  mockRecordsRoute,
+  mockRefinedRoute,
+  mockSummaryRoute,
+  mockVisitRoute,
+  mockupsRoute,
+  mockupsIndexRoute,
+} from "./routes/mockups";
 import { aptRoute, calistRoute, calRoute, listRoute } from "./routes/apts";
 import { contactsRoute } from "./routes/contacts";
 import PatientQuestionnairePatientPage from "./routes/patient/PatientQuestionnairePatientPage";
@@ -47,7 +66,7 @@ export const rootRoute = createRootRouteWithContext<{
 function RootComponent() {
   const location = useLocation();
   const isPatientQuestionnaire = location.pathname.startsWith(
-    "/patient/questionnaires/",
+    "/patient/questionnaires/"
   );
 
   return (
@@ -89,6 +108,14 @@ function RootComponent() {
               Contacts
             </Link>{" "}
             <Link
+              to="/mockups"
+              activeProps={{
+                className: "font-bold",
+              }}
+            >
+              Mockups
+            </Link>{" "}
+            <Link
               // @ts-expect-error
               to="/this-route-does-not-exist"
               activeProps={{
@@ -97,6 +124,14 @@ function RootComponent() {
             >
               This Route Does Not Exist
             </Link>
+            <Link
+              to="/p_cases"
+              activeProps={{
+                className: "font-bold",
+              }}
+            >
+              Provider Cases
+            </Link>{" "}
           </div>
           <hr />
         </>
@@ -138,7 +173,26 @@ function IndexRouteComponent() {
 
 const routeTree = rootRoute.addChildren([
   casesRoute.addChildren([caseRoute, casesIndexRoute]),
+  pCasesRoute.addChildren([
+    pCasesIndexRoute,
+    pCaseRoute.addChildren([
+      pCaseIndexRoute,
+      pRecordsRoute,
+      pSummaryRoute,
+      pAnalysisRoute,
+      pExamPrepRoute,
+      pVisitRoute,
+    ]),
+  ]),
   billingRoute.addChildren([billingIndexRoute, layoutARoute, layoutBRoute]),
+  mockupsRoute.addChildren([
+    mockupsIndexRoute,
+    mockRecordsRoute,
+    mockSummaryRoute,
+    mockPreExamRoute,
+    mockRefinedRoute,
+    mockVisitRoute,
+  ]),
   contactsRoute,
   patientQuestionnaireRoute,
   indexRoute.addChildren([
@@ -172,5 +226,5 @@ createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
     </QueryClientProvider>
-  </StrictMode>,
+  </StrictMode>
 );

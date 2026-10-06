@@ -1,0 +1,12 @@
+{
+  "name": "azime",
+  "private": true,
+  "packageManager": "pnpm@10.21.0",
+  "scripts": {
+    "build": "pnpm build:contracts && pnpm --filter backend build && pnpm --filter azimeclient build",
+    "build:contracts": "pnpm --filter @azime/contracts build",
+    "build:backend": "pnpm build:contracts && pnpm --filter backend build",
+    "build:frontend": "pnpm build:contracts && pnpm --filter azimeclient build",
+    "check:contracts": "node scripts/check-contract-boundaries.mjs"
+  }
+}
