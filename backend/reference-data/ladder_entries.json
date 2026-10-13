@@ -1,0 +1,1418 @@
+[
+  {
+    "id": "le_lumbar_nonspecific_strain_sprain__activity_modification_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_nonspecific_strain_sprain",
+    "treatment_id": "activity_modification_lumbar",
+    "applicability": "First-line for all acute and chronic non-specific LBP; advise to stay active, avoid bed rest, give reassurance.",
+    "adequacy": "Adequate when advice to stay active/avoid bed rest and education are documented alongside active care; not a stand-alone trial."
+  },
+  {
+    "id": "le_lumbar_nonspecific_strain_sprain__superficial_heat_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_nonspecific_strain_sprain",
+    "treatment_id": "superficial_heat_lumbar",
+    "applicability": "Acute/subacute LBP as first-line non-drug option.",
+    "adequacy": "Self-applied during the acute phase; optional adjunct - absence does not preclude MMI."
+  },
+  {
+    "id": "le_lumbar_nonspecific_strain_sprain__home_exercise_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_nonspecific_strain_sprain",
+    "treatment_id": "home_exercise_lumbar",
+    "applicability": "All phases; core of self-management after instruction.",
+    "adequacy": "Adequate when a program is taught (usually during PT) and ongoing independent adherence is documented."
+  },
+  {
+    "id": "le_lumbar_nonspecific_strain_sprain__pt_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_nonspecific_strain_sprain",
+    "treatment_id": "pt_lumbar",
+    "applicability": "Subacute or chronic LBP, or acute LBP not improving with self-care; active exercise-based therapy preferred over passive modalities.",
+    "adequacy": "About 10 visits over 8 weeks (typical ODG benchmark) with documented objective functional progress, then fading to HEP; more visits only with measurable gains."
+  },
+  {
+    "id": "le_lumbar_nonspecific_strain_sprain__manipulation_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_nonspecific_strain_sprain",
+    "treatment_id": "manipulation_lumbar",
+    "applicability": "Acute or chronic LBP without red flags; NICE supports manual therapy only as part of a package with exercise.",
+    "adequacy": "Trial of about 6 visits over 2 weeks; continue up to about 18 visits over 6-8 weeks only with objective functional improvement; maintenance care not required for MMI."
+  },
+  {
+    "id": "le_lumbar_nonspecific_strain_sprain__acupuncture_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_nonspecific_strain_sprain",
+    "treatment_id": "acupuncture_lumbar",
+    "applicability": "Acute or chronic LBP (ACP); note NICE NG59 recommends against acupuncture for LBP.",
+    "adequacy": "Trial of about 3-6 sessions to show functional improvement; continue up to about 8-12 sessions over 4-8 weeks only with documented gains."
+  },
+  {
+    "id": "le_lumbar_nonspecific_strain_sprain__massage_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_nonspecific_strain_sprain",
+    "treatment_id": "massage_lumbar",
+    "applicability": "Acute/subacute LBP (ACP); NICE supports only with exercise.",
+    "adequacy": "Time-limited adjunct to active exercise (about 4-6 sessions); optional - absence does not preclude MMI."
+  },
+  {
+    "id": "le_lumbar_nonspecific_strain_sprain__nsaids_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_nonspecific_strain_sprain",
+    "treatment_id": "nsaids_lumbar",
+    "applicability": "First-line medication if non-drug care insufficient; screen for GI, renal and cardiovascular risk.",
+    "adequacy": "Scheduled trial of about 2-4 weeks at therapeutic dose, or documented intolerance/contraindication; lowest effective dose for shortest duration."
+  },
+  {
+    "id": "le_lumbar_nonspecific_strain_sprain__muscle_relaxants_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_nonspecific_strain_sprain",
+    "treatment_id": "muscle_relaxants_lumbar",
+    "applicability": "Acute LBP with spasm (ACP); avoid in chronic phase; sedation and misuse risk (avoid carisoprodol).",
+    "adequacy": "Short course of 2-3 weeks or less for acute pain or flare; long-term use is not recommended and not required for MMI."
+  },
+  {
+    "id": "le_lumbar_nonspecific_strain_sprain__acetaminophen_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_nonspecific_strain_sprain",
+    "treatment_id": "acetaminophen_lumbar",
+    "applicability": "Alternative when NSAIDs are contraindicated; ACP and NICE found little or no benefit as monotherapy.",
+    "adequacy": "Optional; scheduled trial of 1-2 weeks at up to 3-4 g/day; absence does not preclude MMI."
+  },
+  {
+    "id": "le_lumbar_nonspecific_strain_sprain__duloxetine_snri_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_nonspecific_strain_sprain",
+    "treatment_id": "duloxetine_snri_lumbar",
+    "applicability": "Chronic LBP after inadequate response to non-drug care (ACP second-line); NICE NG59 recommends against antidepressants for LBP.",
+    "adequacy": "Trial of about 4-8 weeks at therapeutic dose (e.g., duloxetine 60 mg/day); stop if no meaningful benefit."
+  },
+  {
+    "id": "le_lumbar_nonspecific_strain_sprain__opioids_short_course_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_nonspecific_strain_sprain",
+    "treatment_id": "opioids_short_course_lumbar",
+    "applicability": "Severe acute pain only when NSAIDs are contraindicated or ineffective; not for chronic LBP (NICE).",
+    "adequacy": "Not a required rung; if used, short course (a few days, generally 7 days or less for acute pain); long-term opioid therapy is not required to establish MMI."
+  },
+  {
+    "id": "le_lumbar_nonspecific_strain_sprain__mind_body_exercise_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_nonspecific_strain_sprain",
+    "treatment_id": "mind_body_exercise_lumbar",
+    "applicability": "Chronic LBP as an alternative exercise modality.",
+    "adequacy": "Structured program of about 8-12 weeks; optional - absence does not preclude MMI."
+  },
+  {
+    "id": "le_lumbar_nonspecific_strain_sprain__cbt_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_nonspecific_strain_sprain",
+    "treatment_id": "cbt_lumbar",
+    "applicability": "Chronic LBP or psychosocial risk factors (fear-avoidance, catastrophizing); NICE psychological recommendations withdrawn 2026.",
+    "adequacy": "Initial 3-4 sessions over 2 weeks; up to about 6-10 sessions over 5-6 weeks with documented functional improvement."
+  },
+  {
+    "id": "le_lumbar_nonspecific_strain_sprain__trigger_point_injection_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_nonspecific_strain_sprain",
+    "treatment_id": "trigger_point_injection_lumbar",
+    "applicability": "Only for myofascial pain with documented trigger points (twitch response, referred pain), symptoms over 3 months, failed stretching/PT/medication, and no radiculopathy.",
+    "adequacy": "Repeat only if 50% or more relief for 6 or more weeks with functional gain; injections no more often than every 2 months, 3-4 or fewer per session."
+  },
+  {
+    "id": "le_lumbar_nonspecific_strain_sprain__functional_restoration_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_nonspecific_strain_sprain",
+    "treatment_id": "functional_restoration_lumbar",
+    "applicability": "Chronic disabling LBP (over 3-6 months) after failed conventional care, with motivation to improve and no pending surgery.",
+    "adequacy": "Continuation beyond 2 weeks requires documented objective gains; total generally 20 full-day sessions (or part-day equivalent) or fewer."
+  },
+  {
+    "id": "le_lumbar_nonspecific_strain_sprain__work_conditioning_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_nonspecific_strain_sprain",
+    "treatment_id": "work_conditioning_lumbar",
+    "applicability": "Work-related LBP with a documented gap between current function and job demands after PT, and an identified job to return to.",
+    "adequacy": "Time-limited (about 4-8 weeks) toward a defined return-to-work goal; continue beyond 2 weeks only with documented compliance and significant gains."
+  },
+  {
+    "id": "le_lumbar_disc_herniation_radiculopathy__activity_modification_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_disc_herniation_radiculopathy",
+    "treatment_id": "activity_modification_lumbar",
+    "applicability": "All patients; most improve within 6-12 weeks, so advise to stay active and give natural-history education.",
+    "adequacy": "Adequate when advice to stay active/avoid bed rest and education are documented alongside active care; not a stand-alone trial."
+  },
+  {
+    "id": "le_lumbar_disc_herniation_radiculopathy__home_exercise_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_disc_herniation_radiculopathy",
+    "treatment_id": "home_exercise_lumbar",
+    "applicability": "All phases, as tolerated.",
+    "adequacy": "Adequate when a program is taught (usually during PT) and ongoing independent adherence is documented."
+  },
+  {
+    "id": "le_lumbar_disc_herniation_radiculopathy__pt_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_disc_herniation_radiculopathy",
+    "treatment_id": "pt_lumbar",
+    "applicability": "Active exercise-based therapy once acute pain allows; NASS found insufficient evidence for PT as stand-alone treatment.",
+    "adequacy": "About 10 visits over 8 weeks (typical ODG benchmark) with documented objective functional progress, then fading to HEP; more visits only with measurable gains."
+  },
+  {
+    "id": "le_lumbar_disc_herniation_radiculopathy__manipulation_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_disc_herniation_radiculopathy",
+    "treatment_id": "manipulation_lumbar",
+    "applicability": "Option for symptomatic relief without progressive neuro deficit (NASS Grade C); NICE supports only with exercise.",
+    "adequacy": "Trial of about 6 visits over 2 weeks; continue up to about 18 visits over 6-8 weeks only with objective functional improvement; maintenance care not required for MMI."
+  },
+  {
+    "id": "le_lumbar_disc_herniation_radiculopathy__nsaids_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_disc_herniation_radiculopathy",
+    "treatment_id": "nsaids_lumbar",
+    "applicability": "First-line analgesic; NICE notes limited evidence of benefit and risk of harms in sciatica.",
+    "adequacy": "Scheduled trial of about 2-4 weeks at therapeutic dose, or documented intolerance/contraindication; lowest effective dose for shortest duration."
+  },
+  {
+    "id": "le_lumbar_disc_herniation_radiculopathy__oral_steroids_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_disc_herniation_radiculopathy",
+    "treatment_id": "oral_steroids_lumbar",
+    "applicability": "Guidance conflicts: may be used for acute radicular pain per ODG; NICE NG59 (2020) recommends against oral corticosteroids for sciatica.",
+    "adequacy": "One short taper (about 5-15 days) in the acute phase; repeat courses not recommended; optional."
+  },
+  {
+    "id": "le_lumbar_disc_herniation_radiculopathy__neuropathic_agents_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_disc_herniation_radiculopathy",
+    "treatment_id": "neuropathic_agents_lumbar",
+    "applicability": "Guidance conflicts: ODG supports AED trial for neuropathic pain; NICE NG59 (2020) recommends against gabapentinoids/antiepileptics for sciatica.",
+    "adequacy": "Titrate to effective/tolerated dose (e.g., gabapentin 1200-1800 mg/day or pregabalin 150-300 mg/day) for about 4-8 weeks; optional - absence does not preclude MMI."
+  },
+  {
+    "id": "le_lumbar_disc_herniation_radiculopathy__opioids_short_course_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_disc_herniation_radiculopathy",
+    "treatment_id": "opioids_short_course_lumbar",
+    "applicability": "Short course for severe acute radicular pain only; not for chronic sciatica (NICE 2020).",
+    "adequacy": "Not a required rung; if used, short course (a few days, generally 7 days or less for acute pain); long-term opioid therapy is not required to establish MMI."
+  },
+  {
+    "id": "le_lumbar_disc_herniation_radiculopathy__esi_transforaminal_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_disc_herniation_radiculopathy",
+    "treatment_id": "esi_transforaminal_lumbar",
+    "applicability": "Radicular pain with concordant exam and imaging not responding to conservative care; short-term relief (NASS Grade A).",
+    "adequacy": "Up to 2 injections in the diagnostic phase; repeat only if 50% or more relief with functional gain/medication reduction for 6-8 weeks; generally no more than 4 per region per year."
+  },
+  {
+    "id": "le_lumbar_disc_herniation_radiculopathy__esi_interlaminar_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_disc_herniation_radiculopathy",
+    "treatment_id": "esi_interlaminar_lumbar",
+    "applicability": "Same indications as TFESI; alternative approach for single- or multi-level radicular pain.",
+    "adequacy": "Up to 2 injections in the diagnostic phase; repeat only if 50% or more relief with functional gain/medication reduction for 6-8 weeks; generally no more than 4 per region per year."
+  },
+  {
+    "id": "le_lumbar_disc_herniation_radiculopathy__esi_caudal_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_disc_herniation_radiculopathy",
+    "treatment_id": "esi_caudal_lumbar",
+    "applicability": "Alternative approach (e.g., L5-S1/S1 or post-surgical anatomy); same indications and limits as other ESIs.",
+    "adequacy": "Up to 2 injections in the diagnostic phase; repeat only if 50% or more relief with functional gain/medication reduction for 6-8 weeks; generally no more than 4 per region per year."
+  },
+  {
+    "id": "le_lumbar_disc_herniation_radiculopathy__microdiscectomy_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_disc_herniation_radiculopathy",
+    "treatment_id": "microdiscectomy_lumbar",
+    "applicability": "Concordant radiculopathy and imaging with disabling symptoms after 6 weeks or more of conservative care; urgent for progressive motor deficit or cauda equina.",
+    "adequacy": "Adequate once performed and post-op rehabilitation completed. Not required for MMI if not indicated, contraindicated, or declined by an informed patient."
+  },
+  {
+    "id": "le_lumbar_disc_herniation_radiculopathy__functional_restoration_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_disc_herniation_radiculopathy",
+    "treatment_id": "functional_restoration_lumbar",
+    "applicability": "Chronic disability over 3-6 months after failed or declined surgery and injections.",
+    "adequacy": "Continuation beyond 2 weeks requires documented objective gains; total generally 20 full-day sessions (or part-day equivalent) or fewer."
+  },
+  {
+    "id": "le_lumbar_spinal_stenosis__activity_modification_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_spinal_stenosis",
+    "treatment_id": "activity_modification_lumbar",
+    "applicability": "All patients; education on flexion-based positions and walking tolerance.",
+    "adequacy": "Adequate when advice to stay active/avoid bed rest and education are documented alongside active care; not a stand-alone trial."
+  },
+  {
+    "id": "le_lumbar_spinal_stenosis__home_exercise_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_spinal_stenosis",
+    "treatment_id": "home_exercise_lumbar",
+    "applicability": "All patients; flexion-biased and conditioning exercise (e.g., cycling).",
+    "adequacy": "Adequate when a program is taught (usually during PT) and ongoing independent adherence is documented."
+  },
+  {
+    "id": "le_lumbar_spinal_stenosis__pt_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_spinal_stenosis",
+    "treatment_id": "pt_lumbar",
+    "applicability": "Mild-moderate symptoms as initial care; NASS rates evidence for PT/exercise alone as limited.",
+    "adequacy": "About 10 visits over 8 weeks (typical ODG benchmark) with documented objective functional progress, then fading to HEP; more visits only with measurable gains."
+  },
+  {
+    "id": "le_lumbar_spinal_stenosis__nsaids_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_spinal_stenosis",
+    "treatment_id": "nsaids_lumbar",
+    "applicability": "First-line analgesic, weighed against GI, renal and CV risk in older patients.",
+    "adequacy": "Scheduled trial of about 2-4 weeks at therapeutic dose, or documented intolerance/contraindication; lowest effective dose for shortest duration."
+  },
+  {
+    "id": "le_lumbar_spinal_stenosis__neuropathic_agents_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_spinal_stenosis",
+    "treatment_id": "neuropathic_agents_lumbar",
+    "applicability": "Optional for radicular/neuropathic leg pain; evidence limited.",
+    "adequacy": "Titrate to effective/tolerated dose (e.g., gabapentin 1200-1800 mg/day or pregabalin 150-300 mg/day) for about 4-8 weeks; optional - absence does not preclude MMI."
+  },
+  {
+    "id": "le_lumbar_spinal_stenosis__opioids_short_course_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_spinal_stenosis",
+    "treatment_id": "opioids_short_course_lumbar",
+    "applicability": "Short course for severe flare only.",
+    "adequacy": "Not a required rung; if used, short course (a few days, generally 7 days or less for acute pain); long-term opioid therapy is not required to establish MMI."
+  },
+  {
+    "id": "le_lumbar_spinal_stenosis__esi_interlaminar_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_spinal_stenosis",
+    "treatment_id": "esi_interlaminar_lumbar",
+    "applicability": "Radiculopathy or neurogenic claudication; image-guided ESI gives short-term relief (NASS), long-term benefit uncertain.",
+    "adequacy": "Up to 2 injections in the diagnostic phase; repeat only if 50% or more relief with functional gain/medication reduction for 6-8 weeks; generally no more than 4 per region per year."
+  },
+  {
+    "id": "le_lumbar_spinal_stenosis__esi_transforaminal_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_spinal_stenosis",
+    "treatment_id": "esi_transforaminal_lumbar",
+    "applicability": "Radicular (lateral recess/foraminal) pattern; same limits as other ESIs.",
+    "adequacy": "Up to 2 injections in the diagnostic phase; repeat only if 50% or more relief with functional gain/medication reduction for 6-8 weeks; generally no more than 4 per region per year."
+  },
+  {
+    "id": "le_lumbar_spinal_stenosis__esi_caudal_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_spinal_stenosis",
+    "treatment_id": "esi_caudal_lumbar",
+    "applicability": "Multilevel stenosis or post-surgical anatomy; same limits as other ESIs.",
+    "adequacy": "Up to 2 injections in the diagnostic phase; repeat only if 50% or more relief with functional gain/medication reduction for 6-8 weeks; generally no more than 4 per region per year."
+  },
+  {
+    "id": "le_lumbar_spinal_stenosis__laminectomy_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_spinal_stenosis",
+    "treatment_id": "laminectomy_lumbar",
+    "applicability": "Moderate-severe symptoms with concordant imaging after failed conservative care (typically 3 months or more); fusion not required without instability.",
+    "adequacy": "Adequate once performed and post-op rehabilitation completed. Not required for MMI if not indicated, contraindicated, or declined by an informed patient."
+  },
+  {
+    "id": "le_lumbar_spondylolisthesis__activity_modification_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_spondylolisthesis",
+    "treatment_id": "activity_modification_lumbar",
+    "applicability": "All patients; education and activity pacing.",
+    "adequacy": "Adequate when advice to stay active/avoid bed rest and education are documented alongside active care; not a stand-alone trial."
+  },
+  {
+    "id": "le_lumbar_spondylolisthesis__home_exercise_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_spondylolisthesis",
+    "treatment_id": "home_exercise_lumbar",
+    "applicability": "All patients; stabilization and conditioning.",
+    "adequacy": "Adequate when a program is taught (usually during PT) and ongoing independent adherence is documented."
+  },
+  {
+    "id": "le_lumbar_spondylolisthesis__pt_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_spondylolisthesis",
+    "treatment_id": "pt_lumbar",
+    "applicability": "Initial care for axial or mild neurogenic symptoms; NASS found insufficient evidence for specific non-operative regimens.",
+    "adequacy": "About 10 visits over 8 weeks (typical ODG benchmark) with documented objective functional progress, then fading to HEP; more visits only with measurable gains."
+  },
+  {
+    "id": "le_lumbar_spondylolisthesis__nsaids_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_spondylolisthesis",
+    "treatment_id": "nsaids_lumbar",
+    "applicability": "First-line analgesic, subject to risk profile.",
+    "adequacy": "Scheduled trial of about 2-4 weeks at therapeutic dose, or documented intolerance/contraindication; lowest effective dose for shortest duration."
+  },
+  {
+    "id": "le_lumbar_spondylolisthesis__opioids_short_course_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_spondylolisthesis",
+    "treatment_id": "opioids_short_course_lumbar",
+    "applicability": "Short course for severe flare only.",
+    "adequacy": "Not a required rung; if used, short course (a few days, generally 7 days or less for acute pain); long-term opioid therapy is not required to establish MMI."
+  },
+  {
+    "id": "le_lumbar_spondylolisthesis__esi_interlaminar_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_spondylolisthesis",
+    "treatment_id": "esi_interlaminar_lumbar",
+    "applicability": "Radiculopathy or neurogenic claudication from associated stenosis; evidence extrapolated from stenosis literature.",
+    "adequacy": "Up to 2 injections in the diagnostic phase; repeat only if 50% or more relief with functional gain/medication reduction for 6-8 weeks; generally no more than 4 per region per year."
+  },
+  {
+    "id": "le_lumbar_spondylolisthesis__esi_transforaminal_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_spondylolisthesis",
+    "treatment_id": "esi_transforaminal_lumbar",
+    "applicability": "Radicular/foraminal symptoms (e.g., isthmic foraminal stenosis); same limits as other ESIs.",
+    "adequacy": "Up to 2 injections in the diagnostic phase; repeat only if 50% or more relief with functional gain/medication reduction for 6-8 weeks; generally no more than 4 per region per year."
+  },
+  {
+    "id": "le_lumbar_spondylolisthesis__laminectomy_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_spondylolisthesis",
+    "treatment_id": "laminectomy_lumbar",
+    "applicability": "Decompression alone may be considered in select degenerative slips with stenosis without dynamic instability.",
+    "adequacy": "Adequate once performed and post-op rehabilitation completed. Not required for MMI if not indicated, contraindicated, or declined by an informed patient."
+  },
+  {
+    "id": "le_lumbar_spondylolisthesis__fusion_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_spondylolisthesis",
+    "treatment_id": "fusion_lumbar",
+    "applicability": "Decompression with fusion for symptomatic degenerative spondylolisthesis with stenosis (NASS), or isthmic slip/instability after failed non-operative care.",
+    "adequacy": "Adequate once performed and post-op rehabilitation completed. Not required for MMI if not indicated, contraindicated, or declined by an informed patient."
+  },
+  {
+    "id": "le_lumbar_facet_degenerative_disc__activity_modification_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_facet_degenerative_disc",
+    "treatment_id": "activity_modification_lumbar",
+    "applicability": "All patients; reassurance that degeneration is common and not dangerous.",
+    "adequacy": "Adequate when advice to stay active/avoid bed rest and education are documented alongside active care; not a stand-alone trial."
+  },
+  {
+    "id": "le_lumbar_facet_degenerative_disc__home_exercise_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_facet_degenerative_disc",
+    "treatment_id": "home_exercise_lumbar",
+    "applicability": "All patients.",
+    "adequacy": "Adequate when a program is taught (usually during PT) and ongoing independent adherence is documented."
+  },
+  {
+    "id": "le_lumbar_facet_degenerative_disc__pt_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_facet_degenerative_disc",
+    "treatment_id": "pt_lumbar",
+    "applicability": "Chronic axial LBP; active exercise-based therapy.",
+    "adequacy": "About 10 visits over 8 weeks (typical ODG benchmark) with documented objective functional progress, then fading to HEP; more visits only with measurable gains."
+  },
+  {
+    "id": "le_lumbar_facet_degenerative_disc__manipulation_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_facet_degenerative_disc",
+    "treatment_id": "manipulation_lumbar",
+    "applicability": "Chronic axial LBP without instability.",
+    "adequacy": "Trial of about 6 visits over 2 weeks; continue up to about 18 visits over 6-8 weeks only with objective functional improvement; maintenance care not required for MMI."
+  },
+  {
+    "id": "le_lumbar_facet_degenerative_disc__acupuncture_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_facet_degenerative_disc",
+    "treatment_id": "acupuncture_lumbar",
+    "applicability": "Chronic LBP (ACP); NICE recommends against.",
+    "adequacy": "Trial of about 3-6 sessions to show functional improvement; continue up to about 8-12 sessions over 4-8 weeks only with documented gains."
+  },
+  {
+    "id": "le_lumbar_facet_degenerative_disc__nsaids_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_facet_degenerative_disc",
+    "treatment_id": "nsaids_lumbar",
+    "applicability": "First-line medication for flares/chronic pain at lowest effective dose.",
+    "adequacy": "Scheduled trial of about 2-4 weeks at therapeutic dose, or documented intolerance/contraindication; lowest effective dose for shortest duration."
+  },
+  {
+    "id": "le_lumbar_facet_degenerative_disc__duloxetine_snri_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_facet_degenerative_disc",
+    "treatment_id": "duloxetine_snri_lumbar",
+    "applicability": "Chronic LBP after non-drug care (ACP second-line); NICE recommends against.",
+    "adequacy": "Trial of about 4-8 weeks at therapeutic dose (e.g., duloxetine 60 mg/day); stop if no meaningful benefit."
+  },
+  {
+    "id": "le_lumbar_facet_degenerative_disc__mind_body_exercise_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_facet_degenerative_disc",
+    "treatment_id": "mind_body_exercise_lumbar",
+    "applicability": "Chronic LBP as an alternative exercise modality.",
+    "adequacy": "Structured program of about 8-12 weeks; optional - absence does not preclude MMI."
+  },
+  {
+    "id": "le_lumbar_facet_degenerative_disc__cbt_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_facet_degenerative_disc",
+    "treatment_id": "cbt_lumbar",
+    "applicability": "Chronic LBP with psychosocial contributors.",
+    "adequacy": "Initial 3-4 sessions over 2 weeks; up to about 6-10 sessions over 5-6 weeks with documented functional improvement."
+  },
+  {
+    "id": "le_lumbar_facet_degenerative_disc__medial_branch_block_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_facet_degenerative_disc",
+    "treatment_id": "medial_branch_block_lumbar",
+    "applicability": "Suspected facet pain (axial, non-radicular) after about 3 months of failed conservative care; prognostic for RFA.",
+    "adequacy": "One (or two, per payer) diagnostic block set per level; a positive result is 50-80% concordant relief for the anesthetic's duration; a negative block ends the facet pathway."
+  },
+  {
+    "id": "le_lumbar_facet_degenerative_disc__facet_ia_injection_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_facet_degenerative_disc",
+    "treatment_id": "facet_ia_injection_lumbar",
+    "applicability": "Alternative diagnostic block when MBB not used; therapeutic steroid benefit is limited.",
+    "adequacy": "Single diagnostic/therapeutic injection per level; repeat only with documented prolonged relief; not required for MMI."
+  },
+  {
+    "id": "le_lumbar_facet_degenerative_disc__rfa_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_facet_degenerative_disc",
+    "treatment_id": "rfa_lumbar",
+    "applicability": "Facet pain confirmed by positive diagnostic block(s), 2 levels or fewer bilaterally, no radiculopathy.",
+    "adequacy": "One ablation per level after positive diagnostic block(s); repeat only if 50% or more relief lasted 3-6 months or longer with functional gain, generally no more often than every 6 months."
+  },
+  {
+    "id": "le_lumbar_facet_degenerative_disc__functional_restoration_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_facet_degenerative_disc",
+    "treatment_id": "functional_restoration_lumbar",
+    "applicability": "Chronic disabling axial LBP; intensive interdisciplinary rehab is a comparable alternative to fusion (AANS/CNS 2014).",
+    "adequacy": "Continuation beyond 2 weeks requires documented objective gains; total generally 20 full-day sessions (or part-day equivalent) or fewer."
+  },
+  {
+    "id": "le_lumbar_facet_degenerative_disc__fusion_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_facet_degenerative_disc",
+    "treatment_id": "fusion_lumbar",
+    "applicability": "Highly selected 1-2 level discogenic pain after failure of comprehensive care including rehab (AANS/CNS 2014); NICE NG59 advises against fusion for LBP outside trials. Optional.",
+    "adequacy": "Adequate once performed and post-op rehabilitation completed. Not required for MMI if not indicated, contraindicated, or declined by an informed patient."
+  },
+  {
+    "id": "le_lumbar_fracture__activity_modification_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_fracture",
+    "treatment_id": "activity_modification_lumbar",
+    "applicability": "Early mobilization as tolerated for stable fractures; avoid prolonged bed rest.",
+    "adequacy": "Adequate when advice to stay active/avoid bed rest and education are documented alongside active care; not a stand-alone trial."
+  },
+  {
+    "id": "le_lumbar_fracture__spinal_orthosis_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_fracture",
+    "treatment_id": "spinal_orthosis_lumbar",
+    "applicability": "Stable, neurologically intact fractures per surgeon preference; CNS 2019 found similar outcomes with or without bracing for intact burst fractures.",
+    "adequacy": "Worn per treating-surgeon protocol until radiographic healing (typically 6-12 weeks); adequate when bracing is completed with healing documented."
+  },
+  {
+    "id": "le_lumbar_fracture__acetaminophen_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_fracture",
+    "treatment_id": "acetaminophen_lumbar",
+    "applicability": "Baseline analgesic for fracture pain.",
+    "adequacy": "Optional; scheduled trial of 1-2 weeks at up to 3-4 g/day; absence does not preclude MMI."
+  },
+  {
+    "id": "le_lumbar_fracture__nsaids_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_fracture",
+    "treatment_id": "nsaids_lumbar",
+    "applicability": "Short-course analgesia as appropriate to healing and risk profile.",
+    "adequacy": "Scheduled trial of about 2-4 weeks at therapeutic dose, or documented intolerance/contraindication; lowest effective dose for shortest duration."
+  },
+  {
+    "id": "le_lumbar_fracture__opioids_short_course_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_fracture",
+    "treatment_id": "opioids_short_course_lumbar",
+    "applicability": "Severe acute fracture or post-operative pain; taper promptly.",
+    "adequacy": "Not a required rung; if used, short course (a few days, generally 7 days or less for acute pain); long-term opioid therapy is not required to establish MMI."
+  },
+  {
+    "id": "le_lumbar_fracture__pt_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_fracture",
+    "treatment_id": "pt_lumbar",
+    "applicability": "After fracture stability/healing is confirmed or post-operatively; mobility, strengthening, return to function.",
+    "adequacy": "About 8 visits over 10 weeks for non-operative fractures (ODG-style benchmark); post-op per post-surgical benchmarks; continue only with objective gains."
+  },
+  {
+    "id": "le_lumbar_fracture__home_exercise_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_fracture",
+    "treatment_id": "home_exercise_lumbar",
+    "applicability": "After instruction in PT.",
+    "adequacy": "Adequate when a program is taught (usually during PT) and ongoing independent adherence is documented."
+  },
+  {
+    "id": "le_lumbar_fracture__vertebral_augmentation_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_fracture",
+    "treatment_id": "vertebral_augmentation_lumbar",
+    "applicability": "Osteoporotic compression fracture with severe ongoing pain despite optimal analgesia and imaging-confirmed unhealed fracture.",
+    "adequacy": "Single procedure per fracture level; adequate once performed; not required for MMI."
+  },
+  {
+    "id": "le_lumbar_fracture__fusion_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_fracture",
+    "treatment_id": "fusion_lumbar",
+    "applicability": "Unstable fractures (e.g., posterior ligamentous complex disruption) or neurologic deficit needing decompression and stabilization.",
+    "adequacy": "Adequate once performed and post-op rehabilitation completed. Not required for MMI if not indicated, contraindicated, or declined by an informed patient."
+  },
+  {
+    "id": "le_lumbar_post_surgical__pt_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_post_surgical",
+    "treatment_id": "pt_lumbar",
+    "applicability": "Post-operative rehabilitation and for persistent post-surgical pain.",
+    "adequacy": "Post-op benchmarks roughly 16 visits/8 weeks after discectomy or decompression and up to about 34 visits/16 weeks after fusion (ODG-style); continue only with objective gains."
+  },
+  {
+    "id": "le_lumbar_post_surgical__home_exercise_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_post_surgical",
+    "treatment_id": "home_exercise_lumbar",
+    "applicability": "All patients after instruction.",
+    "adequacy": "Adequate when a program is taught (usually during PT) and ongoing independent adherence is documented."
+  },
+  {
+    "id": "le_lumbar_post_surgical__nsaids_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_post_surgical",
+    "treatment_id": "nsaids_lumbar",
+    "applicability": "Analgesia as risk profile allows.",
+    "adequacy": "Scheduled trial of about 2-4 weeks at therapeutic dose, or documented intolerance/contraindication; lowest effective dose for shortest duration."
+  },
+  {
+    "id": "le_lumbar_post_surgical__neuropathic_agents_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_post_surgical",
+    "treatment_id": "neuropathic_agents_lumbar",
+    "applicability": "Persistent neuropathic radicular pain after surgery.",
+    "adequacy": "Titrate to effective/tolerated dose (e.g., gabapentin 1200-1800 mg/day or pregabalin 150-300 mg/day) for about 4-8 weeks; optional - absence does not preclude MMI."
+  },
+  {
+    "id": "le_lumbar_post_surgical__esi_transforaminal_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_post_surgical",
+    "treatment_id": "esi_transforaminal_lumbar",
+    "applicability": "Recurrent or residual radiculopathy with concordant imaging.",
+    "adequacy": "Up to 2 injections in the diagnostic phase; repeat only if 50% or more relief with functional gain/medication reduction for 6-8 weeks; generally no more than 4 per region per year."
+  },
+  {
+    "id": "le_lumbar_post_surgical__esi_interlaminar_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_post_surgical",
+    "treatment_id": "esi_interlaminar_lumbar",
+    "applicability": "Recurrent or residual radiculopathy; caution at the operated level.",
+    "adequacy": "Up to 2 injections in the diagnostic phase; repeat only if 50% or more relief with functional gain/medication reduction for 6-8 weeks; generally no more than 4 per region per year."
+  },
+  {
+    "id": "le_lumbar_post_surgical__cbt_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_post_surgical",
+    "treatment_id": "cbt_lumbar",
+    "applicability": "Chronic post-surgical pain with psychosocial contributors; also part of SCS screening.",
+    "adequacy": "Initial 3-4 sessions over 2 weeks; up to about 6-10 sessions over 5-6 weeks with documented functional improvement."
+  },
+  {
+    "id": "le_lumbar_post_surgical__spinal_cord_stimulator_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_post_surgical",
+    "treatment_id": "spinal_cord_stimulator_lumbar",
+    "applicability": "Neuropathic (predominantly leg) pain 6 months or more despite conventional medical management, after successful trial; no further surgical target.",
+    "adequacy": "Requires psychological screening and a successful trial (50% or more relief); adequate once implanted and programming optimized; not required for MMI if not a candidate or declined."
+  },
+  {
+    "id": "le_lumbar_post_surgical__functional_restoration_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_post_surgical",
+    "treatment_id": "functional_restoration_lumbar",
+    "applicability": "Chronic disabling post-surgical pain with no surgical target.",
+    "adequacy": "Continuation beyond 2 weeks requires documented objective gains; total generally 20 full-day sessions (or part-day equivalent) or fewer."
+  },
+  {
+    "id": "le_lumbar_post_surgical__revision_surgery_lumbar",
+    "region_id": "lumbar_spine",
+    "canonical_dx_id": "lumbar_post_surgical",
+    "treatment_id": "revision_surgery_lumbar",
+    "applicability": "Identified surgical target only: pseudarthrosis, recurrent herniation, hardware failure or adjacent-segment disease concordant with symptoms.",
+    "adequacy": "Adequate once performed and post-op rehabilitation completed. Not required for MMI if not indicated, contraindicated, or declined by an informed patient."
+  },
+  {
+    "id": "le_cervical_nonspecific_strain_sprain__activity_modification_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_nonspecific_strain_sprain",
+    "treatment_id": "activity_modification_cervical",
+    "applicability": "All patients; stay active, reassurance, avoid prolonged collar use.",
+    "adequacy": "Adequate when advice to stay active/avoid bed rest and education are documented alongside active care; not a stand-alone trial."
+  },
+  {
+    "id": "le_cervical_nonspecific_strain_sprain__home_exercise_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_nonspecific_strain_sprain",
+    "treatment_id": "home_exercise_cervical",
+    "applicability": "All phases; ROM and stretching/strengthening.",
+    "adequacy": "Adequate when a program is taught (usually during PT) and ongoing independent adherence is documented."
+  },
+  {
+    "id": "le_cervical_nonspecific_strain_sprain__pt_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_nonspecific_strain_sprain",
+    "treatment_id": "pt_cervical",
+    "applicability": "Acute to chronic neck pain including WAD; exercise plus manual therapy.",
+    "adequacy": "About 10 visits over 8 weeks (typical ODG benchmark) with documented objective functional progress, then fading to HEP; more visits only with measurable gains."
+  },
+  {
+    "id": "le_cervical_nonspecific_strain_sprain__manipulation_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_nonspecific_strain_sprain",
+    "treatment_id": "manipulation_cervical",
+    "applicability": "Neck pain with mobility deficits; thoracic manipulation and cervical mobilization/manipulation; screen for vascular and instability red flags.",
+    "adequacy": "Trial of about 6 visits over 2 weeks; continue up to about 18 visits over 6-8 weeks only with objective functional improvement; maintenance care not required for MMI."
+  },
+  {
+    "id": "le_cervical_nonspecific_strain_sprain__acupuncture_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_nonspecific_strain_sprain",
+    "treatment_id": "acupuncture_cervical",
+    "applicability": "Subacute/chronic neck pain as an adjunct to active care.",
+    "adequacy": "Trial of about 3-6 sessions to show functional improvement; continue up to about 8-12 sessions over 4-8 weeks only with documented gains."
+  },
+  {
+    "id": "le_cervical_nonspecific_strain_sprain__nsaids_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_nonspecific_strain_sprain",
+    "treatment_id": "nsaids_cervical",
+    "applicability": "First-line analgesic.",
+    "adequacy": "Scheduled trial of about 2-4 weeks at therapeutic dose, or documented intolerance/contraindication; lowest effective dose for shortest duration."
+  },
+  {
+    "id": "le_cervical_nonspecific_strain_sprain__muscle_relaxants_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_nonspecific_strain_sprain",
+    "treatment_id": "muscle_relaxants_cervical",
+    "applicability": "Acute neck pain with spasm; short course only.",
+    "adequacy": "Short course of 2-3 weeks or less for acute pain or flare; long-term use is not recommended and not required for MMI."
+  },
+  {
+    "id": "le_cervical_nonspecific_strain_sprain__acetaminophen_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_nonspecific_strain_sprain",
+    "treatment_id": "acetaminophen_cervical",
+    "applicability": "Alternative when NSAIDs contraindicated.",
+    "adequacy": "Optional; scheduled trial of 1-2 weeks at up to 3-4 g/day; absence does not preclude MMI."
+  },
+  {
+    "id": "le_cervical_nonspecific_strain_sprain__opioids_short_course_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_nonspecific_strain_sprain",
+    "treatment_id": "opioids_short_course_cervical",
+    "applicability": "Severe acute pain only when other analgesics fail.",
+    "adequacy": "Not a required rung; if used, short course (a few days, generally 7 days or less for acute pain); long-term opioid therapy is not required to establish MMI."
+  },
+  {
+    "id": "le_cervical_nonspecific_strain_sprain__trigger_point_injection_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_nonspecific_strain_sprain",
+    "treatment_id": "trigger_point_injection_cervical",
+    "applicability": "Myofascial pain with documented trigger points, symptoms over 3 months, failed conservative care, no radiculopathy.",
+    "adequacy": "Repeat only if 50% or more relief for 6 or more weeks with functional gain; injections no more often than every 2 months, 3-4 or fewer per session."
+  },
+  {
+    "id": "le_cervical_nonspecific_strain_sprain__cbt_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_nonspecific_strain_sprain",
+    "treatment_id": "cbt_cervical",
+    "applicability": "Chronic neck pain/WAD with psychosocial risk factors.",
+    "adequacy": "Initial 3-4 sessions over 2 weeks; up to about 6-10 sessions over 5-6 weeks with documented functional improvement."
+  },
+  {
+    "id": "le_cervical_nonspecific_strain_sprain__functional_restoration_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_nonspecific_strain_sprain",
+    "treatment_id": "functional_restoration_cervical",
+    "applicability": "Chronic disabling neck pain after failed conventional care.",
+    "adequacy": "Continuation beyond 2 weeks requires documented objective gains; total generally 20 full-day sessions (or part-day equivalent) or fewer."
+  },
+  {
+    "id": "le_cervical_nonspecific_strain_sprain__work_conditioning_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_nonspecific_strain_sprain",
+    "treatment_id": "work_conditioning_cervical",
+    "applicability": "Work-related neck injury with job-demand gap after PT.",
+    "adequacy": "Time-limited (about 4-8 weeks) toward a defined return-to-work goal; continue beyond 2 weeks only with documented compliance and significant gains."
+  },
+  {
+    "id": "le_cervical_radiculopathy__activity_modification_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_radiculopathy",
+    "treatment_id": "activity_modification_cervical",
+    "applicability": "All patients; most improve without surgery.",
+    "adequacy": "Adequate when advice to stay active/avoid bed rest and education are documented alongside active care; not a stand-alone trial."
+  },
+  {
+    "id": "le_cervical_radiculopathy__home_exercise_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_radiculopathy",
+    "treatment_id": "home_exercise_cervical",
+    "applicability": "All phases as tolerated.",
+    "adequacy": "Adequate when a program is taught (usually during PT) and ongoing independent adherence is documented."
+  },
+  {
+    "id": "le_cervical_radiculopathy__pt_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_radiculopathy",
+    "treatment_id": "pt_cervical",
+    "applicability": "Radiating neck pain: exercise plus manual therapy with intermittent traction (JOSPT); NASS found insufficient evidence for PT as stand-alone treatment.",
+    "adequacy": "About 10 visits over 8 weeks (typical ODG benchmark) with documented objective functional progress, then fading to HEP; more visits only with measurable gains."
+  },
+  {
+    "id": "le_cervical_radiculopathy__nsaids_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_radiculopathy",
+    "treatment_id": "nsaids_cervical",
+    "applicability": "First-line analgesic.",
+    "adequacy": "Scheduled trial of about 2-4 weeks at therapeutic dose, or documented intolerance/contraindication; lowest effective dose for shortest duration."
+  },
+  {
+    "id": "le_cervical_radiculopathy__oral_steroids_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_radiculopathy",
+    "treatment_id": "oral_steroids_cervical",
+    "applicability": "Optional short taper for acute severe radicular pain; high-quality evidence limited.",
+    "adequacy": "One short taper (about 5-15 days) in the acute phase; repeat courses not recommended; optional."
+  },
+  {
+    "id": "le_cervical_radiculopathy__neuropathic_agents_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_radiculopathy",
+    "treatment_id": "neuropathic_agents_cervical",
+    "applicability": "Optional for neuropathic radicular arm pain.",
+    "adequacy": "Titrate to effective/tolerated dose (e.g., gabapentin 1200-1800 mg/day or pregabalin 150-300 mg/day) for about 4-8 weeks; optional - absence does not preclude MMI."
+  },
+  {
+    "id": "le_cervical_radiculopathy__opioids_short_course_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_radiculopathy",
+    "treatment_id": "opioids_short_course_cervical",
+    "applicability": "Short course for severe acute radicular pain only.",
+    "adequacy": "Not a required rung; if used, short course (a few days, generally 7 days or less for acute pain); long-term opioid therapy is not required to establish MMI."
+  },
+  {
+    "id": "le_cervical_radiculopathy__esi_interlaminar_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_radiculopathy",
+    "treatment_id": "esi_interlaminar_cervical",
+    "applicability": "Concordant radiculopathy not responding to conservative care; preferred cervical approach for safety.",
+    "adequacy": "Up to 2 injections in the diagnostic phase; repeat only if 50% or more relief with functional gain/medication reduction for 6-8 weeks; generally no more than 4 per region per year."
+  },
+  {
+    "id": "le_cervical_radiculopathy__esi_transforaminal_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_radiculopathy",
+    "treatment_id": "esi_transforaminal_cervical",
+    "applicability": "Selected cases only (non-particulate steroid, image guidance) given rare catastrophic neurovascular complications.",
+    "adequacy": "Up to 2 injections in the diagnostic phase; repeat only if 50% or more relief with functional gain/medication reduction for 6-8 weeks; generally no more than 4 per region per year."
+  },
+  {
+    "id": "le_cervical_radiculopathy__acdf_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_radiculopathy",
+    "treatment_id": "acdf_cervical",
+    "applicability": "Persistent disabling radiculopathy with concordant imaging after about 6-12 weeks of failed conservative care, or progressive motor deficit.",
+    "adequacy": "Adequate once performed and post-op rehabilitation completed. Not required for MMI if not indicated, contraindicated, or declined by an informed patient."
+  },
+  {
+    "id": "le_cervical_radiculopathy__disc_arthroplasty_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_radiculopathy",
+    "treatment_id": "disc_arthroplasty_cervical",
+    "applicability": "Alternative to ACDF for 1-2 level soft disc/spondylotic radiculopathy without instability or significant facet arthrosis.",
+    "adequacy": "Adequate once performed and post-op rehabilitation completed. Not required for MMI if not indicated, contraindicated, or declined by an informed patient."
+  },
+  {
+    "id": "le_cervical_radiculopathy__posterior_foraminotomy_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_radiculopathy",
+    "treatment_id": "posterior_foraminotomy_cervical",
+    "applicability": "Foraminal (posterolateral) disc or osteophyte with unilateral radiculopathy and no instability.",
+    "adequacy": "Adequate once performed and post-op rehabilitation completed. Not required for MMI if not indicated, contraindicated, or declined by an informed patient."
+  },
+  {
+    "id": "le_cervical_myelopathy_stenosis__pt_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_myelopathy_stenosis",
+    "treatment_id": "pt_cervical",
+    "applicability": "Mild myelopathy only, as a supervised structured rehab trial with close neurologic follow-up; manipulation is contraindicated with cord compression.",
+    "adequacy": "Supervised trial with serial neurologic exams (e.g., mJOA) over about 3 months; deterioration or no improvement means surgical referral, not more therapy."
+  },
+  {
+    "id": "le_cervical_myelopathy_stenosis__nsaids_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_myelopathy_stenosis",
+    "treatment_id": "nsaids_cervical",
+    "applicability": "Symptomatic neck/arm pain management alongside monitoring.",
+    "adequacy": "Scheduled trial of about 2-4 weeks at therapeutic dose, or documented intolerance/contraindication; lowest effective dose for shortest duration."
+  },
+  {
+    "id": "le_cervical_myelopathy_stenosis__acdf_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_myelopathy_stenosis",
+    "treatment_id": "acdf_cervical",
+    "applicability": "Moderate or severe DCM, or mild DCM that fails or worsens; anterior approach for 1-3 level ventral compression.",
+    "adequacy": "Adequate once performed and post-op rehabilitation completed. Not required for MMI if not indicated, contraindicated, or declined by an informed patient."
+  },
+  {
+    "id": "le_cervical_myelopathy_stenosis__laminoplasty_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_myelopathy_stenosis",
+    "treatment_id": "laminoplasty_cervical",
+    "applicability": "Multilevel compression with preserved lordosis and minimal axial pain.",
+    "adequacy": "Adequate once performed and post-op rehabilitation completed. Not required for MMI if not indicated, contraindicated, or declined by an informed patient."
+  },
+  {
+    "id": "le_cervical_myelopathy_stenosis__posterior_fusion_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_myelopathy_stenosis",
+    "treatment_id": "posterior_fusion_cervical",
+    "applicability": "Multilevel compression, kyphosis or instability requiring posterior decompression and fusion.",
+    "adequacy": "Adequate once performed and post-op rehabilitation completed. Not required for MMI if not indicated, contraindicated, or declined by an informed patient."
+  },
+  {
+    "id": "le_cervical_facet_degenerative__activity_modification_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_facet_degenerative",
+    "treatment_id": "activity_modification_cervical",
+    "applicability": "All patients.",
+    "adequacy": "Adequate when advice to stay active/avoid bed rest and education are documented alongside active care; not a stand-alone trial."
+  },
+  {
+    "id": "le_cervical_facet_degenerative__home_exercise_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_facet_degenerative",
+    "treatment_id": "home_exercise_cervical",
+    "applicability": "All patients.",
+    "adequacy": "Adequate when a program is taught (usually during PT) and ongoing independent adherence is documented."
+  },
+  {
+    "id": "le_cervical_facet_degenerative__pt_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_facet_degenerative",
+    "treatment_id": "pt_cervical",
+    "applicability": "Chronic axial neck pain; exercise plus manual therapy.",
+    "adequacy": "About 10 visits over 8 weeks (typical ODG benchmark) with documented objective functional progress, then fading to HEP; more visits only with measurable gains."
+  },
+  {
+    "id": "le_cervical_facet_degenerative__manipulation_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_facet_degenerative",
+    "treatment_id": "manipulation_cervical",
+    "applicability": "Chronic neck pain with mobility deficits, no myelopathy or instability.",
+    "adequacy": "Trial of about 6 visits over 2 weeks; continue up to about 18 visits over 6-8 weeks only with objective functional improvement; maintenance care not required for MMI."
+  },
+  {
+    "id": "le_cervical_facet_degenerative__acupuncture_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_facet_degenerative",
+    "treatment_id": "acupuncture_cervical",
+    "applicability": "Chronic neck pain adjunct.",
+    "adequacy": "Trial of about 3-6 sessions to show functional improvement; continue up to about 8-12 sessions over 4-8 weeks only with documented gains."
+  },
+  {
+    "id": "le_cervical_facet_degenerative__nsaids_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_facet_degenerative",
+    "treatment_id": "nsaids_cervical",
+    "applicability": "First-line medication for flares.",
+    "adequacy": "Scheduled trial of about 2-4 weeks at therapeutic dose, or documented intolerance/contraindication; lowest effective dose for shortest duration."
+  },
+  {
+    "id": "le_cervical_facet_degenerative__cbt_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_facet_degenerative",
+    "treatment_id": "cbt_cervical",
+    "applicability": "Chronic pain with psychosocial contributors.",
+    "adequacy": "Initial 3-4 sessions over 2 weeks; up to about 6-10 sessions over 5-6 weeks with documented functional improvement."
+  },
+  {
+    "id": "le_cervical_facet_degenerative__medial_branch_block_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_facet_degenerative",
+    "treatment_id": "medial_branch_block_cervical",
+    "applicability": "Suspected facet pain (axial neck pain or cervicogenic headache) after about 6 weeks of failed conservative care; prognostic for RFA.",
+    "adequacy": "One (or two, per payer) diagnostic block set per level; a positive result is 50-80% concordant relief for the anesthetic's duration; a negative block ends the facet pathway."
+  },
+  {
+    "id": "le_cervical_facet_degenerative__facet_ia_injection_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_facet_degenerative",
+    "treatment_id": "facet_ia_injection_cervical",
+    "applicability": "Less predictive than MBB for RFA selection; limited therapeutic role.",
+    "adequacy": "Single diagnostic/therapeutic injection per level; repeat only with documented prolonged relief; not required for MMI."
+  },
+  {
+    "id": "le_cervical_facet_degenerative__rfa_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_facet_degenerative",
+    "treatment_id": "rfa_cervical",
+    "applicability": "Facet pain confirmed by positive MBB(s) in well-selected patients.",
+    "adequacy": "One ablation per level after positive diagnostic block(s); repeat only if 50% or more relief lasted 3-6 months or longer with functional gain, generally no more often than every 6 months."
+  },
+  {
+    "id": "le_cervical_facet_degenerative__functional_restoration_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_facet_degenerative",
+    "treatment_id": "functional_restoration_cervical",
+    "applicability": "Chronic disabling neck pain after failed conventional care.",
+    "adequacy": "Continuation beyond 2 weeks requires documented objective gains; total generally 20 full-day sessions (or part-day equivalent) or fewer."
+  },
+  {
+    "id": "le_cervical_fracture__spinal_orthosis_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_fracture",
+    "treatment_id": "spinal_orthosis_cervical",
+    "applicability": "Stable fractures or post-fixation per surgeon (rigid collar, CTO or halo).",
+    "adequacy": "Worn per treating-surgeon protocol until radiographic healing (typically 6-12 weeks); adequate when bracing is completed with healing documented."
+  },
+  {
+    "id": "le_cervical_fracture__acetaminophen_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_fracture",
+    "treatment_id": "acetaminophen_cervical",
+    "applicability": "Baseline analgesic.",
+    "adequacy": "Optional; scheduled trial of 1-2 weeks at up to 3-4 g/day; absence does not preclude MMI."
+  },
+  {
+    "id": "le_cervical_fracture__nsaids_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_fracture",
+    "treatment_id": "nsaids_cervical",
+    "applicability": "Short-course analgesia as healing and risk profile allow.",
+    "adequacy": "Scheduled trial of about 2-4 weeks at therapeutic dose, or documented intolerance/contraindication; lowest effective dose for shortest duration."
+  },
+  {
+    "id": "le_cervical_fracture__opioids_short_course_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_fracture",
+    "treatment_id": "opioids_short_course_cervical",
+    "applicability": "Severe acute fracture or post-operative pain; taper promptly.",
+    "adequacy": "Not a required rung; if used, short course (a few days, generally 7 days or less for acute pain); long-term opioid therapy is not required to establish MMI."
+  },
+  {
+    "id": "le_cervical_fracture__pt_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_fracture",
+    "treatment_id": "pt_cervical",
+    "applicability": "After radiographic stability/healing or surgical clearance; ROM and strengthening.",
+    "adequacy": "About 8-10 visits over 8-10 weeks after healing (ODG-style benchmark) or per post-surgical benchmarks; continue only with objective gains."
+  },
+  {
+    "id": "le_cervical_fracture__home_exercise_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_fracture",
+    "treatment_id": "home_exercise_cervical",
+    "applicability": "After instruction in PT.",
+    "adequacy": "Adequate when a program is taught (usually during PT) and ongoing independent adherence is documented."
+  },
+  {
+    "id": "le_cervical_fracture__acdf_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_fracture",
+    "treatment_id": "acdf_cervical",
+    "applicability": "Unstable subaxial injuries or cord compression suited to anterior decompression and stabilization.",
+    "adequacy": "Adequate once performed and post-op rehabilitation completed. Not required for MMI if not indicated, contraindicated, or declined by an informed patient."
+  },
+  {
+    "id": "le_cervical_fracture__posterior_fusion_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_fracture",
+    "treatment_id": "posterior_fusion_cervical",
+    "applicability": "Unstable injuries (e.g., facet dislocation, C1-C2 instability) requiring posterior stabilization.",
+    "adequacy": "Adequate once performed and post-op rehabilitation completed. Not required for MMI if not indicated, contraindicated, or declined by an informed patient."
+  },
+  {
+    "id": "le_cervical_post_surgical__pt_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_post_surgical",
+    "treatment_id": "pt_cervical",
+    "applicability": "Post-operative rehabilitation and for persistent post-surgical pain.",
+    "adequacy": "Post-op benchmarks roughly 16-24 visits over 8-16 weeks after decompression or fusion (ODG-style); continue only with objective gains."
+  },
+  {
+    "id": "le_cervical_post_surgical__home_exercise_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_post_surgical",
+    "treatment_id": "home_exercise_cervical",
+    "applicability": "All patients after instruction.",
+    "adequacy": "Adequate when a program is taught (usually during PT) and ongoing independent adherence is documented."
+  },
+  {
+    "id": "le_cervical_post_surgical__nsaids_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_post_surgical",
+    "treatment_id": "nsaids_cervical",
+    "applicability": "Analgesia once fusion healing concerns are addressed.",
+    "adequacy": "Scheduled trial of about 2-4 weeks at therapeutic dose, or documented intolerance/contraindication; lowest effective dose for shortest duration."
+  },
+  {
+    "id": "le_cervical_post_surgical__neuropathic_agents_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_post_surgical",
+    "treatment_id": "neuropathic_agents_cervical",
+    "applicability": "Persistent neuropathic arm pain after surgery.",
+    "adequacy": "Titrate to effective/tolerated dose (e.g., gabapentin 1200-1800 mg/day or pregabalin 150-300 mg/day) for about 4-8 weeks; optional - absence does not preclude MMI."
+  },
+  {
+    "id": "le_cervical_post_surgical__esi_interlaminar_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_post_surgical",
+    "treatment_id": "esi_interlaminar_cervical",
+    "applicability": "Recurrent or adjacent-level radiculopathy with concordant imaging.",
+    "adequacy": "Up to 2 injections in the diagnostic phase; repeat only if 50% or more relief with functional gain/medication reduction for 6-8 weeks; generally no more than 4 per region per year."
+  },
+  {
+    "id": "le_cervical_post_surgical__cbt_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_post_surgical",
+    "treatment_id": "cbt_cervical",
+    "applicability": "Chronic post-surgical pain with psychosocial contributors; also part of SCS screening.",
+    "adequacy": "Initial 3-4 sessions over 2 weeks; up to about 6-10 sessions over 5-6 weeks with documented functional improvement."
+  },
+  {
+    "id": "le_cervical_post_surgical__spinal_cord_stimulator_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_post_surgical",
+    "treatment_id": "spinal_cord_stimulator_cervical",
+    "applicability": "Refractory neuropathic arm pain 6 months or more despite conventional management, after successful trial.",
+    "adequacy": "Requires psychological screening and a successful trial (50% or more relief); adequate once implanted and programming optimized; not required for MMI if not a candidate or declined."
+  },
+  {
+    "id": "le_cervical_post_surgical__functional_restoration_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_post_surgical",
+    "treatment_id": "functional_restoration_cervical",
+    "applicability": "Chronic disabling post-surgical pain with no surgical target.",
+    "adequacy": "Continuation beyond 2 weeks requires documented objective gains; total generally 20 full-day sessions (or part-day equivalent) or fewer."
+  },
+  {
+    "id": "le_cervical_post_surgical__revision_surgery_cervical",
+    "region_id": "cervical_spine",
+    "canonical_dx_id": "cervical_post_surgical",
+    "treatment_id": "revision_surgery_cervical",
+    "applicability": "Identified target only: pseudarthrosis, hardware failure, or symptomatic adjacent-segment disease with concordant imaging.",
+    "adequacy": "Adequate once performed and post-op rehabilitation completed. Not required for MMI if not indicated, contraindicated, or declined by an informed patient."
+  },
+  {
+    "id": "le_thoracic_nonspecific_strain_sprain__activity_modification_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_nonspecific_strain_sprain",
+    "treatment_id": "activity_modification_thoracic",
+    "applicability": "All patients; thoracic-specific trials are sparse, so guidance is extrapolated from neck/low back care.",
+    "adequacy": "Adequate when advice to stay active/avoid bed rest and education are documented alongside active care; not a stand-alone trial."
+  },
+  {
+    "id": "le_thoracic_nonspecific_strain_sprain__home_exercise_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_nonspecific_strain_sprain",
+    "treatment_id": "home_exercise_thoracic",
+    "applicability": "All phases.",
+    "adequacy": "Adequate when a program is taught (usually during PT) and ongoing independent adherence is documented."
+  },
+  {
+    "id": "le_thoracic_nonspecific_strain_sprain__pt_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_nonspecific_strain_sprain",
+    "treatment_id": "pt_thoracic",
+    "applicability": "Subacute/chronic thoracic pain or acute pain not improving.",
+    "adequacy": "About 10 visits over 8 weeks (typical ODG benchmark) with documented objective functional progress, then fading to HEP; more visits only with measurable gains."
+  },
+  {
+    "id": "le_thoracic_nonspecific_strain_sprain__manipulation_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_nonspecific_strain_sprain",
+    "treatment_id": "manipulation_thoracic",
+    "applicability": "Thoracic pain without red flags (fracture, osteoporosis, malignancy); evidence extrapolated.",
+    "adequacy": "Trial of about 6 visits over 2 weeks; continue up to about 18 visits over 6-8 weeks only with objective functional improvement; maintenance care not required for MMI."
+  },
+  {
+    "id": "le_thoracic_nonspecific_strain_sprain__acupuncture_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_nonspecific_strain_sprain",
+    "treatment_id": "acupuncture_thoracic",
+    "applicability": "Chronic thoracic pain adjunct; evidence extrapolated.",
+    "adequacy": "Trial of about 3-6 sessions to show functional improvement; continue up to about 8-12 sessions over 4-8 weeks only with documented gains."
+  },
+  {
+    "id": "le_thoracic_nonspecific_strain_sprain__nsaids_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_nonspecific_strain_sprain",
+    "treatment_id": "nsaids_thoracic",
+    "applicability": "First-line analgesic.",
+    "adequacy": "Scheduled trial of about 2-4 weeks at therapeutic dose, or documented intolerance/contraindication; lowest effective dose for shortest duration."
+  },
+  {
+    "id": "le_thoracic_nonspecific_strain_sprain__muscle_relaxants_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_nonspecific_strain_sprain",
+    "treatment_id": "muscle_relaxants_thoracic",
+    "applicability": "Acute pain with spasm; short course.",
+    "adequacy": "Short course of 2-3 weeks or less for acute pain or flare; long-term use is not recommended and not required for MMI."
+  },
+  {
+    "id": "le_thoracic_nonspecific_strain_sprain__acetaminophen_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_nonspecific_strain_sprain",
+    "treatment_id": "acetaminophen_thoracic",
+    "applicability": "Alternative when NSAIDs contraindicated.",
+    "adequacy": "Optional; scheduled trial of 1-2 weeks at up to 3-4 g/day; absence does not preclude MMI."
+  },
+  {
+    "id": "le_thoracic_nonspecific_strain_sprain__trigger_point_injection_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_nonspecific_strain_sprain",
+    "treatment_id": "trigger_point_injection_thoracic",
+    "applicability": "Myofascial pain with documented trigger points, symptoms over 3 months, failed conservative care.",
+    "adequacy": "Repeat only if 50% or more relief for 6 or more weeks with functional gain; injections no more often than every 2 months, 3-4 or fewer per session."
+  },
+  {
+    "id": "le_thoracic_nonspecific_strain_sprain__cbt_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_nonspecific_strain_sprain",
+    "treatment_id": "cbt_thoracic",
+    "applicability": "Chronic pain with psychosocial contributors.",
+    "adequacy": "Initial 3-4 sessions over 2 weeks; up to about 6-10 sessions over 5-6 weeks with documented functional improvement."
+  },
+  {
+    "id": "le_thoracic_nonspecific_strain_sprain__functional_restoration_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_nonspecific_strain_sprain",
+    "treatment_id": "functional_restoration_thoracic",
+    "applicability": "Chronic disabling pain after failed conventional care.",
+    "adequacy": "Continuation beyond 2 weeks requires documented objective gains; total generally 20 full-day sessions (or part-day equivalent) or fewer."
+  },
+  {
+    "id": "le_thoracic_disc_herniation_radiculopathy__activity_modification_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_disc_herniation_radiculopathy",
+    "treatment_id": "activity_modification_thoracic",
+    "applicability": "All patients; most improve non-operatively.",
+    "adequacy": "Adequate when advice to stay active/avoid bed rest and education are documented alongside active care; not a stand-alone trial."
+  },
+  {
+    "id": "le_thoracic_disc_herniation_radiculopathy__pt_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_disc_herniation_radiculopathy",
+    "treatment_id": "pt_thoracic",
+    "applicability": "Initial care as tolerated; evidence extrapolated from cervical/lumbar radiculopathy.",
+    "adequacy": "About 10 visits over 8 weeks (typical ODG benchmark) with documented objective functional progress, then fading to HEP; more visits only with measurable gains."
+  },
+  {
+    "id": "le_thoracic_disc_herniation_radiculopathy__nsaids_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_disc_herniation_radiculopathy",
+    "treatment_id": "nsaids_thoracic",
+    "applicability": "First-line analgesic.",
+    "adequacy": "Scheduled trial of about 2-4 weeks at therapeutic dose, or documented intolerance/contraindication; lowest effective dose for shortest duration."
+  },
+  {
+    "id": "le_thoracic_disc_herniation_radiculopathy__neuropathic_agents_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_disc_herniation_radiculopathy",
+    "treatment_id": "neuropathic_agents_thoracic",
+    "applicability": "Optional for neuropathic intercostal radicular pain.",
+    "adequacy": "Titrate to effective/tolerated dose (e.g., gabapentin 1200-1800 mg/day or pregabalin 150-300 mg/day) for about 4-8 weeks; optional - absence does not preclude MMI."
+  },
+  {
+    "id": "le_thoracic_disc_herniation_radiculopathy__esi_interlaminar_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_disc_herniation_radiculopathy",
+    "treatment_id": "esi_interlaminar_thoracic",
+    "applicability": "Concordant thoracic radiculopathy not responding to conservative care (clinical consensus; thoracic-specific evidence limited).",
+    "adequacy": "Up to 2 injections in the diagnostic phase; repeat only if 50% or more relief with functional gain/medication reduction for 6-8 weeks; generally no more than 4 per region per year."
+  },
+  {
+    "id": "le_thoracic_disc_herniation_radiculopathy__thoracic_discectomy_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_disc_herniation_radiculopathy",
+    "treatment_id": "thoracic_discectomy_thoracic",
+    "applicability": "Rarely indicated for radiculopathy alone: intractable pain with concordant imaging after prolonged failed care, or any myelopathy.",
+    "adequacy": "Adequate once performed and post-op rehabilitation completed. Not required for MMI if not indicated, contraindicated, or declined by an informed patient."
+  },
+  {
+    "id": "le_thoracic_myelopathy_stenosis__pt_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_myelopathy_stenosis",
+    "treatment_id": "pt_thoracic",
+    "applicability": "Mild, stable deficits only, with close neurologic monitoring; manipulation contraindicated.",
+    "adequacy": "Monitoring trial with serial neurologic exams; progression or no improvement means surgical referral, not more therapy."
+  },
+  {
+    "id": "le_thoracic_myelopathy_stenosis__thoracic_discectomy_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_myelopathy_stenosis",
+    "treatment_id": "thoracic_discectomy_thoracic",
+    "applicability": "Myelopathy from thoracic disc herniation (clinical consensus; no dedicated evidence-based guideline identified).",
+    "adequacy": "Adequate once performed and post-op rehabilitation completed. Not required for MMI if not indicated, contraindicated, or declined by an informed patient."
+  },
+  {
+    "id": "le_thoracic_myelopathy_stenosis__laminectomy_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_myelopathy_stenosis",
+    "treatment_id": "laminectomy_thoracic",
+    "applicability": "Myelopathy from dorsal compression (e.g., ossified ligamentum flavum) (clinical consensus).",
+    "adequacy": "Adequate once performed and post-op rehabilitation completed. Not required for MMI if not indicated, contraindicated, or declined by an informed patient."
+  },
+  {
+    "id": "le_thoracic_myelopathy_stenosis__fusion_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_myelopathy_stenosis",
+    "treatment_id": "fusion_thoracic",
+    "applicability": "Added when decompression causes or accompanies instability or deformity (clinical consensus).",
+    "adequacy": "Adequate once performed and post-op rehabilitation completed. Not required for MMI if not indicated, contraindicated, or declined by an informed patient."
+  },
+  {
+    "id": "le_thoracic_facet_degenerative__activity_modification_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_facet_degenerative",
+    "treatment_id": "activity_modification_thoracic",
+    "applicability": "All patients; evidence extrapolated from neck/low back care.",
+    "adequacy": "Adequate when advice to stay active/avoid bed rest and education are documented alongside active care; not a stand-alone trial."
+  },
+  {
+    "id": "le_thoracic_facet_degenerative__home_exercise_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_facet_degenerative",
+    "treatment_id": "home_exercise_thoracic",
+    "applicability": "All patients.",
+    "adequacy": "Adequate when a program is taught (usually during PT) and ongoing independent adherence is documented."
+  },
+  {
+    "id": "le_thoracic_facet_degenerative__pt_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_facet_degenerative",
+    "treatment_id": "pt_thoracic",
+    "applicability": "Chronic axial thoracic pain.",
+    "adequacy": "About 10 visits over 8 weeks (typical ODG benchmark) with documented objective functional progress, then fading to HEP; more visits only with measurable gains."
+  },
+  {
+    "id": "le_thoracic_facet_degenerative__manipulation_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_facet_degenerative",
+    "treatment_id": "manipulation_thoracic",
+    "applicability": "Without osteoporosis or other red flags; evidence extrapolated.",
+    "adequacy": "Trial of about 6 visits over 2 weeks; continue up to about 18 visits over 6-8 weeks only with objective functional improvement; maintenance care not required for MMI."
+  },
+  {
+    "id": "le_thoracic_facet_degenerative__nsaids_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_facet_degenerative",
+    "treatment_id": "nsaids_thoracic",
+    "applicability": "First-line medication for flares.",
+    "adequacy": "Scheduled trial of about 2-4 weeks at therapeutic dose, or documented intolerance/contraindication; lowest effective dose for shortest duration."
+  },
+  {
+    "id": "le_thoracic_facet_degenerative__cbt_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_facet_degenerative",
+    "treatment_id": "cbt_thoracic",
+    "applicability": "Chronic pain with psychosocial contributors.",
+    "adequacy": "Initial 3-4 sessions over 2 weeks; up to about 6-10 sessions over 5-6 weeks with documented functional improvement."
+  },
+  {
+    "id": "le_thoracic_facet_degenerative__functional_restoration_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_facet_degenerative",
+    "treatment_id": "functional_restoration_thoracic",
+    "applicability": "Chronic disabling pain after failed conventional care.",
+    "adequacy": "Continuation beyond 2 weeks requires documented objective gains; total generally 20 full-day sessions (or part-day equivalent) or fewer."
+  },
+  {
+    "id": "le_thoracic_fracture__activity_modification_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_fracture",
+    "treatment_id": "activity_modification_thoracic",
+    "applicability": "Early mobilization as tolerated for stable fractures.",
+    "adequacy": "Adequate when advice to stay active/avoid bed rest and education are documented alongside active care; not a stand-alone trial."
+  },
+  {
+    "id": "le_thoracic_fracture__spinal_orthosis_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_fracture",
+    "treatment_id": "spinal_orthosis_thoracic",
+    "applicability": "Stable, neurologically intact fractures per surgeon preference (TLSO/Jewett); bracing optional per CNS 2019.",
+    "adequacy": "Worn per treating-surgeon protocol until radiographic healing (typically 6-12 weeks); adequate when bracing is completed with healing documented."
+  },
+  {
+    "id": "le_thoracic_fracture__acetaminophen_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_fracture",
+    "treatment_id": "acetaminophen_thoracic",
+    "applicability": "Baseline analgesic.",
+    "adequacy": "Optional; scheduled trial of 1-2 weeks at up to 3-4 g/day; absence does not preclude MMI."
+  },
+  {
+    "id": "le_thoracic_fracture__nsaids_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_fracture",
+    "treatment_id": "nsaids_thoracic",
+    "applicability": "Short-course analgesia as healing and risk profile allow.",
+    "adequacy": "Scheduled trial of about 2-4 weeks at therapeutic dose, or documented intolerance/contraindication; lowest effective dose for shortest duration."
+  },
+  {
+    "id": "le_thoracic_fracture__opioids_short_course_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_fracture",
+    "treatment_id": "opioids_short_course_thoracic",
+    "applicability": "Severe acute fracture or post-operative pain; taper promptly.",
+    "adequacy": "Not a required rung; if used, short course (a few days, generally 7 days or less for acute pain); long-term opioid therapy is not required to establish MMI."
+  },
+  {
+    "id": "le_thoracic_fracture__pt_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_fracture",
+    "treatment_id": "pt_thoracic",
+    "applicability": "After stability/healing confirmed or post-operatively.",
+    "adequacy": "About 8 visits over 10 weeks for non-operative fractures (ODG-style benchmark); continue only with objective gains."
+  },
+  {
+    "id": "le_thoracic_fracture__home_exercise_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_fracture",
+    "treatment_id": "home_exercise_thoracic",
+    "applicability": "After instruction in PT.",
+    "adequacy": "Adequate when a program is taught (usually during PT) and ongoing independent adherence is documented."
+  },
+  {
+    "id": "le_thoracic_fracture__vertebral_augmentation_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_fracture",
+    "treatment_id": "vertebral_augmentation_thoracic",
+    "applicability": "Osteoporotic compression fracture with severe ongoing pain despite optimal analgesia and imaging-confirmed unhealed fracture.",
+    "adequacy": "Single procedure per fracture level; adequate once performed; not required for MMI."
+  },
+  {
+    "id": "le_thoracic_fracture__fusion_thoracic",
+    "region_id": "thoracic_spine",
+    "canonical_dx_id": "thoracic_fracture",
+    "treatment_id": "fusion_thoracic",
+    "applicability": "Unstable fractures or neurologic deficit needing decompression and stabilization.",
+    "adequacy": "Adequate once performed and post-op rehabilitation completed. Not required for MMI if not indicated, contraindicated, or declined by an informed patient."
+  }
+]

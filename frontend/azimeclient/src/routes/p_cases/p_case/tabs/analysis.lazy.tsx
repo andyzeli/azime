@@ -66,6 +66,7 @@ const adequacyLabel: Record<Adequacy, string> = {
   adequately_trialed: "Adequate",
   inadequately_trialed: "Inadequate",
   not_tried: "Not tried",
+  patient_declined: "Patient declined",
   unclear: "Unclear",
 };
 const chipTone: Record<Applicability | Adequacy, string> = {
@@ -76,6 +77,7 @@ const chipTone: Record<Applicability | Adequacy, string> = {
   inadequately_trialed: "bg-amber-50 border-amber-200 text-amber-800",
   unclear: "bg-amber-50 border-amber-200 text-amber-800",
   not_tried: "bg-slate-50 border-slate-200 text-slate-600",
+  patient_declined: "bg-sky-50 border-sky-200 text-sky-800",
 };
 
 const regionLabel = (region: Region) =>
@@ -423,16 +425,19 @@ function AnalysisReview({
   const saved = savedSteeringFor(stored, steeringResponse);
   const revision = steeringResponse?.revision ?? 0;
 
-  const [draft, setDraft] = useState<PhysicianSteering>(() =>
-    initializePhysicianSteering(stored, saved?.steering)
-  );
-  const [dirty, setDirty] = useState(false);
+  // The last saved steering (or a fresh draft). Undoing an edit makes the draft equal again.
+  const baseline = initializePhysicianSteering(stored, saved?.steering);
+  const [draft, setDraft] = useState<PhysicianSteering>(baseline);
+  const dirty = !sameSteering(draft, baseline);
+  // Bumped on discard so rows drop their local "override pending" state.
+  const [resetCount, setResetCount] = useState(0);
   const [expanded, setExpanded] = useState<string[]>([]);
   const [filter, setFilter] = useState<"all" | "unreviewed" | "pruned">("all");
 
-  const edit = (fn: (d: PhysicianSteering) => PhysicianSteering) => {
-    setDraft(fn);
-    setDirty(true);
+  const edit = (fn: (d: PhysicianSteering) => PhysicianSteering) => setDraft(fn);
+  const discard = () => {
+    setDraft(baseline);
+    setResetCount((n) => n + 1);
   };
 
   const saveMutation = useMutation({
@@ -443,7 +448,6 @@ function AnalysisReview({
       }),
     onSuccess: (response) => {
       queryClient.setQueryData(steeringOptions.queryKey, response);
-      setDirty(false);
     },
   });
   // One click for the physician: save steering, snapshot it, and generate exam prep.
@@ -546,7 +550,7 @@ function AnalysisReview({
                 </div>
                 {group.map((row) => (
                   <TreatmentRowView
-                    key={row.id}
+                    key={`${row.id}:${resetCount}`}
                     row={row}
                     lookups={lookups}
                     steering={draft.treatments[row.id] ?? {}}
@@ -676,6 +680,11 @@ function AnalysisReview({
           dirty={dirty}
           pending={examPrepMutation.isPending}
         />
+        {dirty ? (
+          <Btn disabled={busy} onClick={discard}>
+            Discard changes
+          </Btn>
+        ) : null}
         <Btn
           disabled={!dirty || busy || missingRationale}
           onClick={() => saveMutation.mutate()}
@@ -920,6 +929,19 @@ function SetupStrip({
     </div>
   );
 }
+
+// Order-insensitive, ignoring undefined and empty entries, so undoing an edit counts as no change.
+const normalize = (value: unknown): unknown => {
+  if (Array.isArray(value)) return value.map(normalize);
+  if (!value || typeof value !== "object") return value;
+  const entries = Object.entries(value)
+    .map(([key, v]) => [key, normalize(v)] as const)
+    .filter(([, v]) => v !== undefined && !(v && typeof v === "object" && !Array.isArray(v) && !Object.keys(v).length))
+    .sort(([a], [b]) => a.localeCompare(b));
+  return Object.fromEntries(entries);
+};
+const sameSteering = (a: PhysicianSteering, b: PhysicianSteering) =>
+  JSON.stringify(normalize(a)) === JSON.stringify(normalize(b));
 
 const gridCols = "grid grid-cols-[24px_1.2fr_1.05fr_1.5fr_190px] gap-3.5";
 
@@ -1322,7 +1344,11 @@ function AssessmentEditor({
           <textarea
             value={rationale}
             onChange={(e) => setRationale(e.target.value)}
-            placeholder="Why do you disagree? (required)"
+            placeholder={
+              adqOverride?.value === "patient_declined"
+                ? "Basis of decline: what was offered and why the patient declined (required)"
+                : "Why do you disagree? (required)"
+            }
             className="mt-1.5 h-14 w-full resize-none rounded-md border-[1.5px] border-violet-300 bg-white px-2 py-1.5 outline-none focus:border-violet-500"
           />
         ) : null}

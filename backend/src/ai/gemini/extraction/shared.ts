@@ -11,20 +11,21 @@ export const evidence = z
     quote: z
       .string()
       .describe(
-        "The exact text from the record that supports the claim. Include any relevant context, but do not add interpretation or inference.",
+        "The exact text from the record that supports the claim. Include any relevant context, but do not add interpretation or inference."
       ),
   })
   .describe(
-    "Source evidence supporting this specific extracted item. The quote must come directly from the document and should be the smallest useful passage that clearly supports the extraction",
+    "Source evidence supporting this specific extracted item. The quote must come directly from the document and should be the smallest useful passage that clearly supports the extraction"
   );
 
 const diagnosisShape = {
   evidence: evidence,
   name: strfield.describe("The name of the diagnosis."),
+  //maybe add description ? or tell LLM to include description in name if available. so we can distiguish if icd not available
   icd: strfield
     .nullable()
     .describe(
-      "The ICD code for the diagnosis, if available. If not available, this field should be null.",
+      "The ICD code for the diagnosis, if available. If not available, this field should be null."
     ),
 };
 
@@ -44,7 +45,7 @@ export const buildDiagnosisSchema = (canonicalDxValues: string[]) =>
       canonicalDx: z
         .enum(["unresolved", ...canonicalDxValues])
         .describe(
-          "The canonical diagnosis label with its region prefix (e.g. 'lumbar.stenosis') selected from the supplied taxonomy, or 'unresolved' when none applies.",
+          "The canonical diagnosis label with its region prefix (e.g. 'lumbar.stenosis') selected from the supplied taxonomy, or 'unresolved' when none applies."
         ),
     })
     .describe(diagnosisDescription);
@@ -55,7 +56,7 @@ export const buildRegionsSchema = (regions: string[]) =>
   z
     .enum(["other_body_part", "unclear", ...regions])
     .describe(
-      "Map the explicitly documented anatomical site to an allowed case region. Use 'other_body_part' when the site is known but outside the allowed case regions, or 'unclear' when the region cannot be determined. Do not infer the treated region solely from diagnosis presence.",
+      "Map the explicitly documented anatomical site to an allowed case region. Use 'other_body_part' when the site is known but outside the allowed case regions, or 'unclear' when the region cannot be determined. Do not infer the treated region solely from diagnosis presence."
     );
 
 export const medicationSchema = z.object({
@@ -66,7 +67,7 @@ export const medicationSchema = z.object({
   action: z
     .enum(["Ordered", "Stopped", "Current"])
     .describe(
-      "The action taken with the medication. If medication is only mentioned (not explicitly ordered or stopped), this field should be 'current'.",
+      "The action taken with the medication. If medication is only mentioned (not explicitly ordered or stopped), this field should be 'current'."
     ),
 });
 
@@ -74,16 +75,16 @@ export const imagingSummarySchema = z
   .object({
     evidence: evidence,
     modality: strfield.describe(
-      "The imaging modality used (e.g., MRI, CT, X-ray).",
+      "The imaging modality used (e.g., MRI, CT, EMG, X-ray)."
     ),
     date: strfield.describe("The date of the imaging study, if stated"),
     bodyPart: strfield.describe(
-      "The body part or region imaged (e.g., 'right shoulder', 'lumbar spine').",
+      "The body part or region imaged (e.g., 'right shoulder', 'lumbar spine')."
     ),
     impression: z
       .string()
       .describe(
-        "The primary conclusion or bottom-line finding quoted by the clinician (e.g., 'L4-L5 disc bulge, no spinal stenosis').",
+        "The primary conclusion or bottom-line finding quoted by the clinician (e.g., 'L4-L5 disc bulge, no spinal stenosis')."
       ),
     relationshipToVisit: z
       .enum([
@@ -93,25 +94,25 @@ export const imagingSummarySchema = z
         "unclear",
       ])
       .describe(
-        "whether the imaging was done in-house + reviewed, or just reviewed, or previous imaging referenced. Choose 'unclear' if it's not obvious",
+        "whether the imaging was done in-house + reviewed, or just reviewed, or previous imaging referenced. Choose 'unclear' if it's not obvious"
       ),
   })
   .describe(
-    "An imaging study entry. Include only findings explicitly documented in the record",
+    "An imaging study entry. Include only findings explicitly documented in the record"
   );
 
 export const functionalLimitationSchema = z
   .object({
     evidence: evidence,
     activity: strfield.describe(
-      "The functional limitation activity explicitly stated in the record.",
+      "The functional limitation activity explicitly stated in the record."
     ),
     status: strfield.describe(
-      "The current status, severity, or change over time of the functional limitation, if stated.",
+      "The current status, severity, or change over time of the functional limitation, if stated."
     ),
   })
   .describe(
-    "A functional limitation explicitly documented in this encounter. Do not infer limitations solely from pain, diagnosis, or exam findings. Evidence must directly support the specific activity limitation",
+    "A functional limitation explicitly documented in this encounter. Do not infer limitations solely from pain, diagnosis, or exam findings. Evidence must directly support the specific activity limitation"
   );
 
 export const procedureItemSchema = z.object({
@@ -131,7 +132,7 @@ export const treatmentPerformedSchema = z.object({
   bodySite: z
     .string()
     .describe(
-      "Anatomical site (e.g., 'Left Knee', 'L4-L5 epidural space') of the procedure performed.",
+      "Anatomical site (e.g., 'Left Knee', 'L4-L5 epidural space') of the procedure performed."
     ),
   region: regionSchema,
   treatmentType: z
@@ -146,7 +147,7 @@ export const treatmentPerformedSchema = z.object({
       "Unknown",
     ])
     .describe(
-      "Choose most appropriate category for the treatment, or use 'Unknown' if none of the options fit. use 'modality' for Electircal stim, therapeutic ultrasound, thermal agents, mechanical traction or light therapy ",
+      "Choose most appropriate category for the treatment, or use 'Unknown' if none of the options fit. use 'modality' for Electircal stim, therapeutic ultrasound, thermal agents, mechanical traction or light therapy "
     ),
   laterality: z
     .enum([
@@ -158,12 +159,12 @@ export const treatmentPerformedSchema = z.object({
       "unclear",
     ])
     .describe(
-      "The documented laterality of the procedure. Use 'unclear' if laterality cannot be determined from the record.",
+      "The documented laterality of the procedure. Use 'unclear' if laterality cannot be determined from the record."
     ),
   guidanceMethod: z
     .enum(["fluoroscopy", "ultrasound", "CT", "none", "other", "unclear"])
     .describe(
-      "The imaging or procedural guidance method documented for the procedure.",
+      "The imaging or procedural guidance method documented for the procedure."
     ),
   medicationsInjected: z
     .array(
@@ -172,12 +173,12 @@ export const treatmentPerformedSchema = z.object({
         dose: z
           .string()
           .describe(
-            "The documented dose, concentration, or volume, if provided.",
+            "The documented dose, concentration, or volume, if provided."
           ),
-      }),
+      })
     )
     .describe(
-      "Medications or agents administered during the procedure, such as corticosteroid, local anesthetic, or contrast. Use empty array if not applicable",
+      "Medications or agents administered during the procedure, such as corticosteroid, local anesthetic, or contrast. Use empty array if not applicable"
     ),
   immediate_response: z
     .string()
@@ -185,7 +186,7 @@ export const treatmentPerformedSchema = z.object({
   complications: z
     .string()
     .describe(
-      "Explicitly stated complications during or immediately after the procedure",
+      "Explicitly stated complications during or immediately after the procedure"
     ),
 });
 export const buildTreatmentPerformedSchema = (regions: string[]) =>

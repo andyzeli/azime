@@ -44,6 +44,7 @@ const adequacyLabel: Record<Adequacy, string> = {
   adequately_trialed: "Adequate",
   inadequately_trialed: "Inadequate",
   not_tried: "Not tried",
+  patient_declined: "Patient declined",
   unclear: "Unclear",
 };
 const chipTone: Record<Applicability | Adequacy, string> = {
@@ -54,6 +55,7 @@ const chipTone: Record<Applicability | Adequacy, string> = {
   inadequately_trialed: "bg-amber-50 border-amber-200 text-amber-800",
   unclear: "bg-amber-50 border-amber-200 text-amber-800",
   not_tried: "bg-slate-50 border-slate-200 text-slate-600",
+  patient_declined: "bg-sky-50 border-sky-200 text-sky-800",
 };
 
 const regionLabel = (region: Region) =>

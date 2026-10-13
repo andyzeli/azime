@@ -26,6 +26,7 @@ const assessmentItemSchema = z.object({
       "adequately_trialed",
       "inadequately_trialed",
       "not_tried",
+      "patient_declined",
       "unclear",
     ])
     .describe("Your conclusion on adequacy. "),

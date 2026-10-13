@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exam-to-report design · Regional tracks and MMI scope</title>
+<style>
+:root{--ink:#243430;--muted:#586761;--line:#d8dfdb;--accent:#205e4d;--wash:#f1f5f2;--amber:#f8f1df}*{box-sizing:border-box}body{margin:0;background:#fafbf9;color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{max-width:1080px;margin:auto;padding:34px 30px 60px}h1{font-size:30px;line-height:1.2;margin:10px 0 14px}h2{font-size:22px;margin:0 0 13px;line-height:1.3}h3{font-size:16px;margin:19px 0 8px}p{margin:0 0 12px}a{color:var(--accent);text-underline-offset:3px}header{border-bottom:1px solid var(--line);padding-bottom:20px}.meta,small{font-size:12px;color:var(--muted)}.top,.bar{display:flex;justify-content:space-between;gap:15px;align-items:center}nav{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;margin-top:18px}section{padding-top:30px;scroll-margin-top:20px}table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;vertical-align:top;border-bottom:1px solid var(--line);padding:10px 12px}th{background:var(--wash);font-weight:600}td:first-child{font-weight:600;min-width:150px}.scroll{overflow-x:auto}code{font:12px/1.45 ui-monospace,SFMono-Regular,monospace;overflow-wrap:anywhere}.note{background:var(--wash);padding:13px 16px;border-left:3px solid #91afa0;margin:14px 0;font-size:13px}.cols{display:grid;grid-template-columns:1fr 1fr;gap:22px}ul,ol{padding-left:22px;margin:8px 0 14px}li{margin:7px 0}.small{font-size:13px}.muted{color:var(--muted)}details{border-bottom:1px solid var(--line);padding:11px 0}summary{cursor:pointer;font-weight:600;font-size:13px}details>div{padding:12px 0 3px}button,input,select,textarea{font:inherit;color:inherit}button{border:1px solid #b9c9bf;background:white;border-radius:5px;padding:7px 11px;cursor:pointer;font-size:13px}button:hover{background:var(--wash)}button[aria-pressed="true"],.primary{background:var(--accent);color:white;border-color:var(--accent)}button:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible,select:focus-visible{outline:3px solid #84b39d;outline-offset:3px}button:disabled{opacity:.55;cursor:default}.mock{margin:18px 0;border:1px solid #bdcdc3;border-radius:8px;background:white;overflow:hidden}.mock-title{padding:12px 18px;background:#edf2ee;border-bottom:1px solid var(--line);font-weight:600;font-size:14px}.mock-body{padding:20px}.field{margin-bottom:16px}.field label,.label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}.choices{display:flex;flex-wrap:wrap;gap:6px}input,select,textarea{width:100%;border:1px solid var(--line);border-radius:4px;padding:8px;background:white;font-size:13px}textarea{min-height:68px;resize:vertical}input[type=checkbox]{width:auto;margin-right:7px}.sub{font-size:12px;color:var(--muted);margin-top:5px}.panel{background:var(--wash);padding:15px}.panel h3{margin-top:0}.step{display:grid;grid-template-columns:30px 1fr;gap:10px;padding:13px 0;border-bottom:1px solid var(--line)}.step:last-child{border-bottom:0}.stepnum{width:26px;height:26px;border:1px solid #a9bfb1;border-radius:50%;text-align:center;font-size:13px;line-height:24px}.step strong{font-size:14px}.step p{font-size:13px;margin:5px 0 0}.result{padding:16px;background:var(--wash);margin-top:14px}.result-value{font-size:25px;font-weight:650}.math{font:13px/1.6 ui-monospace,SFMono-Regular,monospace}.status{font-size:13px;color:var(--accent)}.branch[hidden]{display:none}.bar{border-top:1px solid var(--line);padding-top:13px;margin-top:15px}footer{border-top:1px solid var(--line);margin-top:30px;padding-top:18px;font-size:12px;color:var(--muted)}.nowrap{white-space:nowrap}
+@media(max-width:700px){main{padding:22px 17px}.cols{grid-template-columns:1fr}h1{font-size:26px}.top,.bar{align-items:flex-start;flex-wrap:wrap}td,th{padding:8px}td:first-child{min-width:105px}.mock-body{padding:15px}}
+@media print{body{background:white;font-size:11px}main{padding:0;max-width:none}h1{font-size:25px}h2{font-size:18px}nav,#print{display:none}section{padding-top:18px}table,.small,.note{font-size:11px}.step,.result{break-inside:avoid}.branch[hidden]{display:block}.mock{break-inside:auto}footer{font-size:10px}a{color:inherit}}
+.scope-panel[hidden]{display:none}.scope-panel{margin-top:16px}.mini{font-size:12px}.flow{padding:12px 16px;background:var(--wash);font-size:13px;margin:15px 0}.scope-status{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}.mock table select{min-width:140px}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--wash);padding:15px;font-size:12px}@media print{.scope-panel[hidden]{display:block}.mock select{appearance:none}}
+</style>
+</head>
+<body><main>
+<header>
+<div class="top"><span class="meta">AZIME · DESIGN REVISION 3 · 10 OCTOBER 2026</span><button id="print">Print / save PDF</button></div>
+<h1>Exam-to-report implementation design</h1>
+<p>Keep regional analysis tracks. Use the shared visit's Subjective, Objective and Functional sections as each region's latest trajectory checkpoint. Analyze MMI by diagnosis; let the physician issue an opinion for one diagnosis or assess selected diagnoses together.</p>
+<p class="small muted">New version of <a href="exam-to-report-design.html">revision 2</a>. Incorporates PDQ provenance, diagnosis changes, regional processing, and grouped MMI opinions. The AMA walkthrough retains the original Sixth Edition 2008/2009 method.</p>
+<nav aria-label="Document sections"><a href="#scope">1. Analysis scope</a><a href="#exam">2. Exam and PDQ</a><a href="#diagnoses">3. Diagnosis changes</a><a href="#mmi">4. Post-exam and MMI</a><a href="#opinions">5. Other opinions</a><a href="#rating">6. Impairment</a><a href="#report">7. Report</a><a href="#data">8. Build changes</a></nav>
+</header>
+
+<section id="scope"><h2>1. What belongs to each level</h2>
+<div class="scroll"><table><thead><tr><th>Level</th><th>Owns</th><th>Behavior</th></tr></thead><tbody>
+<tr><td>Case / visit</td><td>Source records, shared documentation, questionnaires, referral questions, final report.</td><td>Capture once. Link regional passages and findings without copying the visit into separate notes.</td></tr>
+<tr><td>Region</td><td>Treatment ladder, pre-exam analysis, exam priorities, subjective/objective/functional trajectories, rating worksheet.</td><td>Lumbar and thoracic continue independently. One region's incomplete analysis does not erase another's conclusions.</td></tr>
+<tr><td>Diagnosis within region</td><td>Each treatment's applicability/adequacy; candidate remaining care; plateau evidence; proposed MMI posture; causation.</td><td>All active diagnoses contribute to the regional ladder. Keep one treatment row with multiple diagnosis assessments.</td></tr>
+<tr><td>Physician MMI opinion</td><td>Region + one or more diagnosis IDs; MMI status/date; rationale; care dispositions.</td><td>Default to separate decisions. The physician may assess selected diagnoses in the same region together, preserving their identities.</td></tr>
+</tbody></table></div>
+<div class="flow">Regional care analysis → shared exam → diagnosis review / affected reanalysis → regional trajectories + diagnosis-level MMI proposals → physician MMI scope and decision → regional rating eligibility → report synthesis</div>
+<p class="small">An “all conditions at MMI” value is a derived report summary, not a processing gate. Preserve mixed statuses. Case-level synthesis reconciles shared care and work restrictions and answers cross-region referral questions; AMA rules determine whether and how rating components combine.</p>
+</section>
+
+<section id="exam"><h2>2. Shared examination and the latest trajectory checkpoint</h2>
+<p>Build a shared note with <strong>Subjective, Objective and Functional sections, organized by region</strong>. Dictation can populate these sections. Keep common history in one shared block; do not apply an unlabeled regional finding to every region.</p>
+<div class="scroll"><table><thead><tr><th>Section</th><th>Today's checkpoint</th><th>Source distinction</th></tr></thead><tbody>
+<tr><td>Subjective</td><td>Pain, numbness, symptom frequency, perceived improvement or worsening.</td><td>Patient-reported symptoms.</td></tr>
+<tr><td>Objective</td><td>Examination findings: strength, reflexes, sensation, gait, relevant measurements and tests.</td><td>Observed/measured examination evidence; distinguish historical findings from today's findings.</td></tr>
+<tr><td>Functional</td><td>Walking, standing, sitting, lifting, work and daily activities; relevant questionnaire responses.</td><td>Record patient-reported versus observed/measured. “Reports standing for 15 minutes” differs from observed performance.</td></tr>
+</tbody></table></div>
+<p class="small"><strong>PDQ is subjective evidence about function.</strong> Attach it to the functional checkpoint with its date and instrument version. It supplements the history; agreement between two self-reports is not independent objective confirmation. Keep a case-wide PDQ case-wide unless the patient or examiner supplies regional attribution. Do not split its total across diagnoses or regions.</p>
+<p class="small"><strong>Trajectory update:</strong> supply the prior regional trajectory, its evidence, and today's three sections to the post-exam pass. Return updated direction, evidence quality and interpretation for each domain. Account for measurement differences; do not treat missing values as normal or assume a numeric trend from unlike instruments.</p>
+<p class="small"><strong>Additional structured inputs:</strong> beside the note, show only unanswered <code>VisitPriority</code> items, referral gaps and likely rating criteria. Extract proposed answers from the note for confirmation. Precise muscle/side/grade, level or activity limits are required when a rating or restriction needs them; they are not prerequisites for a narrative trajectory update.</p>
+<p class="small"><strong>Save action:</strong> save the shared visit and regional checkpoints, then review diagnoses before finalizing the post-exam input snapshot.</p>
+</section>
+
+<section id="diagnoses"><h2>3. Diagnosis review and targeted reanalysis</h2>
+<p>Show each in-scope diagnosis with <strong>Confirm / Reject / Uncertain</strong>, plus <strong>Add diagnosis</strong>. Capture region, canonical mapping, side/level where relevant, and a short reason for a change. Keep diagnoses documented in the records separate from the examiner's current diagnosis set. A resolved condition is not automatically a historically incorrect diagnosis.</p>
+<div class="scroll"><table><thead><tr><th>Action</th><th>Analysis response</th></tr></thead><tbody>
+<tr><td>Confirm</td><td>Keep existing diagnosis-dependent work unless other inputs changed.</td></tr>
+<tr><td>Add / replace</td><td>Rerun the affected region's care-taxonomy pass with the revised active diagnosis set, existing extractions, and the physician's exam/reasoning. Rebuild the regional treatment union and diagnosis assessments; supersede replaced diagnoses.</td></tr>
+<tr><td>Reject only</td><td>Retire its current diagnosis assessments and identify dependent conclusions. Refresh the regional ladder and affected analysis with the remaining diagnoses. Do not erase documented past diagnoses or treatments.</td></tr>
+<tr><td>Uncertain / no taxonomy match</td><td>Retain the unresolved diagnosis and its effect on decisions. Use a physician-entered care assessment where needed; do not silently omit the diagnosis from analysis.</td></tr>
+</tbody></table></div>
+<p class="small"><strong>Rerun sequence:</strong> diagnosis revision → affected regional care analysis → physician review of changed treatment assessments → remaining-care query → post-exam analysis → MMI review → affected rating/report sections. A full rerun of the affected regional pass is simpler than a new per-diagnosis orchestration system. Leave unrelated regions alone unless the change also alters their inputs.</p>
+<p class="small"><strong>Preserve:</strong> extracted records, treatment episodes, visit, questionnaire responses and historical trajectory checkpoints. Carry prior treatment reviews as context, but do not silently retain approval where the diagnostic basis changed. Recompute interpretations as needed. Past treatment appropriateness under the diagnosis made at the time is a separate question from care needed now.</p>
+<p class="small"><strong>After the visit:</strong> do not require a new exam-preparation pass. Assemble a fresh post-exam snapshot from corrected scope and reviewed care, retaining earlier prep as history. Newly exposed gaps become post-exam questions. The report explains the examiner's disagreement or diagnostic evolution; it does not automatically declare prior misdiagnosis.</p>
+</section>
+
+<section id="mmi"><h2>4. Post-exam output and physician MMI decisions</h2>
+<h3>4.1 Build one regional result containing diagnosis-level proposals</h3>
+<p class="small">Each regional result contains updated subjective/objective/functional trajectories and a list of <code>{diagnosisId, plateauEvidence, mmiPosture, unresolvedQuestions}</code>. Label plateau evidence as diagnosis-specific, shared regional evidence, or attribution uncertain. Regional stability must not become fabricated proof that every diagnosis has plateaued.</p>
+<p class="small"><strong>Candidate remaining care comes from a query.</strong> For active diagnoses and the latest reviewed treatment assessments, select applicable treatments with <code>not_tried</code> or <code>inadequately_trialed</code> adequacy. Use physician-resolved values rather than raw AI suggestions. Put unclear applicability/adequacy into an unresolved bucket; keep contraindicated/not-applicable items out of the candidate list. Include physician-added treatments.</p>
+<p class="small">Return treatment-row ID, affected diagnosis IDs, basis and existing rationale. Deduplicate shared treatment rows while retaining per-diagnosis assessments. Feed these candidates into the post-exam pass and display them alongside each diagnosis. The list is not itself a prescription or a reason to deny MMI; ongoing or supportive care may also require separate review.</p>
+<h3>4.2 Let the physician choose the scope before deciding MMI</h3>
+<p class="small">Show <strong>region → diagnosis → proposed MMI → plateau evidence → candidate remaining care</strong>. The physician selects diagnoses and chooses “Assess separately” or “Assess together.” Together creates one opinion covering those diagnosis IDs in that region. It does not merge diagnoses, trajectories, causation opinions or AMA rating rows.</p>
+<div class="scroll"><table><thead><tr><th>MMI decision</th><th>Required details for its selected scope</th></tr></thead><tbody>
+<tr><td>At MMI</td><td>Effective date, rationale and prognosis. Classify outstanding care as supportive, not recommended, recovery-directed, or uncertain; explain anything that appears inconsistent with the MMI opinion.</td></tr>
+<tr><td>Not at MMI</td><td>Recovery-directed plan, expected benefit, duration and reassessment interval/event. Defer permanent rating for that scope.</td></tr>
+<tr><td>Cannot determine</td><td>Missing fact, affected decision, resolution action and review trigger.</td></tr>
+</tbody></table></div>
+<p class="small">Grouping is useful when diagnoses describe overlapping regional symptoms or the examiner can support one conclusion for them. It does not turn recovery-directed care into maintenance. Keep the original AI proposals and the physician's explanation for resolving any disagreement.</p>
+<div class="mock"><div class="mock-title">Conclusions → Lumbar · choose MMI scope</div><div class="mock-body">
+<div class="scroll"><table><thead><tr><th>Diagnosis</th><th>AI posture</th><th>Candidate remaining care</th></tr></thead><tbody>
+<tr><td>Disc herniation</td><td>Leans toward MMI</td><td>No candidate gaps in the reviewed ladder</td></tr>
+<tr><td>Strain</td><td>Indeterminate</td><td>Additional exercise-based care — benefit/purpose needs physician judgment</td></tr>
+</tbody></table></div>
+<div class="field" style="margin-top:15px"><span class="label">MMI opinion for these two diagnoses</span><div class="choices"><button data-scope="separate" aria-pressed="true">Assess separately</button><button data-scope="together" aria-pressed="false">Assess together</button></div></div>
+<div class="scope-panel" id="scope-separate"><div class="cols">
+<div class="field"><label for="disc-mmi">Disc herniation</label><select id="disc-mmi"><option value="yes">At MMI</option><option value="no">Not at MMI</option><option value="unknown">Cannot determine</option></select></div>
+<div class="field"><label for="strain-mmi">Strain</label><select id="strain-mmi"><option value="no">Not at MMI</option><option value="yes">At MMI</option><option value="unknown">Cannot determine</option></select></div>
+</div><p class="small">Each diagnosis has its own date/rationale or care/reassessment fields. Switching scope preserves these selections as a draft; only the selected scope can be approved.</p></div>
+<div class="scope-panel" id="scope-together" hidden><div class="cols">
+<div class="field"><label for="group-mmi">One opinion: disc herniation + strain</label><select id="group-mmi"><option value="unknown">Cannot determine</option><option value="yes">At MMI</option><option value="no">Not at MMI</option></select></div>
+<div class="field"><label for="strain-care">Purpose of additional strain care</label><select id="strain-care"><option value="uncertain">Uncertain — review</option><option value="supportive">Supportive care</option><option value="recovery">Expected further recovery</option><option value="not_recommended">Not recommended</option></select></div>
+</div><div class="field"><label for="group-reason">Basis for the shared opinion</label><textarea id="group-reason" placeholder="Explain why these diagnoses can be assessed together and how remaining care affects MMI."></textarea></div></div>
+<div class="panel"><h3>Draft report summary</h3><p class="small" id="scope-summary" aria-live="polite"></p><p class="small muted" id="scope-next"></p></div>
+<div class="scope-status small">Thoracic track: unchanged. Its diagnoses, MMI opinions and recommendations remain independent.</div>
+</div></div>
+<p class="small"><strong>Approval rule:</strong> every active diagnosis must be covered by exactly one current approved MMI opinion, or remain visibly pending. A group can cover a subset of a region. Changing membership invalidates that opinion's approval and dependent rating/report sections. A “whole lumbar region” statement is available only when all active lumbar diagnoses are included or otherwise explicitly accounted for.</p>
+<p class="small"><strong>MMI is not rating eligibility.</strong> If disc herniation is at MMI while strain remains active, the rating review must establish whether the findings used for the disc rating are stable and separable and whether the method/reporting rules permit a limited rating. Otherwise defer the regional rating. Do not imply that a per-diagnosis MMI opinion automatically produces an independent impairment percentage. <a href="#selection-source">[4]</a></p>
+</section>
+<section id="opinions"><h2>5. Remaining physician opinions</h2>
+<p>Keep diagnosis confirmation before reanalysis; put these final opinions below MMI on the Conclusions screen. Show proposed answers only when supported by the examiner's note or reviewed evidence. Expand details on selection; approve the displayed conclusions together.</p>
+<div class="scroll"><table><thead><tr><th>Decision</th><th>Controls</th><th>What the system can supply</th></tr></thead><tbody>
+<tr><td>Diagnosis and causation<br><small>q3, q9, q12, q14</small></td><td>Reuse the diagnosis-review status. Per accepted diagnosis: new injury / aggravation / unrelated / uncertain; incident primary cause: yes / no / uncertain; rationale. For aggravation, temporary / permanent / uncertain and resolution date if supported.</td><td>Mechanism, onset, prior symptoms, imaging and competing explanations. Suggest explanatory text after the physician selects the relationship. No computed causation probability.</td></tr>
+<tr><td>Past treatment<br><small>q8, q11</small></td><td>Approve treatment-specific necessity and appropriateness, with exceptions. Adherence: supported / concerns / unknown; reasons or barriers.</td><td>Reviewed treatment rows, episodes, response and documented participation. Adequacy of a trial does not itself establish necessity.</td></tr>
+<tr><td>Future care and surgery<br><small>q1, q2, q5</small></td><td>Reuse MMI care rows. Surgery: indicated / not indicated / uncertain; procedure or specialty, purpose and basis if indicated.</td><td>Carry through accepted recommendations; do not ask the same question again elsewhere.</td></tr>
+<tr><td>Work capacity and function<br><small>q7, q15</small></td><td>Full duty / modified duty / off work / uncertain. Restriction rows: activity, maximum, unit, frequency, duration/review date. Temporary / permanent / uncertain.</td><td>Latest work status and extracted job demands beside today's function. “Retain prior restrictions” copies visible restrictions for approval. Missing job demands limit a full-duty opinion.</td></tr>
+<tr><td>Other factors and understanding<br><small>q6, q10</small></td><td>Recovery factors: present / absent / unknown + effect. Treatment-goal understanding: demonstrated / concerns / not assessed.</td><td>Relevant documented factors and visit responses. Ask in the visit if required by the referral; do not infer understanding from attendance.</td></tr>
+</tbody></table></div>
+<p class="small">Scoped MMI opinions supply q4. Rating eligibility and approved worksheets supply q13. Replace the existing five-point opinion scales with these actual decisions; retain question IDs for mapping. If apportionment is requested, add a separate supported opinion and basis rather than deriving a percentage from the presence of degeneration.</p>
+</section>
+<section id="rating"><h2>6. AMA impairment: what to build</h2>
+<p><strong>Build a regional worksheet that asks clinical questions and derives the rating coordinates.</strong> The default view should show the selected diagnosis, the facts responsible for its classification, any unanswered criterion, and the resulting percentage. Put numeric modifier controls in an expanded “Rating detail” view.</p>
+<h3>6.1 Explain the four rating terms in the UI</h3>
+<div class="scroll"><table><thead><tr><th>Term</th><th>Meaning</th><th>Example of system behavior</th></tr></thead><tbody>
+<tr><td>Diagnosis row</td><td>The condition being rated within the regional table.</td><td>Canonical “disc herniation” retrieves candidate rows. Check each row's entry criteria and footnotes before selecting it.</td></tr>
+<tr><td>Class</td><td>The severity category within that diagnosis row. It sets the available impairment range.</td><td>Use confirmed clinical criteria to select the class. Do not ask the physician to choose an unexplained number.</td></tr>
+<tr><td>Grade</td><td>The position A–E within the selected class. The original method generally starts at C and adjusts using eligible modifiers.</td><td>Calculate the movement after functional history, examination and clinical studies are assessed.</td></tr>
+<tr><td>Impairment percentage</td><td>The value at the selected row + class + grade, in the unit specified by the table.</td><td>Read the percentage from that cell. A one-grade change is not necessarily one percentage point.</td></tr>
+</tbody></table></div>
+
+<h3>6.2 Assemble the inputs before opening the worksheet</h3>
+<div class="scroll"><table><thead><tr><th>Input</th><th>Retrieval / processing</th><th>Physician sees</th></tr></thead><tbody>
+<tr><td>Diagnosis candidates</td><td>Start with the current physician-reviewed diagnosis set for the region, including added diagnoses. Map it to candidate AMA rows; use <code>getDxSupport(caseId)</code> for historical support, not as the active diagnosis list.</td><td>Accepted diagnosis first; alternative candidates collapsed. Mention count is context, not diagnostic confidence.</td></tr>
+<tr><td>Relevant studies</td><td><code>getCompletedStudies(caseId)</code> returns report narratives. Extract proposed level, side, lesion and concordance facts with record references; retrieve encounter mentions separately when a standalone study is absent.</td><td>“MRI: L5–S1 herniation” with the underlying excerpt. A query cannot derive clinical concordance from body-site text alone.</td></tr>
+<tr><td>Prior neurological findings</td><td>Read encounter <code>objective</code>/<code>assessment</code> narratives and relevant surgery reports. Propose dated findings separately from diagnosis labels.</td><td>“Prior deficit documented” with its source, or “Only a diagnosis label found.” This is a new focused extraction, not a field already provided by <code>DxSupport</code>.</td></tr>
+<tr><td>Current examination</td><td>Use confirmed regional findings and the examiner's interpretation from the visit.</td><td>Which findings remain and which resolved. Missing detail links back to the exact exam field.</td></tr>
+<tr><td>Functional history</td><td>Use current activity limitations, history and the selected questionnaire. Apply the chosen AMA method's instrument and consistency rules.</td><td>Proposed functional category plus supporting answers; accept / change / insufficient information.</td></tr>
+</tbody></table></div>
+<p class="small"><strong>Existing questionnaire change:</strong> <a href="../backend/src/questionnaires/definitions.ts">definitions.ts</a> uses abbreviated PDQ prompts and an answered-item denominator. Verify the administered instrument, item wording, anchors, completeness and scoring before mapping it to AMA criteria. Until then, retain it as patient-reported function. The app's regional questionnaires should not be treated as validated named instruments without verification.</p>
+
+<h3>6.3 Clinical questions determine the row and class</h3>
+<p class="small">For a lumbar disc candidate, the worksheet needs the history of objective radiculopathy, its current status, clinical correlation, levels/sides involved, and relevant surgery. Present these as labeled choices with source-backed selections. Then apply the full table criteria. A single question such as “radiculopathy present?” is too coarse.</p>
+<div class="note"><strong>Why this matters:</strong> MRI herniation alone may follow the nonspecific-pain pathway. Prior objective radiculopathy, now resolved, can qualify for the disc-herniation Class 1 pathway. Retrieve the historical findings. <a href="#case-source">[2]</a></div>
+<p class="small"><strong>Row selection:</strong> preserve all accepted clinical diagnoses, but select the ratable diagnosis according to the regional rules. Do not automatically select the most frequent diagnosis or add ratings for every label. If two candidates remain plausible, show the precise criterion distinguishing them and ask the examiner.</p>
+
+<h3>6.4 Convert clinical findings to modifiers</h3>
+<p class="small">For the original Sixth Edition method, the potential modifiers are <strong>functional history (GMFH)</strong>, <strong>physical examination (GMPE)</strong>, and <strong>clinical studies (GMCS)</strong>. Each comes from its own criteria. The number describes a category; it is neither a percentage nor a confidence score.</p>
+<div class="scroll"><table><thead><tr><th>Physician-facing control</th><th>System behavior</th></tr></thead><tbody>
+<tr><td>Function: proposed category + evidence</td><td>Use history and the applicable instrument to propose GMFH. Apply reliability/consistency rules before using it. A PDQ score cannot simply become a percentage or generic 0–4 modifier.</td></tr>
+<tr><td>Exam: confirmed current findings</td><td>Map the measured findings to GMPE using the selected chapter. Show which findings determined the category. Reuse the exam entry rather than asking for a number.</td></tr>
+<tr><td>Studies: findings and relationship to diagnosis</td><td>Map qualifying study findings to GMCS. Apply the specific exclusion rules. Evidence supporting the diagnosis does not automatically mean the entire studies modifier is excluded.</td></tr>
+<tr><td>Missing / excluded</td><td>Store these separately. Excluded means the rules say to omit that term, with a reason. Missing means it has not been established; ask for the fact or apply an explicitly permitted method. Neither means zero.</td></tr>
+</tbody></table></div>
+<p class="small">Calculate the sum of eligible <code>(modifier − class)</code> terms. Move that many grades from C, subject to the selected method's limits and exceptions, then retrieve the cell's percentage. Expose this arithmetic under the clinical answers so the physician can inspect it. <a href="#formula-source">[3]</a></p>
+
+<h3>6.5 Worked worksheet: resolved lumbar radiculopathy</h3>
+<p class="small">Use published teaching case 5 to test the complete sequence below, from clinical facts to percentage. <a href="#case-source">[2]</a></p>
+<div class="mock"><div class="mock-title">Conclusions → Lumbar → Impairment · MMI and rating eligibility confirmed</div><div class="mock-body">
+<div class="cols"><div>
+<div class="step"><span class="stepnum">1</span><div><strong>Diagnosis and history</strong><p>Lumbar disc herniation; prior objective radiculopathy at the corresponding level.</p><details><summary>Source and selection</summary><div class="small">Show the historical neurological examination and MRI excerpt beside the accepted diagnosis. These establish the candidate pathway; the examiner confirms their clinical relationship.</div></details></div></div>
+<div class="step"><span class="stepnum">2</span><div><strong>Current status → Class 1</strong><p>Radiculopathy resolved; no current pain or neurological deficit.</p><details><summary>Why the rating does not default to zero</summary><div class="small">The selected disc-herniation pathway accounts for the documented prior radiculopathy. Current absence of symptoms alone does not select Class 0.</div></details></div></div>
+<div class="step"><span class="stepnum">3</span><div><strong>Modifiers from the reviewed findings</strong><p>Function: 0 · Exam: 0 · Studies: 2.</p><details><summary>Show how each input is used</summary><div class="small">All three terms are used in this case. The form displays the corresponding table criteria and evidence, with a Change action per item.</div></details></div></div>
+</div><aside>
+<div class="panel"><h3>Calculation</h3><p class="small">Class = 1. Start at grade C.</p><div class="math">Function: 0 − 1 = −1<br>Exam: &nbsp;&nbsp;&nbsp;0 − 1 = −1<br>Studies: &nbsp;2 − 1 = +1<br><strong>Net adjustment = −1</strong></div><p class="small" style="margin-top:12px">Move one grade down: <strong>C → B</strong>.<br>Look up grade B in the selected Class 1 row.</p></div>
+<div class="result"><div class="result-value">6% WPI</div><div class="small">Lumbar disc-herniation row<br>Table 17-4 · Class 1 · Grade B</div></div>
+<p class="sub">WPI = whole-person impairment. Store this value separately from any incident-attribution or apportionment opinion.</p>
+</aside></div>
+<div class="bar"><span class="small">The physician reviews these selections together. A changed input recalculates the worksheet and requires approval again.</span></div>
+</div></div>
+<p class="small"><strong>Default UI behavior:</strong> if every required fact is present and only one candidate fits, open this completed worksheet with one “Approve rating” action. If a criterion is missing, replace only that item with its clinical question. Keep table browsing and numeric overrides in the expanded detail view; an override requires a reason.</p>
+
+<h3>6.6 Rating rules and stored output</h3>
+<p class="small">Add a small versioned reference module per supported region: canonical-diagnosis-to-row mapping; entry and class criteria; modifier criteria and exclusions; grade-to-value lookup; units; combination/conversion rules; exact table/footnote references. Validate the licensed content against known worked cases. This is the part queries and AI cannot supply on demand.</p>
+<p class="small">Save <code>methodVersion, region, diagnosisId, mmiOpinionIds, eligibilityStatus, eligibilityRationale, rowId, class, criteriaAnswers, modifiers[{value, status, reason, evidenceRefs}], adjustment, grade, impairmentValue, impairmentUnit, approval</code>. Retain independent regional worksheets. Combine eligible components only as prescribed by the selected AMA method, with their units and overlap rules. If a region remains unrateable, identify any permitted limited result as partial; do not label it the final combined case rating. Grouping diagnoses for an MMI opinion never determines which AMA row to rate.</p>
+</section>
+<section id="report"><h2>7. Report drafting and review</h2>
+<p>Build an explicit <strong>question-to-decision map</strong>. For each referral question, store the original wording, subparts, linked decision IDs, and answer status. The 15 canonical questions provide the default topic map; bespoke questions add requirements instead of disappearing into the standard list.</p>
+<div class="scroll"><table><thead><tr><th>Report section</th><th>Inputs</th><th>Generation</th></tr></thead><tbody>
+<tr><td>History and record review</td><td>Existing case summary, treatment episodes, studies and source records.</td><td>Condense the relevant chronology with record references. Distinguish the claimant's account from documented history.</td></tr>
+<tr><td>Current examination</td><td>Visit note, confirmed findings, function and questionnaires.</td><td>Generate the subjective/objective/functional narrative from today's inputs.</td></tr>
+<tr><td>Opinions</td><td>Approved diagnoses, scoped MMI opinions, causation, prognosis, care and work decisions.</td><td>Preserve diagnosis membership and mixed regional statuses; AI writes explanations from approved rationale and facts. Describe disagreement with recorded diagnoses without rewriting history.</td></tr>
+<tr><td>Impairment</td><td>Regional eligibility decisions, approved worksheets, combination result or reason deferred.</td><td>Insert method, criteria, calculation and result deterministically; narrative explains their application.</td></tr>
+<tr><td>Referral answers</td><td>Original questions + linked decisions.</td><td>For each question: direct answer, basis, limitation if any. Preserve distinctions such as “contributed” versus “primary cause.”</td></tr>
+</tbody></table></div>
+<p class="small"><strong>Case synthesis:</strong> deduplicate shared recommendations while preserving their diagnosis links; reconcile conflicting restrictions into one physician-approved work-capacity opinion. A shared functional observation or PDQ response must retain its source and original scope.</p>
+<p class="small"><strong>Review screen:</strong> report on the left; referral coverage on the right. Clicking an answer opens its decision and evidence. Highlight unanswered subparts and conflicts. A missing opinion can become an explicitly approved “cannot determine” answer with a reason. Check dates, percentages, units and reference IDs against the saved packet before displaying the draft.</p>
+<p class="small"><strong>Editing:</strong> a changed clinical conclusion must update its decision before regenerating linked sections. Preserve physician prose edits for reconciliation. Changing an exam fact or rating input marks dependent approvals stale. Final sign-off freezes the report and its inputs.</p>
+</section>
+<section id="data"><h2>8. Data changes and implementation order</h2>
+<div class="scroll"><table><thead><tr><th>Record</th><th>Proposed content</th></tr></thead><tbody>
+<tr><td>Regional visit checkpoint</td><td>Visit ID/revision, region, exam date, subjective/objective/functional passages, facts with reported/observed/measured provenance, priority responses and questionnaire references. Common visit material remains shared.</td></tr>
+<tr><td>Diagnosis review</td><td>Stable case-diagnosis ID, region, canonical mapping, confirmed/rejected/uncertain status, addition/replacement links, physician reason, evidence and scope revision. Historical record diagnoses remain intact.</td></tr>
+<tr><td>Regional post-exam analysis</td><td>Updated three-domain trajectories; diagnosis-level plateau evidence/MMI proposals; unresolved questions. Attach query-derived care candidates with reviewed-analysis revision and diagnosis links.</td></tr>
+<tr><td>MMI opinion</td><td>Region, diagnosis IDs, status, effective date, rationale, prognosis, care dispositions, reassessment/resolution details, physician approval and input revisions.</td></tr>
+<tr><td>Rating / report</td><td>Worksheet references the MMI opinions and a separate eligibility decision. Report packet freezes diagnosis scope, regional analyses, approved opinions, rating components and question coverage.</td></tr>
+</tbody></table></div>
+<details><summary>Suggested post-exam response shape</summary><div><pre><code>RegionalPostExamResult {
+  region,
+  basedOn: { diagnosisScopeRevision, careReviewRevision, visitRevision },
+  updatedTrajectoryAnalysis: { subjective, objective, functional },
+  diagnosisAnalyses: [{
+    diagnosisId,
+    plateauEvidence: { supporting, opposing, attribution },
+    mmiPosture: { direction, rationale },
+    unresolvedQuestions
+  }],
+  remainingCareCandidates, // query result, not generated by the model
+  unresolvedCareAssessments
+}
+
+MMIOpinion {
+  region,
+  diagnosisIds,            // one diagnosis, selected subset, or entire region
+  status, effectiveDate, rationale, prognosis,
+  careDispositions, reassessment, unresolvedQuestions,
+  basedOn, approval
+}</code></pre></div></details>
+<h3>Build sequence</h3>
+<ol class="small">
+<li><strong>Regional visit checkpoints and diagnosis review.</strong> Support S/O/F sections, evidence provenance and diagnosis additions/rejections. Existing visit contracts already have confirm/reject reviews; extend them rather than adding a second review system.</li>
+<li><strong>Diagnosis-change orchestration.</strong> Refresh affected regional care analysis, retain historical artifacts and surface changed assessments for review. Replace the current requirement to regenerate exam prep after rejection with a post-visit reconciliation path and a fresh snapshot.</li>
+<li><strong>Post-exam analysis and MMI scope.</strong> Generate regional trajectories and diagnosis-level proposals; attach deterministic care candidates; add separate/together MMI decisions. Keep runtime instructions in prompt modules and validate output against the updated schema.</li>
+<li><strong>Rating eligibility, calculator and report.</strong> Reuse the Sixth Edition worksheet flow below the scoped opinions. Draft from approved decisions, with no re-inference of MMI from prose.</li>
+</ol>
+<p class="small"><strong>Checks before release:</strong> mixed lumbar/thoracic status; two lumbar diagnoses assessed separately and together; grouping changed after approval; diagnosis replacement after the visit; shared care row deduplication; uncertain care excluded from deterministic conclusions; case-wide PDQ not duplicated as regional evidence; at-MMI diagnosis with an unrateable regional worksheet. Changed dependencies must mark affected approvals and draft sections stale.</p>
+<p class="small muted">These are proposed changes. The current post-exam contract still has one plateau/MMI pair per regional result and obtains its context through the refined-analysis snapshot; both the output shape and that input dependency need updating.</p>
+</section>
+<footer id="sources"><p><strong>Repository basis:</strong> <a href="typeflow.md">typeflow.md</a>, <a href="../questions.json">questions.json</a>, <a href="../packages/contracts/src/visitDocumentation.ts">visit contract</a>, <a href="../packages/contracts/src/postExamAnalysis.ts">post-exam contract</a>, <a href="../backend/src/queries/dxSupport.ts">diagnosis query</a>, <a href="../backend/src/queries/completedStudies.ts">study query</a>, <a href="../backend/src/questionnaires/definitions.ts">questionnaire definitions</a>.</p>
+<p>[1] <a href="https://www.ama-assn.org/practice-management/ama-guides/ama-guides-evaluation-permanent-impairment-overview">AMA Guides overview</a> and <a href="https://pubmed.ncbi.nlm.nih.gov/38729185/">Sixth 2024 methodology study</a>: MMI prerequisite and release-specific methods.</p>
+<p id="case-source">[2] <a href="https://www.tn.gov/content/dam/tn/workforce/documents/phys-con/17aAMA_6_-_Guides-SpineCaseScenarios_-_Talmage.pdf">Hazlewood, Talmage and Eskay-Auerbach: Sixth Edition spinal case examples</a>, cases 1–5, especially case 5 on PDF pages 14–15: row/class distinctions and the 6% worked result.</p>
+<p id="formula-source">[3] <a href="https://www.dol.gov/sites/dolgov/files/ecab/decisions/2018/Dec/17-1961.pdf">DOL Sixth Edition decision</a>: class/modifier adjustment formula. Implement chapter-specific rules from the selected Guides release.</p>
+<p id="selection-source">[4] <a href="https://www.dol.gov/agencies/owcp/FECA/directives-archive/2009Bulletins">DOL Sixth Edition overview</a>: regional diagnosis-selection behavior. The design separates clinical MMI scope from AMA rating scope; specific rating eligibility and combination rules come from the selected Guides chapter and applicable reporting requirements.</p>
+</footer>
+</main>
+<script>
+(() => {
+ let scope = 'separate';
+ const disc = document.getElementById('disc-mmi');
+ const strain = document.getElementById('strain-mmi');
+ const group = document.getElementById('group-mmi');
+ const care = document.getElementById('strain-care');
+ const summary = document.getElementById('scope-summary');
+ const next = document.getElementById('scope-next');
+ const label = {yes:'at MMI', no:'not at MMI', unknown:'MMI cannot be determined'};
+ function render() {
+  document.querySelectorAll('[data-scope]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.scope === scope)));
+  document.getElementById('scope-separate').hidden = scope !== 'separate';
+  document.getElementById('scope-together').hidden = scope !== 'together';
+  if (scope === 'separate') {
+   summary.textContent = 'Disc herniation: ' + label[disc.value] + '. Strain: ' + label[strain.value] + '.';
+   next.textContent = disc.value === 'yes' && strain.value === 'yes'
+    ? 'Both diagnoses are at MMI. Next: review regional rating eligibility and AMA row selection.'
+    : 'Keep separate care and review plans. Any limited rating requires its own eligibility review; do not automatically rate the at-MMI diagnosis.';
+  } else {
+   summary.textContent = 'Shared lumbar opinion covering disc herniation and strain: ' + label[group.value] + '.';
+   if (group.value === 'yes') {
+    next.textContent = care.value === 'supportive' || care.value === 'not_recommended'
+     ? 'Record the shared rationale and MMI date, then review regional rating eligibility.'
+     : 'Review the remaining strain care and reconcile its expected benefit with the proposed MMI conclusion before approval.';
+   } else if (group.value === 'no') {
+    next.textContent = 'Specify expected recovery, care and reassessment for this scope; defer its permanent rating.';
+   } else {
+    next.textContent = 'Identify the missing information and how to resolve it; the grouped opinion remains indeterminate.';
+   }
+  }
+ }
+ document.querySelectorAll('[data-scope]').forEach(button => button.addEventListener('click', () => {scope = button.dataset.scope; render();}));
+ [disc,strain,group,care].forEach(input => input.addEventListener('change',render));
+ render();
+ let priorDetails;
+ window.addEventListener('beforeprint', () => {
+  priorDetails = [...document.querySelectorAll('details')].map(detail => [detail, detail.open]);
+  priorDetails.forEach(([detail]) => {detail.open = true;});
+ });
+ window.addEventListener('afterprint', () => priorDetails?.forEach(([detail, open]) => {detail.open = open;}));
+ document.getElementById('print').addEventListener('click', () => window.print());
+})();
+</script></body></html>

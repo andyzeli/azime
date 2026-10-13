@@ -1,0 +1,187 @@
+[
+  {
+    "id": "lumbar_nonspecific_strain_sprain",
+    "region_id": "lumbar_spine",
+    "label": "Non-specific low back pain / lumbar strain-sprain",
+    "definition": "Axial low back pain without radicular findings, fracture or specific structural pathology; includes lumbar sprain/strain and muscle spasm. Corresponds to AMA Guides lumbar non-specific/soft-tissue rows.",
+    "icdPrefixes": ["M54.5", "M54.50", "M54.59", "S33.5", "S39.012", "M62.830"]
+  },
+  {
+    "id": "lumbar_disc_herniation_radiculopathy",
+    "region_id": "lumbar_spine",
+    "label": "Lumbar disc herniation with radiculopathy (sciatica)",
+    "definition": "Lumbar/lumbosacral disc herniation or displacement with concordant radicular pain, sensory or motor findings; includes sciatica and lumbar radiculopathy codes when a compressive disc lesion is the presumed cause.",
+    "icdPrefixes": [
+      "M51.16",
+      "M51.17",
+      "M51.26",
+      "M51.27",
+      "M54.16",
+      "M54.17",
+      "M54.3",
+      "M54.4"
+    ]
+  },
+  {
+    "id": "lumbar_spinal_stenosis",
+    "region_id": "lumbar_spine",
+    "label": "Degenerative lumbar spinal stenosis (neurogenic claudication / radiculopathy)",
+    "definition": "Central, lateral recess or foraminal stenosis from degenerative change producing neurogenic claudication and/or radiculopathy, without significant spondylolisthesis.",
+    "icdPrefixes": [
+      "M48.06",
+      "M48.061",
+      "M48.062",
+      "M48.07",
+      "M47.26",
+      "M47.27"
+    ]
+  },
+  {
+    "id": "lumbar_spondylolisthesis",
+    "region_id": "lumbar_spine",
+    "label": "Lumbar spondylolisthesis / spondylolysis (degenerative or isthmic)",
+    "definition": "Degenerative or isthmic (pars defect) slip or segmental instability, with axial pain and/or stenosis-type symptoms (claudication, radiculopathy).",
+    "icdPrefixes": [
+      "M43.16",
+      "M43.17",
+      "M43.06",
+      "M43.07",
+      "Q76.2",
+      "M53.2X6",
+      "M53.2X7"
+    ]
+  },
+  {
+    "id": "lumbar_facet_degenerative_disc",
+    "region_id": "lumbar_spine",
+    "label": "Lumbar facet arthropathy / degenerative disc disease (axial spondylotic or discogenic pain)",
+    "definition": "Chronic axial low back pain attributed to facet (zygapophyseal) arthropathy, spondylosis or disc degeneration without radiculopathy, stenosis or instability; includes vertebrogenic low back pain (M54.51).",
+    "icdPrefixes": [
+      "M47.816",
+      "M47.817",
+      "M47.896",
+      "M47.897",
+      "M51.36",
+      "M51.37",
+      "M54.51"
+    ]
+  },
+  {
+    "id": "lumbar_fracture",
+    "region_id": "lumbar_spine",
+    "label": "Lumbar vertebral fracture / dislocation (traumatic or osteoporotic compression)",
+    "definition": "Traumatic fractures or dislocations of lumbar vertebrae and osteoporotic/insufficiency compression fractures. M80.08 is not region-specific; resolve region from documentation.",
+    "icdPrefixes": ["S32.0", "S33.1", "M48.56", "M48.57", "M80.08"]
+  },
+  {
+    "id": "lumbar_post_surgical",
+    "region_id": "lumbar_spine",
+    "label": "Post-surgical lumbar spine / failed back surgery syndrome",
+    "definition": "Persistent or recurrent pain after lumbar spine surgery (post-laminectomy syndrome, pseudarthrosis, adjacent-segment disease, epidural fibrosis). M96.1, M96.0 and Z98.1 are not region-specific; resolve region from operative history.",
+    "icdPrefixes": ["M96.1", "M96.0", "Z98.1"]
+  },
+  {
+    "id": "cervical_nonspecific_strain_sprain",
+    "region_id": "cervical_spine",
+    "label": "Non-specific neck pain / cervical strain-sprain (incl. whiplash-associated disorder)",
+    "definition": "Axial neck pain without radicular or myelopathic findings, fracture or specific structural pathology; includes cervical sprain/strain and whiplash-associated disorder grades I-II.",
+    "icdPrefixes": ["M54.2", "S13.4", "S16.1", "M53.1"]
+  },
+  {
+    "id": "cervical_radiculopathy",
+    "region_id": "cervical_spine",
+    "label": "Cervical radiculopathy (disc herniation or foraminal stenosis)",
+    "definition": "Cervical nerve-root compression from disc herniation or spondylotic foraminal stenosis with concordant radicular pain, sensory, motor or reflex findings (NASS degenerative cervical radiculopathy).",
+    "icdPrefixes": ["M50.1", "M50.2", "M54.12", "M54.13", "M47.22", "M47.23"]
+  },
+  {
+    "id": "cervical_myelopathy_stenosis",
+    "region_id": "cervical_spine",
+    "label": "Degenerative cervical myelopathy / central canal stenosis",
+    "definition": "Spinal cord compression from spondylosis, disc disease, OPLL or central stenosis with or without clinical myelopathy.",
+    "icdPrefixes": ["M50.0", "M47.12", "M47.13", "M48.02", "M48.03"]
+  },
+  {
+    "id": "cervical_facet_degenerative",
+    "region_id": "cervical_spine",
+    "label": "Cervical facet arthropathy / degenerative disc disease (axial spondylosis)",
+    "definition": "Chronic axial neck pain (with or without cervicogenic headache) attributed to facet arthropathy, spondylosis or disc degeneration without radiculopathy or myelopathy.",
+    "icdPrefixes": ["M47.812", "M47.813", "M47.892", "M47.893", "M50.3"]
+  },
+  {
+    "id": "cervical_fracture",
+    "region_id": "cervical_spine",
+    "label": "Cervical vertebral fracture / dislocation",
+    "definition": "Traumatic fracture, subluxation or dislocation of C1-C7 and pathological/collapsed cervical vertebra.",
+    "icdPrefixes": [
+      "S12.0",
+      "S12.1",
+      "S12.2",
+      "S12.3",
+      "S12.4",
+      "S12.5",
+      "S12.6",
+      "S12.9",
+      "S13.1",
+      "M48.52"
+    ]
+  },
+  {
+    "id": "cervical_post_surgical",
+    "region_id": "cervical_spine",
+    "label": "Post-surgical cervical spine (post-laminectomy syndrome, pseudarthrosis, adjacent segment)",
+    "definition": "Persistent or recurrent neck/arm pain after cervical spine surgery. M96.1, M96.0 and Z98.1 are not region-specific; resolve region from operative history.",
+    "icdPrefixes": ["M96.1", "M96.0", "Z98.1"]
+  },
+  {
+    "id": "thoracic_nonspecific_strain_sprain",
+    "region_id": "thoracic_spine",
+    "label": "Non-specific thoracic pain / thoracic strain-sprain",
+    "definition": "Mid-back pain without radicular or myelopathic findings, fracture or specific structural pathology; includes thoracic sprain/strain and muscle spasm.",
+    "icdPrefixes": ["M54.6", "S23.3", "S29.012", "M62.830"]
+  },
+  {
+    "id": "thoracic_disc_herniation_radiculopathy",
+    "region_id": "thoracic_spine",
+    "label": "Thoracic disc herniation with radiculopathy",
+    "definition": "Thoracic or thoracolumbar disc herniation/spondylosis with concordant thoracic radicular (band-like intercostal) pain, without myelopathy.",
+    "icdPrefixes": [
+      "M51.14",
+      "M51.15",
+      "M51.24",
+      "M51.25",
+      "M54.14",
+      "M54.15",
+      "M47.24",
+      "M47.25"
+    ]
+  },
+  {
+    "id": "thoracic_myelopathy_stenosis",
+    "region_id": "thoracic_spine",
+    "label": "Thoracic stenosis / myelopathy (disc, OLF, spondylosis)",
+    "definition": "Thoracic spinal cord compression from disc herniation, ossified ligamentum flavum or spondylosis with myelopathic signs or high-grade stenosis.",
+    "icdPrefixes": ["M51.04", "M51.05", "M48.04", "M48.05", "M47.14", "M47.15"]
+  },
+  {
+    "id": "thoracic_facet_degenerative",
+    "region_id": "thoracic_spine",
+    "label": "Thoracic facet arthropathy / degenerative disc disease (axial spondylosis)",
+    "definition": "Chronic axial thoracic pain attributed to spondylosis, facet arthropathy or disc degeneration without radiculopathy or myelopathy.",
+    "icdPrefixes": [
+      "M47.814",
+      "M47.815",
+      "M47.894",
+      "M47.895",
+      "M51.34",
+      "M51.35"
+    ]
+  },
+  {
+    "id": "thoracic_fracture",
+    "region_id": "thoracic_spine",
+    "label": "Thoracic vertebral fracture / dislocation (traumatic or osteoporotic compression)",
+    "definition": "Traumatic fracture, subluxation or dislocation of T1-T12 and osteoporotic/insufficiency compression fractures. M80.08 is not region-specific; resolve region from documentation.",
+    "icdPrefixes": ["S22.0", "S23.1", "M48.54", "M48.55", "M80.08"]
+  }
+]

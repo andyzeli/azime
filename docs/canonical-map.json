@@ -1,0 +1,152 @@
+[
+  {
+    "row_id": "17-19-03",
+    "region_id": "cervical",
+    "description": "Cervical Radiculopathy Involving the C1 Nerve Root (Very Rare)"
+  },
+  {
+    "row_id": "17-19-04",
+    "region_id": "cervical",
+    "description": "Cervical Radiculopathy Involving the C2 Nerve Root (Very Rare)"
+  },
+  {
+    "row_id": "17-19-05",
+    "region_id": "cervical",
+    "description": "Cervical Radiculopathy Involving the C3 Nerve Root"
+  },
+  {
+    "row_id": "17-19-06",
+    "region_id": "cervical",
+    "description": "Cervical Radiculopathy Involving the C4 Nerve Root"
+  },
+  {
+    "row_id": "17-19-07",
+    "region_id": "cervical",
+    "description": "Cervical Radiculopathy Involving the C5 Nerve Root"
+  },
+  {
+    "row_id": "17-19-08",
+    "region_id": "cervical",
+    "description": "Cervical Radiculopathy Involving the C6 Nerve Root"
+  },
+  {
+    "row_id": "17-19-09",
+    "region_id": "cervical",
+    "description": "Cervical Radiculopathy Involving the C7 Nerve Root"
+  },
+  {
+    "row_id": "17-19-10",
+    "region_id": "cervical",
+    "description": "Cervical Radiculopathy Involving the C8 Nerve Root"
+  },
+  {
+    "row_id": "17-19-11",
+    "region_id": "cervical",
+    "description": "Cervical Spinal Fracture C1 or C2"
+  },
+  {
+    "row_id": "17-19-12",
+    "region_id": "cervical",
+    "description": "Cervical Spinal Fracture C3 to C7"
+  },
+  {
+    "row_id": "17-19-13",
+    "region_id": "cervical",
+    "description": "Cervical AOMSI Associated With Fusion, Arthroplasty, or Pseudarthrosis"
+  },
+  {
+    "row_id": "17-19-14",
+    "region_id": "cervical",
+    "description": "Cervical AOMSI Associated With Instability"
+  },
+  {
+    "row_id": "17-19-15",
+    "region_id": "cervical",
+    "description": "Cervical Deep Spinal Wound Infection"
+  },
+  {
+    "row_id": "17-20-03",
+    "region_id": "thoracic",
+    "description": "Thoracic Radiculopathy Involving the T1 Nerve Root"
+  },
+  {
+    "row_id": "17-20-04",
+    "region_id": "thoracic",
+    "description": "Thoracic Radiculopathy Involving the T2-T12 Nerve Roots"
+  },
+  {
+    "row_id": "17-20-05",
+    "region_id": "thoracic",
+    "description": "Thoracic Spinal Fracture"
+  },
+  {
+    "row_id": "17-20-06",
+    "region_id": "thoracic",
+    "description": "Thoracic AOMSI Associated With Fusion, Arthroplasty, or Pseudarthrosis"
+  },
+  {
+    "row_id": "17-20-07",
+    "region_id": "thoracic",
+    "description": "Thoracic AOMSI Associated With Instability"
+  },
+  {
+    "row_id": "17-20-08",
+    "region_id": "thoracic",
+    "description": "Thoracic Deep Spinal Wound Infection"
+  },
+  {
+    "row_id": "17-21-03",
+    "region_id": "lumbar",
+    "description": "Lumbar Radiculopathy Involving the L1 Nerve Root"
+  },
+  {
+    "row_id": "17-21-04",
+    "region_id": "lumbar",
+    "description": "Lumbar Radiculopathy Involving the L2 Nerve Root"
+  },
+  {
+    "row_id": "17-21-05",
+    "region_id": "lumbar",
+    "description": "Lumbar Radiculopathy Involving the L3 Nerve Root"
+  },
+  {
+    "row_id": "17-21-06",
+    "region_id": "lumbar",
+    "description": "Lumbar Radiculopathy Involving the L4 Nerve Root"
+  },
+  {
+    "row_id": "17-21-07",
+    "region_id": "lumbar",
+    "description": "Lumbar Radiculopathy Involving the L5 Nerve Root"
+  },
+  {
+    "row_id": "17-21-08",
+    "region_id": "lumbar",
+    "description": "Lumbar Radiculopathy Involving the S1 Nerve Root"
+  },
+  {
+    "row_id": "17-21-09",
+    "region_id": "lumbar",
+    "description": "Lumbar Spinal Fracture"
+  },
+  {
+    "row_id": "17-21-10",
+    "region_id": "lumbar",
+    "description": "Lumbar Stenosis With Neurogenic Claudication"
+  },
+  {
+    "row_id": "17-21-11",
+    "region_id": "lumbar",
+    "description": "Lumbar AOMSI Associated With Fusion, Arthroplasty, or Pseudarthrosis"
+  },
+  {
+    "row_id": "17-21-12",
+    "region_id": "lumbar",
+    "description": "Lumbar AOMSI Associated With Instability"
+  },
+  {
+    "row_id": "17-21-13",
+    "region_id": "lumbar",
+    "description": "Lumbar Deep Spinal Wound Infection"
+  }
+]

@@ -1,0 +1,1842 @@
+{
+  "rows": [
+    {
+      "row_id": "17-21-03",
+      "description": "Lumbar Radiculopathy Involving the L1 Nerve Root",
+      "entries": [
+        {
+          "entry_id": "1A",
+          "impairment": {
+            "value": 2,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "confirms residual radicular symptoms of pain or subjectively altered sensory perception (paresthesia-like often described as numbness) without objectively verifiable sensory loss for dullness to pinprick or loss of sharp vs dull perception in a neuroanatomically plausible dermatomal distribution compatible with the L1 dermatome (ie, lower back or upper lumbar region into the medial groin, front of upper thigh, minimal motor weakness, but individuals may report difficulty with hip flexion);"
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L1 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L1 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. Although this test can assist in supporting the diagnosis, it is rarely performed and often fails to provide definitive confirmation. The primary reason lies in the technical challenges involved, as the nerve root primarily innervates the iliopsoas muscle, unlike lower lumbar nerve roots with representation in limb muscles"
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion affecting the L1 nerve root"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "17-21-04",
+      "description": "Lumbar Radiculopathy Involving the L2 Nerve Root",
+      "entries": [
+        {
+          "entry_id": "1A",
+          "impairment": {
+            "value": 2,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "confirms residual radicular symptoms of pain or subjectively altered sensory perception (paresthesia-like often described as numbness) without objectively verifiable sensory loss for dullness to pinprick or loss of sharp vs dull perception in a neuroanatomically plausible dermatomal distribution compatible with the L2 dermatome (ie, medial groin, front of upper thigh);"
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L2 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L2 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. If testing meets criteria for a L2 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion affecting the L2 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "1B",
+          "impairment": {
+            "value": 4,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "sensory deficit dullness to pinprick sensation in the dermatomal distribution compatible with the L2 dermatome (ie, medial groin, front of upper thigh) while sharp vs dull perception remains intact;"
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L2 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L2 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. If testing meets criteria for a L2 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion affecting the L2 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "1C",
+          "impairment": {
+            "value": 5,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "sensory deficit loss of sharp vs dull perception (decreased protective sensibility) in the dermatomal distribution compatible with L2 dermatome (ie, medial groin, front of upper thigh);"
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L2 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L2 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. If testing meets criteria for a L2 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon’s clear objective verification of an intraoperative lesion affecting the L2 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "2A",
+          "impairment": {
+            "value": 12,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "(all of the following)",
+              "list_instruction": {
+                "kind": "all"
+              },
+              "items": [
+                {
+                  "text": "sensory deficit loss of sharp vs dull perception (decreased protective sensibility) in the dermatomal distribution compatible with the L2 dermatome (ie, medial groin, front of upper thigh)"
+                },
+                {
+                  "text": "positive reproducible femoral nerve stretch neural tension test (simultaneous hip extension and knee flexion with reported radicular pain, numbness, and/or paresthesias) in the dermatomal distribution compatible with the L2 dermatome"
+                },
+                {
+                  "text": "motor deficit 4/5 muscle weakness in the myotome distribution compatible with the L2 nerve root (ie, 4/5 hip flexion);"
+                }
+              ]
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L2 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L2 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. If testing meets criteria for a L2 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon’s clear objective verification of an intraoperative lesion affecting the L2 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "2B",
+          "impairment": {
+            "value": 14,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "(all of the following)",
+              "list_instruction": {
+                "kind": "all"
+              },
+              "items": [
+                {
+                  "text": "sensory deficit loss of sharp vs dull perception (decreased protective sensibility) in the dermatomal distribution compatible with the L2 dermatome and/or paresthesias)"
+                },
+                {
+                  "text": "positive reproducible femoral nerve stretch neural tension test (simultaneous hip extension and knee flexion with reported radicular pain, numbness, and/or paresthesias) in the dermatomal distribution compatible with the L2 dermatome"
+                },
+                {
+                  "text": "motor deficit 3/5 muscle weakness in the myotome distribution compatible with the L2 nerve root (ie, 3/5 hip flexion);"
+                }
+              ]
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L2 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L2 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. If testing meets criteria for a L2 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon’s clear objective verification of an intraoperative lesion affecting the L2 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "3A",
+          "impairment": {
+            "value": 16,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "(all of the following)",
+              "list_instruction": {
+                "kind": "all"
+              },
+              "items": [
+                {
+                  "text": "sensory deficit loss of sharp vs dull perception (decreased protective sensibility) in the dermatomal distribution compatible with the L2 dermatome"
+                },
+                {
+                  "text": "positive reproducible femoral nerve stretch neural tension test (simultaneous hip extension and knee flexion with reported radicular pain, numbness, and/or paresthesias) in the dermatomal distribution compatible with the L2 dermatome"
+                },
+                {
+                  "text": "motor deficit 2/5 muscle weakness in the myotome distribution compatible with the L2 nerve root (ie, 2/5 hip flexion) ;"
+                }
+              ]
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L2 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L2 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. If testing meets criteria for a L2 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon’s clear objective verification of an intraoperative lesion affecting the L2 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "3B",
+          "impairment": {
+            "value": 18,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "(all of the following)",
+              "list_instruction": {
+                "kind": "all"
+              },
+              "items": [
+                {
+                  "text": "sensory deficit loss of sharp vs dull perception (decreased protective sensibility) in the dermatomal distribution compatible with the L2 dermatome"
+                },
+                {
+                  "text": "positive reproducible femoral nerve stretch neural tension test (simultaneous hip extension and knee flexion with reported radicular pain, numbness, and/or paresthesias) in the dermatomal distribution compatible with the L2 dermatome"
+                },
+                {
+                  "text": "motor deficit 0/5 to 1/5 muscle weakness in the myotome distribution compatible with the L2 nerve root (ie, 0/5 to 1/5 hip flexion);"
+                }
+              ]
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L2 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L2 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. If testing meets criteria for a L2 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion affecting the L2 nerve root"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "17-21-05",
+      "description": "Lumbar Radiculopathy Involving the L3 Nerve Root",
+      "entries": [
+        {
+          "entry_id": "1A",
+          "impairment": {
+            "value": 2,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "confirms residual radicular symptoms of pain or subjectively altered sensory perception (paresthesia-like often described as numbness) without objectively verifiable sensory loss for dullness to pinprick or loss of sharp vs dull perception in a neuroanatomically plausible dermatomal distribution compatible with the L3 dermatome (ie, medial groin, anteromedial thigh to medial knee, medial lower leg);"
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L3 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L3 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. If testing meets criteria for a L3 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion involving the L3 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "1B",
+          "impairment": {
+            "value": 4,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "sensory deficit dullness to pinprick sensation in the dermatomal distribution compatible with the L3 dermatome (ie, medial groin, anteromedial thigh to medial knee, medial lower leg) while sharp vs dull perception remains intact;"
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L3 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L3 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. If testing meets criteria for a L3 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy"
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion involving the L3 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "1C",
+          "impairment": {
+            "value": 5,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "sensory deficit loss of sharp vs dull perception (decreased protective sensibility) in the dermatomal distribution compatible L3 dermatome (ie, medial groin, anteromedial thigh to medial knee, medial lower leg);"
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L3 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L3 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. If testing meets criteria for a L3 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion involving the L3 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "2A",
+          "impairment": {
+            "value": 12,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "(three of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 3
+              },
+              "items": [
+                {
+                  "text": "sensory deficit loss of sharp vs dull perception (decreased protective sensibility) in the dermatomal distribution compatible with the L3 dermatome (ie, medial groin, anteromedial thigh to medial knee, medial lower leg)"
+                },
+                {
+                  "text": "positive reproducible femoral nerve stretch neural tension test (simultaneous hip extension and knee flexion with reported radicular pain, numbness, and/or paresthesias) in the dermatomal distribution compatible with the L3 dermatome"
+                },
+                {
+                  "text": "motor deficit 4/5 muscle weakness in the myotome distribution compatible with the L3 nerve root (ie, 4/5 hip adductor weakness or 4/5 knee extensor weakness)"
+                },
+                {
+                  "text": "thigh muscle atrophy/asymmetry difference of >1 cm to ≤1.5 cm above medial knee joint line or calf muscle atrophy/asymmetry difference of >1 cm to ≤1.5 cm measured 15 cm below the medial knee joint line;"
+                }
+              ]
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L3 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L3 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. If testing meets criteria for a L3 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy"
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion involving the L3 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "2B",
+          "impairment": {
+            "value": 14,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "(three of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 3
+              },
+              "items": [
+                {
+                  "text": "sensory deficit loss of sharp vs dull perception (decreased protective sensibility) in the dermatomal distribution compatible with the L3 dermatome (ie, medial groin, anteromedial thigh to medial knee, medial lower leg)"
+                },
+                {
+                  "text": "positive reproducible femoral nerve stretch neural tension test (simultaneous hip extension and knee flexion with reported radicular pain, numbness, and/or paresthesias) in the dermatomal distribution compatible with the L3 dermatome"
+                },
+                {
+                  "text": "motor deficit 3/5 muscle weakness in the myotome distribution compatible with the L3 nerve root (ie, 3/5 hip adductor weakness or 3/5 knee extensor weakness)"
+                },
+                {
+                  "text": "thigh muscle atrophy/asymmetry difference of >1.5 cm to ≤2 cm measured 15 cm above medial knee joint line or calf muscle atrophy/asymmetry difference of >1.5 cm to ≤2 cm measured 15 cm below the medial knee joint line;"
+                }
+              ]
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L3 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L3 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. If testing meets criteria for a L3 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy"
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion involving the L3 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "3A",
+          "impairment": {
+            "value": 16,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "(three of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 3
+              },
+              "items": [
+                {
+                  "text": "sensory deficit loss of sharp vs dull perception (decreased protective sensibility) in the dermatomal distribution compatible with the L3 dermatome (ie, medial groin, anteromedial thigh to medial knee, medial lower leg)"
+                },
+                {
+                  "text": "positive reproducible femoral nerve stretch neural tension test (simultaneous hip extension and knee flexion with reported radicular pain, numbness, and/or paresthesias) in the dermatomal distribution compatible with the L3 dermatome"
+                },
+                {
+                  "text": "motor deficit 2/5 muscle weakness in the myotome distribution compatible with the L3 nerve root (ie, 2/5 hip adductor weakness or 2/5 knee extensor weakness)"
+                },
+                {
+                  "text": "thigh muscle atrophy/asymmetry difference of >2 cm to ≤3 cm measured 15 cm above medial knee joint line or calf muscle atrophy/asymmetry difference of >2 cm to ≤3 cm measured 15 cm below the lower patellar border;"
+                }
+              ]
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L3 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L3 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. If testing meets criteria for a L3 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion involving the L3 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "3B",
+          "impairment": {
+            "value": 18,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "(two of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 2
+              },
+              "items": [
+                {
+                  "text": "sensory deficit loss of sharp vs dull perception (decreased protective sensibility) in the dermatomal distribution compatible with the L3 dermatome (ie, medial groin, anteromedial thigh to medial knee, medial lower leg)"
+                },
+                {
+                  "text": "positive reproducible femoral nerve stretch neural tension test (simultaneous hip extension and knee flexion with reported radicular pain, numbness, and/or paresthesias) in the dermatomal distribution compatible with the L3 dermatome"
+                },
+                {
+                  "text": "motor deficit 0/5 to 1/5 muscle weakness in the myotome distribution compatible with the L3 nerve root (ie, 0/5 to 1/5 hip adductor weakness or 0/5 to 1/5 knee extensor weakness)"
+                },
+                {
+                  "text": "thigh muscle atrophy/asymmetry difference of >3 cm measured 15 cm above medial knee joint line or calf muscle atrophy/asymmetry difference of >3 cm measured 15 cm below the medial knee joint line;"
+                }
+              ]
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L3 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L3 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. If testing meets criteria for a L3 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion involving the L3 nerve root"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "17-21-06",
+      "description": "Lumbar Radiculopathy Involving the L4 Nerve Root",
+      "entries": [
+        {
+          "entry_id": "1A",
+          "impairment": {
+            "value": 2,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "confirms residual radicular symptoms of pain or subjectively altered sensory perception (paresthesia-like often described as numbness) without objectively verifiable sensory loss for dullness to pinprick or loss of sharp vs dull perception in a neuroanatomically plausible dermatomal distribution compatible with the L4 dermatome (ie, anterolateral thigh, crossing the knee to medial dorsum of foot, big toe);"
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L4 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L4 nerve root pathology consistent with *Guides* CS definitions for Electrodiagnosis of Radiculopathy. If testing meets criteria for a L4 radiculopathy by AANEM criteria this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion involving the L4 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "1B",
+          "impairment": {
+            "value": 4,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX:"
+            },
+            "PE": {
+              "lead": "sensory deficit dullness to pinprick sensation in the dermatomal distribution compatible with the L4 dermatome (ie, anterolateral thigh, crossing the knee to medial dorsum of foot, big toe) while sharp vs dull perception remains intact;"
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L4 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L4 nerve root pathology consistent with *Guides* CS definitions for Electrodiagnosis of Radiculopathy. If testing meets criteria for a L4 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion involving the L4 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "1C",
+          "impairment": {
+            "value": 5,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "sensory deficit loss of sharp vs dull perception (decreased protective sensibility) in the dermatomal distribution compatible L4 dermatome (ie, anterolateral thigh, crossing the knee to medial dorsum of foot, big toe);"
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L4 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L4 nerve root pathology consistent with *Guides* CS definitions for Electrodiagnosis of Radiculopathy. If testing meets criteria for a L4 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon’s clear objective verification of an intraoperative lesion involving the L4 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "2A",
+          "impairment": {
+            "value": 12,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "(four of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 4
+              },
+              "items": [
+                {
+                  "text": "sensory deficit loss of sharp vs dull perception (decreased protective sensibility) in the dermatomal distribution compatible with the L4 dermatome (ie, anterolateral thigh, crossing the knee to medial dorsum of foot, big toe)"
+                },
+                {
+                  "text": "positive reproducible femoral nerve stretch neural tension test (simultaneous hip extension and knee flexion with reported radicular pain, numbness, and/or paresthesias) in the dermatomal distribution compatible with the L4 dermatome"
+                },
+                {
+                  "text": "motor deficit 4/5 muscle weakness in the myotome distribution compatible with the L4 nerve root (ie, 4/5 ankle dorsiflexion weakness or 4/5 knee extensor weakness)"
+                },
+                {
+                  "text": "thigh muscle atrophy/asymmetry difference of >1 cm to ≤1.5 cm measured 15 cm above medial knee joint line or calf muscle atrophy/asymmetry difference of >1 cm to ≤1.5 cm measured 15 cm below the medial knee joint line"
+                },
+                {
+                  "text": "asymmetrical diminished L4 nerve root-associated reflex (ie, knee);"
+                }
+              ]
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L4 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L4 nerve root pathology consistent with *Guides* CS definitions for  Electrodiagnosis of Radiculopathy. If testing meets criteria for a L4 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon’s clear objective verification of an intraoperative lesion involving the L4 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "2B",
+          "impairment": {
+            "value": 14,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "(four of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 4
+              },
+              "items": [
+                {
+                  "text": "sensory deficit loss of sharp vs dull perception (decreased protective sensibility) in the dermatomal distribution compatible with the L4 dermatome (ie, anterolateral thigh, crossing the knee to medial dorsum of foot, big toe)"
+                },
+                {
+                  "text": "positive reproducible femoral nerve stretch neural tension test (simultaneous hip extension and knee flexion with reported radicular pain, numbness, and/or paresthesias) in the dermatomal distribution compatible with the L4 dermatome"
+                },
+                {
+                  "text": "motor deficit 3/5 muscle weakness in the myotome distribution compatible with the L4 nerve root (ie, 3/5 ankle dorsiflexion weakness or 3/5 knee extensor weakness)"
+                },
+                {
+                  "text": "thigh muscle atrophy/asymmetry difference of >1.5 cm to ≤2 cm measured 15 cm above medial knee joint line or calf muscle atrophy/asymmetry difference of >1.5 cm to ≤2 cm measured 15 cm below the medial knee joint line"
+                },
+                {
+                  "text": "asymmetrical diminished L4 nerve root-associated reflex (ie, knee);"
+                }
+              ]
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L4 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L4 nerve root pathology consistent with *Guides* CS definitions for Electrodiagnosis of Radiculopathy. If testing meets criteria for a L4 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion involving the L4 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "3A",
+          "impairment": {
+            "value": 16,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "(four of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 4
+              },
+              "items": [
+                {
+                  "text": "sensory deficit loss of sharp vs dull perception (decreased protective sensibility) in the dermatomal distribution compatible with the L4 dermatome (ie, anterolateral thigh, crossing the knee to medial dorsum of foot, big toe)"
+                },
+                {
+                  "text": "positive reproducible femoral nerve stretch neural tension test (simultaneous hip extension and knee flexion with reported radicular pain, numbness, and/or paresthesias) in the dermatomal distribution compatible with the L4 dermatome"
+                },
+                {
+                  "text": "motor deficit 2/5 muscle weakness in the myotome distribution compatible with the L4 nerve root (ie, 2/5 ankle dorsiflexion weakness or 2/5 knee extensor weakness)"
+                },
+                {
+                  "text": "thigh muscle atrophy/asymmetry difference of >2 cm to ≤3 cm measured 15 cm above medial knee joint line or calf muscle atrophy/asymmetry difference of >2 cm to ≤3 cm measured 15 cm below the medial knee joint line"
+                },
+                {
+                  "text": "asymmetrical loss L4 nerve root-associated reflex (ie, knee);"
+                }
+              ]
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L4 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L4 nerve root pathology consistent with *Guides* CS definitions per. Electrodiagnosis of Radiculopathy. If testing meets criteria for a L4 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion involving the L4 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "3B",
+          "impairment": {
+            "value": 18,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "(four of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 4
+              },
+              "items": [
+                {
+                  "text": "sensory deficit loss of sharp vs dull perception (decreased protective sensibility) in the dermatomal distribution compatible with the L4 dermatome (ie, anterolateral thigh, crossing the knee to medial dorsum of foot, big toe)"
+                },
+                {
+                  "text": "positive reproducible femoral nerve stretch neural tension test (simultaneous hip extension and knee flexion with reported radicular pain, numbness, and/or paresthesias) in the dermatomal distribution compatible with the L4 dermatome"
+                },
+                {
+                  "text": "motor deficit 0/5 to 1/5 muscle weakness in the myotome distribution compatible with the L4 nerve root (ie, 0/5 to 1/5 ankle dorsiflexion weakness or 0/5 to 1/5 knee extensor weakness)"
+                },
+                {
+                  "text": "thigh muscle atrophy/asymmetry difference of >3 cm measured 15 cm above medial knee joint line or calf muscle atrophy/asymmetry difference of >3 cm measured 15 cm below the medial knee joint line"
+                },
+                {
+                  "text": "asymmetrical loss L4 nerve root-associated reflex (ie, knee);"
+                }
+              ]
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L4 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L4 nerve root pathology consistent with *Guides* CS definitions for Electrodiagnosis of Radiculopathy. If testing meets criteria for a L4 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion involving the L4 nerve root"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "17-21-07",
+      "description": "Lumbar Radiculopathy Involving the L5 Nerve Root",
+      "entries": [
+        {
+          "entry_id": "1A",
+          "impairment": {
+            "value": 2,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "confirms residual radicular symptoms of pain or subjectively altered sensory perception (paresthesia-like often described as numbness) without objectively verifiable sensory loss for dullness to pinprick or loss of sharp vs dull perception in a neuroanatomically plausible dermatomal distribution compatible with the L5 dermatome (ie, lateral thigh, anterolateral leg, middorsal foot);"
+            },
+            "CS": {
+              "lead": "",
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L5 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L5 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. If testing meets criteria for a L5 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion affecting the L5 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "1B",
+          "impairment": {
+            "value": 4,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "sensory deficit dullness to pinprick sensation in the dermatomal distribution compatible with the L5 dermatome (ie, lateral thigh, anterolateral leg, middorsal foot) while sharp vs dull perception remains intact;"
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L5 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L5 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. If testing meets criteria for a L5 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion affecting the L5 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "1C",
+          "impairment": {
+            "value": 5,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "sensory deficit loss of sharp vs dull perception (decreased protective sensibility) in the dermatomal distribution compatible L5 dermatome (ie, lateral thigh, anterolateral leg, middorsal foot);"
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L5 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L5 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. If testing meets criteria for a L5 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion involving the L5 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "2A",
+          "impairment": {
+            "value": 12,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "(three of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 3
+              },
+              "items": [
+                {
+                  "text": "sensory deficit loss of sharp vs dull perception (decreased protective sensibility) in the dermatomal distribution compatible with the L5 dermatome (ie, lateral thigh, anterolateral leg, middorsal foot)"
+                },
+                {
+                  "text": "positive reproducible straight leg raise (SLR) neural tension test (flex hip and raise leg with knee extended) with reported radicular pain, numbness, and/or *paresthesias in the dermatomal distribution compatible with the L5 dermatome at between 35° and 70° of leg elevation with hip flexion (back pain and posterior thigh pain or leg pain that is not in a dermatomal distribution with the SLR maneuver is not a positive finding)*"
+                },
+                {
+                  "text": "motor deficit 4/5 muscle weakness in the myotome distribution compatible with the L5 nerve root (ie, 4/5 great/big toe extensor weakness or 4/5 ankle dorsiflexion and inversion weakness)"
+                },
+                {
+                  "text": "thigh muscle atrophy/asymmetry difference of >1 cm to ≤1.5 cm measured 15 cm above medial knee joint line or calf muscle atrophy/asymmetry difference of >1 cm to ≤1.5 cm measured 15 cm below the medial knee joint line;"
+                }
+              ]
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L5 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L5 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. If testing meets criteria for a L5 radiculopathy by AANEM criteria this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion involving the L5 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "2B",
+          "impairment": {
+            "value": 14,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "(three of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 3
+              },
+              "items": [
+                {
+                  "text": "sensory deficit loss of sharp vs dull perception (decreased protective sensibility) in the dermatomal distribution compatible with the L5 dermatome (ie, lateral thigh, anterolateral leg, middorsal foot)"
+                },
+                {
+                  "text": "positive reproducible straight leg raise (SLR) neural tension test (flex hip and raise leg with knee extended) with reported radicular pain, numbness, and/or paresthesias in the dermatomal distribution) compatible with the L5 dermatome at between 35° and 70° of leg elevation with hip flexion *(back pain and posterior thigh pain or leg pain that is not in a dermatomal distribution with the SLR maneuver is not a positive finding)*"
+                },
+                {
+                  "text": "motor deficit 3/5 muscle weakness in the myotome distribution compatible with the L5 nerve root (ie, 3/5 great/big toe extensor weakness or 3/5 ankle dorsiflexion and inversion weakness)"
+                },
+                {
+                  "text": "thigh muscle atrophy/asymmetry difference of >1.5 cm to ≤2 cm measured 15 cm above medial knee joint line or calf muscle atrophy/asymmetry difference of >1.5 cm to ≤2 cm measured 15 cm below the medial knee joint line"
+                }
+              ]
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L5 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L5 nerve root pathology consistent with *Guides* CS definitions for Electrodiagnosis of Radiculopathy. If testing meets criteria for a L5 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy"
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion involving the L5 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "3A",
+          "impairment": {
+            "value": 16,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "(three of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 3
+              },
+              "items": [
+                {
+                  "text": "sensory deficit loss of sharp vs dull perception (decreased protective sensibility) in the dermatomal distribution compatible with the L5 dermatome (ie, lateral thigh, anterolateral leg, middorsal foot)"
+                },
+                {
+                  "text": "positive reproducible straight leg raise (SLR) neural tension test (flex hip and raise leg with knee extended) with reported radicular pain, numbness, and/or paresthesias in the dermatomal distribution) compatible with the L5 dermatome at between 35° and 70° of leg elevation with hip flexion *(back pain and posterior thigh pain or leg pain that is not in a dermatomal distribution with the SLR maneuver is not a positive finding)*"
+                },
+                {
+                  "text": "motor deficit 2/5 muscle weakness in the myotome distribution compatible with the L5 nerve root (ie, 2/5 great/big toe extensor weakness or 2/5 ankle dorsiflexion and inversion weakness)"
+                },
+                {
+                  "text": "thigh muscle atrophy/asymmetry difference of >2 cm to ≤3 cm measured 15 cm above medial knee joint line or calf muscle atrophy/asymmetry difference of >2 cm to ≤3 cm measured 15 cm below the medial knee joint line;"
+                }
+              ]
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L5 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L5 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. If testing meets criteria for a L5 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion involving the L5 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "3B",
+          "impairment": {
+            "value": 18,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "(three of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 3
+              },
+              "items": [
+                {
+                  "text": "sensory deficit loss of sharp vs dull perception (decreased protective sensibility) in the dermatomal distribution compatible with the L5 dermatome (ie, lateral thigh, anterolateral leg, middorsal foot)"
+                },
+                {
+                  "text": "positive reproducible straight leg raise (SLR) neural tension test (flex hip and raise leg with knee extended) with reported radicular pain, numbness, and/or paresthesias in the dermatomal distribution) compatible with the L5 dermatome at between 35° and 70° of leg elevation with hip flexion *(back pain and posterior thigh pain or leg pain that is not in a dermatomal distribution with the SLR maneuver is not a positive finding)*"
+                },
+                {
+                  "text": "motor deficit 0/5 to 1/5 muscle weakness in the myotome distribution compatible with the L5 nerve root (ie, 0/5 to 1/5 great/big toe extensor weakness or 0/5 to 1/5 ankle dorsiflexion and inversion weakness)"
+                },
+                {
+                  "text": "thigh muscle atrophy/asymmetry difference of >3 cm measured 15 cm above medial knee joint line or calf muscle atrophy/asymmetry difference of >3 cm measured 15 cm below the medial knee joint line;"
+                }
+              ]
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating an L5 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming L5 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. If testing meets criteria for a L5 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion involving the L5 nerve root"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "17-21-08",
+      "description": "Lumbar Radiculopathy Involving the S1 Nerve Root",
+      "entries": [
+        {
+          "entry_id": "1A",
+          "impairment": {
+            "value": 2,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "confirms residual radicular symptoms of pain or subjectively altered sensory perception (paresthesia-like often described as numbness) without objectively verifiable sensory loss for dullness to pinprick or loss of sharp vs dull perception in a neuroanatomically plausible dermatomal distribution compatible with the S1 dermatome (ie, posterior calf/leg, lateral foot);"
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating a S1 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming S1 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. If testing meets criteria for a S1 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion affecting the S1 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "1B",
+          "impairment": {
+            "value": 4,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "sensory deficit dullness to pinprick sensation in the dermatomal distribution compatible with the S1 dermatome (ie, posterior calf/leg, lateral foot) while sharp vs dull perception remains intact"
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating a S1 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming S1 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. If testing meets criteria for a S1 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion affecting the S1 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "1C",
+          "impairment": {
+            "value": 5,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "sensory deficit loss of sharp vs dull perception (decreased protective sensibility) in the dermatomal distribution compatible S1dermatome (ie, posterior calf/leg, lateral foot);"
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating a S1 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming S1 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. If testing meets criteria for a S1 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion involving the S1 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "2A",
+          "impairment": {
+            "value": 12,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "(four of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 4
+              },
+              "items": [
+                {
+                  "text": "sensory deficit loss of sharp vs dull perception (decreased protective sensibility) in the dermatomal distribution compatible with the S1 dermatome (ie, posterior calf/leg, lateral foot)"
+                },
+                {
+                  "text": "positive reproducible straight leg raise (SLR) neural tension test (flex hip and raise leg with knee extended) with reported radicular pain, numbness, and/or paresthesias in the dermatomal distribution) compatible with the S1 dermatome at between 35° and 70° of leg elevation with hip flexion *(back pain and posterior thigh pain or leg pain that is not in a dermatomal distribution with the SLR maneuver is not a positive finding)*"
+                },
+                {
+                  "text": "motor deficit 4/5 muscle weakness in the myotome distribution compatible with the S1 nerve root (ie, 4/5 ankle plantar flexion pronation weakness or gastrocnemius/soleus muscle fatigable weakness observed during “‘tiptoe” for ten times holding onto a chair for balance)"
+                },
+                {
+                  "text": "thigh muscle atrophy/asymmetry difference of >1 cm to ≤1.5 cm measured 15 cm above medial knee joint line or calf muscle atrophy/asymmetry difference of >1 cm to ≤1.5 cm measured 15 cm below the medial knee joint line"
+                },
+                {
+                  "text": "asymmetrical diminished S1 nerve root-associated reflex (ie, ankle);"
+                }
+              ]
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating a S1 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming S1 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. If testing meets criteria for a S1 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion involving the S1 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "2B",
+          "impairment": {
+            "value": 14,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "(four of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 4
+              },
+              "items": [
+                {
+                  "text": "sensory deficit loss of sharp vs dull perception (decreased protective sensibility) in the dermatomal distribution compatible with the S1 dermatome (ie, posterior calf/leg, lateral foot)"
+                },
+                {
+                  "text": "positive reproducible straight leg raise (SLR) neural tension test (flex hip and raise leg with knee extended) with reported radicular pain, numbness, and/or paresthesias in the dermatomal distribution) compatible with the S1 dermatome at between 35° and 70° of leg elevation with hip flexion *(back pain and posterior thigh pain or leg pain that is not in a dermatomal distribution with the SLR maneuver is not a positive finding)*"
+                },
+                {
+                  "text": "motor deficit 3/5 muscle weakness in the myotome distribution compatible with the S1 nerve root (ie, 3/5 ankle plantar flexion pronation weakness or gastrocnemius/soleus muscle fatigable weakness observed during “‘tiptoe” for ten times holding onto a chair for balance)"
+                },
+                {
+                  "text": "thigh muscle atrophy/asymmetry difference of >1.5 cm to 2 cm measured 15 cm above medial knee joint line or calf muscle atrophy/asymmetry difference of >1.5 cm to 2 cm measured 15 cm below the medial knee joint line"
+                },
+                {
+                  "text": "asymmetrical diminished S1 nerve root-associated reflex (ie, ankle);"
+                }
+              ]
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating a S1 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming S1 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. If testing meets criteria for a S1 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion involving the S1 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "3A",
+          "impairment": {
+            "value": 16,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "(four of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 4
+              },
+              "items": [
+                {
+                  "text": "sensory deficit loss of sharp vs dull perception (decreased protective sensibility) in the dermatomal distribution compatible with the S1 dermatome (ie, posterior calf/leg, lateral foot)"
+                },
+                {
+                  "text": "positive reproducible straight leg raise (SLR) neural tension test (flex hip and raise leg with knee extended) with reported radicular pain, numbness, and/or paresthesias in the dermatomal distribution) compatible with the S1 dermatome at between 35° and 70° of leg elevation with hip flexion *(back pain and posterior thigh pain or leg pain that is not in a dermatomal distribution with the SLR maneuver is not a positive finding)*"
+                },
+                {
+                  "text": "motor deficit 2/5 muscle weakness in the myotome distribution compatible with the S1 nerve root (ie, 2/5 ankle plantar flexion pronation weakness or gastrocnemius/soleus muscle fatigable weakness observed during “‘tiptoe” for ten times holding onto a chair for balance)"
+                },
+                {
+                  "text": "thigh muscle atrophy/asymmetry difference of >2 cm to ≤3 cm measured 15 cm above medial knee joint line or calf muscle atrophy/asymmetry difference of >2 cm to ≤3 cm measured 15 cm below the medial knee joint line"
+                },
+                {
+                  "text": "asymmetrical loss S1 nerve root-associated reflex (ie, ankle);"
+                }
+              ]
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating a S1 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming S1 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. If testing meets criteria for a S1 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion involving the S1 nerve root"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "3B",
+          "impairment": {
+            "value": 18,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "(four of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 4
+              },
+              "items": [
+                {
+                  "text": "sensory deficit loss of sharp vs dull perception (decreased protective sensibility) in the dermatomal distribution compatible with the S1 dermatome (ie, posterior calf/leg, lateral foot)"
+                },
+                {
+                  "text": "positive reproducible straight leg raise (SLR) neural tension test (flex hip and raise leg with knee extended) with reported radicular pain, numbness, and/or paresthesias in the dermatomal distribution) compatible with the S1 dermatome at between 35° and 70° of leg elevation with hip flexion *(back pain and posterior thigh pain or leg pain that is not in a dermatomal distribution with the SLR maneuver is not a positive finding)*"
+                },
+                {
+                  "text": "motor deficit 0/5 to 1/5 muscle weakness in the myotome distribution compatible with the S1 nerve root (ie, 0/5 to 1/5 ankle plantar flexion pronation weakness or gastrocnemius/soleus muscle fatigable weakness observed during “‘tiptoe” for ten times holding onto a chair for balance)"
+                },
+                {
+                  "text": "thigh muscle atrophy/asymmetry difference of >3 cm measured 15 cm above medial knee joint line or calf muscle atrophy/asymmetry difference of >3 cm measured 15 cm below the medial knee joint line"
+                },
+                {
+                  "text": "asymmetrical loss S1 nerve root-associated reflex (ie, ankle);"
+                }
+              ]
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "MRI or CT imaging demonstrating a S1 nerve root injury or lesion"
+                },
+                {
+                  "text": "electrodiagnostic findings confirming S1 nerve root pathology consistent with Guides CS definitions per Section 17.06e1 Electrodiagnosis of Radiculopathy. If testing meets criteria for a S1 radiculopathy by AANEM criteria. this is objective confirmation of radiculopathy. If the date of injury and date of testing align, this should be rated as radiculopathy."
+                },
+                {
+                  "text": "surgeon's clear objective verification of an intraoperative lesion involving the S1 nerve root"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "17-21-09",
+      "description": "Lumbar Spinal Fracture",
+      "intro": "Fractures may occur at single or multiple levels. The single fracture with the highest whole person impairment rating is used to calculate impairment.",
+      "entries": [
+        {
+          "entry_id": "1A",
+          "impairment": {
+            "value": 2,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "consistent with DX;"
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "imaging or findings at surgery consistent with DX of <25% compression of any single vertebral body or multiple vertebral bodies, with or without bony retropulsion into the canal, healed with or without surgery (includes vertebroplasty or kyphoplasty)"
+                },
+                {
+                  "text": "nondisplaced lamina, pedicle or articular process (posterior elements) fracture without loss of structural integrity"
+                },
+                {
+                  "text": "displaced spinous process (SP) or transverse process (TP) (posterior elements) fracture without loss of structural integrity"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "1B",
+          "impairment": {
+            "value": 4,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "consistent with DX;"
+            },
+            "CS": {
+              "lead": "(one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "imaging or findings at surgery consistent with DX of ≥25% to <50% compression single vertebral body or multiple vertebral bodies, with or without bony retropulsion into the canal, healed with or without surgery (includes vertebroplasty or kyphoplasty)"
+                },
+                {
+                  "text": "displaced lamina, pedicle or articular process (posterior elements) fracture without loss of structural integrity"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "entry_id": "2A",
+          "impairment": {
+            "value": 10,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury consistent with DX;"
+            },
+            "PE": {
+              "lead": "consistent with DX;"
+            },
+            "CS": {
+              "lead": "imaging or findings at surgery consistent with DX of ≥ 50% compression of any single vertebral body or multiple vertebral bodies with or without bony retropulsion into the canal, pedicle and or posterior element fracture, healed with or without surgery (includes vertebroplasty or kyphoplasty)"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "17-21-10",
+      "description": "Lumbar Stenosis With Neurogenic Claudication",
+      "intro": "Lumbar central canal stenosis may present with a history of **neurogenic claudication**. There are often no reliable objective findings on physical examination, and the diagnosis is based on imaging findings that explain the reported symptoms.177\n\nIn order to rate symptomatic central canal spinal stenosis, there must be a discrete event that precipitated symptoms. At time of current evaluation, the evaluator determines the CH, PE, and relevant CS to be consistent with the diagnosis of spinal stenosis and the natural history of the condition; +/− surgery.",
+      "entries": [
+        {
+          "entry_id": "1A",
+          "impairment": {
+            "value": 2,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "A discrete event and plausible mechanism of injury, after which there are complaints of neurogenic claudication (pain in the buttocks and posterior thighs that increases with walking or extension and is relieved by sitting or bending forward, and may include reports of fatigue, heaviness, weakness and/or paresthesias). There are no reliable objective physical examination or imaging findings for this diagnosis, and the evaluator determines that the individual presents consistently and is believable. There should be documentation on more than one occasion of symptoms increased with walking and improved with flexion/sitting."
+            },
+            "PE": null,
+            "CS": {
+              "lead": "imaging or findings at surgery consistent with DX of spinal stenosis at single level consistent with clinical history listed above"
+            }
+          }
+        },
+        {
+          "entry_id": "1B",
+          "impairment": {
+            "value": 4,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "A discrete event and plausible mechanism of injury, after which there are complaints of neurogenic claudication (pain in the buttocks and posterior thighs that increases with walking or extension and is relieved by sitting or bending forward, and may include reports of fatigue, heaviness, weakness and/or paresthesias). There are no reliable objective physical examination or imaging findings for this diagnosis, and the evaluator determines that the individual presents consistently and is believable. There should be documentation on more than one occasion of symptoms increased with walking and improved with flexion/sitting."
+            },
+            "PE": null,
+            "CS": {
+              "lead": "imaging or findings at surgery consistent with DX of spinal stenosis at multiple levels or bilaterally consistent with clinical history listed above."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "17-21-11",
+      "description": "Lumbar AOMSI Associated With Fusion, Arthroplasty, or Pseudarthrosis",
+      "intro": "The calculated impairment values take into account the potential future stress on the disc spaces adjacent to the surgical site, a condition known as adjacent disc disease or adjacent segment degeneration. This consideration reflects the understanding that the redistribution of mechanical forces following a spinal procedure can accelerate wear and tear on neighboring vertebral levels, potentially leading to additional spinal issues in the future.",
+      "entries": [
+        {
+          "entry_id": "1A",
+          "impairment": {
+            "value": 5,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury and physical examination consistent with DX;"
+            },
+            "PE": {
+              "lead": "consistent with DX;"
+            },
+            "CS": {
+              "lead": "imaging or findings at surgery consistent with DX of single-level lumbar fusion or arthroplasty"
+            }
+          }
+        },
+        {
+          "entry_id": "1B",
+          "impairment": {
+            "value": 9,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury and physical examination consistent with DX;"
+            },
+            "PE": {
+              "lead": "consistent with DX;"
+            },
+            "CS": {
+              "lead": "imaging or findings at surgery consistent with DX of multi-level lumbar fusion or arthroplasty"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "17-21-12",
+      "description": "Lumbar AOMSI Associated With Instability",
+      "intro": "The calculated impairment values take into account the potential future stress on the disc spaces adjacent to the surgical site, a condition known as adjacent disc disease or adjacent segment degeneration. This consideration reflects the understanding that the redistribution of mechanical forces following a spinal procedure can accelerate wear and tear on neighboring vertebral levels, potentially leading to additional spinal issues in the future.",
+      "entries": [
+        {
+          "entry_id": "1A",
+          "impairment": {
+            "value": 5,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury and physical examination consistent with DX;"
+            },
+            "PE": {
+              "lead": "consistent with DX;"
+            },
+            "CS": {
+              "lead": "by flexion and extension radiographs (one of the following)",
+              "list_instruction": {
+                "kind": "stated_count",
+                "count": 1
+              },
+              "items": [
+                {
+                  "text": "Relative-translation (one per appropriate level)",
+                  "items": [
+                    {
+                      "text": "T12-L5 >8% anterior or >9% posterior relative translation of one vertebra on another"
+                    },
+                    {
+                      "text": "L5-S1 >6% anterior or >9% posterior relative translation of one vertebra on another"
+                    }
+                  ]
+                },
+                {
+                  "text": "Angular-Motion (one per appropriate level)",
+                  "items": [
+                    {
+                      "text": "L1-L2, L2-L3, and L3-L4 and >15°"
+                    },
+                    {
+                      "text": "L4-L5 >20°"
+                    },
+                    {
+                      "text": "L5-S1 >25°"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "17-21-13",
+      "description": "Lumbar Deep Spinal Wound Infection",
+      "entries": [
+        {
+          "entry_id": "1A",
+          "impairment": {
+            "value": 5,
+            "unit": "WPI"
+          },
+          "sections": {
+            "CH": {
+              "lead": "(residual symptoms) with mechanism of injury and physical examination consistent with DX of deep spinal wound infection requiring chronic suppressive antibiotic therapy (6 months or longer) due to chronic osteomyelitis;"
+            },
+            "PE": {
+              "lead": "consistent with DX;"
+            },
+            "CS": {
+              "lead": "imaging or findings at surgery consistent with DX"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
