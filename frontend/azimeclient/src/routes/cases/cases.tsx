@@ -1,5 +1,5 @@
 import { createRoute } from "@tanstack/react-router";
-import { rootRoute } from "@/main";
+import { rootRoute } from "../rootRoutes";
 import { casesQueryOptions } from "./queries";
 
 export const casesRoute = createRoute({

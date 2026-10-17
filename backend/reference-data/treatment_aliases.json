@@ -1,0 +1,3534 @@
+[
+  {
+    "treatment_id": "activity_modification_cervical",
+    "alias": "activity modification"
+  },
+  {
+    "treatment_id": "activity_modification_cervical",
+    "alias": "modified activity"
+  },
+  {
+    "treatment_id": "activity_modification_cervical",
+    "alias": "modified duty"
+  },
+  {
+    "treatment_id": "activity_modification_cervical",
+    "alias": "light duty"
+  },
+  {
+    "treatment_id": "activity_modification_cervical",
+    "alias": "work restrictions"
+  },
+  {
+    "treatment_id": "activity_modification_cervical",
+    "alias": "advice to stay active"
+  },
+  {
+    "treatment_id": "activity_modification_cervical",
+    "alias": "patient education"
+  },
+  {
+    "treatment_id": "activity_modification_cervical",
+    "alias": "relative rest"
+  },
+  {
+    "treatment_id": "activity_modification_cervical",
+    "alias": "ergonomic modification"
+  },
+  {
+    "treatment_id": "home_exercise_cervical",
+    "alias": "HEP"
+  },
+  {
+    "treatment_id": "home_exercise_cervical",
+    "alias": "home exercise program"
+  },
+  {
+    "treatment_id": "home_exercise_cervical",
+    "alias": "home exercises"
+  },
+  {
+    "treatment_id": "home_exercise_cervical",
+    "alias": "self-directed exercise"
+  },
+  {
+    "treatment_id": "home_exercise_cervical",
+    "alias": "independent exercise program"
+  },
+  {
+    "treatment_id": "pt_cervical",
+    "alias": "PT"
+  },
+  {
+    "treatment_id": "pt_cervical",
+    "alias": "P.T."
+  },
+  {
+    "treatment_id": "pt_cervical",
+    "alias": "physical therapy"
+  },
+  {
+    "treatment_id": "pt_cervical",
+    "alias": "physiotherapy"
+  },
+  {
+    "treatment_id": "pt_cervical",
+    "alias": "physio"
+  },
+  {
+    "treatment_id": "pt_cervical",
+    "alias": "supervised exercise therapy"
+  },
+  {
+    "treatment_id": "pt_cervical",
+    "alias": "therapeutic exercise"
+  },
+  {
+    "treatment_id": "pt_cervical",
+    "alias": "manual therapy"
+  },
+  {
+    "treatment_id": "pt_cervical",
+    "alias": "McKenzie"
+  },
+  {
+    "treatment_id": "pt_cervical",
+    "alias": "MDT"
+  },
+  {
+    "treatment_id": "pt_cervical",
+    "alias": "stabilization exercises"
+  },
+  {
+    "treatment_id": "pt_cervical",
+    "alias": "core stabilization"
+  },
+  {
+    "treatment_id": "pt_cervical",
+    "alias": "physical medicine"
+  },
+  {
+    "treatment_id": "pt_cervical",
+    "alias": "cervical PT"
+  },
+  {
+    "treatment_id": "pt_cervical",
+    "alias": "neck PT"
+  },
+  {
+    "treatment_id": "manipulation_cervical",
+    "alias": "chiropractic"
+  },
+  {
+    "treatment_id": "manipulation_cervical",
+    "alias": "chiropractic care"
+  },
+  {
+    "treatment_id": "manipulation_cervical",
+    "alias": "chiropractic adjustment"
+  },
+  {
+    "treatment_id": "manipulation_cervical",
+    "alias": "adjustment"
+  },
+  {
+    "treatment_id": "manipulation_cervical",
+    "alias": "spinal manipulation"
+  },
+  {
+    "treatment_id": "manipulation_cervical",
+    "alias": "SMT"
+  },
+  {
+    "treatment_id": "manipulation_cervical",
+    "alias": "spinal manipulative therapy"
+  },
+  {
+    "treatment_id": "manipulation_cervical",
+    "alias": "CMT"
+  },
+  {
+    "treatment_id": "manipulation_cervical",
+    "alias": "chiropractic manipulative treatment"
+  },
+  {
+    "treatment_id": "manipulation_cervical",
+    "alias": "OMT"
+  },
+  {
+    "treatment_id": "manipulation_cervical",
+    "alias": "osteopathic manipulative treatment"
+  },
+  {
+    "treatment_id": "manipulation_cervical",
+    "alias": "spinal mobilization"
+  },
+  {
+    "treatment_id": "acupuncture_cervical",
+    "alias": "acupuncture"
+  },
+  {
+    "treatment_id": "acupuncture_cervical",
+    "alias": "electroacupuncture"
+  },
+  {
+    "treatment_id": "acupuncture_cervical",
+    "alias": "acupuncturist"
+  },
+  {
+    "treatment_id": "acupuncture_cervical",
+    "alias": "acupuncture treatment"
+  },
+  {
+    "treatment_id": "cbt_cervical",
+    "alias": "CBT"
+  },
+  {
+    "treatment_id": "cbt_cervical",
+    "alias": "cognitive behavioral therapy"
+  },
+  {
+    "treatment_id": "cbt_cervical",
+    "alias": "cognitive behavioural therapy"
+  },
+  {
+    "treatment_id": "cbt_cervical",
+    "alias": "psychotherapy"
+  },
+  {
+    "treatment_id": "cbt_cervical",
+    "alias": "pain psychology"
+  },
+  {
+    "treatment_id": "cbt_cervical",
+    "alias": "psychological treatment"
+  },
+  {
+    "treatment_id": "cbt_cervical",
+    "alias": "behavioral pain management"
+  },
+  {
+    "treatment_id": "cbt_cervical",
+    "alias": "mindfulness-based stress reduction"
+  },
+  {
+    "treatment_id": "cbt_cervical",
+    "alias": "MBSR"
+  },
+  {
+    "treatment_id": "cbt_cervical",
+    "alias": "pain coping skills training"
+  },
+  {
+    "treatment_id": "spinal_orthosis_cervical",
+    "alias": "brace"
+  },
+  {
+    "treatment_id": "spinal_orthosis_cervical",
+    "alias": "bracing"
+  },
+  {
+    "treatment_id": "spinal_orthosis_cervical",
+    "alias": "orthosis"
+  },
+  {
+    "treatment_id": "spinal_orthosis_cervical",
+    "alias": "spinal orthosis"
+  },
+  {
+    "treatment_id": "spinal_orthosis_cervical",
+    "alias": "cervical collar"
+  },
+  {
+    "treatment_id": "spinal_orthosis_cervical",
+    "alias": "hard collar"
+  },
+  {
+    "treatment_id": "spinal_orthosis_cervical",
+    "alias": "Aspen collar"
+  },
+  {
+    "treatment_id": "spinal_orthosis_cervical",
+    "alias": "Miami J collar"
+  },
+  {
+    "treatment_id": "spinal_orthosis_cervical",
+    "alias": "Philadelphia collar"
+  },
+  {
+    "treatment_id": "spinal_orthosis_cervical",
+    "alias": "halo vest"
+  },
+  {
+    "treatment_id": "spinal_orthosis_cervical",
+    "alias": "CTO"
+  },
+  {
+    "treatment_id": "acetaminophen_cervical",
+    "alias": "acetaminophen"
+  },
+  {
+    "treatment_id": "acetaminophen_cervical",
+    "alias": "Tylenol"
+  },
+  {
+    "treatment_id": "acetaminophen_cervical",
+    "alias": "paracetamol"
+  },
+  {
+    "treatment_id": "acetaminophen_cervical",
+    "alias": "APAP"
+  },
+  {
+    "treatment_id": "nsaids_cervical",
+    "alias": "NSAID"
+  },
+  {
+    "treatment_id": "nsaids_cervical",
+    "alias": "NSAIDs"
+  },
+  {
+    "treatment_id": "nsaids_cervical",
+    "alias": "non-steroidal anti-inflammatory"
+  },
+  {
+    "treatment_id": "nsaids_cervical",
+    "alias": "anti-inflammatory"
+  },
+  {
+    "treatment_id": "nsaids_cervical",
+    "alias": "ibuprofen"
+  },
+  {
+    "treatment_id": "nsaids_cervical",
+    "alias": "Motrin"
+  },
+  {
+    "treatment_id": "nsaids_cervical",
+    "alias": "Advil"
+  },
+  {
+    "treatment_id": "nsaids_cervical",
+    "alias": "naproxen"
+  },
+  {
+    "treatment_id": "nsaids_cervical",
+    "alias": "Naprosyn"
+  },
+  {
+    "treatment_id": "nsaids_cervical",
+    "alias": "Aleve"
+  },
+  {
+    "treatment_id": "nsaids_cervical",
+    "alias": "Anaprox"
+  },
+  {
+    "treatment_id": "nsaids_cervical",
+    "alias": "meloxicam"
+  },
+  {
+    "treatment_id": "nsaids_cervical",
+    "alias": "Mobic"
+  },
+  {
+    "treatment_id": "nsaids_cervical",
+    "alias": "diclofenac"
+  },
+  {
+    "treatment_id": "nsaids_cervical",
+    "alias": "Voltaren"
+  },
+  {
+    "treatment_id": "nsaids_cervical",
+    "alias": "celecoxib"
+  },
+  {
+    "treatment_id": "nsaids_cervical",
+    "alias": "Celebrex"
+  },
+  {
+    "treatment_id": "nsaids_cervical",
+    "alias": "etodolac"
+  },
+  {
+    "treatment_id": "nsaids_cervical",
+    "alias": "nabumetone"
+  },
+  {
+    "treatment_id": "nsaids_cervical",
+    "alias": "Relafen"
+  },
+  {
+    "treatment_id": "nsaids_cervical",
+    "alias": "ketorolac"
+  },
+  {
+    "treatment_id": "nsaids_cervical",
+    "alias": "Toradol"
+  },
+  {
+    "treatment_id": "nsaids_cervical",
+    "alias": "indomethacin"
+  },
+  {
+    "treatment_id": "muscle_relaxants_cervical",
+    "alias": "muscle relaxant"
+  },
+  {
+    "treatment_id": "muscle_relaxants_cervical",
+    "alias": "muscle relaxants"
+  },
+  {
+    "treatment_id": "muscle_relaxants_cervical",
+    "alias": "cyclobenzaprine"
+  },
+  {
+    "treatment_id": "muscle_relaxants_cervical",
+    "alias": "Flexeril"
+  },
+  {
+    "treatment_id": "muscle_relaxants_cervical",
+    "alias": "Amrix"
+  },
+  {
+    "treatment_id": "muscle_relaxants_cervical",
+    "alias": "methocarbamol"
+  },
+  {
+    "treatment_id": "muscle_relaxants_cervical",
+    "alias": "Robaxin"
+  },
+  {
+    "treatment_id": "muscle_relaxants_cervical",
+    "alias": "tizanidine"
+  },
+  {
+    "treatment_id": "muscle_relaxants_cervical",
+    "alias": "Zanaflex"
+  },
+  {
+    "treatment_id": "muscle_relaxants_cervical",
+    "alias": "baclofen"
+  },
+  {
+    "treatment_id": "muscle_relaxants_cervical",
+    "alias": "metaxalone"
+  },
+  {
+    "treatment_id": "muscle_relaxants_cervical",
+    "alias": "Skelaxin"
+  },
+  {
+    "treatment_id": "muscle_relaxants_cervical",
+    "alias": "carisoprodol"
+  },
+  {
+    "treatment_id": "muscle_relaxants_cervical",
+    "alias": "Soma"
+  },
+  {
+    "treatment_id": "muscle_relaxants_cervical",
+    "alias": "orphenadrine"
+  },
+  {
+    "treatment_id": "muscle_relaxants_cervical",
+    "alias": "Norflex"
+  },
+  {
+    "treatment_id": "muscle_relaxants_cervical",
+    "alias": "chlorzoxazone"
+  },
+  {
+    "treatment_id": "neuropathic_agents_cervical",
+    "alias": "gabapentin"
+  },
+  {
+    "treatment_id": "neuropathic_agents_cervical",
+    "alias": "Neurontin"
+  },
+  {
+    "treatment_id": "neuropathic_agents_cervical",
+    "alias": "Gralise"
+  },
+  {
+    "treatment_id": "neuropathic_agents_cervical",
+    "alias": "pregabalin"
+  },
+  {
+    "treatment_id": "neuropathic_agents_cervical",
+    "alias": "Lyrica"
+  },
+  {
+    "treatment_id": "neuropathic_agents_cervical",
+    "alias": "anticonvulsant"
+  },
+  {
+    "treatment_id": "neuropathic_agents_cervical",
+    "alias": "antiepileptic"
+  },
+  {
+    "treatment_id": "neuropathic_agents_cervical",
+    "alias": "AED"
+  },
+  {
+    "treatment_id": "neuropathic_agents_cervical",
+    "alias": "amitriptyline"
+  },
+  {
+    "treatment_id": "neuropathic_agents_cervical",
+    "alias": "Elavil"
+  },
+  {
+    "treatment_id": "neuropathic_agents_cervical",
+    "alias": "nortriptyline"
+  },
+  {
+    "treatment_id": "neuropathic_agents_cervical",
+    "alias": "Pamelor"
+  },
+  {
+    "treatment_id": "neuropathic_agents_cervical",
+    "alias": "tricyclic antidepressant"
+  },
+  {
+    "treatment_id": "neuropathic_agents_cervical",
+    "alias": "TCA"
+  },
+  {
+    "treatment_id": "oral_steroids_cervical",
+    "alias": "oral steroids"
+  },
+  {
+    "treatment_id": "oral_steroids_cervical",
+    "alias": "prednisone"
+  },
+  {
+    "treatment_id": "oral_steroids_cervical",
+    "alias": "Medrol Dosepak"
+  },
+  {
+    "treatment_id": "oral_steroids_cervical",
+    "alias": "Medrol dose pack"
+  },
+  {
+    "treatment_id": "oral_steroids_cervical",
+    "alias": "methylprednisolone taper"
+  },
+  {
+    "treatment_id": "oral_steroids_cervical",
+    "alias": "steroid taper"
+  },
+  {
+    "treatment_id": "oral_steroids_cervical",
+    "alias": "steroid burst"
+  },
+  {
+    "treatment_id": "oral_steroids_cervical",
+    "alias": "oral dexamethasone"
+  },
+  {
+    "treatment_id": "opioids_short_course_cervical",
+    "alias": "opioid"
+  },
+  {
+    "treatment_id": "opioids_short_course_cervical",
+    "alias": "opiate"
+  },
+  {
+    "treatment_id": "opioids_short_course_cervical",
+    "alias": "narcotic"
+  },
+  {
+    "treatment_id": "opioids_short_course_cervical",
+    "alias": "hydrocodone"
+  },
+  {
+    "treatment_id": "opioids_short_course_cervical",
+    "alias": "Norco"
+  },
+  {
+    "treatment_id": "opioids_short_course_cervical",
+    "alias": "Vicodin"
+  },
+  {
+    "treatment_id": "opioids_short_course_cervical",
+    "alias": "oxycodone"
+  },
+  {
+    "treatment_id": "opioids_short_course_cervical",
+    "alias": "Percocet"
+  },
+  {
+    "treatment_id": "opioids_short_course_cervical",
+    "alias": "OxyContin"
+  },
+  {
+    "treatment_id": "opioids_short_course_cervical",
+    "alias": "tramadol"
+  },
+  {
+    "treatment_id": "opioids_short_course_cervical",
+    "alias": "Ultram"
+  },
+  {
+    "treatment_id": "opioids_short_course_cervical",
+    "alias": "tapentadol"
+  },
+  {
+    "treatment_id": "opioids_short_course_cervical",
+    "alias": "Nucynta"
+  },
+  {
+    "treatment_id": "opioids_short_course_cervical",
+    "alias": "codeine"
+  },
+  {
+    "treatment_id": "opioids_short_course_cervical",
+    "alias": "Tylenol #3"
+  },
+  {
+    "treatment_id": "opioids_short_course_cervical",
+    "alias": "morphine"
+  },
+  {
+    "treatment_id": "opioids_short_course_cervical",
+    "alias": "hydromorphone"
+  },
+  {
+    "treatment_id": "opioids_short_course_cervical",
+    "alias": "Dilaudid"
+  },
+  {
+    "treatment_id": "trigger_point_injection_cervical",
+    "alias": "TPI"
+  },
+  {
+    "treatment_id": "trigger_point_injection_cervical",
+    "alias": "TPIs"
+  },
+  {
+    "treatment_id": "trigger_point_injection_cervical",
+    "alias": "trigger point injection"
+  },
+  {
+    "treatment_id": "trigger_point_injection_cervical",
+    "alias": "trigger point injections"
+  },
+  {
+    "treatment_id": "trigger_point_injection_cervical",
+    "alias": "myofascial trigger point injection"
+  },
+  {
+    "treatment_id": "esi_interlaminar_cervical",
+    "alias": "ILESI"
+  },
+  {
+    "treatment_id": "esi_interlaminar_cervical",
+    "alias": "IL ESI"
+  },
+  {
+    "treatment_id": "esi_interlaminar_cervical",
+    "alias": "interlaminar ESI"
+  },
+  {
+    "treatment_id": "esi_interlaminar_cervical",
+    "alias": "interlaminar epidural steroid injection"
+  },
+  {
+    "treatment_id": "esi_interlaminar_cervical",
+    "alias": "interlaminar epidural"
+  },
+  {
+    "treatment_id": "esi_interlaminar_cervical",
+    "alias": "ESI"
+  },
+  {
+    "treatment_id": "esi_interlaminar_cervical",
+    "alias": "epidural steroid injection"
+  },
+  {
+    "treatment_id": "esi_interlaminar_cervical",
+    "alias": "epidural injection"
+  },
+  {
+    "treatment_id": "esi_interlaminar_cervical",
+    "alias": "epidural"
+  },
+  {
+    "treatment_id": "esi_interlaminar_cervical",
+    "alias": "cervical ESI"
+  },
+  {
+    "treatment_id": "esi_interlaminar_cervical",
+    "alias": "cervical epidural steroid injection"
+  },
+  {
+    "treatment_id": "esi_interlaminar_cervical",
+    "alias": "cervical epidural"
+  },
+  {
+    "treatment_id": "esi_transforaminal_cervical",
+    "alias": "TFESI"
+  },
+  {
+    "treatment_id": "esi_transforaminal_cervical",
+    "alias": "TF ESI"
+  },
+  {
+    "treatment_id": "esi_transforaminal_cervical",
+    "alias": "transforaminal ESI"
+  },
+  {
+    "treatment_id": "esi_transforaminal_cervical",
+    "alias": "transforaminal epidural steroid injection"
+  },
+  {
+    "treatment_id": "esi_transforaminal_cervical",
+    "alias": "transforaminal epidural"
+  },
+  {
+    "treatment_id": "esi_transforaminal_cervical",
+    "alias": "selective nerve root block"
+  },
+  {
+    "treatment_id": "esi_transforaminal_cervical",
+    "alias": "SNRB"
+  },
+  {
+    "treatment_id": "esi_transforaminal_cervical",
+    "alias": "nerve root block"
+  },
+  {
+    "treatment_id": "esi_transforaminal_cervical",
+    "alias": "periradicular injection"
+  },
+  {
+    "treatment_id": "medial_branch_block_cervical",
+    "alias": "MBB"
+  },
+  {
+    "treatment_id": "medial_branch_block_cervical",
+    "alias": "MBBs"
+  },
+  {
+    "treatment_id": "medial_branch_block_cervical",
+    "alias": "medial branch block"
+  },
+  {
+    "treatment_id": "medial_branch_block_cervical",
+    "alias": "medial branch nerve block"
+  },
+  {
+    "treatment_id": "medial_branch_block_cervical",
+    "alias": "diagnostic facet block"
+  },
+  {
+    "treatment_id": "medial_branch_block_cervical",
+    "alias": "facet nerve block"
+  },
+  {
+    "treatment_id": "medial_branch_block_cervical",
+    "alias": "comparative local anesthetic block"
+  },
+  {
+    "treatment_id": "medial_branch_block_cervical",
+    "alias": "cervical MBB"
+  },
+  {
+    "treatment_id": "medial_branch_block_cervical",
+    "alias": "third occipital nerve block"
+  },
+  {
+    "treatment_id": "medial_branch_block_cervical",
+    "alias": "TON block"
+  },
+  {
+    "treatment_id": "facet_ia_injection_cervical",
+    "alias": "facet injection"
+  },
+  {
+    "treatment_id": "facet_ia_injection_cervical",
+    "alias": "facet joint injection"
+  },
+  {
+    "treatment_id": "facet_ia_injection_cervical",
+    "alias": "intra-articular facet injection"
+  },
+  {
+    "treatment_id": "facet_ia_injection_cervical",
+    "alias": "IA facet injection"
+  },
+  {
+    "treatment_id": "facet_ia_injection_cervical",
+    "alias": "zygapophyseal joint injection"
+  },
+  {
+    "treatment_id": "facet_ia_injection_cervical",
+    "alias": "Z-joint injection"
+  },
+  {
+    "treatment_id": "facet_ia_injection_cervical",
+    "alias": "facet block"
+  },
+  {
+    "treatment_id": "rfa_cervical",
+    "alias": "RFA"
+  },
+  {
+    "treatment_id": "rfa_cervical",
+    "alias": "radiofrequency ablation"
+  },
+  {
+    "treatment_id": "rfa_cervical",
+    "alias": "RF ablation"
+  },
+  {
+    "treatment_id": "rfa_cervical",
+    "alias": "radiofrequency neurotomy"
+  },
+  {
+    "treatment_id": "rfa_cervical",
+    "alias": "RFN"
+  },
+  {
+    "treatment_id": "rfa_cervical",
+    "alias": "rhizotomy"
+  },
+  {
+    "treatment_id": "rfa_cervical",
+    "alias": "facet rhizotomy"
+  },
+  {
+    "treatment_id": "rfa_cervical",
+    "alias": "radiofrequency denervation"
+  },
+  {
+    "treatment_id": "rfa_cervical",
+    "alias": "medial branch neurotomy"
+  },
+  {
+    "treatment_id": "rfa_cervical",
+    "alias": "RF lesioning"
+  },
+  {
+    "treatment_id": "rfa_cervical",
+    "alias": "cervical RFA"
+  },
+  {
+    "treatment_id": "spinal_cord_stimulator_cervical",
+    "alias": "SCS"
+  },
+  {
+    "treatment_id": "spinal_cord_stimulator_cervical",
+    "alias": "spinal cord stimulator"
+  },
+  {
+    "treatment_id": "spinal_cord_stimulator_cervical",
+    "alias": "spinal cord stimulation"
+  },
+  {
+    "treatment_id": "spinal_cord_stimulator_cervical",
+    "alias": "SCS trial"
+  },
+  {
+    "treatment_id": "spinal_cord_stimulator_cervical",
+    "alias": "dorsal column stimulator"
+  },
+  {
+    "treatment_id": "spinal_cord_stimulator_cervical",
+    "alias": "neurostimulator"
+  },
+  {
+    "treatment_id": "spinal_cord_stimulator_cervical",
+    "alias": "neuromodulation"
+  },
+  {
+    "treatment_id": "functional_restoration_cervical",
+    "alias": "FRP"
+  },
+  {
+    "treatment_id": "functional_restoration_cervical",
+    "alias": "functional restoration"
+  },
+  {
+    "treatment_id": "functional_restoration_cervical",
+    "alias": "functional restoration program"
+  },
+  {
+    "treatment_id": "functional_restoration_cervical",
+    "alias": "interdisciplinary pain program"
+  },
+  {
+    "treatment_id": "functional_restoration_cervical",
+    "alias": "multidisciplinary pain program"
+  },
+  {
+    "treatment_id": "functional_restoration_cervical",
+    "alias": "chronic pain program"
+  },
+  {
+    "treatment_id": "functional_restoration_cervical",
+    "alias": "interdisciplinary rehabilitation"
+  },
+  {
+    "treatment_id": "functional_restoration_cervical",
+    "alias": "multidisciplinary rehabilitation"
+  },
+  {
+    "treatment_id": "functional_restoration_cervical",
+    "alias": "pain rehabilitation program"
+  },
+  {
+    "treatment_id": "work_conditioning_cervical",
+    "alias": "work conditioning"
+  },
+  {
+    "treatment_id": "work_conditioning_cervical",
+    "alias": "work hardening"
+  },
+  {
+    "treatment_id": "work_conditioning_cervical",
+    "alias": "work reconditioning"
+  },
+  {
+    "treatment_id": "work_conditioning_cervical",
+    "alias": "work hardening program"
+  },
+  {
+    "treatment_id": "revision_surgery_cervical",
+    "alias": "revision surgery"
+  },
+  {
+    "treatment_id": "revision_surgery_cervical",
+    "alias": "revision fusion"
+  },
+  {
+    "treatment_id": "revision_surgery_cervical",
+    "alias": "pseudarthrosis repair"
+  },
+  {
+    "treatment_id": "revision_surgery_cervical",
+    "alias": "hardware removal"
+  },
+  {
+    "treatment_id": "revision_surgery_cervical",
+    "alias": "re-exploration"
+  },
+  {
+    "treatment_id": "revision_surgery_cervical",
+    "alias": "adjacent segment surgery"
+  },
+  {
+    "treatment_id": "revision_surgery_cervical",
+    "alias": "redo surgery"
+  },
+  {
+    "treatment_id": "revision_surgery_cervical",
+    "alias": "revision ACDF"
+  },
+  {
+    "treatment_id": "revision_surgery_cervical",
+    "alias": "revision cervical fusion"
+  },
+  {
+    "treatment_id": "acdf_cervical",
+    "alias": "ACDF"
+  },
+  {
+    "treatment_id": "acdf_cervical",
+    "alias": "anterior cervical discectomy and fusion"
+  },
+  {
+    "treatment_id": "acdf_cervical",
+    "alias": "anterior cervical fusion"
+  },
+  {
+    "treatment_id": "acdf_cervical",
+    "alias": "anterior cervical decompression and fusion"
+  },
+  {
+    "treatment_id": "acdf_cervical",
+    "alias": "anterior cervical discectomy"
+  },
+  {
+    "treatment_id": "acdf_cervical",
+    "alias": "ACCF"
+  },
+  {
+    "treatment_id": "acdf_cervical",
+    "alias": "anterior cervical corpectomy and fusion"
+  },
+  {
+    "treatment_id": "acdf_cervical",
+    "alias": "corpectomy"
+  },
+  {
+    "treatment_id": "disc_arthroplasty_cervical",
+    "alias": "cervical disc arthroplasty"
+  },
+  {
+    "treatment_id": "disc_arthroplasty_cervical",
+    "alias": "CDA"
+  },
+  {
+    "treatment_id": "disc_arthroplasty_cervical",
+    "alias": "total disc replacement"
+  },
+  {
+    "treatment_id": "disc_arthroplasty_cervical",
+    "alias": "TDR"
+  },
+  {
+    "treatment_id": "disc_arthroplasty_cervical",
+    "alias": "artificial disc"
+  },
+  {
+    "treatment_id": "disc_arthroplasty_cervical",
+    "alias": "disc replacement"
+  },
+  {
+    "treatment_id": "disc_arthroplasty_cervical",
+    "alias": "disc arthroplasty"
+  },
+  {
+    "treatment_id": "posterior_foraminotomy_cervical",
+    "alias": "posterior cervical foraminotomy"
+  },
+  {
+    "treatment_id": "posterior_foraminotomy_cervical",
+    "alias": "keyhole foraminotomy"
+  },
+  {
+    "treatment_id": "posterior_foraminotomy_cervical",
+    "alias": "laminoforaminotomy"
+  },
+  {
+    "treatment_id": "posterior_foraminotomy_cervical",
+    "alias": "posterior foraminotomy"
+  },
+  {
+    "treatment_id": "laminoplasty_cervical",
+    "alias": "laminoplasty"
+  },
+  {
+    "treatment_id": "laminoplasty_cervical",
+    "alias": "open-door laminoplasty"
+  },
+  {
+    "treatment_id": "laminoplasty_cervical",
+    "alias": "French-door laminoplasty"
+  },
+  {
+    "treatment_id": "posterior_fusion_cervical",
+    "alias": "posterior cervical fusion"
+  },
+  {
+    "treatment_id": "posterior_fusion_cervical",
+    "alias": "posterior cervical decompression and fusion"
+  },
+  {
+    "treatment_id": "posterior_fusion_cervical",
+    "alias": "PCDF"
+  },
+  {
+    "treatment_id": "posterior_fusion_cervical",
+    "alias": "laminectomy and fusion"
+  },
+  {
+    "treatment_id": "posterior_fusion_cervical",
+    "alias": "cervical laminectomy"
+  },
+  {
+    "treatment_id": "posterior_fusion_cervical",
+    "alias": "lateral mass fusion"
+  },
+  {
+    "treatment_id": "posterior_fusion_cervical",
+    "alias": "lateral mass screws"
+  },
+  {
+    "treatment_id": "posterior_fusion_cervical",
+    "alias": "C1-C2 fusion"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_cervical",
+    "alias": "bone growth stimulator"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_cervical",
+    "alias": "bone stimulator"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_cervical",
+    "alias": "bone stim"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_cervical",
+    "alias": "spinal bone growth stimulator"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_cervical",
+    "alias": "electrical bone growth stimulator"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_cervical",
+    "alias": "PEMF"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_cervical",
+    "alias": "pulsed electromagnetic field"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_cervical",
+    "alias": "capacitive coupling stimulator"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_cervical",
+    "alias": "Spinal-Stim"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_cervical",
+    "alias": "Cervical-Stim"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_cervical",
+    "alias": "SpinaLogic"
+  },
+  {
+    "treatment_id": "antibiotics_cervical",
+    "alias": "antibiotics"
+  },
+  {
+    "treatment_id": "antibiotics_cervical",
+    "alias": "IV antibiotics"
+  },
+  {
+    "treatment_id": "antibiotics_cervical",
+    "alias": "intravenous antibiotics"
+  },
+  {
+    "treatment_id": "antibiotics_cervical",
+    "alias": "PICC antibiotics"
+  },
+  {
+    "treatment_id": "antibiotics_cervical",
+    "alias": "OPAT"
+  },
+  {
+    "treatment_id": "antibiotics_cervical",
+    "alias": "vancomycin"
+  },
+  {
+    "treatment_id": "antibiotics_cervical",
+    "alias": "cefazolin"
+  },
+  {
+    "treatment_id": "antibiotics_cervical",
+    "alias": "rifampin"
+  },
+  {
+    "treatment_id": "antibiotics_cervical",
+    "alias": "suppressive antibiotics"
+  },
+  {
+    "treatment_id": "antibiotics_cervical",
+    "alias": "antibiotic suppression"
+  },
+  {
+    "treatment_id": "antibiotics_cervical",
+    "alias": "culture-directed antibiotics"
+  },
+  {
+    "treatment_id": "debridement_cervical",
+    "alias": "I&D"
+  },
+  {
+    "treatment_id": "debridement_cervical",
+    "alias": "I and D"
+  },
+  {
+    "treatment_id": "debridement_cervical",
+    "alias": "irrigation and debridement"
+  },
+  {
+    "treatment_id": "debridement_cervical",
+    "alias": "incision and drainage"
+  },
+  {
+    "treatment_id": "debridement_cervical",
+    "alias": "debridement"
+  },
+  {
+    "treatment_id": "debridement_cervical",
+    "alias": "wound washout"
+  },
+  {
+    "treatment_id": "debridement_cervical",
+    "alias": "washout"
+  },
+  {
+    "treatment_id": "debridement_cervical",
+    "alias": "DAIR"
+  },
+  {
+    "treatment_id": "debridement_cervical",
+    "alias": "debridement and implant retention"
+  },
+  {
+    "treatment_id": "debridement_cervical",
+    "alias": "wound exploration"
+  },
+  {
+    "treatment_id": "debridement_cervical",
+    "alias": "second-look surgery"
+  },
+  {
+    "treatment_id": "debridement_cervical",
+    "alias": "cervical wound washout"
+  },
+  {
+    "treatment_id": "activity_modification_thoracic",
+    "alias": "activity modification"
+  },
+  {
+    "treatment_id": "activity_modification_thoracic",
+    "alias": "modified activity"
+  },
+  {
+    "treatment_id": "activity_modification_thoracic",
+    "alias": "modified duty"
+  },
+  {
+    "treatment_id": "activity_modification_thoracic",
+    "alias": "light duty"
+  },
+  {
+    "treatment_id": "activity_modification_thoracic",
+    "alias": "work restrictions"
+  },
+  {
+    "treatment_id": "activity_modification_thoracic",
+    "alias": "advice to stay active"
+  },
+  {
+    "treatment_id": "activity_modification_thoracic",
+    "alias": "patient education"
+  },
+  {
+    "treatment_id": "activity_modification_thoracic",
+    "alias": "relative rest"
+  },
+  {
+    "treatment_id": "activity_modification_thoracic",
+    "alias": "ergonomic modification"
+  },
+  {
+    "treatment_id": "home_exercise_thoracic",
+    "alias": "HEP"
+  },
+  {
+    "treatment_id": "home_exercise_thoracic",
+    "alias": "home exercise program"
+  },
+  {
+    "treatment_id": "home_exercise_thoracic",
+    "alias": "home exercises"
+  },
+  {
+    "treatment_id": "home_exercise_thoracic",
+    "alias": "self-directed exercise"
+  },
+  {
+    "treatment_id": "home_exercise_thoracic",
+    "alias": "independent exercise program"
+  },
+  {
+    "treatment_id": "pt_thoracic",
+    "alias": "PT"
+  },
+  {
+    "treatment_id": "pt_thoracic",
+    "alias": "P.T."
+  },
+  {
+    "treatment_id": "pt_thoracic",
+    "alias": "physical therapy"
+  },
+  {
+    "treatment_id": "pt_thoracic",
+    "alias": "physiotherapy"
+  },
+  {
+    "treatment_id": "pt_thoracic",
+    "alias": "physio"
+  },
+  {
+    "treatment_id": "pt_thoracic",
+    "alias": "supervised exercise therapy"
+  },
+  {
+    "treatment_id": "pt_thoracic",
+    "alias": "therapeutic exercise"
+  },
+  {
+    "treatment_id": "pt_thoracic",
+    "alias": "manual therapy"
+  },
+  {
+    "treatment_id": "pt_thoracic",
+    "alias": "McKenzie"
+  },
+  {
+    "treatment_id": "pt_thoracic",
+    "alias": "MDT"
+  },
+  {
+    "treatment_id": "pt_thoracic",
+    "alias": "stabilization exercises"
+  },
+  {
+    "treatment_id": "pt_thoracic",
+    "alias": "core stabilization"
+  },
+  {
+    "treatment_id": "pt_thoracic",
+    "alias": "physical medicine"
+  },
+  {
+    "treatment_id": "pt_thoracic",
+    "alias": "thoracic PT"
+  },
+  {
+    "treatment_id": "manipulation_thoracic",
+    "alias": "chiropractic"
+  },
+  {
+    "treatment_id": "manipulation_thoracic",
+    "alias": "chiropractic care"
+  },
+  {
+    "treatment_id": "manipulation_thoracic",
+    "alias": "chiropractic adjustment"
+  },
+  {
+    "treatment_id": "manipulation_thoracic",
+    "alias": "adjustment"
+  },
+  {
+    "treatment_id": "manipulation_thoracic",
+    "alias": "spinal manipulation"
+  },
+  {
+    "treatment_id": "manipulation_thoracic",
+    "alias": "SMT"
+  },
+  {
+    "treatment_id": "manipulation_thoracic",
+    "alias": "spinal manipulative therapy"
+  },
+  {
+    "treatment_id": "manipulation_thoracic",
+    "alias": "CMT"
+  },
+  {
+    "treatment_id": "manipulation_thoracic",
+    "alias": "chiropractic manipulative treatment"
+  },
+  {
+    "treatment_id": "manipulation_thoracic",
+    "alias": "OMT"
+  },
+  {
+    "treatment_id": "manipulation_thoracic",
+    "alias": "osteopathic manipulative treatment"
+  },
+  {
+    "treatment_id": "manipulation_thoracic",
+    "alias": "spinal mobilization"
+  },
+  {
+    "treatment_id": "acupuncture_thoracic",
+    "alias": "acupuncture"
+  },
+  {
+    "treatment_id": "acupuncture_thoracic",
+    "alias": "electroacupuncture"
+  },
+  {
+    "treatment_id": "acupuncture_thoracic",
+    "alias": "acupuncturist"
+  },
+  {
+    "treatment_id": "acupuncture_thoracic",
+    "alias": "acupuncture treatment"
+  },
+  {
+    "treatment_id": "cbt_thoracic",
+    "alias": "CBT"
+  },
+  {
+    "treatment_id": "cbt_thoracic",
+    "alias": "cognitive behavioral therapy"
+  },
+  {
+    "treatment_id": "cbt_thoracic",
+    "alias": "cognitive behavioural therapy"
+  },
+  {
+    "treatment_id": "cbt_thoracic",
+    "alias": "psychotherapy"
+  },
+  {
+    "treatment_id": "cbt_thoracic",
+    "alias": "pain psychology"
+  },
+  {
+    "treatment_id": "cbt_thoracic",
+    "alias": "psychological treatment"
+  },
+  {
+    "treatment_id": "cbt_thoracic",
+    "alias": "behavioral pain management"
+  },
+  {
+    "treatment_id": "cbt_thoracic",
+    "alias": "mindfulness-based stress reduction"
+  },
+  {
+    "treatment_id": "cbt_thoracic",
+    "alias": "MBSR"
+  },
+  {
+    "treatment_id": "cbt_thoracic",
+    "alias": "pain coping skills training"
+  },
+  {
+    "treatment_id": "spinal_orthosis_thoracic",
+    "alias": "brace"
+  },
+  {
+    "treatment_id": "spinal_orthosis_thoracic",
+    "alias": "bracing"
+  },
+  {
+    "treatment_id": "spinal_orthosis_thoracic",
+    "alias": "orthosis"
+  },
+  {
+    "treatment_id": "spinal_orthosis_thoracic",
+    "alias": "spinal orthosis"
+  },
+  {
+    "treatment_id": "spinal_orthosis_thoracic",
+    "alias": "TLSO"
+  },
+  {
+    "treatment_id": "spinal_orthosis_thoracic",
+    "alias": "Jewett brace"
+  },
+  {
+    "treatment_id": "spinal_orthosis_thoracic",
+    "alias": "CASH brace"
+  },
+  {
+    "treatment_id": "spinal_orthosis_thoracic",
+    "alias": "hyperextension brace"
+  },
+  {
+    "treatment_id": "acetaminophen_thoracic",
+    "alias": "acetaminophen"
+  },
+  {
+    "treatment_id": "acetaminophen_thoracic",
+    "alias": "Tylenol"
+  },
+  {
+    "treatment_id": "acetaminophen_thoracic",
+    "alias": "paracetamol"
+  },
+  {
+    "treatment_id": "acetaminophen_thoracic",
+    "alias": "APAP"
+  },
+  {
+    "treatment_id": "nsaids_thoracic",
+    "alias": "NSAID"
+  },
+  {
+    "treatment_id": "nsaids_thoracic",
+    "alias": "NSAIDs"
+  },
+  {
+    "treatment_id": "nsaids_thoracic",
+    "alias": "non-steroidal anti-inflammatory"
+  },
+  {
+    "treatment_id": "nsaids_thoracic",
+    "alias": "anti-inflammatory"
+  },
+  {
+    "treatment_id": "nsaids_thoracic",
+    "alias": "ibuprofen"
+  },
+  {
+    "treatment_id": "nsaids_thoracic",
+    "alias": "Motrin"
+  },
+  {
+    "treatment_id": "nsaids_thoracic",
+    "alias": "Advil"
+  },
+  {
+    "treatment_id": "nsaids_thoracic",
+    "alias": "naproxen"
+  },
+  {
+    "treatment_id": "nsaids_thoracic",
+    "alias": "Naprosyn"
+  },
+  {
+    "treatment_id": "nsaids_thoracic",
+    "alias": "Aleve"
+  },
+  {
+    "treatment_id": "nsaids_thoracic",
+    "alias": "Anaprox"
+  },
+  {
+    "treatment_id": "nsaids_thoracic",
+    "alias": "meloxicam"
+  },
+  {
+    "treatment_id": "nsaids_thoracic",
+    "alias": "Mobic"
+  },
+  {
+    "treatment_id": "nsaids_thoracic",
+    "alias": "diclofenac"
+  },
+  {
+    "treatment_id": "nsaids_thoracic",
+    "alias": "Voltaren"
+  },
+  {
+    "treatment_id": "nsaids_thoracic",
+    "alias": "celecoxib"
+  },
+  {
+    "treatment_id": "nsaids_thoracic",
+    "alias": "Celebrex"
+  },
+  {
+    "treatment_id": "nsaids_thoracic",
+    "alias": "etodolac"
+  },
+  {
+    "treatment_id": "nsaids_thoracic",
+    "alias": "nabumetone"
+  },
+  {
+    "treatment_id": "nsaids_thoracic",
+    "alias": "Relafen"
+  },
+  {
+    "treatment_id": "nsaids_thoracic",
+    "alias": "ketorolac"
+  },
+  {
+    "treatment_id": "nsaids_thoracic",
+    "alias": "Toradol"
+  },
+  {
+    "treatment_id": "nsaids_thoracic",
+    "alias": "indomethacin"
+  },
+  {
+    "treatment_id": "muscle_relaxants_thoracic",
+    "alias": "muscle relaxant"
+  },
+  {
+    "treatment_id": "muscle_relaxants_thoracic",
+    "alias": "muscle relaxants"
+  },
+  {
+    "treatment_id": "muscle_relaxants_thoracic",
+    "alias": "cyclobenzaprine"
+  },
+  {
+    "treatment_id": "muscle_relaxants_thoracic",
+    "alias": "Flexeril"
+  },
+  {
+    "treatment_id": "muscle_relaxants_thoracic",
+    "alias": "Amrix"
+  },
+  {
+    "treatment_id": "muscle_relaxants_thoracic",
+    "alias": "methocarbamol"
+  },
+  {
+    "treatment_id": "muscle_relaxants_thoracic",
+    "alias": "Robaxin"
+  },
+  {
+    "treatment_id": "muscle_relaxants_thoracic",
+    "alias": "tizanidine"
+  },
+  {
+    "treatment_id": "muscle_relaxants_thoracic",
+    "alias": "Zanaflex"
+  },
+  {
+    "treatment_id": "muscle_relaxants_thoracic",
+    "alias": "baclofen"
+  },
+  {
+    "treatment_id": "muscle_relaxants_thoracic",
+    "alias": "metaxalone"
+  },
+  {
+    "treatment_id": "muscle_relaxants_thoracic",
+    "alias": "Skelaxin"
+  },
+  {
+    "treatment_id": "muscle_relaxants_thoracic",
+    "alias": "carisoprodol"
+  },
+  {
+    "treatment_id": "muscle_relaxants_thoracic",
+    "alias": "Soma"
+  },
+  {
+    "treatment_id": "muscle_relaxants_thoracic",
+    "alias": "orphenadrine"
+  },
+  {
+    "treatment_id": "muscle_relaxants_thoracic",
+    "alias": "Norflex"
+  },
+  {
+    "treatment_id": "muscle_relaxants_thoracic",
+    "alias": "chlorzoxazone"
+  },
+  {
+    "treatment_id": "neuropathic_agents_thoracic",
+    "alias": "gabapentin"
+  },
+  {
+    "treatment_id": "neuropathic_agents_thoracic",
+    "alias": "Neurontin"
+  },
+  {
+    "treatment_id": "neuropathic_agents_thoracic",
+    "alias": "Gralise"
+  },
+  {
+    "treatment_id": "neuropathic_agents_thoracic",
+    "alias": "pregabalin"
+  },
+  {
+    "treatment_id": "neuropathic_agents_thoracic",
+    "alias": "Lyrica"
+  },
+  {
+    "treatment_id": "neuropathic_agents_thoracic",
+    "alias": "anticonvulsant"
+  },
+  {
+    "treatment_id": "neuropathic_agents_thoracic",
+    "alias": "antiepileptic"
+  },
+  {
+    "treatment_id": "neuropathic_agents_thoracic",
+    "alias": "AED"
+  },
+  {
+    "treatment_id": "neuropathic_agents_thoracic",
+    "alias": "amitriptyline"
+  },
+  {
+    "treatment_id": "neuropathic_agents_thoracic",
+    "alias": "Elavil"
+  },
+  {
+    "treatment_id": "neuropathic_agents_thoracic",
+    "alias": "nortriptyline"
+  },
+  {
+    "treatment_id": "neuropathic_agents_thoracic",
+    "alias": "Pamelor"
+  },
+  {
+    "treatment_id": "neuropathic_agents_thoracic",
+    "alias": "tricyclic antidepressant"
+  },
+  {
+    "treatment_id": "neuropathic_agents_thoracic",
+    "alias": "TCA"
+  },
+  {
+    "treatment_id": "opioids_short_course_thoracic",
+    "alias": "opioid"
+  },
+  {
+    "treatment_id": "opioids_short_course_thoracic",
+    "alias": "opiate"
+  },
+  {
+    "treatment_id": "opioids_short_course_thoracic",
+    "alias": "narcotic"
+  },
+  {
+    "treatment_id": "opioids_short_course_thoracic",
+    "alias": "hydrocodone"
+  },
+  {
+    "treatment_id": "opioids_short_course_thoracic",
+    "alias": "Norco"
+  },
+  {
+    "treatment_id": "opioids_short_course_thoracic",
+    "alias": "Vicodin"
+  },
+  {
+    "treatment_id": "opioids_short_course_thoracic",
+    "alias": "oxycodone"
+  },
+  {
+    "treatment_id": "opioids_short_course_thoracic",
+    "alias": "Percocet"
+  },
+  {
+    "treatment_id": "opioids_short_course_thoracic",
+    "alias": "OxyContin"
+  },
+  {
+    "treatment_id": "opioids_short_course_thoracic",
+    "alias": "tramadol"
+  },
+  {
+    "treatment_id": "opioids_short_course_thoracic",
+    "alias": "Ultram"
+  },
+  {
+    "treatment_id": "opioids_short_course_thoracic",
+    "alias": "tapentadol"
+  },
+  {
+    "treatment_id": "opioids_short_course_thoracic",
+    "alias": "Nucynta"
+  },
+  {
+    "treatment_id": "opioids_short_course_thoracic",
+    "alias": "codeine"
+  },
+  {
+    "treatment_id": "opioids_short_course_thoracic",
+    "alias": "Tylenol #3"
+  },
+  {
+    "treatment_id": "opioids_short_course_thoracic",
+    "alias": "morphine"
+  },
+  {
+    "treatment_id": "opioids_short_course_thoracic",
+    "alias": "hydromorphone"
+  },
+  {
+    "treatment_id": "opioids_short_course_thoracic",
+    "alias": "Dilaudid"
+  },
+  {
+    "treatment_id": "trigger_point_injection_thoracic",
+    "alias": "TPI"
+  },
+  {
+    "treatment_id": "trigger_point_injection_thoracic",
+    "alias": "TPIs"
+  },
+  {
+    "treatment_id": "trigger_point_injection_thoracic",
+    "alias": "trigger point injection"
+  },
+  {
+    "treatment_id": "trigger_point_injection_thoracic",
+    "alias": "trigger point injections"
+  },
+  {
+    "treatment_id": "trigger_point_injection_thoracic",
+    "alias": "myofascial trigger point injection"
+  },
+  {
+    "treatment_id": "esi_interlaminar_thoracic",
+    "alias": "ILESI"
+  },
+  {
+    "treatment_id": "esi_interlaminar_thoracic",
+    "alias": "IL ESI"
+  },
+  {
+    "treatment_id": "esi_interlaminar_thoracic",
+    "alias": "interlaminar ESI"
+  },
+  {
+    "treatment_id": "esi_interlaminar_thoracic",
+    "alias": "interlaminar epidural steroid injection"
+  },
+  {
+    "treatment_id": "esi_interlaminar_thoracic",
+    "alias": "interlaminar epidural"
+  },
+  {
+    "treatment_id": "esi_interlaminar_thoracic",
+    "alias": "ESI"
+  },
+  {
+    "treatment_id": "esi_interlaminar_thoracic",
+    "alias": "epidural steroid injection"
+  },
+  {
+    "treatment_id": "esi_interlaminar_thoracic",
+    "alias": "epidural injection"
+  },
+  {
+    "treatment_id": "esi_interlaminar_thoracic",
+    "alias": "epidural"
+  },
+  {
+    "treatment_id": "esi_interlaminar_thoracic",
+    "alias": "thoracic ESI"
+  },
+  {
+    "treatment_id": "esi_interlaminar_thoracic",
+    "alias": "thoracic epidural steroid injection"
+  },
+  {
+    "treatment_id": "esi_interlaminar_thoracic",
+    "alias": "thoracic epidural"
+  },
+  {
+    "treatment_id": "vertebral_augmentation_thoracic",
+    "alias": "vertebroplasty"
+  },
+  {
+    "treatment_id": "vertebral_augmentation_thoracic",
+    "alias": "kyphoplasty"
+  },
+  {
+    "treatment_id": "vertebral_augmentation_thoracic",
+    "alias": "balloon kyphoplasty"
+  },
+  {
+    "treatment_id": "vertebral_augmentation_thoracic",
+    "alias": "vertebral augmentation"
+  },
+  {
+    "treatment_id": "vertebral_augmentation_thoracic",
+    "alias": "PVP"
+  },
+  {
+    "treatment_id": "vertebral_augmentation_thoracic",
+    "alias": "BKP"
+  },
+  {
+    "treatment_id": "spinal_cord_stimulator_thoracic",
+    "alias": "SCS"
+  },
+  {
+    "treatment_id": "spinal_cord_stimulator_thoracic",
+    "alias": "spinal cord stimulator"
+  },
+  {
+    "treatment_id": "spinal_cord_stimulator_thoracic",
+    "alias": "spinal cord stimulation"
+  },
+  {
+    "treatment_id": "spinal_cord_stimulator_thoracic",
+    "alias": "SCS trial"
+  },
+  {
+    "treatment_id": "spinal_cord_stimulator_thoracic",
+    "alias": "dorsal column stimulator"
+  },
+  {
+    "treatment_id": "spinal_cord_stimulator_thoracic",
+    "alias": "neurostimulator"
+  },
+  {
+    "treatment_id": "spinal_cord_stimulator_thoracic",
+    "alias": "neuromodulation"
+  },
+  {
+    "treatment_id": "functional_restoration_thoracic",
+    "alias": "FRP"
+  },
+  {
+    "treatment_id": "functional_restoration_thoracic",
+    "alias": "functional restoration"
+  },
+  {
+    "treatment_id": "functional_restoration_thoracic",
+    "alias": "functional restoration program"
+  },
+  {
+    "treatment_id": "functional_restoration_thoracic",
+    "alias": "interdisciplinary pain program"
+  },
+  {
+    "treatment_id": "functional_restoration_thoracic",
+    "alias": "multidisciplinary pain program"
+  },
+  {
+    "treatment_id": "functional_restoration_thoracic",
+    "alias": "chronic pain program"
+  },
+  {
+    "treatment_id": "functional_restoration_thoracic",
+    "alias": "interdisciplinary rehabilitation"
+  },
+  {
+    "treatment_id": "functional_restoration_thoracic",
+    "alias": "multidisciplinary rehabilitation"
+  },
+  {
+    "treatment_id": "functional_restoration_thoracic",
+    "alias": "pain rehabilitation program"
+  },
+  {
+    "treatment_id": "laminectomy_thoracic",
+    "alias": "laminectomy"
+  },
+  {
+    "treatment_id": "laminectomy_thoracic",
+    "alias": "decompressive laminectomy"
+  },
+  {
+    "treatment_id": "laminectomy_thoracic",
+    "alias": "laminotomy"
+  },
+  {
+    "treatment_id": "laminectomy_thoracic",
+    "alias": "hemilaminectomy"
+  },
+  {
+    "treatment_id": "laminectomy_thoracic",
+    "alias": "foraminotomy"
+  },
+  {
+    "treatment_id": "laminectomy_thoracic",
+    "alias": "decompression"
+  },
+  {
+    "treatment_id": "laminectomy_thoracic",
+    "alias": "spinal decompression"
+  },
+  {
+    "treatment_id": "laminectomy_thoracic",
+    "alias": "thoracic laminectomy"
+  },
+  {
+    "treatment_id": "laminectomy_thoracic",
+    "alias": "thoracic decompression"
+  },
+  {
+    "treatment_id": "fusion_thoracic",
+    "alias": "fusion"
+  },
+  {
+    "treatment_id": "fusion_thoracic",
+    "alias": "spinal fusion"
+  },
+  {
+    "treatment_id": "fusion_thoracic",
+    "alias": "arthrodesis"
+  },
+  {
+    "treatment_id": "fusion_thoracic",
+    "alias": "instrumented fusion"
+  },
+  {
+    "treatment_id": "fusion_thoracic",
+    "alias": "pedicle screw fixation"
+  },
+  {
+    "treatment_id": "fusion_thoracic",
+    "alias": "thoracic fusion"
+  },
+  {
+    "treatment_id": "fusion_thoracic",
+    "alias": "thoracolumbar fusion"
+  },
+  {
+    "treatment_id": "fusion_thoracic",
+    "alias": "posterior spinal fusion"
+  },
+  {
+    "treatment_id": "fusion_thoracic",
+    "alias": "PSF"
+  },
+  {
+    "treatment_id": "revision_surgery_thoracic",
+    "alias": "revision surgery"
+  },
+  {
+    "treatment_id": "revision_surgery_thoracic",
+    "alias": "revision fusion"
+  },
+  {
+    "treatment_id": "revision_surgery_thoracic",
+    "alias": "pseudarthrosis repair"
+  },
+  {
+    "treatment_id": "revision_surgery_thoracic",
+    "alias": "hardware removal"
+  },
+  {
+    "treatment_id": "revision_surgery_thoracic",
+    "alias": "re-exploration"
+  },
+  {
+    "treatment_id": "revision_surgery_thoracic",
+    "alias": "adjacent segment surgery"
+  },
+  {
+    "treatment_id": "revision_surgery_thoracic",
+    "alias": "redo surgery"
+  },
+  {
+    "treatment_id": "revision_surgery_thoracic",
+    "alias": "revision thoracic fusion"
+  },
+  {
+    "treatment_id": "thoracic_discectomy_thoracic",
+    "alias": "thoracic discectomy"
+  },
+  {
+    "treatment_id": "thoracic_discectomy_thoracic",
+    "alias": "costotransversectomy"
+  },
+  {
+    "treatment_id": "thoracic_discectomy_thoracic",
+    "alias": "thoracoscopic discectomy"
+  },
+  {
+    "treatment_id": "thoracic_discectomy_thoracic",
+    "alias": "transpedicular discectomy"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_thoracic",
+    "alias": "bone growth stimulator"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_thoracic",
+    "alias": "bone stimulator"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_thoracic",
+    "alias": "bone stim"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_thoracic",
+    "alias": "spinal bone growth stimulator"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_thoracic",
+    "alias": "electrical bone growth stimulator"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_thoracic",
+    "alias": "PEMF"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_thoracic",
+    "alias": "pulsed electromagnetic field"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_thoracic",
+    "alias": "capacitive coupling stimulator"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_thoracic",
+    "alias": "Spinal-Stim"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_thoracic",
+    "alias": "Cervical-Stim"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_thoracic",
+    "alias": "SpinaLogic"
+  },
+  {
+    "treatment_id": "antibiotics_thoracic",
+    "alias": "antibiotics"
+  },
+  {
+    "treatment_id": "antibiotics_thoracic",
+    "alias": "IV antibiotics"
+  },
+  {
+    "treatment_id": "antibiotics_thoracic",
+    "alias": "intravenous antibiotics"
+  },
+  {
+    "treatment_id": "antibiotics_thoracic",
+    "alias": "PICC antibiotics"
+  },
+  {
+    "treatment_id": "antibiotics_thoracic",
+    "alias": "OPAT"
+  },
+  {
+    "treatment_id": "antibiotics_thoracic",
+    "alias": "vancomycin"
+  },
+  {
+    "treatment_id": "antibiotics_thoracic",
+    "alias": "cefazolin"
+  },
+  {
+    "treatment_id": "antibiotics_thoracic",
+    "alias": "rifampin"
+  },
+  {
+    "treatment_id": "antibiotics_thoracic",
+    "alias": "suppressive antibiotics"
+  },
+  {
+    "treatment_id": "antibiotics_thoracic",
+    "alias": "antibiotic suppression"
+  },
+  {
+    "treatment_id": "antibiotics_thoracic",
+    "alias": "culture-directed antibiotics"
+  },
+  {
+    "treatment_id": "debridement_thoracic",
+    "alias": "I&D"
+  },
+  {
+    "treatment_id": "debridement_thoracic",
+    "alias": "I and D"
+  },
+  {
+    "treatment_id": "debridement_thoracic",
+    "alias": "irrigation and debridement"
+  },
+  {
+    "treatment_id": "debridement_thoracic",
+    "alias": "incision and drainage"
+  },
+  {
+    "treatment_id": "debridement_thoracic",
+    "alias": "debridement"
+  },
+  {
+    "treatment_id": "debridement_thoracic",
+    "alias": "wound washout"
+  },
+  {
+    "treatment_id": "debridement_thoracic",
+    "alias": "washout"
+  },
+  {
+    "treatment_id": "debridement_thoracic",
+    "alias": "DAIR"
+  },
+  {
+    "treatment_id": "debridement_thoracic",
+    "alias": "debridement and implant retention"
+  },
+  {
+    "treatment_id": "debridement_thoracic",
+    "alias": "wound exploration"
+  },
+  {
+    "treatment_id": "debridement_thoracic",
+    "alias": "second-look surgery"
+  },
+  {
+    "treatment_id": "activity_modification_lumbar",
+    "alias": "activity modification"
+  },
+  {
+    "treatment_id": "activity_modification_lumbar",
+    "alias": "modified activity"
+  },
+  {
+    "treatment_id": "activity_modification_lumbar",
+    "alias": "modified duty"
+  },
+  {
+    "treatment_id": "activity_modification_lumbar",
+    "alias": "light duty"
+  },
+  {
+    "treatment_id": "activity_modification_lumbar",
+    "alias": "work restrictions"
+  },
+  {
+    "treatment_id": "activity_modification_lumbar",
+    "alias": "advice to stay active"
+  },
+  {
+    "treatment_id": "activity_modification_lumbar",
+    "alias": "patient education"
+  },
+  {
+    "treatment_id": "activity_modification_lumbar",
+    "alias": "relative rest"
+  },
+  {
+    "treatment_id": "activity_modification_lumbar",
+    "alias": "ergonomic modification"
+  },
+  {
+    "treatment_id": "superficial_heat_lumbar",
+    "alias": "heat"
+  },
+  {
+    "treatment_id": "superficial_heat_lumbar",
+    "alias": "heat therapy"
+  },
+  {
+    "treatment_id": "superficial_heat_lumbar",
+    "alias": "moist heat"
+  },
+  {
+    "treatment_id": "superficial_heat_lumbar",
+    "alias": "hot packs"
+  },
+  {
+    "treatment_id": "superficial_heat_lumbar",
+    "alias": "heat wrap"
+  },
+  {
+    "treatment_id": "superficial_heat_lumbar",
+    "alias": "thermotherapy"
+  },
+  {
+    "treatment_id": "home_exercise_lumbar",
+    "alias": "HEP"
+  },
+  {
+    "treatment_id": "home_exercise_lumbar",
+    "alias": "home exercise program"
+  },
+  {
+    "treatment_id": "home_exercise_lumbar",
+    "alias": "home exercises"
+  },
+  {
+    "treatment_id": "home_exercise_lumbar",
+    "alias": "self-directed exercise"
+  },
+  {
+    "treatment_id": "home_exercise_lumbar",
+    "alias": "independent exercise program"
+  },
+  {
+    "treatment_id": "pt_lumbar",
+    "alias": "PT"
+  },
+  {
+    "treatment_id": "pt_lumbar",
+    "alias": "P.T."
+  },
+  {
+    "treatment_id": "pt_lumbar",
+    "alias": "physical therapy"
+  },
+  {
+    "treatment_id": "pt_lumbar",
+    "alias": "physiotherapy"
+  },
+  {
+    "treatment_id": "pt_lumbar",
+    "alias": "physio"
+  },
+  {
+    "treatment_id": "pt_lumbar",
+    "alias": "supervised exercise therapy"
+  },
+  {
+    "treatment_id": "pt_lumbar",
+    "alias": "therapeutic exercise"
+  },
+  {
+    "treatment_id": "pt_lumbar",
+    "alias": "manual therapy"
+  },
+  {
+    "treatment_id": "pt_lumbar",
+    "alias": "McKenzie"
+  },
+  {
+    "treatment_id": "pt_lumbar",
+    "alias": "MDT"
+  },
+  {
+    "treatment_id": "pt_lumbar",
+    "alias": "stabilization exercises"
+  },
+  {
+    "treatment_id": "pt_lumbar",
+    "alias": "core stabilization"
+  },
+  {
+    "treatment_id": "pt_lumbar",
+    "alias": "physical medicine"
+  },
+  {
+    "treatment_id": "pt_lumbar",
+    "alias": "lumbar PT"
+  },
+  {
+    "treatment_id": "pt_lumbar",
+    "alias": "back PT"
+  },
+  {
+    "treatment_id": "manipulation_lumbar",
+    "alias": "chiropractic"
+  },
+  {
+    "treatment_id": "manipulation_lumbar",
+    "alias": "chiropractic care"
+  },
+  {
+    "treatment_id": "manipulation_lumbar",
+    "alias": "chiropractic adjustment"
+  },
+  {
+    "treatment_id": "manipulation_lumbar",
+    "alias": "adjustment"
+  },
+  {
+    "treatment_id": "manipulation_lumbar",
+    "alias": "spinal manipulation"
+  },
+  {
+    "treatment_id": "manipulation_lumbar",
+    "alias": "SMT"
+  },
+  {
+    "treatment_id": "manipulation_lumbar",
+    "alias": "spinal manipulative therapy"
+  },
+  {
+    "treatment_id": "manipulation_lumbar",
+    "alias": "CMT"
+  },
+  {
+    "treatment_id": "manipulation_lumbar",
+    "alias": "chiropractic manipulative treatment"
+  },
+  {
+    "treatment_id": "manipulation_lumbar",
+    "alias": "OMT"
+  },
+  {
+    "treatment_id": "manipulation_lumbar",
+    "alias": "osteopathic manipulative treatment"
+  },
+  {
+    "treatment_id": "manipulation_lumbar",
+    "alias": "spinal mobilization"
+  },
+  {
+    "treatment_id": "acupuncture_lumbar",
+    "alias": "acupuncture"
+  },
+  {
+    "treatment_id": "acupuncture_lumbar",
+    "alias": "electroacupuncture"
+  },
+  {
+    "treatment_id": "acupuncture_lumbar",
+    "alias": "acupuncturist"
+  },
+  {
+    "treatment_id": "acupuncture_lumbar",
+    "alias": "acupuncture treatment"
+  },
+  {
+    "treatment_id": "massage_lumbar",
+    "alias": "massage"
+  },
+  {
+    "treatment_id": "massage_lumbar",
+    "alias": "massage therapy"
+  },
+  {
+    "treatment_id": "massage_lumbar",
+    "alias": "soft tissue mobilization"
+  },
+  {
+    "treatment_id": "massage_lumbar",
+    "alias": "STM"
+  },
+  {
+    "treatment_id": "massage_lumbar",
+    "alias": "myofascial release"
+  },
+  {
+    "treatment_id": "massage_lumbar",
+    "alias": "LMT"
+  },
+  {
+    "treatment_id": "mind_body_exercise_lumbar",
+    "alias": "yoga"
+  },
+  {
+    "treatment_id": "mind_body_exercise_lumbar",
+    "alias": "tai chi"
+  },
+  {
+    "treatment_id": "mind_body_exercise_lumbar",
+    "alias": "mind-body exercise"
+  },
+  {
+    "treatment_id": "cbt_lumbar",
+    "alias": "CBT"
+  },
+  {
+    "treatment_id": "cbt_lumbar",
+    "alias": "cognitive behavioral therapy"
+  },
+  {
+    "treatment_id": "cbt_lumbar",
+    "alias": "cognitive behavioural therapy"
+  },
+  {
+    "treatment_id": "cbt_lumbar",
+    "alias": "psychotherapy"
+  },
+  {
+    "treatment_id": "cbt_lumbar",
+    "alias": "pain psychology"
+  },
+  {
+    "treatment_id": "cbt_lumbar",
+    "alias": "psychological treatment"
+  },
+  {
+    "treatment_id": "cbt_lumbar",
+    "alias": "behavioral pain management"
+  },
+  {
+    "treatment_id": "cbt_lumbar",
+    "alias": "mindfulness-based stress reduction"
+  },
+  {
+    "treatment_id": "cbt_lumbar",
+    "alias": "MBSR"
+  },
+  {
+    "treatment_id": "cbt_lumbar",
+    "alias": "pain coping skills training"
+  },
+  {
+    "treatment_id": "spinal_orthosis_lumbar",
+    "alias": "brace"
+  },
+  {
+    "treatment_id": "spinal_orthosis_lumbar",
+    "alias": "bracing"
+  },
+  {
+    "treatment_id": "spinal_orthosis_lumbar",
+    "alias": "orthosis"
+  },
+  {
+    "treatment_id": "spinal_orthosis_lumbar",
+    "alias": "spinal orthosis"
+  },
+  {
+    "treatment_id": "spinal_orthosis_lumbar",
+    "alias": "LSO"
+  },
+  {
+    "treatment_id": "spinal_orthosis_lumbar",
+    "alias": "TLSO"
+  },
+  {
+    "treatment_id": "spinal_orthosis_lumbar",
+    "alias": "lumbar brace"
+  },
+  {
+    "treatment_id": "spinal_orthosis_lumbar",
+    "alias": "lumbosacral orthosis"
+  },
+  {
+    "treatment_id": "acetaminophen_lumbar",
+    "alias": "acetaminophen"
+  },
+  {
+    "treatment_id": "acetaminophen_lumbar",
+    "alias": "Tylenol"
+  },
+  {
+    "treatment_id": "acetaminophen_lumbar",
+    "alias": "paracetamol"
+  },
+  {
+    "treatment_id": "acetaminophen_lumbar",
+    "alias": "APAP"
+  },
+  {
+    "treatment_id": "nsaids_lumbar",
+    "alias": "NSAID"
+  },
+  {
+    "treatment_id": "nsaids_lumbar",
+    "alias": "NSAIDs"
+  },
+  {
+    "treatment_id": "nsaids_lumbar",
+    "alias": "non-steroidal anti-inflammatory"
+  },
+  {
+    "treatment_id": "nsaids_lumbar",
+    "alias": "anti-inflammatory"
+  },
+  {
+    "treatment_id": "nsaids_lumbar",
+    "alias": "ibuprofen"
+  },
+  {
+    "treatment_id": "nsaids_lumbar",
+    "alias": "Motrin"
+  },
+  {
+    "treatment_id": "nsaids_lumbar",
+    "alias": "Advil"
+  },
+  {
+    "treatment_id": "nsaids_lumbar",
+    "alias": "naproxen"
+  },
+  {
+    "treatment_id": "nsaids_lumbar",
+    "alias": "Naprosyn"
+  },
+  {
+    "treatment_id": "nsaids_lumbar",
+    "alias": "Aleve"
+  },
+  {
+    "treatment_id": "nsaids_lumbar",
+    "alias": "Anaprox"
+  },
+  {
+    "treatment_id": "nsaids_lumbar",
+    "alias": "meloxicam"
+  },
+  {
+    "treatment_id": "nsaids_lumbar",
+    "alias": "Mobic"
+  },
+  {
+    "treatment_id": "nsaids_lumbar",
+    "alias": "diclofenac"
+  },
+  {
+    "treatment_id": "nsaids_lumbar",
+    "alias": "Voltaren"
+  },
+  {
+    "treatment_id": "nsaids_lumbar",
+    "alias": "celecoxib"
+  },
+  {
+    "treatment_id": "nsaids_lumbar",
+    "alias": "Celebrex"
+  },
+  {
+    "treatment_id": "nsaids_lumbar",
+    "alias": "etodolac"
+  },
+  {
+    "treatment_id": "nsaids_lumbar",
+    "alias": "nabumetone"
+  },
+  {
+    "treatment_id": "nsaids_lumbar",
+    "alias": "Relafen"
+  },
+  {
+    "treatment_id": "nsaids_lumbar",
+    "alias": "ketorolac"
+  },
+  {
+    "treatment_id": "nsaids_lumbar",
+    "alias": "Toradol"
+  },
+  {
+    "treatment_id": "nsaids_lumbar",
+    "alias": "indomethacin"
+  },
+  {
+    "treatment_id": "muscle_relaxants_lumbar",
+    "alias": "muscle relaxant"
+  },
+  {
+    "treatment_id": "muscle_relaxants_lumbar",
+    "alias": "muscle relaxants"
+  },
+  {
+    "treatment_id": "muscle_relaxants_lumbar",
+    "alias": "cyclobenzaprine"
+  },
+  {
+    "treatment_id": "muscle_relaxants_lumbar",
+    "alias": "Flexeril"
+  },
+  {
+    "treatment_id": "muscle_relaxants_lumbar",
+    "alias": "Amrix"
+  },
+  {
+    "treatment_id": "muscle_relaxants_lumbar",
+    "alias": "methocarbamol"
+  },
+  {
+    "treatment_id": "muscle_relaxants_lumbar",
+    "alias": "Robaxin"
+  },
+  {
+    "treatment_id": "muscle_relaxants_lumbar",
+    "alias": "tizanidine"
+  },
+  {
+    "treatment_id": "muscle_relaxants_lumbar",
+    "alias": "Zanaflex"
+  },
+  {
+    "treatment_id": "muscle_relaxants_lumbar",
+    "alias": "baclofen"
+  },
+  {
+    "treatment_id": "muscle_relaxants_lumbar",
+    "alias": "metaxalone"
+  },
+  {
+    "treatment_id": "muscle_relaxants_lumbar",
+    "alias": "Skelaxin"
+  },
+  {
+    "treatment_id": "muscle_relaxants_lumbar",
+    "alias": "carisoprodol"
+  },
+  {
+    "treatment_id": "muscle_relaxants_lumbar",
+    "alias": "Soma"
+  },
+  {
+    "treatment_id": "muscle_relaxants_lumbar",
+    "alias": "orphenadrine"
+  },
+  {
+    "treatment_id": "muscle_relaxants_lumbar",
+    "alias": "Norflex"
+  },
+  {
+    "treatment_id": "muscle_relaxants_lumbar",
+    "alias": "chlorzoxazone"
+  },
+  {
+    "treatment_id": "neuropathic_agents_lumbar",
+    "alias": "gabapentin"
+  },
+  {
+    "treatment_id": "neuropathic_agents_lumbar",
+    "alias": "Neurontin"
+  },
+  {
+    "treatment_id": "neuropathic_agents_lumbar",
+    "alias": "Gralise"
+  },
+  {
+    "treatment_id": "neuropathic_agents_lumbar",
+    "alias": "pregabalin"
+  },
+  {
+    "treatment_id": "neuropathic_agents_lumbar",
+    "alias": "Lyrica"
+  },
+  {
+    "treatment_id": "neuropathic_agents_lumbar",
+    "alias": "anticonvulsant"
+  },
+  {
+    "treatment_id": "neuropathic_agents_lumbar",
+    "alias": "antiepileptic"
+  },
+  {
+    "treatment_id": "neuropathic_agents_lumbar",
+    "alias": "AED"
+  },
+  {
+    "treatment_id": "neuropathic_agents_lumbar",
+    "alias": "amitriptyline"
+  },
+  {
+    "treatment_id": "neuropathic_agents_lumbar",
+    "alias": "Elavil"
+  },
+  {
+    "treatment_id": "neuropathic_agents_lumbar",
+    "alias": "nortriptyline"
+  },
+  {
+    "treatment_id": "neuropathic_agents_lumbar",
+    "alias": "Pamelor"
+  },
+  {
+    "treatment_id": "neuropathic_agents_lumbar",
+    "alias": "tricyclic antidepressant"
+  },
+  {
+    "treatment_id": "neuropathic_agents_lumbar",
+    "alias": "TCA"
+  },
+  {
+    "treatment_id": "duloxetine_snri_lumbar",
+    "alias": "duloxetine"
+  },
+  {
+    "treatment_id": "duloxetine_snri_lumbar",
+    "alias": "Cymbalta"
+  },
+  {
+    "treatment_id": "duloxetine_snri_lumbar",
+    "alias": "SNRI"
+  },
+  {
+    "treatment_id": "duloxetine_snri_lumbar",
+    "alias": "venlafaxine"
+  },
+  {
+    "treatment_id": "duloxetine_snri_lumbar",
+    "alias": "Effexor"
+  },
+  {
+    "treatment_id": "oral_steroids_lumbar",
+    "alias": "oral steroids"
+  },
+  {
+    "treatment_id": "oral_steroids_lumbar",
+    "alias": "prednisone"
+  },
+  {
+    "treatment_id": "oral_steroids_lumbar",
+    "alias": "Medrol Dosepak"
+  },
+  {
+    "treatment_id": "oral_steroids_lumbar",
+    "alias": "Medrol dose pack"
+  },
+  {
+    "treatment_id": "oral_steroids_lumbar",
+    "alias": "methylprednisolone taper"
+  },
+  {
+    "treatment_id": "oral_steroids_lumbar",
+    "alias": "steroid taper"
+  },
+  {
+    "treatment_id": "oral_steroids_lumbar",
+    "alias": "steroid burst"
+  },
+  {
+    "treatment_id": "oral_steroids_lumbar",
+    "alias": "oral dexamethasone"
+  },
+  {
+    "treatment_id": "opioids_short_course_lumbar",
+    "alias": "opioid"
+  },
+  {
+    "treatment_id": "opioids_short_course_lumbar",
+    "alias": "opiate"
+  },
+  {
+    "treatment_id": "opioids_short_course_lumbar",
+    "alias": "narcotic"
+  },
+  {
+    "treatment_id": "opioids_short_course_lumbar",
+    "alias": "hydrocodone"
+  },
+  {
+    "treatment_id": "opioids_short_course_lumbar",
+    "alias": "Norco"
+  },
+  {
+    "treatment_id": "opioids_short_course_lumbar",
+    "alias": "Vicodin"
+  },
+  {
+    "treatment_id": "opioids_short_course_lumbar",
+    "alias": "oxycodone"
+  },
+  {
+    "treatment_id": "opioids_short_course_lumbar",
+    "alias": "Percocet"
+  },
+  {
+    "treatment_id": "opioids_short_course_lumbar",
+    "alias": "OxyContin"
+  },
+  {
+    "treatment_id": "opioids_short_course_lumbar",
+    "alias": "tramadol"
+  },
+  {
+    "treatment_id": "opioids_short_course_lumbar",
+    "alias": "Ultram"
+  },
+  {
+    "treatment_id": "opioids_short_course_lumbar",
+    "alias": "tapentadol"
+  },
+  {
+    "treatment_id": "opioids_short_course_lumbar",
+    "alias": "Nucynta"
+  },
+  {
+    "treatment_id": "opioids_short_course_lumbar",
+    "alias": "codeine"
+  },
+  {
+    "treatment_id": "opioids_short_course_lumbar",
+    "alias": "Tylenol #3"
+  },
+  {
+    "treatment_id": "opioids_short_course_lumbar",
+    "alias": "morphine"
+  },
+  {
+    "treatment_id": "opioids_short_course_lumbar",
+    "alias": "hydromorphone"
+  },
+  {
+    "treatment_id": "opioids_short_course_lumbar",
+    "alias": "Dilaudid"
+  },
+  {
+    "treatment_id": "trigger_point_injection_lumbar",
+    "alias": "TPI"
+  },
+  {
+    "treatment_id": "trigger_point_injection_lumbar",
+    "alias": "TPIs"
+  },
+  {
+    "treatment_id": "trigger_point_injection_lumbar",
+    "alias": "trigger point injection"
+  },
+  {
+    "treatment_id": "trigger_point_injection_lumbar",
+    "alias": "trigger point injections"
+  },
+  {
+    "treatment_id": "trigger_point_injection_lumbar",
+    "alias": "myofascial trigger point injection"
+  },
+  {
+    "treatment_id": "esi_interlaminar_lumbar",
+    "alias": "ILESI"
+  },
+  {
+    "treatment_id": "esi_interlaminar_lumbar",
+    "alias": "IL ESI"
+  },
+  {
+    "treatment_id": "esi_interlaminar_lumbar",
+    "alias": "interlaminar ESI"
+  },
+  {
+    "treatment_id": "esi_interlaminar_lumbar",
+    "alias": "interlaminar epidural steroid injection"
+  },
+  {
+    "treatment_id": "esi_interlaminar_lumbar",
+    "alias": "interlaminar epidural"
+  },
+  {
+    "treatment_id": "esi_interlaminar_lumbar",
+    "alias": "ESI"
+  },
+  {
+    "treatment_id": "esi_interlaminar_lumbar",
+    "alias": "epidural steroid injection"
+  },
+  {
+    "treatment_id": "esi_interlaminar_lumbar",
+    "alias": "epidural injection"
+  },
+  {
+    "treatment_id": "esi_interlaminar_lumbar",
+    "alias": "epidural"
+  },
+  {
+    "treatment_id": "esi_interlaminar_lumbar",
+    "alias": "LESI"
+  },
+  {
+    "treatment_id": "esi_interlaminar_lumbar",
+    "alias": "lumbar ESI"
+  },
+  {
+    "treatment_id": "esi_interlaminar_lumbar",
+    "alias": "lumbar epidural steroid injection"
+  },
+  {
+    "treatment_id": "esi_interlaminar_lumbar",
+    "alias": "lumbar epidural"
+  },
+  {
+    "treatment_id": "esi_transforaminal_lumbar",
+    "alias": "TFESI"
+  },
+  {
+    "treatment_id": "esi_transforaminal_lumbar",
+    "alias": "TF ESI"
+  },
+  {
+    "treatment_id": "esi_transforaminal_lumbar",
+    "alias": "transforaminal ESI"
+  },
+  {
+    "treatment_id": "esi_transforaminal_lumbar",
+    "alias": "transforaminal epidural steroid injection"
+  },
+  {
+    "treatment_id": "esi_transforaminal_lumbar",
+    "alias": "transforaminal epidural"
+  },
+  {
+    "treatment_id": "esi_transforaminal_lumbar",
+    "alias": "selective nerve root block"
+  },
+  {
+    "treatment_id": "esi_transforaminal_lumbar",
+    "alias": "SNRB"
+  },
+  {
+    "treatment_id": "esi_transforaminal_lumbar",
+    "alias": "nerve root block"
+  },
+  {
+    "treatment_id": "esi_transforaminal_lumbar",
+    "alias": "periradicular injection"
+  },
+  {
+    "treatment_id": "esi_caudal_lumbar",
+    "alias": "caudal ESI"
+  },
+  {
+    "treatment_id": "esi_caudal_lumbar",
+    "alias": "caudal epidural"
+  },
+  {
+    "treatment_id": "esi_caudal_lumbar",
+    "alias": "caudal epidural steroid injection"
+  },
+  {
+    "treatment_id": "esi_caudal_lumbar",
+    "alias": "caudal injection"
+  },
+  {
+    "treatment_id": "medial_branch_block_lumbar",
+    "alias": "MBB"
+  },
+  {
+    "treatment_id": "medial_branch_block_lumbar",
+    "alias": "MBBs"
+  },
+  {
+    "treatment_id": "medial_branch_block_lumbar",
+    "alias": "medial branch block"
+  },
+  {
+    "treatment_id": "medial_branch_block_lumbar",
+    "alias": "medial branch nerve block"
+  },
+  {
+    "treatment_id": "medial_branch_block_lumbar",
+    "alias": "diagnostic facet block"
+  },
+  {
+    "treatment_id": "medial_branch_block_lumbar",
+    "alias": "facet nerve block"
+  },
+  {
+    "treatment_id": "medial_branch_block_lumbar",
+    "alias": "comparative local anesthetic block"
+  },
+  {
+    "treatment_id": "medial_branch_block_lumbar",
+    "alias": "lumbar MBB"
+  },
+  {
+    "treatment_id": "facet_ia_injection_lumbar",
+    "alias": "facet injection"
+  },
+  {
+    "treatment_id": "facet_ia_injection_lumbar",
+    "alias": "facet joint injection"
+  },
+  {
+    "treatment_id": "facet_ia_injection_lumbar",
+    "alias": "intra-articular facet injection"
+  },
+  {
+    "treatment_id": "facet_ia_injection_lumbar",
+    "alias": "IA facet injection"
+  },
+  {
+    "treatment_id": "facet_ia_injection_lumbar",
+    "alias": "zygapophyseal joint injection"
+  },
+  {
+    "treatment_id": "facet_ia_injection_lumbar",
+    "alias": "Z-joint injection"
+  },
+  {
+    "treatment_id": "facet_ia_injection_lumbar",
+    "alias": "facet block"
+  },
+  {
+    "treatment_id": "rfa_lumbar",
+    "alias": "RFA"
+  },
+  {
+    "treatment_id": "rfa_lumbar",
+    "alias": "radiofrequency ablation"
+  },
+  {
+    "treatment_id": "rfa_lumbar",
+    "alias": "RF ablation"
+  },
+  {
+    "treatment_id": "rfa_lumbar",
+    "alias": "radiofrequency neurotomy"
+  },
+  {
+    "treatment_id": "rfa_lumbar",
+    "alias": "RFN"
+  },
+  {
+    "treatment_id": "rfa_lumbar",
+    "alias": "rhizotomy"
+  },
+  {
+    "treatment_id": "rfa_lumbar",
+    "alias": "facet rhizotomy"
+  },
+  {
+    "treatment_id": "rfa_lumbar",
+    "alias": "radiofrequency denervation"
+  },
+  {
+    "treatment_id": "rfa_lumbar",
+    "alias": "medial branch neurotomy"
+  },
+  {
+    "treatment_id": "rfa_lumbar",
+    "alias": "RF lesioning"
+  },
+  {
+    "treatment_id": "rfa_lumbar",
+    "alias": "lumbar RFA"
+  },
+  {
+    "treatment_id": "vertebral_augmentation_lumbar",
+    "alias": "vertebroplasty"
+  },
+  {
+    "treatment_id": "vertebral_augmentation_lumbar",
+    "alias": "kyphoplasty"
+  },
+  {
+    "treatment_id": "vertebral_augmentation_lumbar",
+    "alias": "balloon kyphoplasty"
+  },
+  {
+    "treatment_id": "vertebral_augmentation_lumbar",
+    "alias": "vertebral augmentation"
+  },
+  {
+    "treatment_id": "vertebral_augmentation_lumbar",
+    "alias": "PVP"
+  },
+  {
+    "treatment_id": "vertebral_augmentation_lumbar",
+    "alias": "BKP"
+  },
+  {
+    "treatment_id": "spinal_cord_stimulator_lumbar",
+    "alias": "SCS"
+  },
+  {
+    "treatment_id": "spinal_cord_stimulator_lumbar",
+    "alias": "spinal cord stimulator"
+  },
+  {
+    "treatment_id": "spinal_cord_stimulator_lumbar",
+    "alias": "spinal cord stimulation"
+  },
+  {
+    "treatment_id": "spinal_cord_stimulator_lumbar",
+    "alias": "SCS trial"
+  },
+  {
+    "treatment_id": "spinal_cord_stimulator_lumbar",
+    "alias": "dorsal column stimulator"
+  },
+  {
+    "treatment_id": "spinal_cord_stimulator_lumbar",
+    "alias": "neurostimulator"
+  },
+  {
+    "treatment_id": "spinal_cord_stimulator_lumbar",
+    "alias": "neuromodulation"
+  },
+  {
+    "treatment_id": "functional_restoration_lumbar",
+    "alias": "FRP"
+  },
+  {
+    "treatment_id": "functional_restoration_lumbar",
+    "alias": "functional restoration"
+  },
+  {
+    "treatment_id": "functional_restoration_lumbar",
+    "alias": "functional restoration program"
+  },
+  {
+    "treatment_id": "functional_restoration_lumbar",
+    "alias": "interdisciplinary pain program"
+  },
+  {
+    "treatment_id": "functional_restoration_lumbar",
+    "alias": "multidisciplinary pain program"
+  },
+  {
+    "treatment_id": "functional_restoration_lumbar",
+    "alias": "chronic pain program"
+  },
+  {
+    "treatment_id": "functional_restoration_lumbar",
+    "alias": "interdisciplinary rehabilitation"
+  },
+  {
+    "treatment_id": "functional_restoration_lumbar",
+    "alias": "multidisciplinary rehabilitation"
+  },
+  {
+    "treatment_id": "functional_restoration_lumbar",
+    "alias": "pain rehabilitation program"
+  },
+  {
+    "treatment_id": "work_conditioning_lumbar",
+    "alias": "work conditioning"
+  },
+  {
+    "treatment_id": "work_conditioning_lumbar",
+    "alias": "work hardening"
+  },
+  {
+    "treatment_id": "work_conditioning_lumbar",
+    "alias": "work reconditioning"
+  },
+  {
+    "treatment_id": "work_conditioning_lumbar",
+    "alias": "work hardening program"
+  },
+  {
+    "treatment_id": "microdiscectomy_lumbar",
+    "alias": "microdiscectomy"
+  },
+  {
+    "treatment_id": "microdiscectomy_lumbar",
+    "alias": "discectomy"
+  },
+  {
+    "treatment_id": "microdiscectomy_lumbar",
+    "alias": "microlumbar discectomy"
+  },
+  {
+    "treatment_id": "microdiscectomy_lumbar",
+    "alias": "MLD"
+  },
+  {
+    "treatment_id": "microdiscectomy_lumbar",
+    "alias": "lumbar discectomy"
+  },
+  {
+    "treatment_id": "microdiscectomy_lumbar",
+    "alias": "hemilaminotomy and discectomy"
+  },
+  {
+    "treatment_id": "microdiscectomy_lumbar",
+    "alias": "laminotomy and discectomy"
+  },
+  {
+    "treatment_id": "microdiscectomy_lumbar",
+    "alias": "endoscopic discectomy"
+  },
+  {
+    "treatment_id": "laminectomy_lumbar",
+    "alias": "laminectomy"
+  },
+  {
+    "treatment_id": "laminectomy_lumbar",
+    "alias": "decompressive laminectomy"
+  },
+  {
+    "treatment_id": "laminectomy_lumbar",
+    "alias": "laminotomy"
+  },
+  {
+    "treatment_id": "laminectomy_lumbar",
+    "alias": "hemilaminectomy"
+  },
+  {
+    "treatment_id": "laminectomy_lumbar",
+    "alias": "foraminotomy"
+  },
+  {
+    "treatment_id": "laminectomy_lumbar",
+    "alias": "decompression"
+  },
+  {
+    "treatment_id": "laminectomy_lumbar",
+    "alias": "spinal decompression"
+  },
+  {
+    "treatment_id": "laminectomy_lumbar",
+    "alias": "lumbar laminectomy"
+  },
+  {
+    "treatment_id": "laminectomy_lumbar",
+    "alias": "lumbar decompression"
+  },
+  {
+    "treatment_id": "fusion_lumbar",
+    "alias": "fusion"
+  },
+  {
+    "treatment_id": "fusion_lumbar",
+    "alias": "spinal fusion"
+  },
+  {
+    "treatment_id": "fusion_lumbar",
+    "alias": "arthrodesis"
+  },
+  {
+    "treatment_id": "fusion_lumbar",
+    "alias": "instrumented fusion"
+  },
+  {
+    "treatment_id": "fusion_lumbar",
+    "alias": "pedicle screw fixation"
+  },
+  {
+    "treatment_id": "fusion_lumbar",
+    "alias": "lumbar fusion"
+  },
+  {
+    "treatment_id": "fusion_lumbar",
+    "alias": "TLIF"
+  },
+  {
+    "treatment_id": "fusion_lumbar",
+    "alias": "PLIF"
+  },
+  {
+    "treatment_id": "fusion_lumbar",
+    "alias": "ALIF"
+  },
+  {
+    "treatment_id": "fusion_lumbar",
+    "alias": "XLIF"
+  },
+  {
+    "treatment_id": "fusion_lumbar",
+    "alias": "LLIF"
+  },
+  {
+    "treatment_id": "fusion_lumbar",
+    "alias": "OLIF"
+  },
+  {
+    "treatment_id": "fusion_lumbar",
+    "alias": "posterolateral fusion"
+  },
+  {
+    "treatment_id": "fusion_lumbar",
+    "alias": "PLF"
+  },
+  {
+    "treatment_id": "fusion_lumbar",
+    "alias": "360 fusion"
+  },
+  {
+    "treatment_id": "fusion_lumbar",
+    "alias": "circumferential fusion"
+  },
+  {
+    "treatment_id": "fusion_lumbar",
+    "alias": "decompression and fusion"
+  },
+  {
+    "treatment_id": "revision_surgery_lumbar",
+    "alias": "revision surgery"
+  },
+  {
+    "treatment_id": "revision_surgery_lumbar",
+    "alias": "revision fusion"
+  },
+  {
+    "treatment_id": "revision_surgery_lumbar",
+    "alias": "pseudarthrosis repair"
+  },
+  {
+    "treatment_id": "revision_surgery_lumbar",
+    "alias": "hardware removal"
+  },
+  {
+    "treatment_id": "revision_surgery_lumbar",
+    "alias": "re-exploration"
+  },
+  {
+    "treatment_id": "revision_surgery_lumbar",
+    "alias": "adjacent segment surgery"
+  },
+  {
+    "treatment_id": "revision_surgery_lumbar",
+    "alias": "redo surgery"
+  },
+  {
+    "treatment_id": "revision_surgery_lumbar",
+    "alias": "redo discectomy"
+  },
+  {
+    "treatment_id": "revision_surgery_lumbar",
+    "alias": "revision discectomy"
+  },
+  {
+    "treatment_id": "revision_surgery_lumbar",
+    "alias": "revision lumbar fusion"
+  },
+  {
+    "treatment_id": "bvna_lumbar",
+    "alias": "BVNA"
+  },
+  {
+    "treatment_id": "bvna_lumbar",
+    "alias": "BVN ablation"
+  },
+  {
+    "treatment_id": "bvna_lumbar",
+    "alias": "basivertebral nerve ablation"
+  },
+  {
+    "treatment_id": "bvna_lumbar",
+    "alias": "intraosseous basivertebral nerve ablation"
+  },
+  {
+    "treatment_id": "bvna_lumbar",
+    "alias": "Intracept"
+  },
+  {
+    "treatment_id": "bvna_lumbar",
+    "alias": "Intracept procedure"
+  },
+  {
+    "treatment_id": "bvna_lumbar",
+    "alias": "basivertebral nerve RFA"
+  },
+  {
+    "treatment_id": "bvna_lumbar",
+    "alias": "intraosseous nerve ablation"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_lumbar",
+    "alias": "bone growth stimulator"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_lumbar",
+    "alias": "bone stimulator"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_lumbar",
+    "alias": "bone stim"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_lumbar",
+    "alias": "spinal bone growth stimulator"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_lumbar",
+    "alias": "electrical bone growth stimulator"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_lumbar",
+    "alias": "PEMF"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_lumbar",
+    "alias": "pulsed electromagnetic field"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_lumbar",
+    "alias": "capacitive coupling stimulator"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_lumbar",
+    "alias": "Spinal-Stim"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_lumbar",
+    "alias": "Cervical-Stim"
+  },
+  {
+    "treatment_id": "bone_growth_stimulator_lumbar",
+    "alias": "SpinaLogic"
+  },
+  {
+    "treatment_id": "antibiotics_lumbar",
+    "alias": "antibiotics"
+  },
+  {
+    "treatment_id": "antibiotics_lumbar",
+    "alias": "IV antibiotics"
+  },
+  {
+    "treatment_id": "antibiotics_lumbar",
+    "alias": "intravenous antibiotics"
+  },
+  {
+    "treatment_id": "antibiotics_lumbar",
+    "alias": "PICC antibiotics"
+  },
+  {
+    "treatment_id": "antibiotics_lumbar",
+    "alias": "OPAT"
+  },
+  {
+    "treatment_id": "antibiotics_lumbar",
+    "alias": "vancomycin"
+  },
+  {
+    "treatment_id": "antibiotics_lumbar",
+    "alias": "cefazolin"
+  },
+  {
+    "treatment_id": "antibiotics_lumbar",
+    "alias": "rifampin"
+  },
+  {
+    "treatment_id": "antibiotics_lumbar",
+    "alias": "suppressive antibiotics"
+  },
+  {
+    "treatment_id": "antibiotics_lumbar",
+    "alias": "antibiotic suppression"
+  },
+  {
+    "treatment_id": "antibiotics_lumbar",
+    "alias": "culture-directed antibiotics"
+  },
+  {
+    "treatment_id": "debridement_lumbar",
+    "alias": "I&D"
+  },
+  {
+    "treatment_id": "debridement_lumbar",
+    "alias": "I and D"
+  },
+  {
+    "treatment_id": "debridement_lumbar",
+    "alias": "irrigation and debridement"
+  },
+  {
+    "treatment_id": "debridement_lumbar",
+    "alias": "incision and drainage"
+  },
+  {
+    "treatment_id": "debridement_lumbar",
+    "alias": "debridement"
+  },
+  {
+    "treatment_id": "debridement_lumbar",
+    "alias": "wound washout"
+  },
+  {
+    "treatment_id": "debridement_lumbar",
+    "alias": "washout"
+  },
+  {
+    "treatment_id": "debridement_lumbar",
+    "alias": "DAIR"
+  },
+  {
+    "treatment_id": "debridement_lumbar",
+    "alias": "debridement and implant retention"
+  },
+  {
+    "treatment_id": "debridement_lumbar",
+    "alias": "wound exploration"
+  },
+  {
+    "treatment_id": "debridement_lumbar",
+    "alias": "second-look surgery"
+  },
+  {
+    "treatment_id": "debridement_lumbar",
+    "alias": "lumbar wound washout"
+  },
+  {
+    "treatment_id": "pars_repair_lumbar",
+    "alias": "pars repair"
+  },
+  {
+    "treatment_id": "pars_repair_lumbar",
+    "alias": "direct pars repair"
+  },
+  {
+    "treatment_id": "pars_repair_lumbar",
+    "alias": "pars interarticularis repair"
+  },
+  {
+    "treatment_id": "pars_repair_lumbar",
+    "alias": "Buck repair"
+  },
+  {
+    "treatment_id": "pars_repair_lumbar",
+    "alias": "Buck's repair"
+  },
+  {
+    "treatment_id": "pars_repair_lumbar",
+    "alias": "Buck screw"
+  },
+  {
+    "treatment_id": "pars_repair_lumbar",
+    "alias": "Scott wiring"
+  },
+  {
+    "treatment_id": "pars_repair_lumbar",
+    "alias": "Morscher repair"
+  },
+  {
+    "treatment_id": "pars_repair_lumbar",
+    "alias": "pedicle screw-hook pars repair"
+  },
+  {
+    "treatment_id": "pars_repair_lumbar",
+    "alias": "spondylolysis repair"
+  }
+]

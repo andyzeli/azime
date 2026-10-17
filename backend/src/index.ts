@@ -36,7 +36,7 @@ const start = async () => {
     await app.listen({ port: 4000 });
     console.log("Server listening on http://localhost:4000");
   } catch (err) {
-    app.log.error(err);
+    console.error("Failed to start server:", err);
     process.exit(1);
   }
 };

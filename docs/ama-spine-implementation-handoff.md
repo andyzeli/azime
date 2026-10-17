@@ -1,12 +1,16 @@
 # AMA spine implementation handoff
 
-2026-10-13. **Base reference data is finished; LLM examination-task enrichment and application integration remain.** This is the current plan for the next implementation chat; it supersedes conflicting suggestions in the older design notes.
+2026-10-13. **Reference import (item 1) is implemented and applied to local `azime`; application integration remains.** The enriched upload is preserved, and the imported totals are 30 rows, 108 entries, 178 questions, and 78 examination tasks (68 distinct task IDs). This is the current plan for the next implementation chat; it supersedes conflicting suggestions in the older design notes.
 
 Build one AMA reference table, retrieve candidate rows from canonical diagnoses, and render their questions in Exam prep / Visit. **Store physician answers in the existing visit JSON**, with one assessment per clinical component. Evaluate the supplied rules deterministically in the backend.
 
 ## 1. Import the AMA reference data
 
-Input: [ama-spine.upload.json](ama-spine.upload.json), a plain array containing **30 rows, 108 entries, 178 questions**. Questions are already deduplicated within each row. Sixteen rows have `nerve_roots`; fourteen have `[]`. T2–T12 is expanded into eleven roots. Before import, complete the offline [LLM examination-task step](ama-examination-tasks-prompt.md), which adds `examination_tasks` directly to this file, then validate/review the result. The current upload does not yet contain tasks.
+Implemented in `packages/contracts/src/amaReference.ts`, `backend/src/db/schema.ts`, migration `0005_ama_diagnostic_rows`, and `backend/src/db/referenceData/importAmaReferenceData.ts`. Both validators accept/check examination tasks. `pnpm --filter backend test:ama-reference` checks the contracts; setting `AMA_TEST_DATABASE_URL` also runs import/rollback checks in an isolated temporary schema. The commands below remain available for another intended database; with the current local migration configuration, explicitly use `DATABASE_URL=postgres://localhost/azime` for the import if it is not configured.
+
+Input: [ama-spine.upload.json](ama-spine.upload.json), a plain array containing **30 rows, 108 entries, 178 questions**. Questions are already deduplicated within each row. Sixteen rows have `nerve_roots`; fourteen have `[]`. T2–T12 is expanded into eleven roots. Check whether `examination_tasks` is already present. If missing, complete the offline [LLM examination-task step](ama-examination-tasks-prompt.md), which adds it directly to this file. Validate/review the enriched file before import.
+
+**Preserve the enriched upload.** Import it directly. Do not run `scripts/build-ama-spine.py` or `scripts/normalize-ama-spine.py` in generation mode during application setup, import, or routine verification: they overwrite the file and remove the LLM-added tasks. Use `--validate-only` for validation, extending the validator to support tasks rather than regenerating to resolve validation errors. Rebuild only when intentionally changing the source-derived data, then repeat the LLM step and review before import.
 
 Add `AmaDiagnosticRows` (`ama_diagnostic_rows`) to [schema.ts](../backend/src/db/schema.ts) and generate a migration:
 
@@ -23,7 +27,7 @@ Add `AmaDiagnosticRows` (`ama_diagnostic_rows`) to [schema.ts](../backend/src/db
 
 Normalize regions **during import**: `cervical → cervical_spine`, `thoracic → thoracic_spine`, `lumbar → lumbar_spine`, matching application/canonical region IDs. Keep the generated file unchanged. `nerve_roots` is spine-specific; future non-spine uploads can omit it and use the empty default.
 
-Create a dedicated importer under `backend/src/db/referenceData/` with `--validate-only` and a file-path argument. Validate the entire file before writing: unique IDs, question types/options, recursive rule structure and references, roots, impairment values, and examination tasks/PE links. Convert missing `help` to SQL null; preserve question/entry/task JSON. Import in one transaction, upserting by `row_id`, without deleting unrelated reference data. The existing treatment-taxonomy importer does **not** support AMA rows.
+The dedicated importer under `backend/src/db/referenceData/` reads all `.json` files directly in `backend/reference-data/ama-rows/` by default. Each file contains an array; filenames are your choice. `spine.json` is a copy of the reviewed upload above; replace it after any edits to that working document. Validate all entries together before writing: unique IDs across files, question types/options, recursive rule structure and references, roots, impairment values, and examination tasks/PE links. Convert missing `help` to SQL null; preserve question/entry/task JSON. Import in one transaction, upserting by `row_id`, without deleting unrelated reference data. The existing treatment-taxonomy importer does **not** support AMA rows.
 
 Suggested command sequence from repository root, **after implementing the importer/package script**:
 
@@ -33,9 +37,9 @@ python3 -B scripts/normalize-ama-spine.py --validate-only docs/ama-spine.upload.
 # Existing migration commands, after adding the schema
 pnpm --filter backend generate
 pnpm --filter backend migrate
-# Proposed script to add: build backend, then run the dedicated importer
-pnpm --filter backend ama:import --validate-only ../docs/ama-spine.upload.json
-pnpm --filter backend ama:import ../docs/ama-spine.upload.json
+# Import every JSON file in backend/reference-data/ama-rows/
+pnpm --filter backend ama:import --validate-only
+pnpm --filter backend ama:import
 ```
 
 Use the intended database for both migration and import; the current Drizzle configuration points to local `azime`, while reference imports use `DATABASE_URL`. Verify 30/108/178 after import. Start with one chosen Guides dataset; an updated release must not silently replace rules used by existing assessments. No per-question hashes or source-line metadata are needed.
@@ -133,11 +137,11 @@ These are **component results**, not a final combined WPI. Final rating approval
 
 ## 6. Implementation order and checks
 
-1. Complete the offline LLM step and validate/review its tasks. Add reference contracts/table/migration and dedicated importer, then import the enriched upload.
+1. Use the existing enriched upload, completing the offline LLM step only if tasks are missing. Validate/review it, add reference contracts/table/migration and dedicated importer, then import without regenerating the file.
 2. Add candidate lookup and the deterministic evaluator, then shared visit answer contracts/save validation.
 3. Add the Exam prep checklist and Visit forms to the current `/p_cases/$caseId` dashboard. Wire queries in `frontend/azimeclient/src/routes/cases/queries.ts`; update `tabs/exam-prep.lazy.tsx` and `tabs/visit.lazy.tsx` under `routes/p_cases/p_case/`.
 4. Extend `backend/src/queries/postExamInputQueries.ts`, `backend/src/ai/postExamInputSnapshot.ts`, and their contracts to capture the structured results. If changing downstream AI behavior, review its prompt and output schema together; the model consumes results, not invents rating rules.
 
 Acceptance checks: region conversion; L5 lookup; unknown versus no roots; T2–T12 lookup; retained non-root candidates; duplicate diagnoses sharing one component; separate sides; correct question/help rendering; answer round-trip with revision conflict; invalid IDs/choices rejected; unresolved higher entry blocking a lower match; count boundaries; scope changes requiring review; snapshot reproducibility.
 
-Reference-rule examples already exist in [test_normalize_ama_spine.py](../scripts/test_normalize_ama_spine.py). The scripted base rebuild (`python3 -B scripts/build-ama-spine.py`) passes 16 tests; port relevant cases to the runtime evaluator. Repeat the LLM step after rebuilding the base file. See [the upload contract](ama-spine-upload.md) for exact schemas/clinical wording exceptions and [the source walkthrough](ama-source-to-upload.md) for the full workflow.
+Reference-rule examples already exist in [test_normalize_ama_spine.py](../scripts/test_normalize_ama_spine.py); port relevant cases to the runtime evaluator. The base pipeline previously passed 16 tests. Any verification that regenerates reference data should write to temporary files, preserving the enriched upload. See [the upload contract](ama-spine-upload.md) for exact schemas/clinical wording exceptions and [the source walkthrough](ama-source-to-upload.md) when intentionally rebuilding the data.

@@ -140,115 +140,195 @@
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__activity_modification_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__activity_modification_lumbar",
     "source_id": "nice_ng59"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__activity_modification_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__activity_modification_lumbar",
     "source_id": "acoem_low_back_2020"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__home_exercise_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__home_exercise_lumbar",
     "source_id": "nice_ng59"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__home_exercise_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__home_exercise_lumbar",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__pt_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__pt_lumbar",
     "source_id": "nice_ng59"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__pt_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__pt_lumbar",
     "source_id": "acoem_low_back_2020"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__pt_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__pt_lumbar",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__manipulation_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__manipulation_lumbar",
     "source_id": "nass_ldh_2012"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__manipulation_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__manipulation_lumbar",
     "source_id": "nice_ng59"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__nsaids_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__nsaids_lumbar",
     "source_id": "acoem_low_back_2020"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__nsaids_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__nsaids_lumbar",
     "source_id": "nice_ng59"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__oral_steroids_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__oral_steroids_lumbar",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__neuropathic_agents_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__neuropathic_agents_lumbar",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__opioids_short_course_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__opioids_short_course_lumbar",
     "source_id": "nice_ng59"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__opioids_short_course_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__opioids_short_course_lumbar",
     "source_id": "cdc_opioids_2022"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__esi_transforaminal_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__esi_transforaminal_lumbar",
     "source_id": "nass_ldh_2012"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__esi_transforaminal_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__esi_transforaminal_lumbar",
     "source_id": "nice_ng59"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__esi_transforaminal_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__esi_transforaminal_lumbar",
     "source_id": "acoem_low_back_2020"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__esi_transforaminal_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__esi_transforaminal_lumbar",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__esi_interlaminar_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__esi_interlaminar_lumbar",
     "source_id": "nice_ng59"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__esi_interlaminar_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__esi_interlaminar_lumbar",
     "source_id": "acoem_low_back_2020"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__esi_interlaminar_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__esi_interlaminar_lumbar",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__esi_caudal_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__esi_caudal_lumbar",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__microdiscectomy_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__microdiscectomy_lumbar",
     "source_id": "nass_ldh_2012"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__microdiscectomy_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__microdiscectomy_lumbar",
     "source_id": "nice_ng59"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__microdiscectomy_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__microdiscectomy_lumbar",
     "source_id": "acoem_low_back_2020"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__microdiscectomy_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__microdiscectomy_lumbar",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_lumbar_disc_herniation_radiculopathy__functional_restoration_lumbar",
+    "ladder_entry_id": "le_lumbar_radiculopathy__laminectomy_lumbar",
+    "source_id": "nass_stenosis_2011"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_radiculopathy__laminectomy_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_radiculopathy__spinal_cord_stimulator_lumbar",
+    "source_id": "nice_ta159"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_radiculopathy__spinal_cord_stimulator_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_radiculopathy__functional_restoration_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_disc_herniation__activity_modification_lumbar",
+    "source_id": "nice_ng59"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_disc_herniation__activity_modification_lumbar",
+    "source_id": "acoem_low_back_2020"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_disc_herniation__home_exercise_lumbar",
+    "source_id": "nice_ng59"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_disc_herniation__home_exercise_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_disc_herniation__pt_lumbar",
+    "source_id": "nice_ng59"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_disc_herniation__pt_lumbar",
+    "source_id": "acoem_low_back_2020"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_disc_herniation__pt_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_disc_herniation__manipulation_lumbar",
+    "source_id": "nass_ldh_2012"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_disc_herniation__manipulation_lumbar",
+    "source_id": "nice_ng59"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_disc_herniation__nsaids_lumbar",
+    "source_id": "acoem_low_back_2020"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_disc_herniation__nsaids_lumbar",
+    "source_id": "nice_ng59"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_disc_herniation__muscle_relaxants_lumbar",
+    "source_id": "acoem_low_back_2020"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_disc_herniation__esi_transforaminal_lumbar",
+    "source_id": "nass_ldh_2012"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_disc_herniation__esi_transforaminal_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_disc_herniation__microdiscectomy_lumbar",
+    "source_id": "nass_ldh_2012"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_disc_herniation__microdiscectomy_lumbar",
     "source_id": "odg"
   },
   {
@@ -320,6 +400,10 @@
     "source_id": "odg"
   },
   {
+    "ladder_entry_id": "le_lumbar_spinal_stenosis__functional_restoration_lumbar",
+    "source_id": "odg"
+  },
+  {
     "ladder_entry_id": "le_lumbar_spondylolisthesis__activity_modification_lumbar",
     "source_id": "acoem_low_back_2020"
   },
@@ -376,120 +460,336 @@
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__activity_modification_lumbar",
-    "source_id": "acp_lbp_2017"
+    "ladder_entry_id": "le_lumbar_spondylolysis__activity_modification_lumbar",
+    "source_id": "debnath_spondylolysis_2021"
   },
   {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__activity_modification_lumbar",
-    "source_id": "nice_ng59"
+    "ladder_entry_id": "le_lumbar_spondylolysis__pt_lumbar",
+    "source_id": "debnath_spondylolysis_2021"
   },
   {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__home_exercise_lumbar",
-    "source_id": "nice_ng59"
-  },
-  {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__home_exercise_lumbar",
+    "ladder_entry_id": "le_lumbar_spondylolysis__pt_lumbar",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__pt_lumbar",
-    "source_id": "acp_lbp_2017"
+    "ladder_entry_id": "le_lumbar_spondylolysis__home_exercise_lumbar",
+    "source_id": "debnath_spondylolysis_2021"
   },
   {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__pt_lumbar",
-    "source_id": "nice_ng59"
+    "ladder_entry_id": "le_lumbar_spondylolysis__nsaids_lumbar",
+    "source_id": "debnath_spondylolysis_2021"
   },
   {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__pt_lumbar",
+    "ladder_entry_id": "le_lumbar_spondylolysis__spinal_orthosis_lumbar",
+    "source_id": "debnath_spondylolysis_2021"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_spondylolysis__pars_repair_lumbar",
+    "source_id": "debnath_spondylolysis_2021"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_spondylolysis__pars_repair_lumbar",
+    "source_id": "mohammed_pars_repair_2018"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_spondylolysis__fusion_lumbar",
+    "source_id": "debnath_spondylolysis_2021"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_spondylolysis__fusion_lumbar",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__manipulation_lumbar",
-    "source_id": "acp_lbp_2017"
-  },
-  {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__manipulation_lumbar",
-    "source_id": "vadod_lbp_2022"
-  },
-  {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__acupuncture_lumbar",
-    "source_id": "acp_lbp_2017"
-  },
-  {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__acupuncture_lumbar",
-    "source_id": "vadod_lbp_2022"
-  },
-  {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__nsaids_lumbar",
-    "source_id": "acp_lbp_2017"
-  },
-  {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__nsaids_lumbar",
-    "source_id": "nice_ng59"
-  },
-  {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__nsaids_lumbar",
+    "ladder_entry_id": "le_lumbar_instability__activity_modification_lumbar",
     "source_id": "acoem_low_back_2020"
   },
   {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__duloxetine_snri_lumbar",
-    "source_id": "acp_lbp_2017"
-  },
-  {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__mind_body_exercise_lumbar",
-    "source_id": "acp_lbp_2017"
-  },
-  {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__mind_body_exercise_lumbar",
-    "source_id": "vadod_lbp_2022"
-  },
-  {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__cbt_lumbar",
-    "source_id": "acp_lbp_2017"
-  },
-  {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__cbt_lumbar",
-    "source_id": "vadod_lbp_2022"
-  },
-  {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__medial_branch_block_lumbar",
-    "source_id": "cohen_lumbar_facet_2020"
-  },
-  {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__medial_branch_block_lumbar",
+    "ladder_entry_id": "le_lumbar_instability__activity_modification_lumbar",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__facet_ia_injection_lumbar",
-    "source_id": "cohen_lumbar_facet_2020"
+    "ladder_entry_id": "le_lumbar_instability__pt_lumbar",
+    "source_id": "acoem_low_back_2020"
   },
   {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__rfa_lumbar",
-    "source_id": "cohen_lumbar_facet_2020"
-  },
-  {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__rfa_lumbar",
+    "ladder_entry_id": "le_lumbar_instability__pt_lumbar",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__rfa_lumbar",
+    "ladder_entry_id": "le_lumbar_instability__home_exercise_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_instability__nsaids_lumbar",
+    "source_id": "acoem_low_back_2020"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_instability__spinal_orthosis_lumbar",
+    "source_id": "cns_thoracolumbar_trauma_2019"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_instability__fusion_lumbar",
+    "source_id": "nass_spondylolisthesis_2014"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_instability__fusion_lumbar",
+    "source_id": "cns_thoracolumbar_trauma_2019"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_instability__fusion_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_facet_pain__activity_modification_lumbar",
+    "source_id": "acp_lbp_2017"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_facet_pain__activity_modification_lumbar",
     "source_id": "nice_ng59"
   },
   {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__functional_restoration_lumbar",
-    "source_id": "acp_lbp_2017"
+    "ladder_entry_id": "le_lumbar_facet_pain__home_exercise_lumbar",
+    "source_id": "nice_ng59"
   },
   {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__functional_restoration_lumbar",
-    "source_id": "aans_cns_lumbar_fusion_2014"
-  },
-  {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__functional_restoration_lumbar",
+    "ladder_entry_id": "le_lumbar_facet_pain__home_exercise_lumbar",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_lumbar_facet_degenerative_disc__fusion_lumbar",
+    "ladder_entry_id": "le_lumbar_facet_pain__pt_lumbar",
+    "source_id": "acp_lbp_2017"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_facet_pain__pt_lumbar",
+    "source_id": "nice_ng59"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_facet_pain__pt_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_facet_pain__manipulation_lumbar",
+    "source_id": "acp_lbp_2017"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_facet_pain__manipulation_lumbar",
+    "source_id": "vadod_lbp_2022"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_facet_pain__nsaids_lumbar",
+    "source_id": "acp_lbp_2017"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_facet_pain__nsaids_lumbar",
+    "source_id": "nice_ng59"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_facet_pain__nsaids_lumbar",
+    "source_id": "acoem_low_back_2020"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_facet_pain__cbt_lumbar",
+    "source_id": "acp_lbp_2017"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_facet_pain__cbt_lumbar",
+    "source_id": "vadod_lbp_2022"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_facet_pain__medial_branch_block_lumbar",
+    "source_id": "cohen_lumbar_facet_2020"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_facet_pain__medial_branch_block_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_facet_pain__facet_ia_injection_lumbar",
+    "source_id": "cohen_lumbar_facet_2020"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_facet_pain__rfa_lumbar",
+    "source_id": "cohen_lumbar_facet_2020"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_facet_pain__rfa_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_facet_pain__rfa_lumbar",
+    "source_id": "nice_ng59"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_facet_pain__functional_restoration_lumbar",
+    "source_id": "acp_lbp_2017"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_facet_pain__functional_restoration_lumbar",
     "source_id": "aans_cns_lumbar_fusion_2014"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_facet_pain__functional_restoration_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_degenerative_disc_disease__activity_modification_lumbar",
+    "source_id": "acp_lbp_2017"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_degenerative_disc_disease__activity_modification_lumbar",
+    "source_id": "nice_ng59"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_degenerative_disc_disease__home_exercise_lumbar",
+    "source_id": "nice_ng59"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_degenerative_disc_disease__home_exercise_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_degenerative_disc_disease__pt_lumbar",
+    "source_id": "acp_lbp_2017"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_degenerative_disc_disease__pt_lumbar",
+    "source_id": "nice_ng59"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_degenerative_disc_disease__pt_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_degenerative_disc_disease__manipulation_lumbar",
+    "source_id": "acp_lbp_2017"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_degenerative_disc_disease__manipulation_lumbar",
+    "source_id": "vadod_lbp_2022"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_degenerative_disc_disease__acupuncture_lumbar",
+    "source_id": "acp_lbp_2017"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_degenerative_disc_disease__acupuncture_lumbar",
+    "source_id": "vadod_lbp_2022"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_degenerative_disc_disease__nsaids_lumbar",
+    "source_id": "acp_lbp_2017"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_degenerative_disc_disease__nsaids_lumbar",
+    "source_id": "nice_ng59"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_degenerative_disc_disease__nsaids_lumbar",
+    "source_id": "acoem_low_back_2020"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_degenerative_disc_disease__duloxetine_snri_lumbar",
+    "source_id": "acp_lbp_2017"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_degenerative_disc_disease__mind_body_exercise_lumbar",
+    "source_id": "acp_lbp_2017"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_degenerative_disc_disease__mind_body_exercise_lumbar",
+    "source_id": "vadod_lbp_2022"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_degenerative_disc_disease__cbt_lumbar",
+    "source_id": "acp_lbp_2017"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_degenerative_disc_disease__cbt_lumbar",
+    "source_id": "vadod_lbp_2022"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_degenerative_disc_disease__functional_restoration_lumbar",
+    "source_id": "acp_lbp_2017"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_degenerative_disc_disease__functional_restoration_lumbar",
+    "source_id": "aans_cns_lumbar_fusion_2014"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_degenerative_disc_disease__functional_restoration_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_degenerative_disc_disease__fusion_lumbar",
+    "source_id": "aans_cns_lumbar_fusion_2014"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_vertebrogenic_pain__activity_modification_lumbar",
+    "source_id": "acp_lbp_2017"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_vertebrogenic_pain__activity_modification_lumbar",
+    "source_id": "nice_ng59"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_vertebrogenic_pain__home_exercise_lumbar",
+    "source_id": "nice_ng59"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_vertebrogenic_pain__home_exercise_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_vertebrogenic_pain__pt_lumbar",
+    "source_id": "acp_lbp_2017"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_vertebrogenic_pain__pt_lumbar",
+    "source_id": "nice_ng59"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_vertebrogenic_pain__pt_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_vertebrogenic_pain__nsaids_lumbar",
+    "source_id": "acp_lbp_2017"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_vertebrogenic_pain__nsaids_lumbar",
+    "source_id": "nice_ng59"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_vertebrogenic_pain__nsaids_lumbar",
+    "source_id": "acoem_low_back_2020"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_vertebrogenic_pain__cbt_lumbar",
+    "source_id": "acp_lbp_2017"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_vertebrogenic_pain__cbt_lumbar",
+    "source_id": "vadod_lbp_2022"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_vertebrogenic_pain__bvna_lumbar",
+    "source_id": "nass_bvna_2023"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_vertebrogenic_pain__bvna_lumbar",
+    "source_id": "aspn_bvna_2022"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_vertebrogenic_pain__functional_restoration_lumbar",
+    "source_id": "acp_lbp_2017"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_vertebrogenic_pain__functional_restoration_lumbar",
+    "source_id": "aans_cns_lumbar_fusion_2014"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_vertebrogenic_pain__functional_restoration_lumbar",
+    "source_id": "odg"
   },
   {
     "ladder_entry_id": "le_lumbar_fracture__activity_modification_lumbar",
@@ -528,47 +828,136 @@
     "source_id": "cns_thoracolumbar_trauma_2019"
   },
   {
-    "ladder_entry_id": "le_lumbar_post_surgical__pt_lumbar",
+    "ladder_entry_id": "le_lumbar_persistent_postoperative_pain__pt_lumbar",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_lumbar_post_surgical__home_exercise_lumbar",
+    "ladder_entry_id": "le_lumbar_persistent_postoperative_pain__home_exercise_lumbar",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_lumbar_post_surgical__nsaids_lumbar",
+    "ladder_entry_id": "le_lumbar_persistent_postoperative_pain__nsaids_lumbar",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_lumbar_post_surgical__neuropathic_agents_lumbar",
+    "ladder_entry_id": "le_lumbar_persistent_postoperative_pain__neuropathic_agents_lumbar",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_lumbar_post_surgical__esi_transforaminal_lumbar",
+    "ladder_entry_id": "le_lumbar_persistent_postoperative_pain__esi_transforaminal_lumbar",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_lumbar_post_surgical__esi_interlaminar_lumbar",
+    "ladder_entry_id": "le_lumbar_persistent_postoperative_pain__esi_interlaminar_lumbar",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_lumbar_post_surgical__cbt_lumbar",
+    "ladder_entry_id": "le_lumbar_persistent_postoperative_pain__cbt_lumbar",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_lumbar_post_surgical__spinal_cord_stimulator_lumbar",
+    "ladder_entry_id": "le_lumbar_persistent_postoperative_pain__spinal_cord_stimulator_lumbar",
     "source_id": "nice_ta159"
   },
   {
-    "ladder_entry_id": "le_lumbar_post_surgical__spinal_cord_stimulator_lumbar",
+    "ladder_entry_id": "le_lumbar_persistent_postoperative_pain__spinal_cord_stimulator_lumbar",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_lumbar_post_surgical__functional_restoration_lumbar",
+    "ladder_entry_id": "le_lumbar_persistent_postoperative_pain__functional_restoration_lumbar",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_lumbar_post_surgical__revision_surgery_lumbar",
+    "ladder_entry_id": "le_lumbar_persistent_postoperative_pain__revision_surgery_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_pseudarthrosis__activity_modification_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_pseudarthrosis__bone_growth_stimulator_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_pseudarthrosis__pt_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_pseudarthrosis__nsaids_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_pseudarthrosis__revision_surgery_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_fusion_arthroplasty_status__pt_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_fusion_arthroplasty_status__home_exercise_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_fusion_arthroplasty_status__work_conditioning_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_deep_spinal_wound_infection__debridement_lumbar",
+    "source_id": "tai_spinal_implant_infection_2024"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_deep_spinal_wound_infection__antibiotics_lumbar",
+    "source_id": "tai_spinal_implant_infection_2024"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_deep_spinal_wound_infection__revision_surgery_lumbar",
+    "source_id": "tai_spinal_implant_infection_2024"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_deep_spinal_wound_infection__pt_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_myelopathy__activity_modification_lumbar",
+    "source_id": "acoem_low_back_2020"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_myelopathy__nsaids_lumbar",
+    "source_id": "acoem_low_back_2020"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_myelopathy__pt_lumbar",
+    "source_id": "fehlings_dcm_2017"
+  },
+  { "ladder_entry_id": "le_lumbar_myelopathy__pt_lumbar", "source_id": "odg" },
+  {
+    "ladder_entry_id": "le_lumbar_myelopathy__laminectomy_lumbar",
+    "source_id": "fehlings_dcm_2017"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_myelopathy__laminectomy_lumbar",
+    "source_id": "acoem_low_back_2020"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_myelopathy__laminectomy_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_myelopathy__microdiscectomy_lumbar",
+    "source_id": "nass_ldh_2012"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_myelopathy__microdiscectomy_lumbar",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_myelopathy__fusion_lumbar",
+    "source_id": "aans_cns_lumbar_fusion_2014"
+  },
+  {
+    "ladder_entry_id": "le_lumbar_myelopathy__fusion_lumbar",
     "source_id": "odg"
   },
   {
@@ -724,92 +1113,292 @@
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_cervical_myelopathy_stenosis__pt_cervical",
-    "source_id": "fehlings_dcm_2017"
+    "ladder_entry_id": "le_cervical_radiculopathy__spinal_cord_stimulator_cervical",
+    "source_id": "nice_ta159"
   },
   {
-    "ladder_entry_id": "le_cervical_myelopathy_stenosis__nsaids_cervical",
+    "ladder_entry_id": "le_cervical_radiculopathy__spinal_cord_stimulator_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_disc_herniation__activity_modification_cervical",
     "source_id": "acoem_cervical_thoracic_2018"
   },
   {
-    "ladder_entry_id": "le_cervical_myelopathy_stenosis__acdf_cervical",
-    "source_id": "fehlings_dcm_2017"
-  },
-  {
-    "ladder_entry_id": "le_cervical_myelopathy_stenosis__acdf_cervical",
+    "ladder_entry_id": "le_cervical_disc_herniation__activity_modification_cervical",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_cervical_myelopathy_stenosis__laminoplasty_cervical",
-    "source_id": "fehlings_dcm_2017"
-  },
-  {
-    "ladder_entry_id": "le_cervical_myelopathy_stenosis__posterior_fusion_cervical",
-    "source_id": "fehlings_dcm_2017"
-  },
-  {
-    "ladder_entry_id": "le_cervical_facet_degenerative__activity_modification_cervical",
+    "ladder_entry_id": "le_cervical_disc_herniation__home_exercise_cervical",
     "source_id": "jospt_neck_pain_2017"
   },
   {
-    "ladder_entry_id": "le_cervical_facet_degenerative__activity_modification_cervical",
+    "ladder_entry_id": "le_cervical_disc_herniation__pt_cervical",
+    "source_id": "jospt_neck_pain_2017"
+  },
+  {
+    "ladder_entry_id": "le_cervical_disc_herniation__pt_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_disc_herniation__nsaids_cervical",
     "source_id": "acoem_cervical_thoracic_2018"
   },
   {
-    "ladder_entry_id": "le_cervical_facet_degenerative__home_exercise_cervical",
-    "source_id": "jospt_neck_pain_2017"
-  },
-  {
-    "ladder_entry_id": "le_cervical_facet_degenerative__pt_cervical",
-    "source_id": "jospt_neck_pain_2017"
-  },
-  {
-    "ladder_entry_id": "le_cervical_facet_degenerative__pt_cervical",
+    "ladder_entry_id": "le_cervical_disc_herniation__nsaids_cervical",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_cervical_facet_degenerative__manipulation_cervical",
-    "source_id": "jospt_neck_pain_2017"
-  },
-  {
-    "ladder_entry_id": "le_cervical_facet_degenerative__acupuncture_cervical",
-    "source_id": "odg"
-  },
-  {
-    "ladder_entry_id": "le_cervical_facet_degenerative__nsaids_cervical",
+    "ladder_entry_id": "le_cervical_disc_herniation__muscle_relaxants_cervical",
     "source_id": "acoem_cervical_thoracic_2018"
   },
   {
-    "ladder_entry_id": "le_cervical_facet_degenerative__nsaids_cervical",
+    "ladder_entry_id": "le_cervical_disc_herniation__esi_interlaminar_cervical",
+    "source_id": "nass_cervical_radiculopathy_2010"
+  },
+  {
+    "ladder_entry_id": "le_cervical_disc_herniation__esi_interlaminar_cervical",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_cervical_facet_degenerative__cbt_cervical",
+    "ladder_entry_id": "le_cervical_disc_herniation__acdf_cervical",
+    "source_id": "nass_cervical_radiculopathy_2010"
+  },
+  {
+    "ladder_entry_id": "le_cervical_disc_herniation__acdf_cervical",
+    "source_id": "fehlings_dcm_2017"
+  },
+  {
+    "ladder_entry_id": "le_cervical_disc_herniation__disc_arthroplasty_cervical",
+    "source_id": "nass_cervical_radiculopathy_2010"
+  },
+  {
+    "ladder_entry_id": "le_cervical_disc_herniation__disc_arthroplasty_cervical",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_cervical_facet_degenerative__medial_branch_block_cervical",
+    "ladder_entry_id": "le_cervical_spinal_stenosis__activity_modification_cervical",
+    "source_id": "acoem_cervical_thoracic_2018"
+  },
+  {
+    "ladder_entry_id": "le_cervical_spinal_stenosis__activity_modification_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_spinal_stenosis__home_exercise_cervical",
+    "source_id": "jospt_neck_pain_2017"
+  },
+  {
+    "ladder_entry_id": "le_cervical_spinal_stenosis__pt_cervical",
+    "source_id": "jospt_neck_pain_2017"
+  },
+  {
+    "ladder_entry_id": "le_cervical_spinal_stenosis__pt_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_spinal_stenosis__nsaids_cervical",
+    "source_id": "acoem_cervical_thoracic_2018"
+  },
+  {
+    "ladder_entry_id": "le_cervical_spinal_stenosis__nsaids_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_spinal_stenosis__neuropathic_agents_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_spinal_stenosis__esi_interlaminar_cervical",
+    "source_id": "nass_cervical_radiculopathy_2010"
+  },
+  {
+    "ladder_entry_id": "le_cervical_spinal_stenosis__esi_interlaminar_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_spinal_stenosis__posterior_foraminotomy_cervical",
+    "source_id": "nass_cervical_radiculopathy_2010"
+  },
+  {
+    "ladder_entry_id": "le_cervical_spinal_stenosis__posterior_foraminotomy_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_spinal_stenosis__acdf_cervical",
+    "source_id": "nass_cervical_radiculopathy_2010"
+  },
+  {
+    "ladder_entry_id": "le_cervical_spinal_stenosis__acdf_cervical",
+    "source_id": "fehlings_dcm_2017"
+  },
+  {
+    "ladder_entry_id": "le_cervical_spinal_stenosis__laminoplasty_cervical",
+    "source_id": "fehlings_dcm_2017"
+  },
+  {
+    "ladder_entry_id": "le_cervical_myelopathy__pt_cervical",
+    "source_id": "fehlings_dcm_2017"
+  },
+  {
+    "ladder_entry_id": "le_cervical_myelopathy__nsaids_cervical",
+    "source_id": "acoem_cervical_thoracic_2018"
+  },
+  {
+    "ladder_entry_id": "le_cervical_myelopathy__acdf_cervical",
+    "source_id": "fehlings_dcm_2017"
+  },
+  {
+    "ladder_entry_id": "le_cervical_myelopathy__acdf_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_myelopathy__laminoplasty_cervical",
+    "source_id": "fehlings_dcm_2017"
+  },
+  {
+    "ladder_entry_id": "le_cervical_myelopathy__posterior_fusion_cervical",
+    "source_id": "fehlings_dcm_2017"
+  },
+  {
+    "ladder_entry_id": "le_cervical_facet_pain__activity_modification_cervical",
+    "source_id": "jospt_neck_pain_2017"
+  },
+  {
+    "ladder_entry_id": "le_cervical_facet_pain__activity_modification_cervical",
+    "source_id": "acoem_cervical_thoracic_2018"
+  },
+  {
+    "ladder_entry_id": "le_cervical_facet_pain__home_exercise_cervical",
+    "source_id": "jospt_neck_pain_2017"
+  },
+  {
+    "ladder_entry_id": "le_cervical_facet_pain__pt_cervical",
+    "source_id": "jospt_neck_pain_2017"
+  },
+  {
+    "ladder_entry_id": "le_cervical_facet_pain__pt_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_facet_pain__manipulation_cervical",
+    "source_id": "jospt_neck_pain_2017"
+  },
+  {
+    "ladder_entry_id": "le_cervical_facet_pain__acupuncture_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_facet_pain__nsaids_cervical",
+    "source_id": "acoem_cervical_thoracic_2018"
+  },
+  {
+    "ladder_entry_id": "le_cervical_facet_pain__nsaids_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_facet_pain__cbt_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_facet_pain__medial_branch_block_cervical",
     "source_id": "hurley_cervical_facet_2022"
   },
   {
-    "ladder_entry_id": "le_cervical_facet_degenerative__medial_branch_block_cervical",
+    "ladder_entry_id": "le_cervical_facet_pain__medial_branch_block_cervical",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_cervical_facet_degenerative__facet_ia_injection_cervical",
+    "ladder_entry_id": "le_cervical_facet_pain__facet_ia_injection_cervical",
     "source_id": "hurley_cervical_facet_2022"
   },
   {
-    "ladder_entry_id": "le_cervical_facet_degenerative__rfa_cervical",
+    "ladder_entry_id": "le_cervical_facet_pain__rfa_cervical",
     "source_id": "hurley_cervical_facet_2022"
   },
   {
-    "ladder_entry_id": "le_cervical_facet_degenerative__rfa_cervical",
+    "ladder_entry_id": "le_cervical_facet_pain__rfa_cervical",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_cervical_facet_degenerative__functional_restoration_cervical",
+    "ladder_entry_id": "le_cervical_facet_pain__functional_restoration_cervical",
     "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_degenerative_disc_disease__activity_modification_cervical",
+    "source_id": "jospt_neck_pain_2017"
+  },
+  {
+    "ladder_entry_id": "le_cervical_degenerative_disc_disease__activity_modification_cervical",
+    "source_id": "acoem_cervical_thoracic_2018"
+  },
+  {
+    "ladder_entry_id": "le_cervical_degenerative_disc_disease__home_exercise_cervical",
+    "source_id": "jospt_neck_pain_2017"
+  },
+  {
+    "ladder_entry_id": "le_cervical_degenerative_disc_disease__pt_cervical",
+    "source_id": "jospt_neck_pain_2017"
+  },
+  {
+    "ladder_entry_id": "le_cervical_degenerative_disc_disease__pt_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_degenerative_disc_disease__manipulation_cervical",
+    "source_id": "jospt_neck_pain_2017"
+  },
+  {
+    "ladder_entry_id": "le_cervical_degenerative_disc_disease__acupuncture_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_degenerative_disc_disease__nsaids_cervical",
+    "source_id": "acoem_cervical_thoracic_2018"
+  },
+  {
+    "ladder_entry_id": "le_cervical_degenerative_disc_disease__nsaids_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_degenerative_disc_disease__cbt_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_degenerative_disc_disease__functional_restoration_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_instability__spinal_orthosis_cervical",
+    "source_id": "aans_cns_cervical_sci_2013"
+  },
+  {
+    "ladder_entry_id": "le_cervical_instability__activity_modification_cervical",
+    "source_id": "acoem_cervical_thoracic_2018"
+  },
+  {
+    "ladder_entry_id": "le_cervical_instability__pt_cervical",
+    "source_id": "acoem_cervical_thoracic_2018"
+  },
+  {
+    "ladder_entry_id": "le_cervical_instability__pt_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_instability__nsaids_cervical",
+    "source_id": "acoem_cervical_thoracic_2018"
+  },
+  {
+    "ladder_entry_id": "le_cervical_instability__acdf_cervical",
+    "source_id": "aans_cns_cervical_sci_2013"
+  },
+  {
+    "ladder_entry_id": "le_cervical_instability__acdf_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_instability__posterior_fusion_cervical",
+    "source_id": "aans_cns_cervical_sci_2013"
   },
   {
     "ladder_entry_id": "le_cervical_fracture__spinal_orthosis_cervical",
@@ -844,43 +1433,87 @@
     "source_id": "aans_cns_cervical_sci_2013"
   },
   {
-    "ladder_entry_id": "le_cervical_post_surgical__pt_cervical",
+    "ladder_entry_id": "le_cervical_persistent_postoperative_pain__pt_cervical",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_cervical_post_surgical__home_exercise_cervical",
+    "ladder_entry_id": "le_cervical_persistent_postoperative_pain__home_exercise_cervical",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_cervical_post_surgical__nsaids_cervical",
+    "ladder_entry_id": "le_cervical_persistent_postoperative_pain__nsaids_cervical",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_cervical_post_surgical__neuropathic_agents_cervical",
+    "ladder_entry_id": "le_cervical_persistent_postoperative_pain__neuropathic_agents_cervical",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_cervical_post_surgical__esi_interlaminar_cervical",
+    "ladder_entry_id": "le_cervical_persistent_postoperative_pain__esi_interlaminar_cervical",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_cervical_post_surgical__cbt_cervical",
+    "ladder_entry_id": "le_cervical_persistent_postoperative_pain__cbt_cervical",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_cervical_post_surgical__spinal_cord_stimulator_cervical",
+    "ladder_entry_id": "le_cervical_persistent_postoperative_pain__spinal_cord_stimulator_cervical",
     "source_id": "nice_ta159"
   },
   {
-    "ladder_entry_id": "le_cervical_post_surgical__spinal_cord_stimulator_cervical",
+    "ladder_entry_id": "le_cervical_persistent_postoperative_pain__spinal_cord_stimulator_cervical",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_cervical_post_surgical__functional_restoration_cervical",
+    "ladder_entry_id": "le_cervical_persistent_postoperative_pain__functional_restoration_cervical",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_cervical_post_surgical__revision_surgery_cervical",
+    "ladder_entry_id": "le_cervical_persistent_postoperative_pain__revision_surgery_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_pseudarthrosis__spinal_orthosis_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_pseudarthrosis__bone_growth_stimulator_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_pseudarthrosis__pt_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_pseudarthrosis__revision_surgery_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_fusion_arthroplasty_status__pt_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_fusion_arthroplasty_status__home_exercise_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_fusion_arthroplasty_status__work_conditioning_cervical",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_cervical_deep_spinal_wound_infection__debridement_cervical",
+    "source_id": "tai_spinal_implant_infection_2024"
+  },
+  {
+    "ladder_entry_id": "le_cervical_deep_spinal_wound_infection__antibiotics_cervical",
+    "source_id": "tai_spinal_implant_infection_2024"
+  },
+  {
+    "ladder_entry_id": "le_cervical_deep_spinal_wound_infection__revision_surgery_cervical",
+    "source_id": "tai_spinal_implant_infection_2024"
+  },
+  {
+    "ladder_entry_id": "le_cervical_deep_spinal_wound_infection__pt_cervical",
     "source_id": "odg"
   },
   {
@@ -944,91 +1577,207 @@
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_thoracic_disc_herniation_radiculopathy__activity_modification_thoracic",
+    "ladder_entry_id": "le_thoracic_radiculopathy__activity_modification_thoracic",
     "source_id": "acoem_cervical_thoracic_2018"
   },
   {
-    "ladder_entry_id": "le_thoracic_disc_herniation_radiculopathy__pt_thoracic",
+    "ladder_entry_id": "le_thoracic_radiculopathy__pt_thoracic",
     "source_id": "acoem_cervical_thoracic_2018"
   },
   {
-    "ladder_entry_id": "le_thoracic_disc_herniation_radiculopathy__pt_thoracic",
+    "ladder_entry_id": "le_thoracic_radiculopathy__pt_thoracic",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_thoracic_disc_herniation_radiculopathy__nsaids_thoracic",
+    "ladder_entry_id": "le_thoracic_radiculopathy__nsaids_thoracic",
     "source_id": "acoem_cervical_thoracic_2018"
   },
   {
-    "ladder_entry_id": "le_thoracic_disc_herniation_radiculopathy__nsaids_thoracic",
+    "ladder_entry_id": "le_thoracic_radiculopathy__nsaids_thoracic",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_thoracic_disc_herniation_radiculopathy__neuropathic_agents_thoracic",
+    "ladder_entry_id": "le_thoracic_radiculopathy__neuropathic_agents_thoracic",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_thoracic_disc_herniation_radiculopathy__esi_interlaminar_thoracic",
+    "ladder_entry_id": "le_thoracic_radiculopathy__esi_interlaminar_thoracic",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_thoracic_disc_herniation_radiculopathy__thoracic_discectomy_thoracic",
+    "ladder_entry_id": "le_thoracic_radiculopathy__thoracic_discectomy_thoracic",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_thoracic_myelopathy_stenosis__pt_thoracic",
+    "ladder_entry_id": "le_thoracic_disc_herniation__activity_modification_thoracic",
     "source_id": "acoem_cervical_thoracic_2018"
   },
   {
-    "ladder_entry_id": "le_thoracic_myelopathy_stenosis__thoracic_discectomy_thoracic",
-    "source_id": "odg"
-  },
-  {
-    "ladder_entry_id": "le_thoracic_myelopathy_stenosis__laminectomy_thoracic",
-    "source_id": "odg"
-  },
-  {
-    "ladder_entry_id": "le_thoracic_myelopathy_stenosis__fusion_thoracic",
-    "source_id": "odg"
-  },
-  {
-    "ladder_entry_id": "le_thoracic_facet_degenerative__activity_modification_thoracic",
+    "ladder_entry_id": "le_thoracic_disc_herniation__pt_thoracic",
     "source_id": "acoem_cervical_thoracic_2018"
   },
   {
-    "ladder_entry_id": "le_thoracic_facet_degenerative__home_exercise_thoracic",
+    "ladder_entry_id": "le_thoracic_disc_herniation__pt_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_disc_herniation__nsaids_thoracic",
     "source_id": "acoem_cervical_thoracic_2018"
   },
   {
-    "ladder_entry_id": "le_thoracic_facet_degenerative__home_exercise_thoracic",
+    "ladder_entry_id": "le_thoracic_disc_herniation__nsaids_thoracic",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_thoracic_facet_degenerative__pt_thoracic",
+    "ladder_entry_id": "le_thoracic_disc_herniation__home_exercise_thoracic",
     "source_id": "acoem_cervical_thoracic_2018"
   },
   {
-    "ladder_entry_id": "le_thoracic_facet_degenerative__pt_thoracic",
+    "ladder_entry_id": "le_thoracic_disc_herniation__home_exercise_thoracic",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_thoracic_facet_degenerative__manipulation_thoracic",
+    "ladder_entry_id": "le_thoracic_disc_herniation__thoracic_discectomy_thoracic",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_thoracic_facet_degenerative__nsaids_thoracic",
+    "ladder_entry_id": "le_thoracic_spinal_stenosis__activity_modification_thoracic",
     "source_id": "acoem_cervical_thoracic_2018"
   },
   {
-    "ladder_entry_id": "le_thoracic_facet_degenerative__nsaids_thoracic",
+    "ladder_entry_id": "le_thoracic_spinal_stenosis__pt_thoracic",
+    "source_id": "acoem_cervical_thoracic_2018"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_spinal_stenosis__pt_thoracic",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_thoracic_facet_degenerative__cbt_thoracic",
+    "ladder_entry_id": "le_thoracic_spinal_stenosis__nsaids_thoracic",
+    "source_id": "acoem_cervical_thoracic_2018"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_spinal_stenosis__esi_interlaminar_thoracic",
     "source_id": "odg"
   },
   {
-    "ladder_entry_id": "le_thoracic_facet_degenerative__functional_restoration_thoracic",
+    "ladder_entry_id": "le_thoracic_spinal_stenosis__laminectomy_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_myelopathy__pt_thoracic",
+    "source_id": "acoem_cervical_thoracic_2018"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_myelopathy__thoracic_discectomy_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_myelopathy__laminectomy_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_myelopathy__fusion_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_facet_pain__activity_modification_thoracic",
+    "source_id": "acoem_cervical_thoracic_2018"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_facet_pain__home_exercise_thoracic",
+    "source_id": "acoem_cervical_thoracic_2018"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_facet_pain__home_exercise_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_facet_pain__pt_thoracic",
+    "source_id": "acoem_cervical_thoracic_2018"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_facet_pain__pt_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_facet_pain__manipulation_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_facet_pain__nsaids_thoracic",
+    "source_id": "acoem_cervical_thoracic_2018"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_facet_pain__nsaids_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_facet_pain__cbt_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_facet_pain__functional_restoration_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_degenerative_disc_disease__activity_modification_thoracic",
+    "source_id": "acoem_cervical_thoracic_2018"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_degenerative_disc_disease__home_exercise_thoracic",
+    "source_id": "acoem_cervical_thoracic_2018"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_degenerative_disc_disease__home_exercise_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_degenerative_disc_disease__pt_thoracic",
+    "source_id": "acoem_cervical_thoracic_2018"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_degenerative_disc_disease__pt_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_degenerative_disc_disease__nsaids_thoracic",
+    "source_id": "acoem_cervical_thoracic_2018"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_degenerative_disc_disease__nsaids_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_degenerative_disc_disease__cbt_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_degenerative_disc_disease__functional_restoration_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_instability__spinal_orthosis_thoracic",
+    "source_id": "cns_thoracolumbar_trauma_2019"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_instability__activity_modification_thoracic",
+    "source_id": "cns_thoracolumbar_trauma_2019"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_instability__pt_thoracic",
+    "source_id": "acoem_cervical_thoracic_2018"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_instability__pt_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_instability__fusion_thoracic",
+    "source_id": "cns_thoracolumbar_trauma_2019"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_instability__fusion_thoracic",
     "source_id": "odg"
   },
   {
@@ -1066,5 +1815,77 @@
   {
     "ladder_entry_id": "le_thoracic_fracture__fusion_thoracic",
     "source_id": "cns_thoracolumbar_trauma_2019"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_persistent_postoperative_pain__pt_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_persistent_postoperative_pain__home_exercise_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_persistent_postoperative_pain__nsaids_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_persistent_postoperative_pain__neuropathic_agents_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_persistent_postoperative_pain__cbt_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_persistent_postoperative_pain__spinal_cord_stimulator_thoracic",
+    "source_id": "nice_ta159"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_persistent_postoperative_pain__spinal_cord_stimulator_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_persistent_postoperative_pain__functional_restoration_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_persistent_postoperative_pain__revision_surgery_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_pseudarthrosis__bone_growth_stimulator_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_pseudarthrosis__pt_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_pseudarthrosis__revision_surgery_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_fusion_arthroplasty_status__pt_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_fusion_arthroplasty_status__home_exercise_thoracic",
+    "source_id": "odg"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_deep_spinal_wound_infection__debridement_thoracic",
+    "source_id": "tai_spinal_implant_infection_2024"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_deep_spinal_wound_infection__antibiotics_thoracic",
+    "source_id": "tai_spinal_implant_infection_2024"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_deep_spinal_wound_infection__revision_surgery_thoracic",
+    "source_id": "tai_spinal_implant_infection_2024"
+  },
+  {
+    "ladder_entry_id": "le_thoracic_deep_spinal_wound_infection__pt_thoracic",
+    "source_id": "odg"
   }
 ]

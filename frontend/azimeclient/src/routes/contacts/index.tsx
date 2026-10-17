@@ -1,5 +1,5 @@
 import { createRoute } from "@tanstack/react-router";
-import { rootRoute } from "../../main";
+import { rootRoute } from "../rootRoutes";
 import ContactCard from "./ContactCard";
 import ContactForm, { Contact } from "./ContactForm";
 import { useMutation, useQuery } from "@tanstack/react-query";

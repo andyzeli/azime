@@ -1,6 +1,6 @@
 import { createRoute, redirect } from "@tanstack/react-router";
 import { regionSchema, type Region } from "@azime/contracts";
-import { rootRoute } from "../../main";
+import { rootRoute } from "../rootRoutes";
 import {
   mockCaseQueryOptions,
   mockPreExamQueryOptions,

@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AMA JSON → visit questions → WPI</title>
+  <style>
+    :root { color-scheme: light; --ink:#162b35; --muted:#576975; --line:#d8e1e2; --teal:#126b65; --paper:#fff; --code:#142932; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#f1f4f2; color:var(--ink); font:15px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { max-width:1120px; margin:auto; padding:46px 28px 36px; }
+    header { margin-bottom:27px; }
+    .eyebrow { color:var(--teal); text-transform:uppercase; font-size:11px; font-weight:750; letter-spacing:.14em; }
+    h1 { font-size:clamp(27px,4vw,40px); line-height:1.15; letter-spacing:-.035em; margin:10px 0 12px; }
+    header p { max-width:820px; color:var(--muted); margin:0; }
+    .status { margin-top:12px; font-size:12px; color:var(--muted); }
+    section { margin:0 0 17px; border:1px solid var(--line); border-radius:15px; background:var(--paper); overflow:hidden; }
+    .section-head { display:flex; align-items:center; gap:12px; padding:19px 23px 0; }
+    .step { display:grid; place-items:center; width:29px; height:29px; flex:none; border-radius:9px; background:#e5f2ed; color:var(--teal); font-size:12px; font-weight:750; }
+    h2 { font-size:20px; line-height:1.25; letter-spacing:-.025em; margin:0; }
+    .content { padding:15px 23px 23px; }
+    .split { display:grid; grid-template-columns:minmax(0,0.82fr) minmax(0,1.18fr); gap:24px; align-items:start; }
+    p { margin:0 0 13px; }
+    p:last-child { margin-bottom:0; }
+    .small { font-size:12.5px; color:var(--muted); }
+    code { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.86em; }
+    :not(pre)>code { background:#eef3f3; border-radius:4px; padding:2px 4px; overflow-wrap:anywhere; }
+    pre { margin:0 0 12px; padding:17px 18px; border-radius:10px; color:#e6f0ee; background:var(--code); overflow-x:auto; font-size:13px; line-height:1.6; tab-size:2; }
+    pre code { font-size:inherit; }
+    pre:last-child { margin-bottom:0; }
+    .comment { color:#a2b8bd; }
+    .label { display:block; margin:0 0 7px; color:var(--muted); font-size:10px; font-weight:750; letter-spacing:.09em; text-transform:uppercase; }
+    .note { border-left:3px solid #9bc2b4; padding:8px 12px; background:#f2f7f4; font-size:13px; margin-top:13px; }
+    .task { padding:13px 15px; border:1px solid var(--line); border-radius:9px; margin:13px 0; font-size:13px; }
+    .task strong { display:block; margin-bottom:6px; }
+    table { border-collapse:collapse; width:100%; margin-top:4px; font-size:13px; }
+    th { text-align:left; color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.04em; }
+    th,td { padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+    .selected td { background:#e9f5ed; color:#16543e; font-weight:650; }
+    .result { display:flex; align-items:center; gap:22px; background:#e9f5ed; padding:18px 23px; border-top:1px solid #cee1d4; }
+    .percent { color:#16543e; font-size:34px; line-height:1; font-weight:750; white-space:nowrap; letter-spacing:-.04em; }
+    .result p { font-size:13px; }
+    footer { display:flex; justify-content:space-between; gap:16px; padding:4px 2px; color:var(--muted); font-size:12px; }
+    a { color:var(--teal); text-underline-offset:3px; }
+    @media(max-width:780px) { main { padding:26px 16px; } .split { grid-template-columns:1fr; gap:16px; } .section-head { padding:17px 17px 0; } .content { padding:14px 17px 19px; } pre { font-size:12px; } footer { flex-direction:column; gap:5px; } }
+    @media print { body { background:white; font-size:11px; } main { max-width:none; padding:0; } header { margin-bottom:15px; } h1 { font-size:27px; } h2 { font-size:16px; } section { break-inside:avoid; margin-bottom:12px; } .section-head { padding:12px 15px 0; } .content { padding:10px 15px 14px; } .split { gap:18px; } pre { background:#f3f5f5; color:#172c35; border:1px solid #d8e1e2; font-size:9px; white-space:pre-wrap; overflow-wrap:anywhere; padding:11px; } .comment { color:#576975; } .small,.note,.task,table,.result p { font-size:10px; } .result { padding:12px 15px; } .percent { font-size:27px; } footer { font-size:9px; } }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">IME · Implementation walkthrough</div>
+    <h1>AMA JSON → visit questions → WPI</h1>
+    <p>The JSON supplies the checklist, question definitions, matching rules, and impairment values. The app queries it, saves physician answers, and evaluates the rules.</p>
+    <div class="status">Real example: cervical C3 row <code>17-19-05</code> · Proposed application wiring; code below is pseudocode.</div>
+  </header>
+
+  <section>
+    <div class="section-head"><span class="step">01</span><h2>Query the preparation checklist</h2></div>
+    <div class="content split">
+      <div>
+        <p>After canonical diagnoses are confirmed for Analysis, fetch their mapped rows. <strong>No root filter yet</strong> when roots are unknown.</p>
+        <p>For example, <code>cervical_radiculopathy</code> returns the mapped cervical root rows. Their <code>examination_tasks</code> describe what to examine.</p>
+        <p>Show each task ID once. Preserve every source row and its question IDs when combining identical tasks.</p>
+        <div class="note">Assumes import converts region names to the app format, e.g. <code>cervical_spine</code>.</div>
+      </div>
+      <div>
+        <span class="label">SQL · confirmed diagnoses → full candidate rows</span>
+        <pre><code>SELECT DISTINCT r.*
+FROM canonical_diagnoses d
+JOIN ama_diagnostic_rows r
+  ON r.row_id = ANY(d.ama_row_ids)
+WHERE d.id = ANY(:confirmedDxIds)
+  AND d.region_id = :region
+  AND r.region_id = :region;</code></pre>
+        <span class="label">Group tasks; keep their links</span>
+        <pre><code>checklist = new Map()
+for (row of rows) {
+  for (task of row.examination_tasks) {
+    item = checklist.get(task.id) ?? {
+      ...task, sources: []
+    }
+    item.sources.push({
+      rowId: row.row_id,
+      questionIds: task.question_ids
+    })
+    checklist.set(task.id, item)
+  }
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="step">02</span><h2>Use task links to open the right questions</h2></div>
+    <div class="content split">
+      <div>
+        <p>In Visit, the physician confirms <strong>C3, left</strong> and selects the C3 row. Filter candidate root rows by <code>nerve_roots</code>; retain non-root candidates for their own confirmation.</p>
+        <p>Each task’s <code>question_ids</code> locates questions <strong>inside its source row</strong>. The question provides the control type, options, and help.</p>
+        <p>A task can link to several questions. Completing a task does not automatically make their criteria true.</p>
+        <p class="small">Diagnosis and history confirmation are prerequisites. The row’s CS and any diagnosis-history questions still appear even though examination tasks only link to PE.</p>
+      </div>
+      <div>
+        <div class="task">
+          <span class="label">Actual C3 task</span>
+          <strong>Assess C3 symptoms, pinprick sensation, and sharp/dull discrimination.</strong>
+          <code>question_ids: ["sensory_status"]</code>
+        </div>
+        <pre><code>row = rows.find(r =&gt; r.row_id === "17-19-05")
+task = row.examination_tasks[0]
+
+questionsToOpen = task.question_ids.map(id =&gt;
+  row.questions.find(q =&gt; q.id === id)
+)
+<span class="comment">// sensory_status → a choice control</span>
+<span class="comment">// Render q.prompt, q.options, and full q.help.</span>
+<span class="comment">// Render cs_confirmed separately → Yes/No.</span></code></pre>
+        <p class="small">The same question ID on another row is a separate question. Always resolve <code>rowId + questionId</code>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="step">03</span><h2>Initialize answers, then save the visit</h2></div>
+    <div class="content split">
+      <div>
+        <p>Create an assessment when a row/root/side is selected. Initialize <strong>every row question to null</strong>, including CS. Reopen an existing assessment without resetting its answers.</p>
+        <p>In this example the physician chooses diminished pinprick with sharp/dull intact, then confirms a qualifying study/operative alternative.</p>
+        <p>Save <code>amaAssessments</code> in the existing <code>case_visit_documentation.documentation</code> JSONB. No separate answer table is needed.</p>
+        <div class="note"><code>null</code> = unanswered. <code>false</code> = answered No. Save question values, not task completion flags or an entered percentage.</div>
+      </div>
+      <div>
+        <span class="label">New assessment · proposed VisitDocumentation field</span>
+        <pre><code>assessment = {
+  id: crypto.randomUUID(),
+  region: "cervical_spine",
+  canonicalDxIds: ["cervical_radiculopathy"],
+  rowId: "17-19-05", nerveRoot: "C3", side: "left",
+  answers: Object.fromEntries(
+    row.questions.map(q =&gt; [q.id, null])
+  )
+}</code></pre>
+        <span class="label">Physician input → existing visit save endpoint</span>
+        <pre><code>assessment.answers.sensory_status = "diminished_pinprick"
+assessment.answers.cs_confirmed = true
+
+draft.amaAssessments = upsertById(
+  draft.amaAssessments, assessment
+)
+PUT /cases/:caseId/visit {
+  documentation: draft,       <span class="comment">// full visit document</span>
+  expectedRevision: visit.revision
+}</code></pre>
+        <p class="small">Extend the visit contract/save validation first. The server checks row/question IDs, allowed values, and patient scope; the revision check prevents overwriting a newer save.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="step">04</span><h2>Evaluate the row’s entries, highest first</h2></div>
+    <div class="content split">
+      <div>
+        <p>The root helped select the <strong>row</strong>. Answers now select an <strong>entry within that row</strong>.</p>
+        <p>Read <code>entries[].criteria</code> directly. For example, C3 entry 1B requires both:</p>
+        <pre><code>cs_confirmed === true
+AND
+sensory_status === "diminished_pinprick"</code></pre>
+        <p class="small">All diagnosis/history/scope prerequisites must be confirmed before selection. The backend computes the result from saved answers.</p>
+      </div>
+      <div>
+        <span class="label">Shared evaluator · no per-row if/else code</span>
+        <pre><code>for (entry of sortByClassThenGradeDescending(row.entries)) {
+  state = evaluate(entry.criteria, assessment.answers)
+  if (state === "unresolved") return { status: "incomplete" }
+  if (state === "met") return {
+    rowId: row.row_id,
+    entryId: entry.entry_id,
+    impairment: entry.impairment
+  }
+}
+return { status: "no_supported_entry" }</code></pre>
+        <p class="small"><strong>Rule semantics:</strong> a missing leaf answer is unresolved. <code>all</code> fails on any false; <code>any</code> succeeds on any true. Otherwise unknown children keep the result unresolved. <code>at_least</code> succeeds at the required count, fails if true + unknown cannot reach it, and is otherwise unresolved.</p>
+        <p class="small">An unresolved higher entry blocks a definitive lower choice. “No supported entry” does not mean 0% WPI.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="step">05</span><h2>Return the matching entry’s stored WPI</h2></div>
+    <div class="content">
+      <p>For <code>sensory_status = "diminished_pinprick"</code> and <code>cs_confirmed = true</code>:</p>
+      <table>
+        <thead><tr><th>Descending entry</th><th>Sensory requirement · CS required for all</th><th>Outcome</th></tr></thead>
+        <tbody>
+          <tr><td>1C · 5% WPI</td><td>Loss of sharp/dull discrimination</td><td>Not met</td></tr>
+          <tr class="selected"><td>1B · 4% WPI</td><td>Diminished pinprick; sharp/dull intact</td><td>Met → select</td></tr>
+          <tr><td>1A · 2% WPI</td><td>Symptoms without objective sensory loss</td><td>Lower entry; stop at 1B</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="result">
+      <div class="percent">4% <span style="font-size:15px;letter-spacing:0">WPI</span></div>
+      <p><strong>Row 17-19-05 · entry 1B · left C3 component.</strong><br>Take the value from <code>entry.impairment</code>. Freeze the reference row, answers, and result in the post-exam snapshot. Final approval and combination with other components are separate.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>Reference: <a href="ama-spine.upload.json">enriched upload</a> · <a href="ama-spine-implementation-handoff.md">implementation handoff</a></span>
+    <span>Import the enriched JSON directly; rebuilding removes its LLM-added tasks.</span>
+  </footer>
+</main>
+</body>
+</html>

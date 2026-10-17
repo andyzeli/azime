@@ -1,0 +1,1 @@
+ALTER TABLE "ama_rating_tables" RENAME COLUMN "second_question" TO "mod_options";

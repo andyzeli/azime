@@ -27,6 +27,10 @@ import type {
   VisitDocumentation,
   PostExamInputSnapshot,
   StoredPostExamAnalysis,
+  AmaMode,
+  AmaQuestion,
+  AmaEntry,
+  AmaExaminationTask,
 } from "@azime/contracts";
 import type { PreExamInputSnapshot } from "../ai/preExamInputSnapshot.js";
 import type {
@@ -76,6 +80,8 @@ export const PatientCase = pgTable("patientcase", {
     .default("specific"),
   dateOfInjury: date("date_of_injury"),
   regions: text("regions").array().$type<Region[]>().notNull().default([]),
+  // null = default from case type (see effectiveAmaMode).
+  amaMode: varchar("ama_mode", { length: 20 }).$type<AmaMode>(),
 });
 export type PatientCase = InferSelectModel<typeof PatientCase>;
 export type NewPatientCase = InferInsertModel<typeof PatientCase>;
@@ -116,9 +122,9 @@ export const CaseRecordsSummary = pgTable(
   },
   (table) => ({
     caseIdUniqueIdx: uniqueIndex("case_records_summary_case_id_unique").on(
-      table.caseId,
+      table.caseId
     ),
-  }),
+  })
 );
 export type CaseRecordsSummary = InferSelectModel<typeof CaseRecordsSummary>;
 
@@ -147,9 +153,9 @@ export const CasePreExamAnalysis = pgTable(
   },
   (table) => ({
     caseIdRegionUniqueIdx: uniqueIndex(
-      "case_pre_exam_analysis_case_id_region_unique",
+      "case_pre_exam_analysis_case_id_region_unique"
     ).on(table.caseId, table.region),
-  }),
+  })
 );
 export type CasePreExamAnalysis = InferSelectModel<typeof CasePreExamAnalysis>;
 
@@ -168,9 +174,9 @@ export const CasePhysicianSteering = pgTable(
   },
   (table) => ({
     caseIdUniqueIdx: uniqueIndex(
-      "case_physician_steering_case_id_region_id_unique",
+      "case_physician_steering_case_id_region_id_unique"
     ).on(table.caseId, table.region),
-  }),
+  })
 );
 export type CasePhysicianSteering = InferSelectModel<
   typeof CasePhysicianSteering
@@ -189,9 +195,9 @@ export const CaseRefinedAnalysis = pgTable(
   },
   (table) => ({
     caseIdUniqueIdx: uniqueIndex("case_refined_analysis_case_id_unique").on(
-      table.caseId,
+      table.caseId
     ),
-  }),
+  })
 );
 export type CaseRefinedAnalysis = InferSelectModel<typeof CaseRefinedAnalysis>;
 
@@ -214,39 +220,63 @@ export const CaseRefinedPreExamAnalysis = pgTable(
   },
   (table) => ({
     caseRegionUnique: uniqueIndex(
-      "case_refined_pre_exam_analysis_case_region_unique",
+      "case_refined_pre_exam_analysis_case_region_unique"
     ).on(table.caseId, table.region),
-  }),
+  })
 );
 export type CaseRefinedPreExamAnalysis = InferSelectModel<
   typeof CaseRefinedPreExamAnalysis
 >;
 
 // One visit per case; it feeds each region's post-exam analysis.
-export const CaseVisitDocumentation = pgTable("case_visit_documentation", {
-  id: serial("id").primaryKey(),
-  caseId: integer("case_id").notNull().references(() => PatientCase.id),
-  documentation: jsonb("documentation").$type<VisitDocumentation>().notNull(),
-  revision: integer("revision").notNull().default(1),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-}, (table) => ({
-  caseUnique: uniqueIndex("case_visit_documentation_case_unique").on(table.caseId),
-}));
-export type CaseVisitDocumentation = InferSelectModel<typeof CaseVisitDocumentation>;
+export const CaseVisitDocumentation = pgTable(
+  "case_visit_documentation",
+  {
+    id: serial("id").primaryKey(),
+    caseId: integer("case_id")
+      .notNull()
+      .references(() => PatientCase.id),
+    documentation: jsonb("documentation").$type<VisitDocumentation>().notNull(),
+    revision: integer("revision").notNull().default(1),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => ({
+    caseUnique: uniqueIndex("case_visit_documentation_case_unique").on(
+      table.caseId
+    ),
+  })
+);
+export type CaseVisitDocumentation = InferSelectModel<
+  typeof CaseVisitDocumentation
+>;
 
-export const CasePostExamAnalysis = pgTable("case_post_exam_analysis", {
-  id: serial("id").primaryKey(),
-  caseId: integer("case_id").notNull().references(() => PatientCase.id),
-  region: text("region").$type<Region>().notNull(),
-  inputSnapshot: jsonb("input_snapshot").$type<PostExamInputSnapshot>().notNull(),
-  analysis: jsonb("analysis").$type<StoredPostExamAnalysis>(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-}, (table) => ({
-  caseRegionIdx: index("case_post_exam_analysis_case_region_idx").on(table.caseId, table.region, table.id),
-}));
-export type CasePostExamAnalysis = InferSelectModel<typeof CasePostExamAnalysis>;
+export const CasePostExamAnalysis = pgTable(
+  "case_post_exam_analysis",
+  {
+    id: serial("id").primaryKey(),
+    caseId: integer("case_id")
+      .notNull()
+      .references(() => PatientCase.id),
+    region: text("region").$type<Region>().notNull(),
+    inputSnapshot: jsonb("input_snapshot")
+      .$type<PostExamInputSnapshot>()
+      .notNull(),
+    analysis: jsonb("analysis").$type<StoredPostExamAnalysis>(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => ({
+    caseRegionIdx: index("case_post_exam_analysis_case_region_idx").on(
+      table.caseId,
+      table.region,
+      table.id
+    ),
+  })
+);
+export type CasePostExamAnalysis = InferSelectModel<
+  typeof CasePostExamAnalysis
+>;
 
 export const Appointment = pgTable("appointments", {
   id: serial("id").primaryKey(),
@@ -306,7 +336,7 @@ export const DiagnosisMentions = pgTable(
   (table) => ({
     caseIdIdx: index("diagnosis_mentions_case_id_idx").on(table.caseId),
     recordIdIdx: index("diagnosis_mentions_record_id_idx").on(table.recordId),
-  }),
+  })
 );
 export type DiagnosisMention = InferSelectModel<typeof DiagnosisMentions>;
 export type NewDiagnosisMention = InferInsertModel<typeof DiagnosisMentions>;
@@ -395,7 +425,7 @@ export const PainDisabilityQuestionnaire = pgTable(
   },
   (table) => ({
     accessTokenIdx: uniqueIndex("pdq_access_token_idx").on(table.accessToken),
-  }),
+  })
 );
 export type PainDisabilityQuestionnaire = InferSelectModel<
   typeof PainDisabilityQuestionnaire
@@ -417,7 +447,7 @@ export const PainDisabilityQuestionnaireRelations = relations(
       references: [Appointment.id],
       relationName: "appointment",
     }),
-  }),
+  })
 );
 
 export const PatientQuestionnaireInstance = pgTable(
@@ -443,9 +473,9 @@ export const PatientQuestionnaireInstance = pgTable(
   },
   (table) => ({
     accessTokenIdx: uniqueIndex("patient_questionnaire_access_token_idx").on(
-      table.accessToken,
+      table.accessToken
     ),
-  }),
+  })
 );
 export type PatientQuestionnaireInstance = InferSelectModel<
   typeof PatientQuestionnaireInstance
@@ -467,7 +497,7 @@ export const PatientQuestionnaireInstanceRelations = relations(
       references: [Appointment.id],
       relationName: "appointment",
     }),
-  }),
+  })
 );
 
 export const AnchorAnswers = pgTable("anchoras", {
@@ -493,12 +523,56 @@ export const GenReport = pgTable("gen_report", {
   report: text("report"),
 });
 
+export const AmaRatingTables = pgTable("ama_rating_tables", {
+  tableId: text("table_id").primaryKey(),
+  description: text("description").notNull(),
+  instructions: text("instructions"),
+  sourceRef: jsonb("source_ref")
+    .$type<import("@azime/contracts").AmaRatingTable["source_ref"]>()
+    .notNull(),
+  classOptions: jsonb("class_options")
+    .$type<import("@azime/contracts").AmaRatingTable["class_options"]>()
+    .notNull(),
+  modOptions: jsonb("mod_options")
+    .$type<import("@azime/contracts").AmaRatingTable["mod_options"]>()
+    .notNull(),
+  results: jsonb("results")
+    .$type<import("@azime/contracts").AmaRatingTable["results"]>()
+    .notNull(),
+});
+
+export const AmaDiagnosticRows = pgTable("ama_diagnostic_rows", {
+  rowId: text("row_id").primaryKey(),
+  regionId: text("region_id").notNull(),
+  description: text("description").notNull(),
+  nerveRoots: text("nerve_roots")
+    .array()
+    .notNull()
+    .default(sql`'{}'::text[]`),
+  help: text("help"),
+  questions: jsonb("questions").$type<AmaQuestion[]>().notNull(),
+  entries: jsonb("entries").$type<AmaEntry[]>().notNull(),
+  examinationTasks: jsonb("examination_tasks")
+    .$type<AmaExaminationTask[]>()
+    .notNull(),
+});
+export type AmaDiagnosticRow = InferSelectModel<typeof AmaDiagnosticRows>;
+export type NewAmaDiagnosticRow = InferInsertModel<typeof AmaDiagnosticRows>;
+
 export const CanonicalDiagnoses = pgTable("canonical_diagnoses", {
   id: text("id").primaryKey(), //generated by offline project
   regionId: text("region_id").notNull(), // lumbar
   label: text("label").notNull(), //stenosis
   definition: text("definition"),
   icdPrefixes: text("icd_prefixes").array().notNull(),
+  amaRatingTableIds: text("ama_rating_table_ids")
+    .array()
+    .notNull()
+    .default(sql`'{}'::text[]`),
+  amaRowIds: text("ama_row_ids")
+    .array()
+    .notNull()
+    .default(sql`'{}'::text[]`),
 });
 export type CanonicalDiagnosis = InferSelectModel<typeof CanonicalDiagnoses>;
 export type NewCanonicalDiagnosis = InferInsertModel<typeof CanonicalDiagnoses>;
@@ -518,9 +592,9 @@ export const Treatments = pgTable(
   (table) => ({
     categoryCheck: check(
       "treatments_category_check",
-      sql`${table.category} in ('conservative', 'medication', 'injection', 'surgical', 'multimodal')`,
+      sql`${table.category} in ('conservative', 'medication', 'injection', 'surgical', 'multimodal')`
     ),
-  }),
+  })
 );
 export type Treatment = InferSelectModel<typeof Treatments>;
 export type NewTreatment = InferInsertModel<typeof Treatments>;
@@ -535,7 +609,7 @@ export const TreatmentAliases = pgTable(
   },
   (table) => ({
     pk: primaryKey({ columns: [table.treatmentId, table.alias] }),
-  }),
+  })
 );
 export type TreatmentAlias = InferSelectModel<typeof TreatmentAliases>;
 export type NewTreatmentAlias = InferInsertModel<typeof TreatmentAliases>;
@@ -549,7 +623,7 @@ export type Source = InferSelectModel<typeof Sources>;
 export type NewSource = InferInsertModel<typeof Sources>;
 
 export const LadderEntries = pgTable("ladder_entries", {
-  id: uuid("id").defaultRandom().primaryKey(),
+  id: text("id").primaryKey(),
   regionId: text("region_id"),
   canonicalDxId: text("canonical_dx_id")
     .notNull()
@@ -566,7 +640,7 @@ export type NewLadderEntry = InferInsertModel<typeof LadderEntries>;
 export const LadderEntrySources = pgTable(
   "ladder_entry_sources",
   {
-    ladderEntryId: uuid("ladder_entry_id")
+    ladderEntryId: text("ladder_entry_id")
       .notNull()
       .references(() => LadderEntries.id),
     sourceId: text("source_id")
@@ -575,7 +649,7 @@ export const LadderEntrySources = pgTable(
   },
   (table) => ({
     pk: primaryKey({ columns: [table.ladderEntryId, table.sourceId] }),
-  }),
+  })
 );
 export type LadderEntrySource = InferSelectModel<typeof LadderEntrySources>;
 export type NewLadderEntrySource = InferInsertModel<typeof LadderEntrySources>;

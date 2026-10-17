@@ -1,11 +1,14 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import dotenv from "dotenv";
+import { inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
 import { z } from "zod";
 import {
   CanonicalDiagnoses,
+  AmaDiagnosticRows,
+  AmaRatingTables,
   LadderEntries,
   LadderEntrySources,
   Sources,
@@ -14,6 +17,7 @@ import {
 } from "../schema.js";
 import {
   referenceDataSchema,
+  validateAmaDiagnosisMappings,
   type ReferenceData,
 } from "./referenceDataSchema.js";
 
@@ -63,6 +67,26 @@ async function replaceReferenceData(
 
   try {
     await database.transaction(async (transaction) => {
+      const tableIds = [...new Set(data.canonicalDiagnoses.flatMap(row => row.ama_rating_table_ids))];
+      if (tableIds.length) {
+        const tables = await transaction.select({ id: AmaRatingTables.tableId }).from(AmaRatingTables).where(inArray(AmaRatingTables.tableId, tableIds));
+        const found = new Set(tables.map(t => t.id));
+        const missing = tableIds.filter(id => !found.has(id));
+        if (missing.length) throw new Error(`Unknown AMA rating tables: ${missing.join(", ")}`);
+      }
+      const amaRowIds = [
+        ...new Set(data.canonicalDiagnoses.flatMap((row) => row.ama_row_ids)),
+      ];
+      if (amaRowIds.length > 0) {
+        const amaRows = await transaction
+          .select({
+            rowId: AmaDiagnosticRows.rowId,
+            regionId: AmaDiagnosticRows.regionId,
+          })
+          .from(AmaDiagnosticRows)
+          .where(inArray(AmaDiagnosticRows.rowId, amaRowIds));
+        validateAmaDiagnosisMappings(data.canonicalDiagnoses, amaRows);
+      }
       await transaction.delete(LadderEntrySources);
       await transaction.delete(LadderEntries);
       await transaction.delete(TreatmentAliases);
@@ -78,6 +102,8 @@ async function replaceReferenceData(
             label: row.label,
             definition: row.definition ?? null,
             icdPrefixes: row.icd_prefixes,
+            amaRowIds: row.ama_row_ids,
+            amaRatingTableIds: row.ama_rating_table_ids,
           })),
         );
       }

@@ -4,6 +4,7 @@ import { saveVisitDocumentationRequestSchema } from "@azime/contracts";
 import { caseExists } from "../queries/caseArtifactQueries.js";
 import {
   getVisitDocumentation,
+  InvalidVisitDocumentationError,
   saveVisitDocumentation,
 } from "../queries/visitDocumentationQueries.js";
 import { MissingPrerequisiteError } from "../errors/missingPrerequisiteError.js";
@@ -17,6 +18,8 @@ function sendError(error: unknown, reply: FastifyReply) {
     return reply
       .code(400)
       .send({ error: "Invalid visit documentation request" });
+  if (error instanceof InvalidVisitDocumentationError)
+    return reply.code(400).send({ error: error.message });
   if (error instanceof MissingPrerequisiteError)
     return reply.code(409).send({ error: error.message });
   console.error(error);

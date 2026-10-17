@@ -21,7 +21,11 @@
     "migrate": "drizzle-kit migrate",
     "seed": "npx tsx ./server/db/seed.ts",
     "reference-data:validate": "pnpm run build && node dist/db/referenceData/importReferenceData.js --validate-only",
-    "reference-data:import": "pnpm run build && node dist/db/referenceData/importReferenceData.js"
+    "reference-data:import": "pnpm run build && node dist/db/referenceData/importReferenceData.js",
+    "ama:import": "pnpm --filter @azime/contracts build && pnpm run build && node dist/db/referenceData/importAmaReferenceData.js",
+    "test:ama-reference": "pnpm --filter @azime/contracts build && pnpm run build && node --test tests/amaReference.test.mjs tests/amaImportFiles.test.mjs",
+    "ama:tables:import": "pnpm --filter @azime/contracts build && pnpm run build && node dist/db/referenceData/importAmaRatingTables.js",
+    "test:ama-tables": "pnpm --filter @azime/contracts build && pnpm run build && node --test tests/amaRatingTables.test.mjs tests/amaImportFiles.test.mjs"
   },
   "keywords": [],
   "author": "",

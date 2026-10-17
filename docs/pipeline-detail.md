@@ -2,7 +2,7 @@ THIS FILE MAY BE OUT-OF-DATE: if reading this part of this file for context, ask
 
 # Pipeline details
 
-Types below summarize the shared contracts in `packages/contracts/src/`. Visit documentation and post-exam input snapshots are scaffolded; pass 4 generation is scaffolded and gated pending final prompt/output definitions. Persistence metadata is omitted unless relevant.
+Types below summarize the shared contracts in `packages/contracts/src/`. Visit documentation and post-exam input snapshots are implemented; pass 4 generation is scaffolded and gated pending final prompt/output definitions. Persistence metadata is omitted unless relevant.
 
 ## Pass 1 and Pass 2 — Record facts
 
@@ -14,7 +14,9 @@ Types below summarize the shared contracts in `packages/contracts/src/`. Visit d
 
 Compare diagnosis-specific treatment taxonomy entries with documented care, including additional AI suggestions and record-only treatments. Assess applicability and adequacy separately for each diagnosis. Completion alone does not establish treatment exhaustion; 3A does not determine MMI.
 
-Diagnosis selection belongs upstream in the server input snapshot: effective diagnoses determine the taxonomy ladder before 3A runs. It is not part of physician steering.
+Diagnosis selection belongs upstream in the server input snapshot: effective diagnoses determine the taxonomy ladder before 3A runs. It is not part of physician steering. The physician chooses the scope from diagnoses found in the region's records, and may add any `canonical_diagnoses` entry for the region (`GET /regions/:region/canonical-diagnoses`). The snapshot request is `{ selectedDiagnoses?: string[] }`; omitted means every diagnosis found in the records.
+
+If the physician rejects a diagnosis at the visit (wrong or incomplete), the region goes back through scope → snapshot → 3A → steering → 3B. See [Visit documentation](#visit-documentation-and-pass-4).
 
 ```typescript
 type Applicability =
@@ -26,6 +28,7 @@ type Adequacy =
   | "adequately_trialed"
   | "inadequately_trialed"
   | "not_tried"
+  | "patient_declined" // Offered and declined; the rationale records the basis of the decline
   | "unclear";
 type RecordStatus =
   | "To Be Started"
@@ -118,7 +121,7 @@ GET by case/region returns matching saved steering or an initialized, unsaved dr
 
 **Goal:** Given the physician's framing, what does the case suggest and what should today's encounter clarify?
 
-The server resolves saved steering against 3A, then projects a reduced review into a new snapshot. The model receives that snapshot's `input`, not raw steering, taxonomy, or full record extractions.
+The server resolves saved steering against 3A, then projects a reduced review into the input snapshot stored with the result. The model receives that snapshot's `input`, not raw steering, taxonomy, or full record extractions.
 
 ```typescript
 type RefinedAnalysisInput = {
@@ -229,20 +232,31 @@ The prompt explains the task and input domain; Zod `.describe()` fields explain 
 
 ## Visit documentation and pass 4
 
-Capture new evidence, rather than adding another analysis-steering flow. Stored 3B priorities have server-stamped UUIDs; the model output has no IDs. Keep the original priorities and optionally record responses.
+Capture new evidence, rather than adding another analysis-steering flow. There is one visit per case, covering every region; each region continues into its own pass 4. Stored 3B priorities get positional IDs (`priority-0`, …) that are reused when 3B is regenerated, so priority responses are matched by region + `focus` text instead. Keep the original priorities and optionally record responses.
 
 ```typescript
 type VisitPriorityResponse = {
-  priorityId: string;
-  status: "addressed" | "unresolved" | "not_relevant";
+  region: Region;
+  focus: string; // The priority's text at the time of the response
+  status: "couldnt_assess" | "declined" | "not_relevant" | "response";
   note: string | null;
 };
 
+// Confirm or reject each diagnosis the region's 3B was built on.
+type VisitDiagnosisReview = {
+  region: Region;
+  canonicalDx: string;
+  status: "confirmed" | "rejected"; // Rejected = wrong or incomplete
+  note: string | null;
+  refinedUpdatedAt: string; // updatedAt of the 3B the decision was made against
+};
+
 type VisitDocumentation = {
-  refinedAnalysisId: number;
-  exam: { findings: string }; // Free text for now
-  physicianNote: string;
+  note: string; // Optional [LUMBAR SPINE]-style section labels; unlabeled text applies to every region
+  pdqId: number | null; // The one PDQ pass 4 uses
+  includedQuestionnaireIds: number[]; // Other completed questionnaires, e.g. regional
   priorityResponses: VisitPriorityResponse[];
+  diagnosisReviews: VisitDiagnosisReview[];
 };
 
 type PostExamInput = {
@@ -256,10 +270,10 @@ type PostExamInput = {
     visitPriority: (VisitPriority & { id: string })[];
   };
   visit: {
-    exam: { findings: string };
+    note: string;
+    priorityResponses: VisitPriorityResponse[]; // This region's only
     pdq: PostExamPDQ | null; // Instrument version, questions/options, answers, scores, completion time
-    physicianNote: string;
-    priorityResponses: VisitPriorityResponse[];
+    questionnaires: (PostExamPDQ & { type: string; title: string })[]; // Other included questionnaires, frozen the same way
   };
 };
 
@@ -273,19 +287,22 @@ type Pass4Output = {
 };
 ```
 
-Visit GET returns the saved document or null. `initializeVisitDocumentation(refinedAnalysisId)` creates an empty local draft; PUT saves `{ documentation, expectedRevision }`. Responses start as `[]`; omission means unaddressed, not resolved. Answers may already be documented in the exam or note, so duplicate entry is unnecessary. Pass 4 considers both, preserves unresolved uncertainty, and treats questions as questions rather than evidence. The physician makes the final MMI decision separately.
+Visit GET returns the saved document or null. `initializeVisitDocumentation()` creates an empty local draft; PUT saves `{ documentation, expectedRevision }`. Responses start as `[]`; omission means unaddressed, not resolved. Responses whose priority no longer exists after 3B is regenerated are kept, never deleted; the visit is not redone. Answers may already be documented in the exam or note, so duplicate entry is unnecessary. Pass 4 considers both, preserves unresolved uncertainty, and treats questions as questions rather than evidence. The physician makes the final MMI decision separately.
+
+A diagnosis rejection is pending while the region's current 3B `updatedAt` equals the review's `refinedUpdatedAt`. A pending rejection marks that region's 3B stale and blocks its pass 4. The physician corrects the scope in Analysis, re-runs 3A, re-reviews, and regenerates 3B, which clears it. Diagnosis reviews are not sent to pass 4, because the corrected scope is already in its input. They stay on the visit as a record for the report.
 
 ## Persistence and downstream recall
 
-Each `case_refined_pre_exam_analysis` row holds a case/region, frozen `inputSnapshot`, and nullable `analysis`. The snapshot contains model `input`, server-only `fullReviewedAnalysis`, and `basedOn`: case summary ID, 3A ID/timestamp, and steering ID/revision. Generation and recall use the specific snapshot ID. Older snapshots need to be recreated to include the full review.
+`case_refined_pre_exam_analysis` holds one current 3B per case/region, with its frozen `inputSnapshot` and `analysis`. The snapshot contains model `input`, server-only `fullReviewedAnalysis`, and `basedOn`: case summary ID, 3A ID/timestamp, and steering ID/revision. `POST /cases/:caseId/refined-analysis/:region` with `{ referralQuestions }` builds the input from saved steering, runs 3B, and replaces the row only if the run succeeds, so a failed run keeps the previous result. Staleness compares `basedOn` with the current 3A and steering.
 
-`case_visit_documentation` stores one revisioned document per case/region, linked to the exact 3B artifact. `case_post_exam_analysis` stores frozen `inputSnapshot` and nullable `analysis` for each run, with creation/update timestamps. Inputs are assembled from that artifact, the saved visit, and an explicitly selected completed PDQ. Its `basedOn` records the 3B ID, visit ID/revision, and PDQ ID/update time. It never reconstructs prior treatment judgments from current mutable 3A/steering rows.
+`case_visit_documentation` stores one revisioned document per case. `case_post_exam_analysis` stores a frozen `inputSnapshot` and nullable `analysis` for each run, with creation/update timestamps. Inputs are assembled from the region's current 3B, the saved visit, and the PDQ and questionnaires the visit selects. Its `basedOn` records the 3B ID and `updatedAt` (the row is overwritten on regeneration, so the ID alone is not a version), visit ID/revision, and PDQ ID/update time. It never reconstructs prior treatment judgments from current mutable 3A/steering rows.
 
-- `GET/PUT /cases/:caseId/visit-documentation/:region`
-- `POST /cases/:caseId/post-exam-analysis/:region/snapshot` with `{ pdqId: number | null }`
+- `GET /cases/:caseId/refined-analysis/:region` (null if none) and `POST` with `{ referralQuestions }`
+- `GET/PUT /cases/:caseId/visit`
+- `POST /cases/:caseId/post-exam-analysis/:region/snapshot` (no body; reads the visit)
 - `POST /cases/:caseId/post-exam-analysis/:region` with `{ snapshotId }` to generate and save output
 - `GET /cases/:caseId/post-exam-analysis/:region`, optionally `?snapshotId=...`, to recall input and output
 
-PDQ collection keeps its separate endpoints. The Exam panel provides a basic JSON editor and snapshot preview. The migration renames the snapshot table and adds output storage; it is generated, not applied. `makePostExamAnalysis` has Gemini/OpenAI calls and validates output before persistence, but returns 501 until its prompt and output descriptions are finalized. Completed outputs cannot be overwritten; take a new snapshot to run again.
+PDQ collection keeps its separate endpoints. The old cockpit's Refined Analysis and Visit panels remain as raw-JSON debug views. `makePostExamAnalysis` has Gemini/OpenAI calls and validates output before persistence, but returns 501 until its prompt and output descriptions are finalized. Completed pass 4 outputs cannot be overwritten; take a new snapshot to run again.
 
 Report drafting should retrieve these frozen artifacts and the physician's separate MMI decision, including 3B trajectory interpretations and pass 4 supporting/opposing plateau evidence.

@@ -3,474 +3,552 @@
     "id": "activity_modification_cervical",
     "region": "cervical_spine",
     "category": "conservative",
-    "name": "Activity modification / advice to stay active and education"
+    "label": "Activity modification / advice to stay active and education"
   },
   {
     "id": "home_exercise_cervical",
     "region": "cervical_spine",
     "category": "conservative",
-    "name": "Home exercise program"
+    "label": "Home exercise program"
   },
   {
     "id": "pt_cervical",
     "region": "cervical_spine",
     "category": "conservative",
-    "name": "Physical therapy / supervised exercise therapy"
+    "label": "Physical therapy / supervised exercise therapy"
   },
   {
     "id": "manipulation_cervical",
     "region": "cervical_spine",
     "category": "conservative",
-    "name": "Spinal manipulation / mobilization (chiropractic or osteopathic)"
+    "label": "Spinal manipulation / mobilization (chiropractic or osteopathic)"
   },
   {
     "id": "acupuncture_cervical",
     "region": "cervical_spine",
     "category": "conservative",
-    "name": "Acupuncture"
+    "label": "Acupuncture"
   },
   {
     "id": "cbt_cervical",
     "region": "cervical_spine",
     "category": "conservative",
-    "name": "Cognitive behavioral therapy / psychological pain treatment"
+    "label": "Cognitive behavioral therapy / psychological pain treatment"
   },
   {
     "id": "spinal_orthosis_cervical",
     "region": "cervical_spine",
     "category": "conservative",
-    "name": "Spinal orthosis / bracing (fracture management)"
+    "label": "Spinal orthosis / bracing (fracture management)"
   },
   {
     "id": "acetaminophen_cervical",
     "region": "cervical_spine",
     "category": "medication",
-    "name": "Acetaminophen"
+    "label": "Acetaminophen"
   },
   {
     "id": "nsaids_cervical",
     "region": "cervical_spine",
     "category": "medication",
-    "name": "NSAIDs (oral non-steroidal anti-inflammatory drugs)"
+    "label": "NSAIDs (oral non-steroidal anti-inflammatory drugs)"
   },
   {
     "id": "muscle_relaxants_cervical",
     "region": "cervical_spine",
     "category": "medication",
-    "name": "Skeletal muscle relaxants (short course)"
+    "label": "Skeletal muscle relaxants (short course)"
   },
   {
     "id": "neuropathic_agents_cervical",
     "region": "cervical_spine",
     "category": "medication",
-    "name": "Neuropathic pain agents (gabapentinoids / tricyclics)"
+    "label": "Neuropathic pain agents (gabapentinoids / tricyclics)"
   },
   {
     "id": "oral_steroids_cervical",
     "region": "cervical_spine",
     "category": "medication",
-    "name": "Oral corticosteroid taper (short course)"
+    "label": "Oral corticosteroid taper (short course)"
   },
   {
     "id": "opioids_short_course_cervical",
     "region": "cervical_spine",
     "category": "medication",
-    "name": "Opioid analgesics (short course)"
+    "label": "Opioid analgesics (short course)"
   },
   {
     "id": "trigger_point_injection_cervical",
     "region": "cervical_spine",
     "category": "injection",
-    "name": "Trigger point injections"
+    "label": "Trigger point injections"
   },
   {
     "id": "esi_interlaminar_cervical",
     "region": "cervical_spine",
     "category": "injection",
-    "name": "Interlaminar epidural steroid injection"
+    "label": "Interlaminar epidural steroid injection"
   },
   {
     "id": "esi_transforaminal_cervical",
     "region": "cervical_spine",
     "category": "injection",
-    "name": "Transforaminal epidural steroid injection / selective nerve root block"
+    "label": "Transforaminal epidural steroid injection / selective nerve root block"
   },
   {
     "id": "medial_branch_block_cervical",
     "region": "cervical_spine",
     "category": "injection",
-    "name": "Medial branch block (diagnostic facet nerve block)"
+    "label": "Medial branch block (diagnostic facet nerve block)"
   },
   {
     "id": "facet_ia_injection_cervical",
     "region": "cervical_spine",
     "category": "injection",
-    "name": "Intra-articular facet joint injection"
+    "label": "Intra-articular facet joint injection"
   },
   {
     "id": "rfa_cervical",
     "region": "cervical_spine",
     "category": "injection",
-    "name": "Radiofrequency ablation of medial branch nerves (facet denervation)"
+    "label": "Radiofrequency ablation of medial branch nerves (facet denervation)"
   },
   {
     "id": "spinal_cord_stimulator_cervical",
     "region": "cervical_spine",
     "category": "surgical",
-    "name": "Spinal cord stimulator (trial and implant)"
+    "label": "Spinal cord stimulator (trial and implant)"
   },
   {
     "id": "functional_restoration_cervical",
     "region": "cervical_spine",
     "category": "multimodal",
-    "name": "Functional restoration / interdisciplinary pain rehabilitation program"
+    "label": "Functional restoration / interdisciplinary pain rehabilitation program"
   },
   {
     "id": "work_conditioning_cervical",
     "region": "cervical_spine",
     "category": "multimodal",
-    "name": "Work conditioning / work hardening"
+    "label": "Work conditioning / work hardening"
   },
   {
     "id": "revision_surgery_cervical",
     "region": "cervical_spine",
     "category": "surgical",
-    "name": "Revision spine surgery (pseudarthrosis repair, recurrent herniation, hardware, adjacent segment)"
+    "label": "Revision spine surgery (pseudarthrosis repair, recurrent herniation, hardware, adjacent segment)"
   },
   {
     "id": "acdf_cervical",
     "region": "cervical_spine",
     "category": "surgical",
-    "name": "Anterior cervical discectomy/corpectomy and fusion (ACDF/ACCF)"
+    "label": "Anterior cervical discectomy/corpectomy and fusion (ACDF/ACCF)"
   },
   {
     "id": "disc_arthroplasty_cervical",
     "region": "cervical_spine",
     "category": "surgical",
-    "name": "Cervical disc arthroplasty (artificial disc replacement)"
+    "label": "Cervical disc arthroplasty (artificial disc replacement)"
   },
   {
     "id": "posterior_foraminotomy_cervical",
     "region": "cervical_spine",
     "category": "surgical",
-    "name": "Posterior cervical foraminotomy"
+    "label": "Posterior cervical foraminotomy"
   },
   {
     "id": "laminoplasty_cervical",
     "region": "cervical_spine",
     "category": "surgical",
-    "name": "Cervical laminoplasty"
+    "label": "Cervical laminoplasty"
   },
   {
     "id": "posterior_fusion_cervical",
     "region": "cervical_spine",
     "category": "surgical",
-    "name": "Posterior cervical decompression and fusion (laminectomy and fusion)"
+    "label": "Posterior cervical decompression and fusion (laminectomy and fusion)"
+  },
+  {
+    "id": "bone_growth_stimulator_cervical",
+    "region": "cervical_spine",
+    "category": "conservative",
+    "label": "Bone growth stimulator (external, for fusion healing)"
+  },
+  {
+    "id": "antibiotics_cervical",
+    "region": "cervical_spine",
+    "category": "medication",
+    "label": "Culture-directed antibiotic therapy (IV and/or oral, incl. suppression)"
+  },
+  {
+    "id": "debridement_cervical",
+    "region": "cervical_spine",
+    "category": "surgical",
+    "label": "Surgical irrigation and debridement of spinal wound (implant retention or exchange)"
   },
   {
     "id": "activity_modification_thoracic",
     "region": "thoracic_spine",
     "category": "conservative",
-    "name": "Activity modification / advice to stay active and education"
+    "label": "Activity modification / advice to stay active and education"
   },
   {
     "id": "home_exercise_thoracic",
     "region": "thoracic_spine",
     "category": "conservative",
-    "name": "Home exercise program"
+    "label": "Home exercise program"
   },
   {
     "id": "pt_thoracic",
     "region": "thoracic_spine",
     "category": "conservative",
-    "name": "Physical therapy / supervised exercise therapy"
+    "label": "Physical therapy / supervised exercise therapy"
   },
   {
     "id": "manipulation_thoracic",
     "region": "thoracic_spine",
     "category": "conservative",
-    "name": "Spinal manipulation / mobilization (chiropractic or osteopathic)"
+    "label": "Spinal manipulation / mobilization (chiropractic or osteopathic)"
   },
   {
     "id": "acupuncture_thoracic",
     "region": "thoracic_spine",
     "category": "conservative",
-    "name": "Acupuncture"
+    "label": "Acupuncture"
   },
   {
     "id": "cbt_thoracic",
     "region": "thoracic_spine",
     "category": "conservative",
-    "name": "Cognitive behavioral therapy / psychological pain treatment"
+    "label": "Cognitive behavioral therapy / psychological pain treatment"
   },
   {
     "id": "spinal_orthosis_thoracic",
     "region": "thoracic_spine",
     "category": "conservative",
-    "name": "Spinal orthosis / bracing (fracture management)"
+    "label": "Spinal orthosis / bracing (fracture management)"
   },
   {
     "id": "acetaminophen_thoracic",
     "region": "thoracic_spine",
     "category": "medication",
-    "name": "Acetaminophen"
+    "label": "Acetaminophen"
   },
   {
     "id": "nsaids_thoracic",
     "region": "thoracic_spine",
     "category": "medication",
-    "name": "NSAIDs (oral non-steroidal anti-inflammatory drugs)"
+    "label": "NSAIDs (oral non-steroidal anti-inflammatory drugs)"
   },
   {
     "id": "muscle_relaxants_thoracic",
     "region": "thoracic_spine",
     "category": "medication",
-    "name": "Skeletal muscle relaxants (short course)"
+    "label": "Skeletal muscle relaxants (short course)"
   },
   {
     "id": "neuropathic_agents_thoracic",
     "region": "thoracic_spine",
     "category": "medication",
-    "name": "Neuropathic pain agents (gabapentinoids / tricyclics)"
+    "label": "Neuropathic pain agents (gabapentinoids / tricyclics)"
   },
   {
     "id": "opioids_short_course_thoracic",
     "region": "thoracic_spine",
     "category": "medication",
-    "name": "Opioid analgesics (short course)"
+    "label": "Opioid analgesics (short course)"
   },
   {
     "id": "trigger_point_injection_thoracic",
     "region": "thoracic_spine",
     "category": "injection",
-    "name": "Trigger point injections"
+    "label": "Trigger point injections"
   },
   {
     "id": "esi_interlaminar_thoracic",
     "region": "thoracic_spine",
     "category": "injection",
-    "name": "Interlaminar epidural steroid injection"
+    "label": "Interlaminar epidural steroid injection"
   },
   {
     "id": "vertebral_augmentation_thoracic",
     "region": "thoracic_spine",
     "category": "surgical",
-    "name": "Vertebral augmentation (vertebroplasty / kyphoplasty)"
+    "label": "Vertebral augmentation (vertebroplasty / kyphoplasty)"
+  },
+  {
+    "id": "spinal_cord_stimulator_thoracic",
+    "region": "thoracic_spine",
+    "category": "surgical",
+    "label": "Spinal cord stimulator (trial and implant)"
   },
   {
     "id": "functional_restoration_thoracic",
     "region": "thoracic_spine",
     "category": "multimodal",
-    "name": "Functional restoration / interdisciplinary pain rehabilitation program"
+    "label": "Functional restoration / interdisciplinary pain rehabilitation program"
   },
   {
     "id": "laminectomy_thoracic",
     "region": "thoracic_spine",
     "category": "surgical",
-    "name": "Thoracic decompression (laminectomy)"
+    "label": "Thoracic decompression (laminectomy)"
   },
   {
     "id": "fusion_thoracic",
     "region": "thoracic_spine",
     "category": "surgical",
-    "name": "Thoracic / thoracolumbar fusion and stabilization"
+    "label": "Thoracic / thoracolumbar fusion and stabilization"
+  },
+  {
+    "id": "revision_surgery_thoracic",
+    "region": "thoracic_spine",
+    "category": "surgical",
+    "label": "Revision spine surgery (pseudarthrosis repair, recurrent herniation, hardware, adjacent segment)"
   },
   {
     "id": "thoracic_discectomy_thoracic",
     "region": "thoracic_spine",
     "category": "surgical",
-    "name": "Thoracic discectomy"
+    "label": "Thoracic discectomy"
+  },
+  {
+    "id": "bone_growth_stimulator_thoracic",
+    "region": "thoracic_spine",
+    "category": "conservative",
+    "label": "Bone growth stimulator (external, for fusion healing)"
+  },
+  {
+    "id": "antibiotics_thoracic",
+    "region": "thoracic_spine",
+    "category": "medication",
+    "label": "Culture-directed antibiotic therapy (IV and/or oral, incl. suppression)"
+  },
+  {
+    "id": "debridement_thoracic",
+    "region": "thoracic_spine",
+    "category": "surgical",
+    "label": "Surgical irrigation and debridement of spinal wound (implant retention or exchange)"
   },
   {
     "id": "activity_modification_lumbar",
     "region": "lumbar_spine",
     "category": "conservative",
-    "name": "Activity modification / advice to stay active and education"
+    "label": "Activity modification / advice to stay active and education"
   },
   {
     "id": "superficial_heat_lumbar",
     "region": "lumbar_spine",
     "category": "conservative",
-    "name": "Superficial heat (self-applied)"
+    "label": "Superficial heat (self-applied)"
   },
   {
     "id": "home_exercise_lumbar",
     "region": "lumbar_spine",
     "category": "conservative",
-    "name": "Home exercise program"
+    "label": "Home exercise program"
   },
   {
     "id": "pt_lumbar",
     "region": "lumbar_spine",
     "category": "conservative",
-    "name": "Physical therapy / supervised exercise therapy"
+    "label": "Physical therapy / supervised exercise therapy"
   },
   {
     "id": "manipulation_lumbar",
     "region": "lumbar_spine",
     "category": "conservative",
-    "name": "Spinal manipulation / mobilization (chiropractic or osteopathic)"
+    "label": "Spinal manipulation / mobilization (chiropractic or osteopathic)"
   },
   {
     "id": "acupuncture_lumbar",
     "region": "lumbar_spine",
     "category": "conservative",
-    "name": "Acupuncture"
+    "label": "Acupuncture"
   },
   {
     "id": "massage_lumbar",
     "region": "lumbar_spine",
     "category": "conservative",
-    "name": "Massage / soft tissue therapy"
+    "label": "Massage / soft tissue therapy"
   },
   {
     "id": "mind_body_exercise_lumbar",
     "region": "lumbar_spine",
     "category": "conservative",
-    "name": "Yoga / tai chi (mind-body exercise)"
+    "label": "Yoga / tai chi (mind-body exercise)"
   },
   {
     "id": "cbt_lumbar",
     "region": "lumbar_spine",
     "category": "conservative",
-    "name": "Cognitive behavioral therapy / psychological pain treatment"
+    "label": "Cognitive behavioral therapy / psychological pain treatment"
   },
   {
     "id": "spinal_orthosis_lumbar",
     "region": "lumbar_spine",
     "category": "conservative",
-    "name": "Spinal orthosis / bracing (fracture management)"
+    "label": "Spinal orthosis / bracing (fracture management)"
   },
   {
     "id": "acetaminophen_lumbar",
     "region": "lumbar_spine",
     "category": "medication",
-    "name": "Acetaminophen"
+    "label": "Acetaminophen"
   },
   {
     "id": "nsaids_lumbar",
     "region": "lumbar_spine",
     "category": "medication",
-    "name": "NSAIDs (oral non-steroidal anti-inflammatory drugs)"
+    "label": "NSAIDs (oral non-steroidal anti-inflammatory drugs)"
   },
   {
     "id": "muscle_relaxants_lumbar",
     "region": "lumbar_spine",
     "category": "medication",
-    "name": "Skeletal muscle relaxants (short course)"
+    "label": "Skeletal muscle relaxants (short course)"
   },
   {
     "id": "neuropathic_agents_lumbar",
     "region": "lumbar_spine",
     "category": "medication",
-    "name": "Neuropathic pain agents (gabapentinoids / tricyclics)"
+    "label": "Neuropathic pain agents (gabapentinoids / tricyclics)"
   },
   {
     "id": "duloxetine_snri_lumbar",
     "region": "lumbar_spine",
     "category": "medication",
-    "name": "Duloxetine / SNRI antidepressant"
+    "label": "Duloxetine / SNRI antidepressant"
   },
   {
     "id": "oral_steroids_lumbar",
     "region": "lumbar_spine",
     "category": "medication",
-    "name": "Oral corticosteroid taper (short course)"
+    "label": "Oral corticosteroid taper (short course)"
   },
   {
     "id": "opioids_short_course_lumbar",
     "region": "lumbar_spine",
     "category": "medication",
-    "name": "Opioid analgesics (short course)"
+    "label": "Opioid analgesics (short course)"
   },
   {
     "id": "trigger_point_injection_lumbar",
     "region": "lumbar_spine",
     "category": "injection",
-    "name": "Trigger point injections"
+    "label": "Trigger point injections"
   },
   {
     "id": "esi_interlaminar_lumbar",
     "region": "lumbar_spine",
     "category": "injection",
-    "name": "Interlaminar epidural steroid injection"
+    "label": "Interlaminar epidural steroid injection"
   },
   {
     "id": "esi_transforaminal_lumbar",
     "region": "lumbar_spine",
     "category": "injection",
-    "name": "Transforaminal epidural steroid injection / selective nerve root block"
+    "label": "Transforaminal epidural steroid injection / selective nerve root block"
   },
   {
     "id": "esi_caudal_lumbar",
     "region": "lumbar_spine",
     "category": "injection",
-    "name": "Caudal epidural steroid injection"
+    "label": "Caudal epidural steroid injection"
   },
   {
     "id": "medial_branch_block_lumbar",
     "region": "lumbar_spine",
     "category": "injection",
-    "name": "Medial branch block (diagnostic facet nerve block)"
+    "label": "Medial branch block (diagnostic facet nerve block)"
   },
   {
     "id": "facet_ia_injection_lumbar",
     "region": "lumbar_spine",
     "category": "injection",
-    "name": "Intra-articular facet joint injection"
+    "label": "Intra-articular facet joint injection"
   },
   {
     "id": "rfa_lumbar",
     "region": "lumbar_spine",
     "category": "injection",
-    "name": "Radiofrequency ablation of medial branch nerves (facet denervation)"
+    "label": "Radiofrequency ablation of medial branch nerves (facet denervation)"
   },
   {
     "id": "vertebral_augmentation_lumbar",
     "region": "lumbar_spine",
     "category": "surgical",
-    "name": "Vertebral augmentation (vertebroplasty / kyphoplasty)"
+    "label": "Vertebral augmentation (vertebroplasty / kyphoplasty)"
   },
   {
     "id": "spinal_cord_stimulator_lumbar",
     "region": "lumbar_spine",
     "category": "surgical",
-    "name": "Spinal cord stimulator (trial and implant)"
+    "label": "Spinal cord stimulator (trial and implant)"
   },
   {
     "id": "functional_restoration_lumbar",
     "region": "lumbar_spine",
     "category": "multimodal",
-    "name": "Functional restoration / interdisciplinary pain rehabilitation program"
+    "label": "Functional restoration / interdisciplinary pain rehabilitation program"
   },
   {
     "id": "work_conditioning_lumbar",
     "region": "lumbar_spine",
     "category": "multimodal",
-    "name": "Work conditioning / work hardening"
+    "label": "Work conditioning / work hardening"
   },
   {
     "id": "microdiscectomy_lumbar",
     "region": "lumbar_spine",
     "category": "surgical",
-    "name": "Lumbar discectomy / microdiscectomy"
+    "label": "Lumbar discectomy / microdiscectomy"
   },
   {
     "id": "laminectomy_lumbar",
     "region": "lumbar_spine",
     "category": "surgical",
-    "name": "Lumbar decompression (laminectomy / laminotomy / foraminotomy)"
+    "label": "Lumbar decompression (laminectomy / laminotomy / foraminotomy)"
   },
   {
     "id": "fusion_lumbar",
     "region": "lumbar_spine",
     "category": "surgical",
-    "name": "Lumbar fusion (TLIF/PLIF/ALIF/LLIF/posterolateral)"
+    "label": "Lumbar fusion (TLIF/PLIF/ALIF/LLIF/posterolateral)"
   },
   {
     "id": "revision_surgery_lumbar",
     "region": "lumbar_spine",
     "category": "surgical",
-    "name": "Revision spine surgery (pseudarthrosis repair, recurrent herniation, hardware, adjacent segment)"
+    "label": "Revision spine surgery (pseudarthrosis repair, recurrent herniation, hardware, adjacent segment)"
+  },
+  {
+    "id": "bvna_lumbar",
+    "region": "lumbar_spine",
+    "category": "injection",
+    "label": "Basivertebral nerve ablation (intraosseous RF ablation for vertebrogenic pain)"
+  },
+  {
+    "id": "bone_growth_stimulator_lumbar",
+    "region": "lumbar_spine",
+    "category": "conservative",
+    "label": "Bone growth stimulator (external, for fusion healing)"
+  },
+  {
+    "id": "antibiotics_lumbar",
+    "region": "lumbar_spine",
+    "category": "medication",
+    "label": "Culture-directed antibiotic therapy (IV and/or oral, incl. suppression)"
+  },
+  {
+    "id": "debridement_lumbar",
+    "region": "lumbar_spine",
+    "category": "surgical",
+    "label": "Surgical irrigation and debridement of spinal wound (implant retention or exchange)"
+  },
+  {
+    "id": "pars_repair_lumbar",
+    "region": "lumbar_spine",
+    "category": "surgical",
+    "label": "Direct pars interarticularis repair"
   }
 ]

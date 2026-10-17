@@ -1,11 +1,17 @@
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import {
   saveVisitDocumentationRequestSchema,
   visitDocumentationResponseSchema,
   type SaveVisitDocumentationRequest,
 } from "@azime/contracts";
+import { amaAssessmentProblems } from "../ama/assessments.js";
+import { toAmaDiagnosticRow } from "../ama/rows.js";
 import { db } from "../db/index.js";
-import { CaseVisitDocumentation, PatientCase } from "../db/schema.js";
+import {
+  AmaDiagnosticRows,
+  CaseVisitDocumentation,
+  PatientCase,
+} from "../db/schema.js";
 import { MissingPrerequisiteError } from "../errors/missingPrerequisiteError.js";
 
 export const toVisitDocumentationResponse = (row: CaseVisitDocumentation) =>
@@ -22,12 +28,32 @@ export async function getVisitDocumentation(caseId: number) {
   return row ? toVisitDocumentationResponse(row) : null;
 }
 
+export class InvalidVisitDocumentationError extends Error {}
+
+async function checkAmaAssessments(
+  assessments: SaveVisitDocumentationRequest["documentation"]["amaAssessments"]
+) {
+  const rowIds = [...new Set(assessments.map((a) => a.rowId))];
+  if (!rowIds.length) return;
+  const rows = await db
+    .select()
+    .from(AmaDiagnosticRows)
+    .where(inArray(AmaDiagnosticRows.rowId, rowIds));
+  const problems = amaAssessmentProblems(
+    assessments,
+    new Map(rows.map((row) => [row.rowId, toAmaDiagnosticRow(row)]))
+  );
+  if (problems.length)
+    throw new InvalidVisitDocumentationError(problems.join("; "));
+}
+
 export async function saveVisitDocumentation(
   caseId: number,
   input: SaveVisitDocumentationRequest
 ) {
   const { documentation, expectedRevision } =
     saveVisitDocumentationRequestSchema.parse(input);
+  await checkAmaAssessments(documentation.amaAssessments);
   return db.transaction(async (tx) => {
     // Lock the parent so two first saves cannot both create revision 1.
     await tx

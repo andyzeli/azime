@@ -1,6 +1,7 @@
 import { useQueries, useQuery } from "@tanstack/react-query";
 import {
   steeringMatchesAnalysis,
+  supportedRegions,
   type PhysicianSteeringResponse,
   type PreExamAnalysisResponse,
   type RefinedAnalysisResponse,
@@ -94,10 +95,41 @@ export function useExamPrep(caseId: string, regions: Region[]) {
 
   return {
     isPending,
-    regions: regions.map((region, i) => ({
-      region,
-      refined: refined[i].data ?? null,
-      status: examPrepStatus(refined[i].data, savedSteeringFor(preExam[i].data, steering[i].data), visit.data),
-    })),
+    regions: regions.map((region, i) => {
+      const saved = savedSteeringFor(preExam[i].data, steering[i].data);
+      const rows = preExam[i].data?.analysis?.treatmentAnalysis;
+      return {
+        region,
+        refined: refined[i].data ?? null,
+        status: examPrepStatus(refined[i].data, saved, visit.data),
+        analysisRun: Boolean(rows),
+        // Same count as the Analysis region tab: treatments without a saved disposition.
+        unreviewed: rows?.filter((row) => !saved?.steering.treatments[row.id]?.disposition).length ?? 0,
+        rejected: rejectedDiagnoses(visit.data, refined[i].data).length > 0,
+      };
+    }),
   };
+}
+
+export type RegionWorkflow = ReturnType<typeof useExamPrep>["regions"][number];
+
+export type NextStep = { message: string; tab: "analysis" | "exam-prep"; region: Region };
+
+const regionLabel = (region: Region) =>
+  supportedRegions.find(({ value }) => value === region)?.label ?? region;
+
+// First outstanding step across regions, in workflow order. Null once exam prep is current everywhere.
+// TODO: add visit / post-exam steps once MMI & Report exists.
+export function nextStep(regions: RegionWorkflow[]): NextStep | null {
+  const rules: [(r: RegionWorkflow) => boolean, (r: RegionWorkflow) => NextStep][] = [
+    [(r) => r.rejected, (r) => ({ message: `Diagnosis rejected at visit (${regionLabel(r.region)}) — update Analysis and regenerate exam prep.`, tab: "analysis", region: r.region })],
+    [(r) => !r.analysisRun, (r) => ({ message: `Analysis not run yet (${regionLabel(r.region)}).`, tab: "analysis", region: r.region })],
+    [(r) => r.unreviewed > 0, (r) => ({ message: `${r.unreviewed} treatment${r.unreviewed === 1 ? "" : "s"} still unreviewed in Analysis (${regionLabel(r.region)}).`, tab: "analysis", region: r.region })],
+    [(r) => r.status.kind !== "current", (r) => ({ message: `Exam prep ${r.status.kind === "stale" ? "out of date" : "not generated"} (${regionLabel(r.region)}).`, tab: "exam-prep", region: r.region })],
+  ];
+  for (const [applies, step] of rules) {
+    const region = regions.find(applies);
+    if (region) return step(region);
+  }
+  return null;
 }

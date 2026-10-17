@@ -18,6 +18,7 @@ import {
 } from "@azime/contracts";
 import { cn } from "@/lib/utils";
 import { caseQueryOptions, refinedAnalysisQueryOptions } from "../../../cases/queries";
+import { AmaExamTasks } from "../components/AmaExamTasks";
 import { Badge, Btn, Segmented } from "../components/shared";
 import { generateExamPrep, useExamPrep, type ExamPrepStatus } from "../examPrep";
 
@@ -150,6 +151,13 @@ function Tab() {
         <VisitPriorities regions={regions} />
         <ReferralQuestionsCard regions={regions} />
       </div>
+
+      <AmaExamTasks
+        caseId={caseId}
+        regions={patientCase.regions}
+        caseType={patientCase.caseType}
+        amaMode={patientCase.amaMode}
+      />
     </main>
   );
 }

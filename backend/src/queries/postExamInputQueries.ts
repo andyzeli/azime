@@ -1,16 +1,20 @@
 import { and, eq, inArray } from "drizzle-orm";
 import {
+  effectiveAmaMode,
   postExamPDQSchema,
   refinedAnalysisResponseSchema,
   type Region,
 } from "@azime/contracts";
 import { db } from "../db/index.js";
 import {
+  AmaDiagnosticRows,
   CasePostExamAnalysis,
   CaseRefinedPreExamAnalysis,
   CaseVisitDocumentation,
+  PatientCase,
   PatientQuestionnaireInstance,
 } from "../db/schema.js";
+import { toAmaDiagnosticRow } from "../ama/rows.js";
 import { buildPostExamInputSnapshot } from "../ai/postExamInputSnapshot.js";
 import { MissingPrerequisiteError } from "../errors/missingPrerequisiteError.js";
 import { getQuestionnaireDefinition } from "../questionnaires/definitions.js";
@@ -103,6 +107,19 @@ export async function createPostExamInputSnapshot(
         return { ...data, type: row.type, title };
       });
 
+      const patientCase = await tx.query.PatientCase.findFirst({
+        where: eq(PatientCase.id, caseId),
+      });
+      const rowIds = [
+        ...new Set(visit.documentation.amaAssessments.map((a) => a.rowId)),
+      ];
+      const amaRows = rowIds.length
+        ? await tx
+            .select()
+            .from(AmaDiagnosticRows)
+            .where(inArray(AmaDiagnosticRows.rowId, rowIds))
+        : [];
+
       const inputSnapshot = buildPostExamInputSnapshot({
         visit: toVisitDocumentationResponse(visit),
         refined: refinedAnalysisResponseSchema.parse({
@@ -112,6 +129,10 @@ export async function createPostExamInputSnapshot(
         }),
         pdq,
         questionnaires,
+        amaMode: effectiveAmaMode(patientCase?.caseType, patientCase?.amaMode),
+        amaRows: new Map(
+          amaRows.map((row) => [row.rowId, toAmaDiagnosticRow(row)]),
+        ),
       });
       const [saved] = await tx
         .insert(CasePostExamAnalysis)

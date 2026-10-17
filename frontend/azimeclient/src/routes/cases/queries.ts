@@ -31,6 +31,9 @@ import {
   generatePostExamAnalysisRequestSchema,
   postExamAnalysisResponseSchema,
   type SaveVisitDocumentationRequest,
+  type AmaCandidatesRequest,
+  type AmaMode,
+  type AmaCandidatesResponse,
 } from "@azime/contracts";
 import type {
   QuestionnaireDefinition,
@@ -58,6 +61,7 @@ type DbPatientCase = {
   caseContact: Partial<CaseContacts>;
   caseType: string | null;
   status: string | null;
+  amaMode: AmaMode | null;
 } & CaseInjuryDetails;
 
 export type PatientQuestionnaireDefinition = Omit<
@@ -147,6 +151,11 @@ export const updateCaseInjuryDetails = async (
   axios
     .put<unknown>(`${API_BASE_URL}/cases/${caseId}`, input)
     .then((response) => caseInjuryDetailsSchema.parse(response.data));
+
+export const updateAmaMode = async (caseId: string, amaMode: AmaMode | null) =>
+  axios
+    .put<{ amaMode: AmaMode | null }>(`${API_BASE_URL}/cases/${caseId}/ama-mode`, { amaMode })
+    .then((response) => response.data);
 
 export const fetchCaseSummary = async (caseId: string) => {
   return axios
@@ -537,6 +546,23 @@ export const canonicalDiagnosesQueryOptions = (region: Region) =>
         .get<unknown>(`${API_BASE_URL}/regions/${region}/canonical-diagnoses`)
         .then((response) => canonicalDiagnosisListSchema.parse(response.data)),
     staleTime: Infinity,
+  });
+
+// Read-only lookup of AMA rows for diagnoses in the region's Analysis scope.
+export const amaCandidatesQueryOptions = (
+  caseId: string,
+  region: Region,
+  diagnoses: AmaCandidatesRequest["diagnoses"]
+) =>
+  queryOptions({
+    queryKey: ["amaCandidates", { caseId, region }, diagnoses],
+    queryFn: () =>
+      axios
+        .post<AmaCandidatesResponse>(
+          `${API_BASE_URL}/cases/${caseId}/ama-candidates/${region}`,
+          { diagnoses }
+        )
+        .then((response) => response.data),
   });
 
 export const visitQueryOptions = (caseId: string) =>

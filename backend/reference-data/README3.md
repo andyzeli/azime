@@ -1,11 +1,11 @@
-# Spine Standards-of-Care Treatment Taxonomy (v0.1.0)
+# Spine Standards-of-Care Treatment Taxonomy (v0.2.0)
 
 These are upload-ready JSON tables that the IME EMR uses to compare the treatments pulled from medical records against guideline-based treatment ladders. The goal is to judge whether a patient with a given spine diagnosis has tried the reasonable treatments adequately, which feeds the maximum medical improvement (MMI) decision.
 
 ## Files
 | File | Table columns |
 |---|---|
-| canonical_diagnoses.json | id, region_id, label, description, icdPrefixes[] |
+| canonical_diagnoses.json | id, region_id, label, definition, icdPrefixes[], ama_row_ids[] (owner-maintained; copied from input/canonical_diagnosis_v2.json) |
 | treatments.json | id, region, category, name |
 | aliases.json | treatmentId, alias |
 | ladder_entries.json | id, region_id, canonical_dx_id, treatment_id, applicability, adequacy |
@@ -22,5 +22,10 @@ Workflow: edit `build.py`, run `python3 build.py && python3 validate.py`. The va
 5. **Where guidelines conflict,** the row is kept and the conflict is written into `applicability`. Examples: NICE NG59 advises against acupuncture, SNRIs, gabapentinoids, and oral steroids for sciatica, and against fusion for LBP. ACP and ODG support some of these.
 6. **Adequacy numbers** (visit counts, relief thresholds, injection frequency) are the commonly cited ODG and legacy CA MTUS-style benchmarks. ODG is subscription content and I could not read its current text. The CA MTUS acupuncture and chronic-pain numeric schedules were replaced by incorporated ACOEM guidelines (acupuncture in 2017; chronic pain update effective 6/1/2026). Treat these numbers as defaults to check against the licensed ODG/ACOEM before relying on them.
 7. **Jurisdiction.** Arizona workers' comp uses **ODG** (A.A.C. R20-5-1301; checked on azica.gov). California uses the MTUS, which incorporates ACOEM (Low Back 2/13/2020; Cervical & Thoracic 10/17/2018). `az_ica_odg`, `ca_mtus`, `ama_guides_6th`, and `nass_lbp_2020` are reference-only sources and are not linked to any ladder entry.
-8. **Thoracic evidence is thin.** Many thoracic rows extrapolate from cervical and lumbar guidelines, and their applicability text says so. Thoracic facet MBB/RFA, SI-joint diagnoses and procedures, basivertebral nerve ablation, lumbar disc arthroplasty, traction, TENS, and intrathecal pumps are deliberately left out of v0.1.0.
+8. **Thoracic evidence is thin.** Many thoracic rows extrapolate from cervical and lumbar guidelines, and their applicability text says so. Thoracic facet MBB/RFA, SI-joint diagnoses and procedures, lumbar disc arthroplasty, traction, TENS, and intrathecal pumps are deliberately left out (BVNA, pars repair, infection care and bone stimulators were added in v0.2.0).
 9. **Generic "ESI" / "epidural steroid injection"** aliases are attached to the interlaminar row in each region, because the approach is often unstated.
+
+
+## v0.2.0 notes
+- Diagnoses are owner-supplied: edit `input/canonical_diagnosis_v2.json` (not build.py), then `python3 build.py && python3 validate.py`. build.py fails fast if any dx lacks a ladder.
+- See `report_v0.2.0.html` for the dx diff and per-dx ladders.

@@ -3,15 +3,28 @@ import { z } from "zod";
 const id = z.string().trim().min(1);
 const nullableText = z.string().nullable().optional();
 
-const canonicalDiagnosisSchema = z
-  .object({
-    id,
-    region_id: id,
-    label: id,
-    definition: nullableText,
-    icd_prefixes: z.array(id),
-  })
-  .strict();
+const canonicalDiagnosisFields = {
+  id,
+  region_id: id,
+  label: id,
+  definition: nullableText,
+  ama_rating_table_ids: z.array(z.string().regex(/^[a-z][a-z0-9_]*$/)).default([])
+    .refine(ids => new Set(ids).size === ids.length, "Duplicate AMA rating table ID"),
+  ama_row_ids: z
+    .array(z.string().regex(/^\d{2}-\d{2}-\d{2}$/))
+    .default([])
+    .refine((ids) => new Set(ids).size === ids.length, "Duplicate AMA row ID"),
+};
+
+const canonicalDiagnosisSchema = z.union([
+  z.strictObject({ ...canonicalDiagnosisFields, icd_prefixes: z.array(id) }),
+  z
+    .strictObject({ ...canonicalDiagnosisFields, icdPrefixes: z.array(id) })
+    .transform(({ icdPrefixes, ...row }) => ({
+      ...row,
+      icd_prefixes: icdPrefixes,
+    })),
+]);
 
 const treatmentSchema = z
   .object({
@@ -45,7 +58,7 @@ const sourceSchema = z
 
 const ladderEntrySchema = z
   .object({
-    id: z.string().uuid(),
+    id,
     region_id: nullableText,
     canonical_dx_id: id,
     treatment_id: id,
@@ -56,7 +69,7 @@ const ladderEntrySchema = z
 
 const ladderEntrySourceSchema = z
   .object({
-    ladder_entry_id: z.string().uuid(),
+    ladder_entry_id: id,
     source_id: id,
   })
   .strict();
@@ -180,3 +193,24 @@ export const referenceDataSchema = z
   });
 
 export type ReferenceData = z.infer<typeof referenceDataSchema>;
+
+export function validateAmaDiagnosisMappings(
+  diagnoses: ReferenceData["canonicalDiagnoses"],
+  amaRows: { rowId: string; regionId: string }[],
+) {
+  const regions = new Map(amaRows.map((row) => [row.rowId, row.regionId]));
+  for (const diagnosis of diagnoses) {
+    for (const rowId of diagnosis.ama_row_ids) {
+      if (!regions.has(rowId)) {
+        throw new Error(
+          `Unknown AMA row ${rowId} for diagnosis ${diagnosis.id}`,
+        );
+      }
+      if (regions.get(rowId) !== diagnosis.region_id) {
+        throw new Error(
+          `AMA row ${rowId} does not match region for diagnosis ${diagnosis.id}`,
+        );
+      }
+    }
+  }
+}

@@ -1,0 +1,415 @@
+[
+  {
+    "id": "lumbar_nonspecific_strain_sprain",
+    "region_id": "lumbar_spine",
+    "label": "Non-specific low back pain / lumbar strain-sprain",
+    "definition": "Axial low back pain or lumbar musculoligamentous sprain/strain without a more specific documented cause for that pain; includes muscle spasm. A non-specific pain or spasm code does not establish a structural lesion or nerve-root syndrome.",
+    "icdPrefixes": ["M54.5", "S33.5", "S39.012", "M62.830"],
+    "ama_row_ids": []
+  },
+  {
+    "id": "lumbar_radiculopathy",
+    "region_id": "lumbar_spine",
+    "label": "Lumbar / lumbosacral radiculopathy",
+    "definition": "Documented lumbar or lumbosacral nerve-root syndrome, including radiculopathy or sciatica. May be associated with disc herniation, foraminal or lateral recess stenosis, spondylolisthesis or another lesion. The syndrome label alone does not establish its cause or the affected root; a disc-disorder-with-radiculopathy code alone does not establish herniation.",
+    "icdPrefixes": [
+      "M51.16",
+      "M51.17",
+      "M54.16",
+      "M54.17",
+      "M54.3",
+      "M54.4",
+      "M47.26",
+      "M47.27"
+    ],
+    "ama_row_ids": [
+      "17-21-03",
+      "17-21-04",
+      "17-21-05",
+      "17-21-06",
+      "17-21-07",
+      "17-21-08"
+    ]
+  },
+  {
+    "id": "lumbar_disc_herniation",
+    "region_id": "lumbar_spine",
+    "label": "Lumbar disc herniation / displacement",
+    "definition": "Documented herniation or displacement of a lumbar or lumbosacral intervertebral disc, with or without documented radiculopathy. Herniation alone does not establish a nerve-root syndrome or the affected root. Generic disc degeneration and disc-disorder-with-radiculopathy codes do not by themselves establish herniation.",
+    "icdPrefixes": ["M51.26", "M51.27"],
+    "ama_row_ids": [
+      "17-21-03",
+      "17-21-04",
+      "17-21-05",
+      "17-21-06",
+      "17-21-07",
+      "17-21-08"
+    ]
+  },
+  {
+    "id": "lumbar_spinal_stenosis",
+    "region_id": "lumbar_spine",
+    "label": "Lumbar spinal stenosis",
+    "definition": "Narrowing of the lumbar or lumbosacral central canal, lateral recess, or neural foramina. Includes stenosis with or without documented radiculopathy or neurogenic claudication, and may coexist with spondylolisthesis. Stenosis alone does not establish radiculopathy, neurogenic claudication, instability, or a particular affected nerve root.",
+    "icdPrefixes": ["M48.06", "M48.07"],
+    "ama_row_ids": [
+      "17-21-03",
+      "17-21-04",
+      "17-21-05",
+      "17-21-06",
+      "17-21-07",
+      "17-21-08",
+      "17-21-10"
+    ]
+  },
+  {
+    "id": "lumbar_spondylolisthesis",
+    "region_id": "lumbar_spine",
+    "label": "Lumbar / lumbosacral spondylolisthesis",
+    "definition": "Lumbar or lumbosacral vertebral slip, including degenerative, isthmic and congenital forms, with or without documented radiculopathy or stenosis. A static slip alone does not establish dynamic instability or an affected nerve root. An isolated pars defect without a slip is spondylolysis. Q76.2 does not specify the spinal region.",
+    "icdPrefixes": ["M43.16", "M43.17", "Q76.2"],
+    "ama_row_ids": [
+      "17-21-03",
+      "17-21-04",
+      "17-21-05",
+      "17-21-06",
+      "17-21-07",
+      "17-21-08",
+      "17-21-12"
+    ]
+  },
+  {
+    "id": "lumbar_spondylolysis",
+    "region_id": "lumbar_spine",
+    "label": "Lumbar / lumbosacral spondylolysis (pars defect)",
+    "definition": "Defect or stress injury of the lumbar or lumbosacral pars interarticularis. May occur without vertebral slip or dynamic instability; the pars defect alone does not establish spondylolisthesis, instability or radiculopathy.",
+    "icdPrefixes": ["M43.06", "M43.07"],
+    "ama_row_ids": []
+  },
+  {
+    "id": "lumbar_instability",
+    "region_id": "lumbar_spine",
+    "label": "Lumbar / lumbosacral segmental instability",
+    "definition": "Abnormal motion or loss of stability of a lumbar or lumbosacral motion segment, whether traumatic, degenerative or postoperative. May coexist with fracture or spondylolisthesis. A pars defect or static vertebral slip alone does not establish dynamic instability.",
+    "icdPrefixes": ["M53.2X6", "M53.2X7"],
+    "ama_row_ids": ["17-21-12"]
+  },
+  {
+    "id": "lumbar_facet_pain",
+    "region_id": "lumbar_spine",
+    "label": "Lumbar facet arthropathy / facet-mediated pain",
+    "definition": "Documented lumbar facet arthropathy or pain attributed to the lumbar facet joints. Generic spondylosis codes do not identify a specific pain generator, and facet degeneration on imaging alone does not establish facet-mediated pain.",
+    "icdPrefixes": ["M47.816", "M47.817", "M47.896", "M47.897"],
+    "ama_row_ids": []
+  },
+  {
+    "id": "lumbar_degenerative_disc_disease",
+    "region_id": "lumbar_spine",
+    "label": "Lumbar degenerative disc disease / discogenic pain",
+    "definition": "Degeneration of lumbar or lumbosacral intervertebral discs, including documented discogenic pain when present. Degeneration alone does not establish a symptomatic pain generator, disc herniation, radiculopathy or a particular affected nerve root.",
+    "icdPrefixes": ["M51.36", "M51.37"],
+    "ama_row_ids": []
+  },
+  {
+    "id": "lumbar_vertebrogenic_pain",
+    "region_id": "lumbar_spine",
+    "label": "Lumbar vertebrogenic pain",
+    "definition": "Low back pain attributed to vertebral endplate pathology, commonly associated with Modic type 1 or type 2 changes. Generic disc degeneration or Modic changes alone do not establish vertebrogenic pain. This category is distinct from facet-mediated pain and other disc-related pain.",
+    "icdPrefixes": ["M54.51"],
+    "ama_row_ids": []
+  },
+  {
+    "id": "lumbar_fracture",
+    "region_id": "lumbar_spine",
+    "label": "Lumbar vertebral fracture / dislocation",
+    "definition": "Lumbar vertebral fracture or dislocation, including traumatic and osteoporotic or insufficiency fractures. A fracture diagnosis alone does not establish radiculopathy, instability or an affected nerve root. M80.08 is not region-specific, and lumbosacral codes alone do not identify the fractured vertebra.",
+    "icdPrefixes": ["S32.0", "S33.1", "M48.56", "M48.57", "M80.08"],
+    "ama_row_ids": ["17-21-09"]
+  },
+  {
+    "id": "lumbar_persistent_postoperative_pain",
+    "region_id": "lumbar_spine",
+    "label": "Persistent spinal pain after lumbar surgery / post-laminectomy syndrome",
+    "definition": "Persistent or recurrent low back or associated leg pain after lumbar spine surgery, beyond expected postoperative recovery; includes post-laminectomy syndrome. Prior surgery alone does not establish this syndrome, and postoperative pain alone does not establish pseudarthrosis, recurrent radiculopathy or infection. M96.1 is not region-specific.",
+    "icdPrefixes": ["M96.1"],
+    "ama_row_ids": []
+  },
+  {
+    "id": "lumbar_pseudarthrosis",
+    "region_id": "lumbar_spine",
+    "label": "Lumbar pseudarthrosis after fusion",
+    "definition": "Documented failure of intended osseous fusion in the lumbar or lumbosacral spine. Persistent postoperative pain alone does not establish nonunion. M96.0 identifies pseudarthrosis after fusion or arthrodesis but does not specify the spinal region.",
+    "icdPrefixes": ["M96.0"],
+    "ama_row_ids": ["17-21-11"]
+  },
+  {
+    "id": "lumbar_fusion_arthroplasty_status",
+    "region_id": "lumbar_spine",
+    "label": "Lumbar fusion / disc arthroplasty status",
+    "definition": "Prior lumbar or lumbosacral fusion or disc arthroplasty. This structural postoperative status does not itself establish persistent pain, a complication or a need for additional treatment. Z98.1 identifies fusion status but does not specify the region or establish disc arthroplasty.",
+    "icdPrefixes": ["Z98.1"],
+    "ama_row_ids": ["17-21-11"]
+  },
+  {
+    "id": "lumbar_deep_spinal_wound_infection",
+    "region_id": "lumbar_spine",
+    "label": "Lumbar deep spinal wound / implant-associated infection",
+    "definition": "Deep postoperative infection involving the lumbar or lumbosacral spinal wound or spinal fixation device, including associated osteomyelitis. Excludes an isolated superficial wound infection and a sterile implant reaction. The listed infection codes do not specify the spinal region; generic postprocedural infection codes alone do not establish a spinal infection.",
+    "icdPrefixes": ["T81.42", "T81.43", "T84.63"],
+    "ama_row_ids": ["17-21-13"]
+  },
+  {
+    "id": "cervical_nonspecific_strain_sprain",
+    "region_id": "cervical_spine",
+    "label": "Non-specific neck pain / cervical strain-sprain",
+    "definition": "Axial neck pain or cervical musculoligamentous sprain/strain without a more specific documented cause for that pain; includes whiplash-associated disorder grades I-II. Neck or cervicobrachial pain alone does not establish radiculopathy or myelopathy.",
+    "icdPrefixes": ["M54.2", "S13.4", "S16.1", "M53.1"],
+    "ama_row_ids": []
+  },
+  {
+    "id": "lumbar_myelopathy",
+    "region_id": "lumbar_spine",
+    "label": "Lumbar / thoracolumbar compressive myelopathy (conus medullaris)",
+    "definition": "Documented spinal cord or conus medullaris dysfunction from compression at the thoracolumbar junction or upper lumbar levels (typically T12-L2, where the cord ends), from disc disease, spondylosis or another compressive lesion. Canal narrowing on imaging, neurogenic claudication or nerve-root symptoms alone do not establish myelopathy. Compression below the conus is stenosis or radiculopathy, and an acute cauda equina syndrome is a surgical emergency rather than a ladder diagnosis. Myelopathy does not itself establish coexisting radiculopathy.",
+    "icdPrefixes": ["M47.16", "M51.06"],
+    "ama_row_ids": []
+  },
+  {
+    "id": "cervical_radiculopathy",
+    "region_id": "cervical_spine",
+    "label": "Cervical radiculopathy",
+    "definition": "Documented cervical nerve-root syndrome with radicular pain and/or sensory, motor or reflex findings. May be associated with disc herniation, foraminal stenosis or another lesion, and may coexist with myelopathy. A disc-displacement code alone does not establish radiculopathy; the syndrome label alone does not establish its cause or the affected root.",
+    "icdPrefixes": ["M50.1", "M54.11", "M54.12", "M54.13", "M47.22", "M47.23"],
+    "ama_row_ids": [
+      "17-19-03",
+      "17-19-04",
+      "17-19-05",
+      "17-19-06",
+      "17-19-07",
+      "17-19-08",
+      "17-19-09",
+      "17-19-10"
+    ]
+  },
+  {
+    "id": "cervical_disc_herniation",
+    "region_id": "cervical_spine",
+    "label": "Cervical disc herniation / displacement",
+    "definition": "Documented herniation or displacement of a cervical intervertebral disc, with or without documented radiculopathy. Herniation alone does not establish a nerve-root syndrome or the affected root. Generic disc degeneration and disc-disorder-with-radiculopathy codes do not by themselves establish herniation.",
+    "icdPrefixes": ["M50.2"],
+    "ama_row_ids": [
+      "17-19-03",
+      "17-19-04",
+      "17-19-05",
+      "17-19-06",
+      "17-19-07",
+      "17-19-08",
+      "17-19-09",
+      "17-19-10"
+    ]
+  },
+  {
+    "id": "cervical_spinal_stenosis",
+    "region_id": "cervical_spine",
+    "label": "Cervical spinal stenosis",
+    "definition": "Narrowing of the cervical spinal canal, lateral recess or neural foramina, with or without documented radiculopathy or myelopathy. Stenosis alone does not establish either neurological syndrome, instability or a particular affected nerve root. Omission of myelopathy from the source is not an explicit finding that it is absent.",
+    "icdPrefixes": ["M48.02", "M48.03"],
+    "ama_row_ids": [
+      "17-19-03",
+      "17-19-04",
+      "17-19-05",
+      "17-19-06",
+      "17-19-07",
+      "17-19-08",
+      "17-19-09",
+      "17-19-10"
+    ]
+  },
+  {
+    "id": "cervical_myelopathy",
+    "region_id": "cervical_spine",
+    "label": "Cervical compressive myelopathy",
+    "definition": "Documented cervical spinal cord dysfunction associated with compression from spondylosis, disc disease, ossified ligaments or another compressive lesion. Canal narrowing on imaging or nerve-root symptoms alone do not establish myelopathy. Myelopathy does not itself establish coexisting radiculopathy.",
+    "icdPrefixes": ["M50.0", "M47.12", "M47.13"],
+    "ama_row_ids": []
+  },
+  {
+    "id": "cervical_facet_pain",
+    "region_id": "cervical_spine",
+    "label": "Cervical facet arthropathy / facet-mediated pain",
+    "definition": "Documented cervical facet arthropathy or pain attributed to the cervical facet joints. Generic spondylosis codes do not identify a specific pain generator, and facet degeneration on imaging alone does not establish facet-mediated pain.",
+    "icdPrefixes": ["M47.812", "M47.813", "M47.892", "M47.893"],
+    "ama_row_ids": []
+  },
+  {
+    "id": "cervical_degenerative_disc_disease",
+    "region_id": "cervical_spine",
+    "label": "Cervical degenerative disc disease / discogenic pain",
+    "definition": "Degeneration of cervical intervertebral discs, including documented discogenic pain when present. Degeneration alone does not establish a symptomatic pain generator, disc herniation, radiculopathy or a particular affected nerve root.",
+    "icdPrefixes": ["M50.3"],
+    "ama_row_ids": []
+  },
+  {
+    "id": "cervical_instability",
+    "region_id": "cervical_spine",
+    "label": "Cervical segmental instability",
+    "definition": "Abnormal motion or loss of stability of a cervical motion segment, including the upper cervical region, whether traumatic, degenerative or postoperative. May coexist with fracture or vertebral slip. Pain or degenerative changes alone do not establish instability.",
+    "icdPrefixes": ["M53.2X1", "M53.2X2", "M53.2X3"],
+    "ama_row_ids": ["17-19-14"]
+  },
+  {
+    "id": "cervical_fracture",
+    "region_id": "cervical_spine",
+    "label": "Cervical vertebral fracture / dislocation",
+    "definition": "Fracture, subluxation or dislocation involving C1-C7, including traumatic and pathological fractures. A fracture diagnosis alone does not establish radiculopathy, myelopathy, instability or an affected nerve root.",
+    "icdPrefixes": [
+      "S12.0",
+      "S12.1",
+      "S12.2",
+      "S12.3",
+      "S12.4",
+      "S12.5",
+      "S12.6",
+      "S12.9",
+      "S13.1",
+      "M48.52"
+    ],
+    "ama_row_ids": ["17-19-11", "17-19-12"]
+  },
+  {
+    "id": "cervical_persistent_postoperative_pain",
+    "region_id": "cervical_spine",
+    "label": "Persistent spinal pain after cervical surgery / post-laminectomy syndrome",
+    "definition": "Persistent or recurrent neck or associated arm pain after cervical spine surgery, beyond expected postoperative recovery; includes post-laminectomy syndrome. Prior surgery alone does not establish this syndrome, and postoperative pain alone does not establish pseudarthrosis, recurrent radiculopathy or infection. M96.1 is not region-specific.",
+    "icdPrefixes": ["M96.1"],
+    "ama_row_ids": []
+  },
+  {
+    "id": "cervical_pseudarthrosis",
+    "region_id": "cervical_spine",
+    "label": "Cervical pseudarthrosis after fusion",
+    "definition": "Documented failure of intended osseous fusion in the cervical spine. Persistent postoperative pain alone does not establish nonunion. M96.0 identifies pseudarthrosis after fusion or arthrodesis but does not specify the spinal region.",
+    "icdPrefixes": ["M96.0"],
+    "ama_row_ids": ["17-19-13"]
+  },
+  {
+    "id": "cervical_fusion_arthroplasty_status",
+    "region_id": "cervical_spine",
+    "label": "Cervical fusion / disc arthroplasty status",
+    "definition": "Prior cervical fusion or disc arthroplasty. This structural postoperative status does not itself establish persistent pain, a complication or a need for additional treatment. Z98.1 identifies fusion status but does not specify the region or establish disc arthroplasty.",
+    "icdPrefixes": ["Z98.1"],
+    "ama_row_ids": ["17-19-13"]
+  },
+  {
+    "id": "cervical_deep_spinal_wound_infection",
+    "region_id": "cervical_spine",
+    "label": "Cervical deep spinal wound / implant-associated infection",
+    "definition": "Deep postoperative infection involving the cervical spinal wound or spinal fixation device, including associated osteomyelitis. Excludes an isolated superficial wound infection and a sterile implant reaction. The listed infection codes do not specify the spinal region; generic postprocedural infection codes alone do not establish a spinal infection.",
+    "icdPrefixes": ["T81.42", "T81.43", "T84.63"],
+    "ama_row_ids": ["17-19-15"]
+  },
+  {
+    "id": "thoracic_nonspecific_strain_sprain",
+    "region_id": "thoracic_spine",
+    "label": "Non-specific thoracic pain / thoracic strain-sprain",
+    "definition": "Axial mid-back pain or thoracic musculoligamentous sprain/strain without a more specific documented cause for that pain; includes muscle spasm. A non-specific pain or spasm code does not establish a structural lesion or neurological syndrome. M62.830 does not specify the spinal region.",
+    "icdPrefixes": ["M54.6", "S23.3", "S29.012", "M62.830"],
+    "ama_row_ids": []
+  },
+  {
+    "id": "thoracic_radiculopathy",
+    "region_id": "thoracic_spine",
+    "label": "Thoracic radiculopathy",
+    "definition": "Documented thoracic nerve-root syndrome due to disc disease, foraminal narrowing or another lesion. Includes T1 presentations affecting the upper limb and T2-T12 truncal or band-like symptoms. A disc-displacement code alone does not establish radiculopathy; the syndrome label alone does not establish its cause, affected root or coexisting myelopathy.",
+    "icdPrefixes": ["M51.14", "M51.15", "M54.14", "M54.15", "M47.24", "M47.25"],
+    "ama_row_ids": ["17-20-03", "17-20-04"]
+  },
+  {
+    "id": "thoracic_disc_herniation",
+    "region_id": "thoracic_spine",
+    "label": "Thoracic disc herniation / displacement",
+    "definition": "Documented herniation or displacement of a thoracic or thoracolumbar intervertebral disc, with or without documented radiculopathy. Herniation alone does not establish a nerve-root syndrome or the affected root. Generic disc degeneration and disc-disorder-with-radiculopathy codes do not by themselves establish herniation.",
+    "icdPrefixes": ["M51.24", "M51.25"],
+    "ama_row_ids": ["17-20-03", "17-20-04"]
+  },
+  {
+    "id": "thoracic_spinal_stenosis",
+    "region_id": "thoracic_spine",
+    "label": "Thoracic spinal stenosis",
+    "definition": "Narrowing of the thoracic or thoracolumbar spinal canal, lateral recess or neural foramina, with or without documented radiculopathy or myelopathy. Stenosis alone does not establish either neurological syndrome, instability or a particular affected nerve root. Omission of myelopathy from the source is not an explicit finding that it is absent.",
+    "icdPrefixes": ["M48.04", "M48.05"],
+    "ama_row_ids": ["17-20-03", "17-20-04"]
+  },
+  {
+    "id": "thoracic_myelopathy",
+    "region_id": "thoracic_spine",
+    "label": "Thoracic compressive myelopathy",
+    "definition": "Documented thoracic spinal cord dysfunction associated with compression from disc disease, spondylosis, ossified ligaments or another compressive lesion. Canal narrowing on imaging or nerve-root symptoms alone do not establish myelopathy. Myelopathy does not itself establish coexisting radiculopathy.",
+    "icdPrefixes": ["M51.04", "M51.05", "M47.14", "M47.15"],
+    "ama_row_ids": []
+  },
+  {
+    "id": "thoracic_facet_pain",
+    "region_id": "thoracic_spine",
+    "label": "Thoracic facet arthropathy / facet-mediated pain",
+    "definition": "Documented thoracic facet arthropathy or pain attributed to the thoracic facet joints. Generic spondylosis codes do not identify a specific pain generator, and facet degeneration on imaging alone does not establish facet-mediated pain.",
+    "icdPrefixes": ["M47.814", "M47.815", "M47.894", "M47.895"],
+    "ama_row_ids": []
+  },
+  {
+    "id": "thoracic_degenerative_disc_disease",
+    "region_id": "thoracic_spine",
+    "label": "Thoracic degenerative disc disease / discogenic pain",
+    "definition": "Degeneration of thoracic or thoracolumbar intervertebral discs, including documented discogenic pain when present. Degeneration alone does not establish a symptomatic pain generator, disc herniation, radiculopathy or a particular affected nerve root.",
+    "icdPrefixes": ["M51.34", "M51.35"],
+    "ama_row_ids": []
+  },
+  {
+    "id": "thoracic_instability",
+    "region_id": "thoracic_spine",
+    "label": "Thoracic segmental instability",
+    "definition": "Abnormal motion or loss of stability of a thoracic or thoracolumbar motion segment, whether traumatic, degenerative or postoperative. May coexist with fracture. Pain or degenerative changes alone do not establish instability, and a thoracolumbar code alone does not identify the affected segment.",
+    "icdPrefixes": ["M53.2X4", "M53.2X5"],
+    "ama_row_ids": ["17-20-07"]
+  },
+  {
+    "id": "thoracic_fracture",
+    "region_id": "thoracic_spine",
+    "label": "Thoracic vertebral fracture / dislocation",
+    "definition": "Fracture, subluxation or dislocation involving T1-T12, including traumatic and osteoporotic or insufficiency fractures. A fracture diagnosis alone does not establish radiculopathy, myelopathy, instability or an affected nerve root. M80.08 is not region-specific, and thoracolumbar codes alone do not identify the fractured vertebra.",
+    "icdPrefixes": ["S22.0", "S23.1", "M48.54", "M48.55", "M80.08"],
+    "ama_row_ids": ["17-20-05"]
+  },
+  {
+    "id": "thoracic_persistent_postoperative_pain",
+    "region_id": "thoracic_spine",
+    "label": "Persistent spinal pain after thoracic surgery / post-laminectomy syndrome",
+    "definition": "Persistent or recurrent thoracic or associated radicular pain after thoracic spine surgery, beyond expected postoperative recovery; includes post-laminectomy syndrome. Prior surgery alone does not establish this syndrome, and postoperative pain alone does not establish pseudarthrosis, recurrent radiculopathy or infection. M96.1 is not region-specific.",
+    "icdPrefixes": ["M96.1"],
+    "ama_row_ids": []
+  },
+  {
+    "id": "thoracic_pseudarthrosis",
+    "region_id": "thoracic_spine",
+    "label": "Thoracic pseudarthrosis after fusion",
+    "definition": "Documented failure of intended osseous fusion in the thoracic or thoracolumbar spine. Persistent postoperative pain alone does not establish nonunion. M96.0 identifies pseudarthrosis after fusion or arthrodesis but does not specify the spinal region.",
+    "icdPrefixes": ["M96.0"],
+    "ama_row_ids": ["17-20-06"]
+  },
+  {
+    "id": "thoracic_fusion_arthroplasty_status",
+    "region_id": "thoracic_spine",
+    "label": "Thoracic fusion / disc arthroplasty status",
+    "definition": "Prior thoracic or thoracolumbar fusion or disc arthroplasty. This structural postoperative status does not itself establish persistent pain, a complication or a need for additional treatment. Z98.1 identifies fusion status but does not specify the region or establish disc arthroplasty.",
+    "icdPrefixes": ["Z98.1"],
+    "ama_row_ids": ["17-20-06"]
+  },
+  {
+    "id": "thoracic_deep_spinal_wound_infection",
+    "region_id": "thoracic_spine",
+    "label": "Thoracic deep spinal wound / implant-associated infection",
+    "definition": "Deep postoperative infection involving the thoracic or thoracolumbar spinal wound or spinal fixation device, including associated osteomyelitis. Excludes an isolated superficial wound infection and a sterile implant reaction. The listed infection codes do not specify the spinal region; generic postprocedural infection codes alone do not establish a spinal infection.",
+    "icdPrefixes": ["T81.42", "T81.43", "T84.63"],
+    "ama_row_ids": ["17-20-08"]
+  }
+]

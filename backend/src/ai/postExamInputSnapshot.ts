@@ -1,10 +1,13 @@
 import {
   postExamInputSnapshotSchema,
+  type AmaDiagnosticRow,
+  type AmaMode,
   type PostExamPDQ,
   type PostExamQuestionnaire,
   type RefinedAnalysisResponse,
   type VisitDocumentationResponse,
 } from "@azime/contracts";
+import { freezeAmaFindings } from "../ama/findings.js";
 import { MissingPrerequisiteError } from "../errors/missingPrerequisiteError.js";
 
 export function buildPostExamInputSnapshot({
@@ -12,6 +15,8 @@ export function buildPostExamInputSnapshot({
   visit,
   pdq,
   questionnaires,
+  amaMode,
+  amaRows,
 }: {
   refined: RefinedAnalysisResponse;
   visit: VisitDocumentationResponse;
@@ -22,6 +27,8 @@ export function buildPostExamInputSnapshot({
     data: PostExamPDQ;
   } | null;
   questionnaires: PostExamQuestionnaire[];
+  amaMode: AmaMode;
+  amaRows: Map<string, AmaDiagnosticRow>;
 }) {
   if (visit.caseId !== refined.caseId)
     throw new MissingPrerequisiteError(
@@ -31,6 +38,18 @@ export function buildPostExamInputSnapshot({
     throw new MissingPrerequisiteError("PDQ belongs to a different case");
   const { reviewedAnalysis: _reducedReview, ...caseContext } =
     refined.inputSnapshot.input;
+  // Unlinked assessments keep their answers on the visit but are not findings.
+  const amaFindings =
+    amaMode === "off"
+      ? []
+      : visit.documentation.amaAssessments
+          .filter((a) => a.region === refined.region && a.canonicalDxIds.length)
+          .map((a) => {
+            const row = amaRows.get(a.rowId);
+            if (!row)
+              throw new MissingPrerequisiteError(`AMA row ${a.rowId} is unavailable`);
+            return freezeAmaFindings(a, row);
+          });
   return postExamInputSnapshotSchema.parse({
     input: {
       ...caseContext,
@@ -43,6 +62,7 @@ export function buildPostExamInputSnapshot({
         ),
         pdq: pdq?.data ?? null,
         questionnaires,
+        amaFindings,
       },
     },
     basedOn: {

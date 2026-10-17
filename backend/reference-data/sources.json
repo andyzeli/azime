@@ -118,5 +118,30 @@
     "id": "ama_guides_6th",
     "ref": "American Medical Association. AMA Guides to the Evaluation of Permanent Impairment, Sixth Edition - Chapter 17, The Spine and Pelvis (diagnosis-based impairment regional grids). Used for canonical diagnosis groupings only.",
     "edition": "Sixth Edition (2008); Chapter 17 revised in AMA Guides Sixth 2023 and Sixth 2024 digital editions"
+  },
+  {
+    "id": "nass_bvna_2023",
+    "ref": "North American Spine Society (NASS). NASS Coverage Policy Recommendations: Basivertebral Nerve Ablation.",
+    "edition": "February 2023"
+  },
+  {
+    "id": "aspn_bvna_2022",
+    "ref": "Sayed D, Naidu RK, Patel KV, et al. Best Practice Guidelines on the Diagnosis and Treatment of Vertebrogenic Pain with Basivertebral Nerve Ablation from the American Society of Pain and Neuroscience. J Pain Res. 2022;15:2801-2819. doi:10.2147/JPR.S378544.",
+    "edition": "2022 (published September 14, 2022)"
+  },
+  {
+    "id": "tai_spinal_implant_infection_2024",
+    "ref": "Tai DBG, Patel R, Lovecchio F, Kwee T, Wouthuyzen-Bakker M. State-of-the-Art Review: Diagnosis and Management of Spinal Implant Infections. Clin Infect Dis. 2024;79(6):e65-e71. doi:10.1093/cid/ciae436 (IDSA journal; correction published 2025).",
+    "edition": "December 17, 2024"
+  },
+  {
+    "id": "debnath_spondylolysis_2021",
+    "ref": "Debnath UK. Lumbar spondylolysis - Current concepts review. J Clin Orthop Trauma (PMCID PMC8358467).",
+    "edition": "2021 narrative review (not a formal guideline)"
+  },
+  {
+    "id": "mohammed_pars_repair_2018",
+    "ref": "Mohammed N, Patra DP, Narayan V, et al. A comparison of the techniques of direct pars interarticularis repairs for spondylolysis and low-grade spondylolisthesis: a meta-analysis. Neurosurg Focus. 2018;44(1):E10. doi:10.3171/2017.11.FOCUS17581.",
+    "edition": "2018"
   }
 ]

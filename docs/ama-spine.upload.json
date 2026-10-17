@@ -53,7 +53,17 @@
         }
       }
     ],
-    "help": "Due to the unique anatomical position and function of the C1 nerve root, radiculopathy is extremely rare. When affected, it often overlaps with upper cervical or occipital conditions"
+    "help": "Due to the unique anatomical position and function of the C1 nerve root, radiculopathy is extremely rare. When affected, it often overlaps with upper cervical or occipital conditions",
+    "examination_tasks": [
+      {
+        "id": "c1_sensory_assessment",
+        "prompt": "Assess C1 symptoms, pinprick sensation, and sharp/dull discrimination.",
+        "help": "Occipital or upper neck region, radiating from the back of the head toward the crown or forehead. Note whether significant limb symptoms are absent, as specified in the source. Document radicular pain or subjectively altered sensation (paresthesia-like numbness), objective dullness to pinprick, and whether sharp/dull perception is intact or lost. Distinguish symptoms without objective sensory loss from objective deficits.",
+        "question_ids": [
+          "sensory_status"
+        ]
+      }
+    ]
   },
   {
     "row_id": "17-19-04",
@@ -109,7 +119,25 @@
         }
       }
     ],
-    "help": "Due to the unique anatomical position and function of the C2 nerve root, radiculopathy is extremely rare. When affected, it often overlaps with upper cervical or occipital conditions such as occipital neuralgia"
+    "help": "Due to the unique anatomical position and function of the C2 nerve root, radiculopathy is extremely rare. When affected, it often overlaps with upper cervical or occipital conditions such as occipital neuralgia",
+    "examination_tasks": [
+      {
+        "id": "c2_sensory_assessment",
+        "prompt": "Assess C2 symptoms, pinprick sensation, and sharp/dull discrimination.",
+        "help": "Back of head or upper neck region, radiating from the back of the head toward the temples or behind the eyes. Note whether significant limb symptoms are absent, as specified in the source. Document radicular pain or subjectively altered sensation (paresthesia-like numbness), objective dullness to pinprick, and whether sharp/dull perception is intact or lost. Distinguish symptoms without objective sensory loss from objective deficits.",
+        "question_ids": [
+          "sensory_status"
+        ]
+      },
+      {
+        "id": "c2_occipital_nerve_tapping",
+        "prompt": "Assess whether occipital nerve tapping reproduces C2 symptoms.",
+        "help": "The source notes that tapping over the occipital nerve may reproduce symptoms and help distinguish C2 radiculopathy from other conditions; it does not state this as a required positive finding.",
+        "question_ids": [
+          "sensory_status"
+        ]
+      }
+    ]
   },
   {
     "row_id": "17-19-05",
@@ -211,6 +239,16 @@
             }
           ]
         }
+      }
+    ],
+    "examination_tasks": [
+      {
+        "id": "c3_sensory_assessment",
+        "prompt": "Assess C3 symptoms, pinprick sensation, and sharp/dull discrimination.",
+        "help": "Ear, anterior neck, occiput, and posterior temporal area. Document radicular pain or subjectively altered sensation (paresthesia-like numbness), objective dullness to pinprick, and whether sharp/dull perception is intact or lost (decreased protective sensibility). Distinguish symptoms without objective sensory loss from objective deficits.",
+        "question_ids": [
+          "sensory_status"
+        ]
       }
     ]
   },
@@ -314,6 +352,16 @@
             }
           ]
         }
+      }
+    ],
+    "examination_tasks": [
+      {
+        "id": "c4_sensory_assessment",
+        "prompt": "Assess C4 symptoms, pinprick sensation, and sharp/dull discrimination.",
+        "help": "Shoulder, posterior upper arm, and upper chest. Document radicular pain or subjectively altered sensation (paresthesia-like numbness), objective dullness to pinprick, and whether sharp/dull perception is intact or lost (decreased protective sensibility). Distinguish symptoms without objective sensory loss from objective deficits.",
+        "question_ids": [
+          "sensory_status"
+        ]
       }
     ]
   },
@@ -655,6 +703,77 @@
           ]
         }
       }
+    ],
+    "examination_tasks": [
+      {
+        "id": "c5_sensory_assessment",
+        "prompt": "Assess C5 symptoms, pinprick sensation, and sharp/dull discrimination.",
+        "help": "Anterolateral shoulder and upper arm. Document radicular pain or subjectively altered sensation (paresthesia-like numbness), objective dullness to pinprick, and whether sharp/dull perception is intact or lost (decreased protective sensibility). Distinguish symptoms without objective sensory loss from objective deficits.",
+        "question_ids": [
+          "sensory_status"
+        ]
+      },
+      {
+        "id": "c5_spurling_test",
+        "prompt": "Assess Spurling-test reproducibility and C5 radicular symptoms.",
+        "help": "Use passive cervical extension with rotation to the affected side and axial compression of the spine. Record reproducible radicular pain, numbness and/or paresthesias in the C5 distribution. Anterolateral shoulder and upper arm.",
+        "question_ids": [
+          "neural_tension"
+        ]
+      },
+      {
+        "id": "shoulder_abduction_strength",
+        "prompt": "Assess shoulder abduction strength.",
+        "help": "Record the observed strength grade out of 5 for the applicable root and side. The linked questions retain their original combinations of findings.",
+        "question_ids": [
+          "motor_4",
+          "motor_3",
+          "motor_2",
+          "motor_0_to_1"
+        ]
+      },
+      {
+        "id": "elbow_flexion_strength",
+        "prompt": "Assess elbow flexion strength.",
+        "help": "Record the observed strength grade out of 5 for the applicable root and side. The linked questions retain their original combinations of findings.",
+        "question_ids": [
+          "motor_4",
+          "motor_3",
+          "motor_2",
+          "motor_0_to_1"
+        ]
+      },
+      {
+        "id": "upper_arm_circumference",
+        "prompt": "Measure the upper-arm circumference difference.",
+        "help": "Compare sides in cm at 10 cm above the elbow, referenced from the lateral epicondyle.",
+        "question_ids": [
+          "atrophy",
+          "atrophy_2",
+          "atrophy_3",
+          "atrophy_4"
+        ]
+      },
+      {
+        "id": "forearm_circumference",
+        "prompt": "Measure the forearm circumference difference.",
+        "help": "Compare sides in cm at 10 cm below the elbow, referenced from the lateral epicondyle.",
+        "question_ids": [
+          "atrophy",
+          "atrophy_2",
+          "atrophy_3",
+          "atrophy_4"
+        ]
+      },
+      {
+        "id": "c5_biceps_reflex",
+        "prompt": "Compare biceps reflexes between sides.",
+        "help": "Record asymmetric diminution or absence of the C5 nerve root-associated biceps reflex.",
+        "question_ids": [
+          "reflex_diminished",
+          "reflex_absent"
+        ]
+      }
     ]
   },
   {
@@ -994,6 +1113,77 @@
             }
           ]
         }
+      }
+    ],
+    "examination_tasks": [
+      {
+        "id": "c6_sensory_assessment",
+        "prompt": "Assess C6 symptoms, pinprick sensation, and sharp/dull discrimination.",
+        "help": "Lateral forearm and hand, including the thumb. Document radicular pain or subjectively altered sensation (paresthesia-like numbness), objective dullness to pinprick, and whether sharp/dull perception is intact or lost (decreased protective sensibility). Distinguish symptoms without objective sensory loss from objective deficits.",
+        "question_ids": [
+          "sensory_status"
+        ]
+      },
+      {
+        "id": "c6_spurling_test",
+        "prompt": "Assess Spurling-test reproducibility and C6 radicular symptoms.",
+        "help": "Use passive cervical extension with rotation to the affected side and axial compression of the spine. Record reproducible radicular pain, numbness and/or paresthesias in the C6 distribution. Lateral forearm and hand, including the thumb.",
+        "question_ids": [
+          "neural_tension"
+        ]
+      },
+      {
+        "id": "elbow_flexion_strength",
+        "prompt": "Assess elbow flexion strength.",
+        "help": "Record the observed strength grade out of 5 for the applicable root and side. The linked questions retain their original combinations of findings.",
+        "question_ids": [
+          "motor_4",
+          "motor_3",
+          "motor_2",
+          "motor_0_to_1"
+        ]
+      },
+      {
+        "id": "radial_wrist_extension_strength",
+        "prompt": "Assess radial wrist extension strength.",
+        "help": "Assess wrist extension using the radial wrist extensors (extensor carpi radialis longus/brevis). Record the strength grade out of 5 separately for each side; assess elbow flexion separately.",
+        "question_ids": [
+          "motor_4",
+          "motor_3",
+          "motor_2",
+          "motor_0_to_1"
+        ]
+      },
+      {
+        "id": "upper_arm_circumference",
+        "prompt": "Measure the upper-arm circumference difference.",
+        "help": "Compare sides in cm at 10 cm above the elbow, referenced from the lateral epicondyle.",
+        "question_ids": [
+          "atrophy",
+          "atrophy_2",
+          "atrophy_3",
+          "atrophy_4"
+        ]
+      },
+      {
+        "id": "forearm_circumference",
+        "prompt": "Measure the forearm circumference difference.",
+        "help": "Compare sides in cm at 10 cm below the elbow, referenced from the lateral epicondyle.",
+        "question_ids": [
+          "atrophy",
+          "atrophy_2",
+          "atrophy_3",
+          "atrophy_4"
+        ]
+      },
+      {
+        "id": "c6_brachioradialis_reflex",
+        "prompt": "Compare brachioradialis reflexes between sides.",
+        "help": "Record asymmetric diminution or absence of the C6 nerve root-associated brachioradialis reflex.",
+        "question_ids": [
+          "reflex_diminished",
+          "reflex_absent"
+        ]
       }
     ]
   },
@@ -1335,6 +1525,99 @@
           ]
         }
       }
+    ],
+    "examination_tasks": [
+      {
+        "id": "c7_sensory_assessment",
+        "prompt": "Assess C7 symptoms, pinprick sensation, and sharp/dull discrimination.",
+        "help": "Middle finger. Document radicular pain or subjectively altered sensation (paresthesia-like numbness), objective dullness to pinprick, and whether sharp/dull perception is intact or lost (decreased protective sensibility). Distinguish symptoms without objective sensory loss from objective deficits.",
+        "question_ids": [
+          "sensory_status"
+        ]
+      },
+      {
+        "id": "c7_spurling_test",
+        "prompt": "Assess Spurling-test reproducibility and C7 radicular symptoms.",
+        "help": "Use passive cervical extension with rotation to the affected side and axial compression of the spine. Record reproducible radicular pain, numbness and/or paresthesias in the C7 distribution. Middle finger.",
+        "question_ids": [
+          "neural_tension"
+        ]
+      },
+      {
+        "id": "elbow_extension_strength",
+        "prompt": "Assess elbow extension strength.",
+        "help": "Record this movement’s strength grade out of 5 separately for each side. Record each tested movement independently rather than combining strength grades across movements.",
+        "question_ids": [
+          "motor_4",
+          "motor_3",
+          "motor_2",
+          "motor_0_to_1"
+        ]
+      },
+      {
+        "id": "wrist_flexion_strength",
+        "prompt": "Assess wrist flexion strength.",
+        "help": "Record this movement’s strength grade out of 5 separately for each side. Record each tested movement independently rather than combining strength grades across movements.",
+        "question_ids": [
+          "motor_4",
+          "motor_3",
+          "motor_2",
+          "motor_0_to_1"
+        ]
+      },
+      {
+        "id": "finger_extension_strength",
+        "prompt": "Assess finger extension strength.",
+        "help": "Record this movement’s strength grade out of 5 separately for each side. Record each tested movement independently rather than combining strength grades across movements.",
+        "question_ids": [
+          "motor_4",
+          "motor_3",
+          "motor_2",
+          "motor_0_to_1"
+        ]
+      },
+      {
+        "id": "ulnar_wrist_extensor_strength",
+        "prompt": "Assess ulnar wrist extensor strength.",
+        "help": "Record this movement’s strength grade out of 5 separately for each side. Record each tested movement independently rather than combining strength grades across movements.",
+        "question_ids": [
+          "motor_4",
+          "motor_3",
+          "motor_2",
+          "motor_0_to_1"
+        ]
+      },
+      {
+        "id": "upper_arm_circumference",
+        "prompt": "Measure the upper-arm circumference difference.",
+        "help": "Compare sides in cm at 10 cm above the elbow, referenced from the lateral epicondyle.",
+        "question_ids": [
+          "atrophy",
+          "atrophy_2",
+          "atrophy_3",
+          "atrophy_4"
+        ]
+      },
+      {
+        "id": "forearm_circumference",
+        "prompt": "Measure the forearm circumference difference.",
+        "help": "Compare sides in cm at 10 cm below the elbow, referenced from the lateral epicondyle.",
+        "question_ids": [
+          "atrophy",
+          "atrophy_2",
+          "atrophy_3",
+          "atrophy_4"
+        ]
+      },
+      {
+        "id": "c7_triceps_reflex",
+        "prompt": "Compare triceps reflexes between sides.",
+        "help": "Record asymmetric diminution or absence of the C7 nerve root-associated triceps reflex.",
+        "question_ids": [
+          "reflex_diminished",
+          "reflex_absent"
+        ]
+      }
     ]
   },
   {
@@ -1645,6 +1928,68 @@
           ]
         }
       }
+    ],
+    "examination_tasks": [
+      {
+        "id": "c8_sensory_assessment",
+        "prompt": "Assess C8 symptoms, pinprick sensation, and sharp/dull discrimination.",
+        "help": "Distal forearm, ulnar side of the ring finger, and little finger. Document radicular pain or subjectively altered sensation (paresthesia-like numbness), objective dullness to pinprick, and whether sharp/dull perception is intact or lost (decreased protective sensibility). Distinguish symptoms without objective sensory loss from objective deficits.",
+        "question_ids": [
+          "sensory_status"
+        ]
+      },
+      {
+        "id": "c8_spurling_test",
+        "prompt": "Assess Spurling-test reproducibility and C8 radicular symptoms.",
+        "help": "Use passive cervical extension with rotation to the affected side and axial compression of the spine. Record reproducible radicular pain, numbness and/or paresthesias in the C8 distribution. Distal forearm, ulnar side of the ring finger, and little finger.",
+        "question_ids": [
+          "neural_tension"
+        ]
+      },
+      {
+        "id": "finger_flexion_strength",
+        "prompt": "Assess finger flexion strength.",
+        "help": "Record the observed strength grade out of 5 for the applicable root and side. The linked questions retain their original combinations of findings.",
+        "question_ids": [
+          "motor_4",
+          "motor_3",
+          "motor_2",
+          "motor_0_to_1"
+        ]
+      },
+      {
+        "id": "hand_intrinsic_strength",
+        "prompt": "Assess hand intrinsic muscle strength.",
+        "help": "Record the observed strength grade out of 5 for the applicable root and side. The linked questions retain their original combinations of findings.",
+        "question_ids": [
+          "motor_4",
+          "motor_3",
+          "motor_2",
+          "motor_0_to_1"
+        ]
+      },
+      {
+        "id": "upper_arm_circumference",
+        "prompt": "Measure the upper-arm circumference difference.",
+        "help": "Compare sides in cm at 10 cm above the elbow, referenced from the lateral epicondyle.",
+        "question_ids": [
+          "atrophy",
+          "atrophy_2",
+          "atrophy_3",
+          "atrophy_4"
+        ]
+      },
+      {
+        "id": "forearm_circumference",
+        "prompt": "Measure the forearm circumference difference.",
+        "help": "Compare sides in cm at 10 cm below the elbow, referenced from the lateral epicondyle.",
+        "question_ids": [
+          "atrophy",
+          "atrophy_2",
+          "atrophy_3",
+          "atrophy_4"
+        ]
+      }
     ]
   },
   {
@@ -1766,7 +2111,16 @@
         }
       }
     ],
-    "help": "Fractures may occur at single or multiple levels. The single fracture with the highest whole person impairment rating is used to calculate impairment\n\nUnlike those of C3 through C7, common fracture patterns for C1 and C2 do not involve loss of vertebral body height. There is rarely neurologic deficit, as there are no motor branches of significance from C1 and C2 roots. The sensory branches/roots are usually uninjured, or there is so much overlap of sensory innervation the deficit is undetectable. There is no confirmatory electrodiagnostic test for the C1 or C2 roots"
+    "help": "Fractures may occur at single or multiple levels. The single fracture with the highest whole person impairment rating is used to calculate impairment\n\nUnlike those of C3 through C7, common fracture patterns for C1 and C2 do not involve loss of vertebral body height. There is rarely neurologic deficit, as there are no motor branches of significance from C1 and C2 roots. The sensory branches/roots are usually uninjured, or there is so much overlap of sensory innervation the deficit is undetectable. There is no confirmatory electrodiagnostic test for the C1 or C2 roots",
+    "examination_tasks": [
+      {
+        "id": "cervical_c1_c2_fracture_exam_consistency",
+        "prompt": "Review whether the physical examination is consistent with cervical spinal fracture at C1 or C2.",
+        "question_ids": [
+          "pe_consistent"
+        ]
+      }
+    ]
   },
   {
     "row_id": "17-19-12",
@@ -1902,7 +2256,16 @@
         }
       }
     ],
-    "help": "Fractures may occur at single or multiple levels. The single fracture with the highest whole person impairment rating is used to calculate impairment"
+    "help": "Fractures may occur at single or multiple levels. The single fracture with the highest whole person impairment rating is used to calculate impairment",
+    "examination_tasks": [
+      {
+        "id": "cervical_c3_c7_fracture_exam_consistency",
+        "prompt": "Review whether the physical examination is consistent with cervical spinal fracture at C3 to C7.",
+        "question_ids": [
+          "pe_consistent"
+        ]
+      }
+    ]
   },
   {
     "row_id": "17-19-13",
@@ -1977,7 +2340,16 @@
         }
       }
     ],
-    "help": "The calculated impairment values take into account the potential future stress on the disc spaces adjacent to the surgical site, a condition known as adjacent disc disease or adjacent segment degeneration. This consideration reflects the understanding that the redistribution of mechanical forces following a spinal procedure can accelerate wear and tear on neighboring vertebral levels, potentially leading to additional spinal issues in the future"
+    "help": "The calculated impairment values take into account the potential future stress on the disc spaces adjacent to the surgical site, a condition known as adjacent disc disease or adjacent segment degeneration. This consideration reflects the understanding that the redistribution of mechanical forces following a spinal procedure can accelerate wear and tear on neighboring vertebral levels, potentially leading to additional spinal issues in the future",
+    "examination_tasks": [
+      {
+        "id": "cervical_aomsi_fusion_arthroplasty_pseudarthrosis_exam_consistency",
+        "prompt": "Review whether the physical examination is consistent with cervical AOMSI associated with fusion, arthroplasty, or pseudarthrosis.",
+        "question_ids": [
+          "pe_consistent"
+        ]
+      }
+    ]
   },
   {
     "row_id": "17-19-14",
@@ -2020,7 +2392,16 @@
         }
       }
     ],
-    "help": "The calculated impairment values take into account the potential future stress on the disc spaces adjacent to the surgical site, a condition known as adjacent disc disease or adjacent segment degeneration. This consideration reflects the understanding that the redistribution of mechanical forces following a spinal procedure can accelerate wear and tear on neighboring vertebral levels, potentially leading to additional spinal issues in the future"
+    "help": "The calculated impairment values take into account the potential future stress on the disc spaces adjacent to the surgical site, a condition known as adjacent disc disease or adjacent segment degeneration. This consideration reflects the understanding that the redistribution of mechanical forces following a spinal procedure can accelerate wear and tear on neighboring vertebral levels, potentially leading to additional spinal issues in the future",
+    "examination_tasks": [
+      {
+        "id": "cervical_aomsi_instability_exam_consistency",
+        "prompt": "Review whether the physical examination is consistent with cervical AOMSI associated with instability.",
+        "question_ids": [
+          "pe_consistent"
+        ]
+      }
+    ]
   },
   {
     "row_id": "17-19-15",
@@ -2071,6 +2452,15 @@
             }
           ]
         }
+      }
+    ],
+    "examination_tasks": [
+      {
+        "id": "cervical_deep_spinal_wound_infection_exam_consistency",
+        "prompt": "Review whether the physical examination is consistent with cervical deep spinal wound infection.",
+        "question_ids": [
+          "pe_consistent"
+        ]
       }
     ]
   },
@@ -2360,7 +2750,61 @@
         }
       }
     ],
-    "help": "At time of the current evaluation, the evaluator determines the CH, PE, and relevant CS to be consistent with the diagnosis of thoracic radiculopathy involving a T1 nerve root injury or lesion and the natural history of the condition. Ratings for T1 nerve root pathology are similar to those for the cervical spine, because upper limb function is affected. Ratings for T2-T12 are rated separately"
+    "help": "At time of the current evaluation, the evaluator determines the CH, PE, and relevant CS to be consistent with the diagnosis of thoracic radiculopathy involving a T1 nerve root injury or lesion and the natural history of the condition. Ratings for T1 nerve root pathology are similar to those for the cervical spine, because upper limb function is affected. Ratings for T2-T12 are rated separately",
+    "examination_tasks": [
+      {
+        "id": "t1_sensory_assessment",
+        "prompt": "Assess T1 symptoms, pinprick sensation, and sharp/dull discrimination.",
+        "help": "Upper half of the medial forearm and medial portion of the arm. Document radicular pain or subjectively altered sensation (paresthesia-like numbness), objective dullness to pinprick, and whether sharp/dull perception is intact or lost (decreased protective sensibility). Distinguish symptoms without objective sensory loss from objective deficits.",
+        "question_ids": [
+          "sensory_status"
+        ]
+      },
+      {
+        "id": "finger_abduction_strength",
+        "prompt": "Assess finger abduction strength.",
+        "help": "Record the observed strength grade out of 5 for the applicable root and side. The linked questions retain their original combinations of findings.",
+        "question_ids": [
+          "motor_4",
+          "motor_3",
+          "motor_2",
+          "motor_0_to_1"
+        ]
+      },
+      {
+        "id": "finger_adduction_strength",
+        "prompt": "Assess finger adduction strength.",
+        "help": "Record the observed strength grade out of 5 for the applicable root and side. The linked questions retain their original combinations of findings.",
+        "question_ids": [
+          "motor_4",
+          "motor_3",
+          "motor_2",
+          "motor_0_to_1"
+        ]
+      },
+      {
+        "id": "upper_arm_circumference",
+        "prompt": "Measure the upper-arm circumference difference.",
+        "help": "Compare sides in cm at 10 cm above the elbow, referenced from the lateral epicondyle.",
+        "question_ids": [
+          "atrophy",
+          "atrophy_2",
+          "atrophy_3",
+          "atrophy_4"
+        ]
+      },
+      {
+        "id": "forearm_circumference",
+        "prompt": "Measure the forearm circumference difference.",
+        "help": "Compare sides in cm at 10 cm below the elbow, referenced from the lateral epicondyle.",
+        "question_ids": [
+          "atrophy",
+          "atrophy_2",
+          "atrophy_3",
+          "atrophy_4"
+        ]
+      }
+    ]
   },
   {
     "row_id": "17-20-04",
@@ -2474,7 +2918,17 @@
         }
       }
     ],
-    "help": "Myelopathy secondary to a lesion in the thoracic spine is rated in the Chapter 13 The Nervous System. In the event that radiculopathy or myelopathy in the thoracic spine is the result of a fracture, the impairment rating for myelopathy is combined with the impairment rating for the appropriate fracture"
+    "help": "Myelopathy secondary to a lesion in the thoracic spine is rated in the Chapter 13 The Nervous System. In the event that radiculopathy or myelopathy in the thoracic spine is the result of a fracture, the impairment rating for myelopathy is combined with the impairment rating for the appropriate fracture",
+    "examination_tasks": [
+      {
+        "id": "t2_t12_sensory_assessment",
+        "prompt": "Assess T2–T12 symptoms, pinprick sensation, and sharp/dull discrimination.",
+        "help": "Document the unilateral dermatomal distribution and the corresponding T2–T12 root level, with pain radiating around the torso toward the anterior midline. Record the side and level of each sensory finding separately. Document radicular pain or subjectively altered sensation (paresthesia-like numbness), objective dullness to pinprick, and whether sharp/dull perception is intact or lost (decreased protective sensibility). Distinguish symptoms without objective sensory loss from objective deficits.",
+        "question_ids": [
+          "sensory_status"
+        ]
+      }
+    ]
   },
   {
     "row_id": "17-20-05",
@@ -2610,7 +3064,16 @@
         }
       }
     ],
-    "help": "Fractures may occur at single or multiple levels. The single fracture with the highest whole person impairment rating is used to calculate impairment"
+    "help": "Fractures may occur at single or multiple levels. The single fracture with the highest whole person impairment rating is used to calculate impairment",
+    "examination_tasks": [
+      {
+        "id": "thoracic_fracture_exam_consistency",
+        "prompt": "Review whether the physical examination is consistent with thoracic spinal fracture.",
+        "question_ids": [
+          "pe_consistent"
+        ]
+      }
+    ]
   },
   {
     "row_id": "17-20-06",
@@ -2685,7 +3148,16 @@
         }
       }
     ],
-    "help": "The calculated impairment values take into account the potential future stress on the disc spaces adjacent to the surgical site, a condition known as adjacent disc disease or adjacent segment degeneration. This consideration reflects the understanding that the redistribution of mechanical forces following a spinal procedure can accelerate wear and tear on neighboring vertebral levels, potentially leading to additional spinal issues in the future"
+    "help": "The calculated impairment values take into account the potential future stress on the disc spaces adjacent to the surgical site, a condition known as adjacent disc disease or adjacent segment degeneration. This consideration reflects the understanding that the redistribution of mechanical forces following a spinal procedure can accelerate wear and tear on neighboring vertebral levels, potentially leading to additional spinal issues in the future",
+    "examination_tasks": [
+      {
+        "id": "thoracic_aomsi_fusion_arthroplasty_pseudarthrosis_exam_consistency",
+        "prompt": "Review whether the physical examination is consistent with thoracic AOMSI associated with fusion, arthroplasty, or pseudarthrosis.",
+        "question_ids": [
+          "pe_consistent"
+        ]
+      }
+    ]
   },
   {
     "row_id": "17-20-07",
@@ -2728,7 +3200,16 @@
         }
       }
     ],
-    "help": "The calculated impairment values take into account the potential future stress on the disc spaces adjacent to the surgical site, a condition known as adjacent disc disease or adjacent segment degeneration. This consideration reflects the understanding that the redistribution of mechanical forces following a spinal procedure can accelerate wear and tear on neighboring vertebral levels, potentially leading to additional spinal issues in the future"
+    "help": "The calculated impairment values take into account the potential future stress on the disc spaces adjacent to the surgical site, a condition known as adjacent disc disease or adjacent segment degeneration. This consideration reflects the understanding that the redistribution of mechanical forces following a spinal procedure can accelerate wear and tear on neighboring vertebral levels, potentially leading to additional spinal issues in the future",
+    "examination_tasks": [
+      {
+        "id": "thoracic_aomsi_instability_exam_consistency",
+        "prompt": "Review whether the physical examination is consistent with thoracic AOMSI associated with instability.",
+        "question_ids": [
+          "pe_consistent"
+        ]
+      }
+    ]
   },
   {
     "row_id": "17-20-08",
@@ -2779,6 +3260,15 @@
             }
           ]
         }
+      }
+    ],
+    "examination_tasks": [
+      {
+        "id": "thoracic_deep_spinal_wound_infection_exam_consistency",
+        "prompt": "Review whether the physical examination is consistent with thoracic deep spinal wound infection.",
+        "question_ids": [
+          "pe_consistent"
+        ]
       }
     ]
   },
@@ -2834,6 +3324,24 @@
             }
           ]
         }
+      }
+    ],
+    "examination_tasks": [
+      {
+        "id": "l1_sensory_assessment",
+        "prompt": "Assess L1 symptoms, pinprick sensation, and sharp/dull discrimination.",
+        "help": "Lower back or upper lumbar region into the medial groin and front of the upper thigh. Document radicular pain or subjectively altered sensation (paresthesia-like numbness), objective dullness to pinprick, and whether sharp/dull perception is intact or lost. Distinguish symptoms without objective sensory loss from objective deficits.",
+        "question_ids": [
+          "sensory_status"
+        ]
+      },
+      {
+        "id": "l1_hip_flexion_difficulty",
+        "prompt": "Assess reported hip-flexion difficulty and motor weakness described for L1.",
+        "help": "The linked sensory option describes minimal motor weakness and possible reported difficulty with hip flexion. Record these observations; no strength-grade threshold or additional maneuver is specified.",
+        "question_ids": [
+          "sensory_status"
+        ]
       }
     ]
   },
@@ -3103,6 +3611,36 @@
             }
           ]
         }
+      }
+    ],
+    "examination_tasks": [
+      {
+        "id": "l2_sensory_assessment",
+        "prompt": "Assess L2 symptoms, pinprick sensation, and sharp/dull discrimination.",
+        "help": "Medial groin and front of the upper thigh. Document radicular pain or subjectively altered sensation (paresthesia-like numbness), objective dullness to pinprick, and whether sharp/dull perception is intact or lost (decreased protective sensibility). Record paresthesias separately from objective sensory findings; paresthesias alone do not establish objective sensory loss.",
+        "question_ids": [
+          "sensory_status",
+          "sensory_criterion_2b"
+        ]
+      },
+      {
+        "id": "l2_femoral_nerve_stretch",
+        "prompt": "Assess femoral nerve stretch reproducibility and L2 radicular symptoms.",
+        "help": "Use simultaneous hip extension and knee flexion. Record reproducible radicular pain, numbness and/or paresthesias in the L2 dermatomal distribution. Medial groin and front of the upper thigh.",
+        "question_ids": [
+          "neural_tension"
+        ]
+      },
+      {
+        "id": "hip_flexion_strength",
+        "prompt": "Assess hip flexion strength.",
+        "help": "Record the observed strength grade out of 5 for the applicable root and side. The linked questions retain their original combinations of findings.",
+        "question_ids": [
+          "motor_4",
+          "motor_3",
+          "motor_2",
+          "motor_0_to_1"
+        ]
       }
     ]
   },
@@ -3413,6 +3951,75 @@
             }
           ]
         }
+      }
+    ],
+    "examination_tasks": [
+      {
+        "id": "l3_sensory_assessment",
+        "prompt": "Assess L3 symptoms, pinprick sensation, and sharp/dull discrimination.",
+        "help": "Medial groin, anteromedial thigh to medial knee, and medial lower leg. Document radicular pain or subjectively altered sensation (paresthesia-like numbness), objective dullness to pinprick, and whether sharp/dull perception is intact or lost (decreased protective sensibility). Distinguish symptoms without objective sensory loss from objective deficits.",
+        "question_ids": [
+          "sensory_status"
+        ]
+      },
+      {
+        "id": "l3_femoral_nerve_stretch",
+        "prompt": "Assess femoral nerve stretch reproducibility and L3 radicular symptoms.",
+        "help": "Use simultaneous hip extension and knee flexion. Record reproducible radicular pain, numbness and/or paresthesias in the L3 dermatomal distribution. Medial groin, anteromedial thigh to medial knee, and medial lower leg.",
+        "question_ids": [
+          "neural_tension"
+        ]
+      },
+      {
+        "id": "hip_adductor_strength",
+        "prompt": "Assess hip adductor strength.",
+        "help": "Record the observed strength grade out of 5 for the applicable root and side. The linked questions retain their original combinations of findings.",
+        "question_ids": [
+          "motor_4",
+          "motor_3",
+          "motor_2",
+          "motor_0_to_1"
+        ]
+      },
+      {
+        "id": "knee_extensor_strength",
+        "prompt": "Assess knee extensor strength.",
+        "help": "Record the observed strength grade out of 5 for the applicable root and side. The linked questions retain their original combinations of findings.",
+        "question_ids": [
+          "motor_4",
+          "motor_3",
+          "motor_2",
+          "motor_0_to_1"
+        ]
+      },
+      {
+        "id": "thigh_circumference",
+        "prompt": "Measure the thigh circumference difference.",
+        "help": "Compare sides in cm at 15 cm above the medial knee joint line.",
+        "question_ids": [
+          "atrophy",
+          "atrophy_2",
+          "atrophy_3",
+          "atrophy_4"
+        ]
+      },
+      {
+        "id": "calf_circumference",
+        "prompt": "Measure the calf circumference difference.",
+        "help": "Compare sides in cm at 15 cm below the medial knee joint line.",
+        "question_ids": [
+          "atrophy",
+          "atrophy_2",
+          "atrophy_4"
+        ]
+      },
+      {
+        "id": "calf_circumference_15_cm_below_lower_patellar_border",
+        "prompt": "Measure the calf circumference difference 15 cm below the lower patellar border.",
+        "help": "Compare sides in cm at 15 cm below the lower patellar border. For L3, the >2 cm to ≤3 cm calf condition uses this landmark instead of the medial knee joint line.",
+        "question_ids": [
+          "atrophy_3"
+        ]
       }
     ]
   },
@@ -3754,6 +4361,77 @@
           ]
         }
       }
+    ],
+    "examination_tasks": [
+      {
+        "id": "l4_sensory_assessment",
+        "prompt": "Assess L4 symptoms, pinprick sensation, and sharp/dull discrimination.",
+        "help": "Anterolateral thigh, crossing the knee to the medial dorsum of the foot and big toe. Document radicular pain or subjectively altered sensation (paresthesia-like numbness), objective dullness to pinprick, and whether sharp/dull perception is intact or lost (decreased protective sensibility). Distinguish symptoms without objective sensory loss from objective deficits.",
+        "question_ids": [
+          "sensory_status"
+        ]
+      },
+      {
+        "id": "l4_femoral_nerve_stretch",
+        "prompt": "Assess femoral nerve stretch reproducibility and L4 radicular symptoms.",
+        "help": "Use simultaneous hip extension and knee flexion. Record reproducible radicular pain, numbness and/or paresthesias in the L4 dermatomal distribution. Anterolateral thigh, crossing the knee to the medial dorsum of the foot and big toe.",
+        "question_ids": [
+          "neural_tension"
+        ]
+      },
+      {
+        "id": "ankle_dorsiflexion_strength",
+        "prompt": "Assess ankle dorsiflexion strength.",
+        "help": "Record the observed strength grade out of 5 for the applicable root and side. The linked questions retain their original combinations of findings.",
+        "question_ids": [
+          "motor_4",
+          "motor_3",
+          "motor_2",
+          "motor_0_to_1"
+        ]
+      },
+      {
+        "id": "knee_extensor_strength",
+        "prompt": "Assess knee extensor strength.",
+        "help": "Record the observed strength grade out of 5 for the applicable root and side. The linked questions retain their original combinations of findings.",
+        "question_ids": [
+          "motor_4",
+          "motor_3",
+          "motor_2",
+          "motor_0_to_1"
+        ]
+      },
+      {
+        "id": "thigh_circumference",
+        "prompt": "Measure the thigh circumference difference.",
+        "help": "Compare sides in cm at 15 cm above the medial knee joint line.",
+        "question_ids": [
+          "atrophy",
+          "atrophy_2",
+          "atrophy_3",
+          "atrophy_4"
+        ]
+      },
+      {
+        "id": "calf_circumference",
+        "prompt": "Measure the calf circumference difference.",
+        "help": "Compare sides in cm at 15 cm below the medial knee joint line.",
+        "question_ids": [
+          "atrophy",
+          "atrophy_2",
+          "atrophy_3",
+          "atrophy_4"
+        ]
+      },
+      {
+        "id": "l4_knee_reflex",
+        "prompt": "Compare knee reflexes between sides.",
+        "help": "Record asymmetric diminution or absence of the L4 nerve root-associated knee reflex.",
+        "question_ids": [
+          "reflex_diminished",
+          "reflex_absent"
+        ]
+      }
     ]
   },
   {
@@ -4063,6 +4741,79 @@
             }
           ]
         }
+      }
+    ],
+    "examination_tasks": [
+      {
+        "id": "l5_sensory_assessment",
+        "prompt": "Assess L5 symptoms, pinprick sensation, and sharp/dull discrimination.",
+        "help": "Lateral thigh, anterolateral leg, and middorsal foot. Document radicular pain or subjectively altered sensation (paresthesia-like numbness), objective dullness to pinprick, and whether sharp/dull perception is intact or lost (decreased protective sensibility). Distinguish symptoms without objective sensory loss from objective deficits.",
+        "question_ids": [
+          "sensory_status"
+        ]
+      },
+      {
+        "id": "l5_straight_leg_raise",
+        "prompt": "Assess straight leg raise reproducibility, elevation angle, and L5 radicular symptoms.",
+        "help": "Flex the hip and raise the leg with the knee extended. Record whether the maneuver reproducibly elicits the patient’s concordant radicular pain, numbness and/or paresthesias in the L5 dermatomal distribution, and document the elevation angle, including whether it is between 35° and 70° of hip flexion. Lateral thigh, anterolateral leg, and middorsal foot. Isolated back pain, nonradicular posterior-thigh/hamstring stretch discomfort, or nondermatomal leg pain alone does not establish a positive radicular test. Record coexisting discomfort separately from concordant radicular symptoms.",
+        "question_ids": [
+          "neural_tension"
+        ]
+      },
+      {
+        "id": "great_toe_extensor_strength",
+        "prompt": "Assess great/big toe extensor strength.",
+        "help": "Record the observed strength grade out of 5 for the applicable root and side. The linked questions retain their original combinations of findings.",
+        "question_ids": [
+          "motor_4",
+          "motor_3",
+          "motor_2",
+          "motor_0_to_1"
+        ]
+      },
+      {
+        "id": "ankle_dorsiflexion_strength",
+        "prompt": "Assess ankle dorsiflexion strength.",
+        "help": "Record the observed strength grade out of 5 for the applicable root and side. The linked questions retain their original combinations of findings.",
+        "question_ids": [
+          "motor_4",
+          "motor_3",
+          "motor_2",
+          "motor_0_to_1"
+        ]
+      },
+      {
+        "id": "ankle_inversion_strength",
+        "prompt": "Assess ankle inversion strength.",
+        "help": "Record the observed strength grade out of 5 for the applicable root and side. The linked questions retain their original combinations of findings.",
+        "question_ids": [
+          "motor_4",
+          "motor_3",
+          "motor_2",
+          "motor_0_to_1"
+        ]
+      },
+      {
+        "id": "thigh_circumference",
+        "prompt": "Measure the thigh circumference difference.",
+        "help": "Compare sides in cm at 15 cm above the medial knee joint line.",
+        "question_ids": [
+          "atrophy",
+          "atrophy_2",
+          "atrophy_3",
+          "atrophy_4"
+        ]
+      },
+      {
+        "id": "calf_circumference",
+        "prompt": "Measure the calf circumference difference.",
+        "help": "Compare sides in cm at 15 cm below the medial knee joint line.",
+        "question_ids": [
+          "atrophy",
+          "atrophy_2",
+          "atrophy_3",
+          "atrophy_4"
+        ]
       }
     ]
   },
@@ -4404,6 +5155,88 @@
           ]
         }
       }
+    ],
+    "examination_tasks": [
+      {
+        "id": "s1_sensory_assessment",
+        "prompt": "Assess S1 symptoms, pinprick sensation, and sharp/dull discrimination.",
+        "help": "Posterior calf/leg and lateral foot. Document radicular pain or subjectively altered sensation (paresthesia-like numbness), objective dullness to pinprick, and whether sharp/dull perception is intact or lost (decreased protective sensibility). Distinguish symptoms without objective sensory loss from objective deficits.",
+        "question_ids": [
+          "sensory_status"
+        ]
+      },
+      {
+        "id": "s1_straight_leg_raise",
+        "prompt": "Assess straight leg raise reproducibility, elevation angle, and S1 radicular symptoms.",
+        "help": "Flex the hip and raise the leg with the knee extended. Record whether the maneuver reproducibly elicits the patient’s concordant radicular pain, numbness and/or paresthesias in the S1 dermatomal distribution, and document the elevation angle, including whether it is between 35° and 70° of hip flexion. Posterior calf/leg and lateral foot. Isolated back pain, nonradicular posterior-thigh/hamstring stretch discomfort, or nondermatomal leg pain alone does not establish a positive radicular test. Record coexisting discomfort separately from concordant radicular symptoms.",
+        "question_ids": [
+          "neural_tension"
+        ]
+      },
+      {
+        "id": "s1_ankle_plantar_flexion_strength",
+        "prompt": "Assess S1 ankle plantar-flexion strength.",
+        "help": "Assess gastrocnemius/soleus plantar flexion and record the strength grade out of 5 separately for each side. Record manual strength separately from foot eversion and heel-raise endurance.",
+        "question_ids": [
+          "motor_4",
+          "motor_3",
+          "motor_2",
+          "motor_0_to_1"
+        ]
+      },
+      {
+        "id": "s1_foot_eversion_strength",
+        "prompt": "Assess foot eversion strength for the S1 motor examination.",
+        "help": "Assess resisted foot eversion using the fibularis/peroneal muscles and record the strength grade out of 5 separately for each side. This collects the eversion component of the source’s pronation wording; record it separately from plantar flexion.",
+        "question_ids": [
+          "motor_4",
+          "motor_3",
+          "motor_2",
+          "motor_0_to_1"
+        ]
+      },
+      {
+        "id": "s1_single_leg_heel_raises",
+        "prompt": "Assess gastrocnemius/soleus fatigue with up to ten single-leg heel raises per side.",
+        "help": "When safe, test each side separately while the patient holds onto a chair for balance. Record completed repetitions out of ten, declining heel height or fatigable weakness, and pain or balance limitations. If single-leg testing is not feasible, document the limitation and any modified method. Keep the result separate from manual strength grades; do not assign a strength grade or impairment value from the repetition count alone.",
+        "question_ids": [
+          "motor_4",
+          "motor_3",
+          "motor_2",
+          "motor_0_to_1"
+        ]
+      },
+      {
+        "id": "thigh_circumference",
+        "prompt": "Measure the thigh circumference difference.",
+        "help": "Compare sides in cm at 15 cm above the medial knee joint line.",
+        "question_ids": [
+          "atrophy",
+          "atrophy_2",
+          "atrophy_3",
+          "atrophy_4"
+        ]
+      },
+      {
+        "id": "calf_circumference",
+        "prompt": "Measure the calf circumference difference.",
+        "help": "Compare sides in cm at 15 cm below the medial knee joint line.",
+        "question_ids": [
+          "atrophy",
+          "atrophy_2",
+          "atrophy_3",
+          "atrophy_4"
+        ]
+      },
+      {
+        "id": "s1_ankle_reflex",
+        "prompt": "Compare ankle reflexes between sides.",
+        "help": "Record asymmetric diminution or absence of the S1 nerve root-associated ankle reflex.",
+        "question_ids": [
+          "reflex_diminished",
+          "reflex_absent"
+        ]
+      }
     ]
   },
   {
@@ -4540,7 +5373,16 @@
         }
       }
     ],
-    "help": "Fractures may occur at single or multiple levels. The single fracture with the highest whole person impairment rating is used to calculate impairment"
+    "help": "Fractures may occur at single or multiple levels. The single fracture with the highest whole person impairment rating is used to calculate impairment",
+    "examination_tasks": [
+      {
+        "id": "lumbar_fracture_exam_consistency",
+        "prompt": "Review whether the physical examination is consistent with lumbar spinal fracture.",
+        "question_ids": [
+          "pe_consistent"
+        ]
+      }
+    ]
   },
   {
     "row_id": "17-21-10",
@@ -4618,7 +5460,8 @@
         }
       }
     ],
-    "help": "Lumbar central canal stenosis may present with a history of neurogenic claudication. There are often no reliable objective findings on physical examination, and the diagnosis is based on imaging findings that explain the reported symptoms.177 In order to rate symptomatic central canal spinal stenosis, there must be a discrete event that precipitated symptoms. At time of current evaluation, the evaluator determines the CH, PE, and relevant CS to be consistent with the diagnosis of spinal stenosis and the natural history of the condition; +/− surgery"
+    "help": "Lumbar central canal stenosis may present with a history of neurogenic claudication. There are often no reliable objective findings on physical examination, and the diagnosis is based on imaging findings that explain the reported symptoms.177 In order to rate symptomatic central canal spinal stenosis, there must be a discrete event that precipitated symptoms. At time of current evaluation, the evaluator determines the CH, PE, and relevant CS to be consistent with the diagnosis of spinal stenosis and the natural history of the condition; +/− surgery",
+    "examination_tasks": []
   },
   {
     "row_id": "17-21-11",
@@ -4693,7 +5536,16 @@
         }
       }
     ],
-    "help": "The calculated impairment values take into account the potential future stress on the disc spaces adjacent to the surgical site, a condition known as adjacent disc disease or adjacent segment degeneration. This consideration reflects the understanding that the redistribution of mechanical forces following a spinal procedure can accelerate wear and tear on neighboring vertebral levels, potentially leading to additional spinal issues in the future"
+    "help": "The calculated impairment values take into account the potential future stress on the disc spaces adjacent to the surgical site, a condition known as adjacent disc disease or adjacent segment degeneration. This consideration reflects the understanding that the redistribution of mechanical forces following a spinal procedure can accelerate wear and tear on neighboring vertebral levels, potentially leading to additional spinal issues in the future",
+    "examination_tasks": [
+      {
+        "id": "lumbar_aomsi_fusion_arthroplasty_pseudarthrosis_exam_consistency",
+        "prompt": "Review whether the physical examination is consistent with lumbar AOMSI associated with fusion, arthroplasty, or pseudarthrosis.",
+        "question_ids": [
+          "pe_consistent"
+        ]
+      }
+    ]
   },
   {
     "row_id": "17-21-12",
@@ -4736,7 +5588,16 @@
         }
       }
     ],
-    "help": "The calculated impairment values take into account the potential future stress on the disc spaces adjacent to the surgical site, a condition known as adjacent disc disease or adjacent segment degeneration. This consideration reflects the understanding that the redistribution of mechanical forces following a spinal procedure can accelerate wear and tear on neighboring vertebral levels, potentially leading to additional spinal issues in the future"
+    "help": "The calculated impairment values take into account the potential future stress on the disc spaces adjacent to the surgical site, a condition known as adjacent disc disease or adjacent segment degeneration. This consideration reflects the understanding that the redistribution of mechanical forces following a spinal procedure can accelerate wear and tear on neighboring vertebral levels, potentially leading to additional spinal issues in the future",
+    "examination_tasks": [
+      {
+        "id": "lumbar_aomsi_instability_exam_consistency",
+        "prompt": "Review whether the physical examination is consistent with lumbar AOMSI associated with instability.",
+        "question_ids": [
+          "pe_consistent"
+        ]
+      }
+    ]
   },
   {
     "row_id": "17-21-13",
@@ -4787,6 +5648,15 @@
             }
           ]
         }
+      }
+    ],
+    "examination_tasks": [
+      {
+        "id": "lumbar_deep_spinal_wound_infection_exam_consistency",
+        "prompt": "Review whether the physical examination is consistent with lumbar deep spinal wound infection.",
+        "question_ids": [
+          "pe_consistent"
+        ]
       }
     ]
   }

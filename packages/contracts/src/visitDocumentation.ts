@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { amaMotorGradeSchema, amaNerveRootSchema } from "./amaReference.js";
 import { regionSchema } from "./regions.js";
 
 // Priority IDs are positional within one exam prep run, so responses are matched
@@ -20,6 +21,27 @@ export const visitDiagnosisReviewSchema = z.object({
   note: z.string().nullable(),
   // updatedAt of the exam prep the decision was made against.
   refinedUpdatedAt: z.string(),
+  // AMA history prerequisite: residual symptoms and a mechanism consistent with the
+  // diagnosis. null = not asked; false stops rating this diagnosis.
+  amaHistoryConfirmed: z.boolean().nullable().default(null),
+});
+
+// One AMA component: a reference row + actual root + side, linked to every diagnosis
+// it supports, so diagnoses sharing a component share one set of answers.
+// Root and side are null for rows without nerve roots. Missing/null answers are
+// unresolved, never false. An assessment with no linked diagnosis keeps its answers
+// but is not rated until it is linked again.
+export const amaAssessmentSchema = z.object({
+  id: z.string().min(1),
+  region: regionSchema,
+  canonicalDxIds: z.array(z.string()),
+  rowId: z.string(),
+  nerveRoot: amaNerveRootSchema.nullable(),
+  side: z.enum(["left", "right"]).nullable(),
+  answers: z.record(z.string(), z.union([z.boolean(), z.string(), z.null()])),
+  // Strength grade per muscle-strength task id, so reports can cite the muscle.
+  // The motor_* answers are derived from these (amaMotorAnswers).
+  motorGrades: z.record(z.string(), amaMotorGradeSchema).default({}),
 });
 
 // One visit per case. The note may contain optional [REGION] section labels;
@@ -31,10 +53,12 @@ export const visitDocumentationSchema = z.object({
   includedQuestionnaireIds: z.array(z.number().int().positive()),
   priorityResponses: z.array(visitPriorityResponseSchema),
   diagnosisReviews: z.array(visitDiagnosisReviewSchema),
+  amaAssessments: z.array(amaAssessmentSchema).default([]),
 });
 export type VisitDocumentation = z.infer<typeof visitDocumentationSchema>;
 export type VisitPriorityResponse = z.infer<typeof visitPriorityResponseSchema>;
 export type VisitDiagnosisReview = z.infer<typeof visitDiagnosisReviewSchema>;
+export type AmaAssessment = z.infer<typeof amaAssessmentSchema>;
 
 export function initializeVisitDocumentation(): VisitDocumentation {
   return {
@@ -43,6 +67,7 @@ export function initializeVisitDocumentation(): VisitDocumentation {
     includedQuestionnaireIds: [],
     priorityResponses: [],
     diagnosisReviews: [],
+    amaAssessments: [],
   };
 }
 

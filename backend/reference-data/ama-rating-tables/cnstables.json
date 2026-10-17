@@ -1,0 +1,1342 @@
+[
+  {
+    "table_id": "mental_status_cognition_highest_integrative_function_and_emotion_mschif_e",
+    "description": "Mental Status, Cognition, Highest Integrative Function, and Emotion (MSCHIF-E)",
+    "instructions": "**Neuro Cog Disorder Scores**\n\n**None - class 0**\n• 91–100: Superior functioning in a wide range of activities; life's problems never seem to get out of hand; no symptms.\n\n**Class 1**\n• 81–90: Absent or minimal symptoms; good functioning in all areas; interested and involved in a wide range of activities.\n• 71–80: If symptoms are present, they are transient and expectable reactions to psychosocial stressors; slight impairment in social, occupational, or school functioning.\n\n**Mild Class 2**\n• 61–70: Some mild symptoms (e.g., depressed mood and mild insomnia) or some difficulty in social, occupational, or school functioning, but generally functioning pretty well.\n\n**Moderate Class 3**\n• 51–60: Moderate symptoms (e.g., flat affect and circumstantial speech, occasional panic attacks) or moderate difficulty in social, occupational, or school functioning.\n\n**Severe Class 4**\n• Serious symptoms (e.g., suicidal ideation, severe obsessional rituals, frequent shoplifting) or any serious impairment in social, occupational, or school functioning.\n• Impairment in reality testing or communication (e.g., speech is at times illogical, obscure, or irrelevant) or major impairment in several areas, such as work or school, family relations, judgment, thinking, or mood.\n• Behavior is considerably influenced by delusions or hallucinations or serious impairment in communication or judgment (e.g., sometimes incoherent, acts grossly inappropriately, suicidal preoccupation) or inability to function in almost all areas.",
+    "source_ref": {
+      "guides_version": "6th Edition, 2025",
+      "chapter": "13",
+      "table": "Unspecified in tbleupload.md"
+    },
+    "class_options": [
+      {
+        "value": 0,
+        "label": "None",
+        "instructions": "91–100: Superior functioning in a wide range of activities; life's problems never seem to get out of hand; no symptoms."
+      },
+      {
+        "value": 1,
+        "label": "Subjective complaints",
+        "instructions": "Subjective complaints: \n \nSome difficulties with performance of ADLs and iADLs And \n \nWithout objective evidence of cognitive impairment"
+      },
+      {
+        "value": 2,
+        "label": "Mild",
+        "instructions": "Mild neurocognitive disorder: \n \nNormal performance of ADLs. \n \nAnd \n \nSome limitations in performance of iADLs \n \nAnd \n \nWith mild cognitive impairment \n \nAnd \n \nWithout neurobehavioral symptoms"
+      },
+      {
+        "value": 3,
+        "label": "Moderate",
+        "instructions": "Mild neurocognitive disorder: \n \nLimitations in basic ADLs \n \nAnd \n \nSignificant limitations in iADLs \n \nAnd \n \nWith moderate cognitive impairment \n \nAnd \n \nWith neurobehavioral symptoms"
+      },
+      {
+        "value": 4,
+        "label": "Severe",
+        "instructions": "Major neurocognitive disorder: \n \nLimitations in ADLs that preclude independence \n \nAnd \n \nLimitations in iADLs that preclude independence \n \nAnd \n \nWith severe cognitive impairment"
+      }
+    ],
+    "mod_options": {
+      "prompt": "Select the grade severity.",
+      "options": [
+        {
+          "id": "a",
+          "label": "None",
+          "text": "Grade severity A."
+        },
+        {
+          "id": "b",
+          "label": "Moderate",
+          "text": "Grade severity B."
+        },
+        {
+          "id": "c",
+          "label": "Significant",
+          "text": "Grade severity C."
+        }
+      ]
+    },
+    "results": [
+      {
+        "class_value": 0,
+        "mod_option_id": "a",
+        "wpi": 0
+      },
+      {
+        "class_value": 0,
+        "mod_option_id": "b",
+        "wpi": 0
+      },
+      {
+        "class_value": 0,
+        "mod_option_id": "c",
+        "wpi": 0
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "a",
+        "wpi": 1
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "b",
+        "wpi": 2
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "c",
+        "wpi": 3
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "a",
+        "wpi": 5
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "b",
+        "wpi": 12
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "c",
+        "wpi": 20
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "a",
+        "wpi": 25
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "b",
+        "wpi": 35
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "c",
+        "wpi": 45
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "a",
+        "wpi": 50
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "b",
+        "wpi": 60
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "c",
+        "wpi": 65
+      }
+    ]
+  },
+  {
+    "table_id": "upper_extremity_cns_dysfunction_dominant",
+    "description": "Upper Extremity CNS Dysfunction (Dominant)",
+    "instructions": null,
+    "source_ref": {
+      "guides_version": "6th Edition, 2025",
+      "chapter": "13",
+      "table": "Unspecified in tbleupload.md"
+    },
+    "class_options": [
+      {
+        "value": 0,
+        "label": "None",
+        "instructions": "Person has no impairment of upper extremity function"
+      },
+      {
+        "value": 1,
+        "label": "Mild",
+        "instructions": "Individual has difficulty with digital dexterity that does not limit ADLs"
+      },
+      {
+        "value": 2,
+        "label": "Moderate",
+        "instructions": "Individual can use the involved extremity for basic ADLs, can grasp and hold objects with difficulty but digital dexterity limits iADLs"
+      },
+      {
+        "value": 3,
+        "label": "Severe",
+        "instructions": "Individual can use the involved extremity only as a gross assist in ADLs"
+      },
+      {
+        "value": 4,
+        "label": "Extreme",
+        "instructions": "Near total loss of the use of the involved extremity for ADLs or iADLs"
+      }
+    ],
+    "mod_options": {
+      "prompt": "Select the grade severity.",
+      "options": [
+        {
+          "id": "a",
+          "label": "None",
+          "text": "Grade severity A."
+        },
+        {
+          "id": "b",
+          "label": "Moderate",
+          "text": "Grade severity B."
+        },
+        {
+          "id": "c",
+          "label": "Significant",
+          "text": "Grade severity C."
+        }
+      ]
+    },
+    "results": [
+      {
+        "class_value": 0,
+        "mod_option_id": "a",
+        "wpi": 0
+      },
+      {
+        "class_value": 0,
+        "mod_option_id": "b",
+        "wpi": 0
+      },
+      {
+        "class_value": 0,
+        "mod_option_id": "c",
+        "wpi": 0
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "a",
+        "wpi": 1
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "b",
+        "wpi": 5
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "c",
+        "wpi": 10
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "a",
+        "wpi": 11
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "b",
+        "wpi": 15
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "c",
+        "wpi": 20
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "a",
+        "wpi": 21
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "b",
+        "wpi": 30
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "c",
+        "wpi": 40
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "a",
+        "wpi": 41
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "b",
+        "wpi": 50
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "c",
+        "wpi": 60
+      }
+    ]
+  },
+  {
+    "table_id": "upper_extremity_cns_dysfunction_nondominant",
+    "description": "Upper Extremity CNS Dysfunction (Nondominant)",
+    "instructions": null,
+    "source_ref": {
+      "guides_version": "6th Edition, 2025",
+      "chapter": "13",
+      "table": "Unspecified in tbleupload.md"
+    },
+    "class_options": [
+      {
+        "value": 0,
+        "label": "None",
+        "instructions": "Person has no impairment of upper extremity function"
+      },
+      {
+        "value": 1,
+        "label": "Mild",
+        "instructions": "Individual has difficulty with digital dexterity that does not limit ADLs"
+      },
+      {
+        "value": 2,
+        "label": "Moderate",
+        "instructions": "Individual can use the involved extremity for basic ADLs, can grasp and hold objects with difficulty but digital dexterity limits iADLs"
+      },
+      {
+        "value": 3,
+        "label": "Severe",
+        "instructions": "Individual can use the involved extremity only as a gross assist in ADLs"
+      },
+      {
+        "value": 4,
+        "label": "Extreme",
+        "instructions": "Near total loss of the use of the involved extremity for ADLs or iADLs"
+      }
+    ],
+    "mod_options": {
+      "prompt": "Select the grade severity.",
+      "options": [
+        {
+          "id": "a",
+          "label": "None",
+          "text": "Grade severity A."
+        },
+        {
+          "id": "b",
+          "label": "Moderate",
+          "text": "Grade severity B."
+        },
+        {
+          "id": "c",
+          "label": "Significant",
+          "text": "Grade severity C."
+        }
+      ]
+    },
+    "results": [
+      {
+        "class_value": 0,
+        "mod_option_id": "a",
+        "wpi": 0
+      },
+      {
+        "class_value": 0,
+        "mod_option_id": "b",
+        "wpi": 0
+      },
+      {
+        "class_value": 0,
+        "mod_option_id": "c",
+        "wpi": 0
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "a",
+        "wpi": 1
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "b",
+        "wpi": 3
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "c",
+        "wpi": 5
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "a",
+        "wpi": 6
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "b",
+        "wpi": 10
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "c",
+        "wpi": 15
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "a",
+        "wpi": 16
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "b",
+        "wpi": 23
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "c",
+        "wpi": 30
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "a",
+        "wpi": 31
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "b",
+        "wpi": 40
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "c",
+        "wpi": 50
+      }
+    ]
+  },
+  {
+    "table_id": "station_and_gait_disorders",
+    "description": "Station and Gait Disorders",
+    "instructions": null,
+    "source_ref": {
+      "guides_version": "6th Edition, 2025",
+      "chapter": "13",
+      "table": "Unspecified in tbleupload.md"
+    },
+    "class_options": [
+      {
+        "value": 0,
+        "label": "None",
+        "instructions": "No disorder of gait or station"
+      },
+      {
+        "value": 1,
+        "label": "Mild",
+        "instructions": "Some difficulty with performance of ADLs and iADLs \n \nAnd \n \nRises to standing position; walks but has difficulty with elevations, grades, stairs, deep chairs, and/or long distances"
+      },
+      {
+        "value": 2,
+        "label": "Moderate",
+        "instructions": "The condition limits performance of iADLs but not basic ADLs \n \nAnd \n \nRises to standing position; walks some distance with difficulty and without assistance, but is limited to level surfaces"
+      },
+      {
+        "value": 3,
+        "label": "Severe",
+        "instructions": "The condition limits performance of most basic and multiple instrumental ADLs \n \nAnd \n \nRises and maintains standing position with difficulty; cannot walk without assistance"
+      },
+      {
+        "value": 4,
+        "label": "Extreme",
+        "instructions": "Near total loss of the use of the involved extremity for ADLs or iADLs \n \nAnd \n \nCannot stand with help, mechanical support, and/or an assistive device"
+      }
+    ],
+    "mod_options": {
+      "prompt": "Select the grade severity.",
+      "options": [
+        {
+          "id": "a",
+          "label": "None",
+          "text": "Grade severity A."
+        },
+        {
+          "id": "b",
+          "label": "Moderate",
+          "text": "Grade severity B."
+        },
+        {
+          "id": "c",
+          "label": "Significant",
+          "text": "Grade severity C."
+        }
+      ]
+    },
+    "results": [
+      {
+        "class_value": 0,
+        "mod_option_id": "a",
+        "wpi": 0
+      },
+      {
+        "class_value": 0,
+        "mod_option_id": "b",
+        "wpi": 0
+      },
+      {
+        "class_value": 0,
+        "mod_option_id": "c",
+        "wpi": 0
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "a",
+        "wpi": 1
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "b",
+        "wpi": 5
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "c",
+        "wpi": 10
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "a",
+        "wpi": 11
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "b",
+        "wpi": 15
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "c",
+        "wpi": 20
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "a",
+        "wpi": 21
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "b",
+        "wpi": 28
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "c",
+        "wpi": 35
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "a",
+        "wpi": 36
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "b",
+        "wpi": 43
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "c",
+        "wpi": 50
+      }
+    ]
+  },
+  {
+    "table_id": "neurogenic_respiratory_dysfunction",
+    "description": "Neurogenic Respiratory Dysfunction",
+    "instructions": null,
+    "source_ref": {
+      "guides_version": "6th Edition, 2025",
+      "chapter": "13",
+      "table": "Unspecified in tbleupload.md"
+    },
+    "class_options": [
+      {
+        "value": 0,
+        "label": "None",
+        "instructions": "No neurologic impairment of respiration"
+      },
+      {
+        "value": 1,
+        "label": "Mild",
+        "instructions": "Minimal restriction of respiratory function with difficulties but not limitations in iADLs and ADLs."
+      },
+      {
+        "value": 2,
+        "label": "Moderate",
+        "instructions": "Mild restriction of respiratory function with limitation in iADLs but not ADLs, \n \nAnd \n \nCan perform pulmonary toilet without the aid of others"
+      },
+      {
+        "value": 3,
+        "label": "Severe",
+        "instructions": "Moderate restriction of respiratory function \n \nAnd \n \nClearing of secretions requiring regular pulmonary toilet by self or others"
+      },
+      {
+        "value": 4,
+        "label": "Extreme",
+        "instructions": "Severe limitation in respiratory function \n \nAnd \n \nClearing of secretions. Requires extensive pulmonary toilet by others \n \nOr \n \nVentilator dependent"
+      }
+    ],
+    "mod_options": {
+      "prompt": "Select the grade severity.",
+      "options": [
+        {
+          "id": "a",
+          "label": "None",
+          "text": "Grade severity A."
+        },
+        {
+          "id": "b",
+          "label": "Moderate",
+          "text": "Grade severity B."
+        },
+        {
+          "id": "c",
+          "label": "Significant",
+          "text": "Grade severity C."
+        }
+      ]
+    },
+    "results": [
+      {
+        "class_value": 0,
+        "mod_option_id": "a",
+        "wpi": 0
+      },
+      {
+        "class_value": 0,
+        "mod_option_id": "b",
+        "wpi": 0
+      },
+      {
+        "class_value": 0,
+        "mod_option_id": "c",
+        "wpi": 0
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "a",
+        "wpi": 2
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "b",
+        "wpi": 6
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "c",
+        "wpi": 10
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "a",
+        "wpi": 11
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "b",
+        "wpi": 17
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "c",
+        "wpi": 23
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "a",
+        "wpi": 24
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "b",
+        "wpi": 32
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "c",
+        "wpi": 40
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "a",
+        "wpi": 45
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "b",
+        "wpi": 55
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "c",
+        "wpi": 65
+      }
+    ]
+  },
+  {
+    "table_id": "neurogenic_bowel",
+    "description": "Neurogenic Bowel",
+    "instructions": null,
+    "source_ref": {
+      "guides_version": "6th Edition, 2025",
+      "chapter": "13",
+      "table": "Unspecified in tbleupload.md"
+    },
+    "class_options": [
+      {
+        "value": 0,
+        "label": "None",
+        "instructions": "Fully continent without special program"
+      },
+      {
+        "value": 1,
+        "label": "Mild",
+        "instructions": "Continent with bowel program \n \nAnd \n \nMild documented anatomic or functional loss"
+      },
+      {
+        "value": 2,
+        "label": "Moderate",
+        "instructions": "Incontinent about once a week despite optimal bowel program \n \nAnd \n \nModerate documented anatomic or functional loss"
+      },
+      {
+        "value": 3,
+        "label": "Severe",
+        "instructions": "Incontinent about once a day despite optimal bowel program \n \nAnd \n \nSevere documented anatomic or functional loss"
+      },
+      {
+        "value": 4,
+        "label": "Extreme",
+        "instructions": "Little to no voluntary control of bowels \n \nAnd \n \nComplete documented anatomic or functional loss"
+      }
+    ],
+    "mod_options": {
+      "prompt": "Select the grade severity.",
+      "options": [
+        {
+          "id": "a",
+          "label": "None",
+          "text": "Grade severity A."
+        },
+        {
+          "id": "b",
+          "label": "Moderate",
+          "text": "Grade severity B."
+        },
+        {
+          "id": "c",
+          "label": "Significant",
+          "text": "Grade severity C."
+        }
+      ]
+    },
+    "results": [
+      {
+        "class_value": 0,
+        "mod_option_id": "a",
+        "wpi": 0
+      },
+      {
+        "class_value": 0,
+        "mod_option_id": "b",
+        "wpi": 0
+      },
+      {
+        "class_value": 0,
+        "mod_option_id": "c",
+        "wpi": 0
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "a",
+        "wpi": 1
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "b",
+        "wpi": 3
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "c",
+        "wpi": 5
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "a",
+        "wpi": 6
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "b",
+        "wpi": 8
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "c",
+        "wpi": 10
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "a",
+        "wpi": 11
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "b",
+        "wpi": 15
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "c",
+        "wpi": 20
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "a",
+        "wpi": 25
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "b",
+        "wpi": 35
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "c",
+        "wpi": 50
+      }
+    ]
+  },
+  {
+    "table_id": "neurogenic_bladder",
+    "description": "Neurogenic Bladder",
+    "instructions": null,
+    "source_ref": {
+      "guides_version": "6th Edition, 2025",
+      "chapter": "13",
+      "table": "Unspecified in tbleupload.md"
+    },
+    "class_options": [
+      {
+        "value": 0,
+        "label": "None",
+        "instructions": "Prior history of bladder disease with no residuals \n \nAnd \n \nNo signs of bladder disease"
+      },
+      {
+        "value": 1,
+        "label": "Mild",
+        "instructions": "Occasional mild to moderate symptoms such as frequency, nocturia, or dribbling, with normal function between episodes \n \nAnd \n \nIntermittent mild signs that respond to treatment or intermittent moderate findings controlled with continuous treatment \n \nAnd \n \nTesting, if performed, mildly abnormal"
+      },
+      {
+        "value": 2,
+        "label": "Moderate",
+        "instructions": "Moderate symptoms such as pain or loss of control of micturition despite continuous treatment \n \nOr \n \nsymptoms requiring urinary diversion procedure \n \nAnd \n \nContinuous mild signs despite treatment or intermittent moderate physical findings despite treatment \n \nAnd \n \nTesting, if performed, moderately abnormal"
+      },
+      {
+        "value": 3,
+        "label": "Severe",
+        "instructions": "Little to no voluntary control of micturition or severe symptoms despite treatment \n \nAnd \n \nContinuous moderate signs of significant bladder disease despite treatment or intermittent severe findings only partially responsive to treatment \n \nOr \n \nsuprapubic catheter placement \n \nAnd \n \nTesting, if performed, severely abnormal"
+      },
+      {
+        "value": 4,
+        "label": "Severe",
+        "instructions": "Little to no voluntary control of micturition or severe symptoms despite treatment \n \nAnd \n \nContinuous moderate signs of significant bladder disease despite treatment or intermittent severe findings only partially responsive to treatment \n \nOr \n \nsuprapubic catheter placement \n \nAnd \n \nTesting, if performed, severely abnormal"
+      }
+    ],
+    "mod_options": {
+      "prompt": "Select the grade severity.",
+      "options": [
+        {
+          "id": "a",
+          "label": "None",
+          "text": "Grade severity A."
+        },
+        {
+          "id": "b",
+          "label": "Moderate",
+          "text": "Grade severity B."
+        },
+        {
+          "id": "c",
+          "label": "Significant",
+          "text": "Grade severity C."
+        }
+      ]
+    },
+    "results": [
+      {
+        "class_value": 0,
+        "mod_option_id": "a",
+        "wpi": 0
+      },
+      {
+        "class_value": 0,
+        "mod_option_id": "b",
+        "wpi": 0
+      },
+      {
+        "class_value": 0,
+        "mod_option_id": "c",
+        "wpi": 0
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "a",
+        "wpi": 1
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "b",
+        "wpi": 5
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "c",
+        "wpi": 9
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "a",
+        "wpi": 11
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "b",
+        "wpi": 15
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "c",
+        "wpi": 19
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "a",
+        "wpi": 21
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "b",
+        "wpi": 25
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "c",
+        "wpi": 29
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "a",
+        "wpi": 21
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "b",
+        "wpi": 25
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "c",
+        "wpi": 29
+      }
+    ]
+  },
+  {
+    "table_id": "neurogenic_sexual_dysfunction",
+    "description": "Neurogenic Sexual Dysfunction",
+    "instructions": null,
+    "source_ref": {
+      "guides_version": "6th Edition, 2025",
+      "chapter": "13",
+      "table": "Unspecified in tbleupload.md"
+    },
+    "class_options": [
+      {
+        "value": 0,
+        "label": "None",
+        "instructions": "No impairment of sexual function"
+      },
+      {
+        "value": 1,
+        "label": "Mild",
+        "instructions": "Individual has some sexual function but with difficulty of erection or ejaculation in men or lack of excitement or lubrication in either sex"
+      },
+      {
+        "value": 2,
+        "label": "Moderate",
+        "instructions": "Reflex sexual functioning is possible, but there is no awareness"
+      },
+      {
+        "value": 3,
+        "label": "Severe",
+        "instructions": "No sexual function possible"
+      },
+      {
+        "value": 4,
+        "label": "Severe",
+        "instructions": "No sexual function possible"
+      }
+    ],
+    "mod_options": {
+      "prompt": "Select the grade severity.",
+      "options": [
+        {
+          "id": "a",
+          "label": "None",
+          "text": "Grade severity A."
+        },
+        {
+          "id": "b",
+          "label": "Moderate",
+          "text": "Grade severity B."
+        },
+        {
+          "id": "c",
+          "label": "Significant",
+          "text": "Grade severity C."
+        }
+      ]
+    },
+    "results": [
+      {
+        "class_value": 0,
+        "mod_option_id": "a",
+        "wpi": 0
+      },
+      {
+        "class_value": 0,
+        "mod_option_id": "b",
+        "wpi": 0
+      },
+      {
+        "class_value": 0,
+        "mod_option_id": "c",
+        "wpi": 0
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "a",
+        "wpi": 1
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "b",
+        "wpi": 3
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "c",
+        "wpi": 5
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "a",
+        "wpi": 6
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "b",
+        "wpi": 8
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "c",
+        "wpi": 10
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "a",
+        "wpi": 11
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "b",
+        "wpi": 13
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "c",
+        "wpi": 15
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "a",
+        "wpi": 11
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "b",
+        "wpi": 13
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "c",
+        "wpi": 15
+      }
+    ]
+  },
+  {
+    "table_id": "neuropathic_pain_peripheral_neuropathy_and_craniofacial",
+    "description": "Neuropathic Pain (Peripheral Neuropathy and Craniofacial)",
+    "instructions": null,
+    "source_ref": {
+      "guides_version": "6th Edition, 2025",
+      "chapter": "13",
+      "table": "Unspecified in tbleupload.md"
+    },
+    "class_options": [
+      {
+        "value": 0,
+        "label": "None",
+        "instructions": "No neuropathic pain"
+      },
+      {
+        "value": 1,
+        "label": "Mild",
+        "instructions": "Mild neuropathic pain in an anatomic distribution without limitations in iADLs and ADLs \n \nAnd \n \nWithout sensory loss"
+      },
+      {
+        "value": 2,
+        "label": "Moderate",
+        "instructions": "Moderate uncontrolled neuropathic pain in an anatomic distribution that interferes with iADLs, but not basic ADLs \n \nAnd \n \nWith or without Sensory loss"
+      },
+      {
+        "value": 3,
+        "label": "Severe",
+        "instructions": "Severe neuropathic pain in an anatomic distribution that interferes with basic ADLs and iADLs \n \nAnd \n \nWith sensory loss"
+      },
+      {
+        "value": 4,
+        "label": "Extreme",
+        "instructions": "Very severe deafferentation pain with objective findings of loss of protective sensation (ulceration, burns) \n \nAnd \n \nAnesthesia"
+      }
+    ],
+    "mod_options": {
+      "prompt": "Select the grade severity.",
+      "options": [
+        {
+          "id": "a",
+          "label": "None",
+          "text": "Grade severity A."
+        },
+        {
+          "id": "b",
+          "label": "Moderate",
+          "text": "Grade severity B."
+        },
+        {
+          "id": "c",
+          "label": "Significant",
+          "text": "Grade severity C."
+        }
+      ]
+    },
+    "results": [
+      {
+        "class_value": 0,
+        "mod_option_id": "a",
+        "wpi": 0
+      },
+      {
+        "class_value": 0,
+        "mod_option_id": "b",
+        "wpi": 0
+      },
+      {
+        "class_value": 0,
+        "mod_option_id": "c",
+        "wpi": 0
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "a",
+        "wpi": 1
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "b",
+        "wpi": 2
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "c",
+        "wpi": 3
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "a",
+        "wpi": 4
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "b",
+        "wpi": 5
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "c",
+        "wpi": 7
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "a",
+        "wpi": 8
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "b",
+        "wpi": 9
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "c",
+        "wpi": 10
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "a",
+        "wpi": 11
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "b",
+        "wpi": 13
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "c",
+        "wpi": 15
+      }
+    ]
+  },
+  {
+    "table_id": "migraine",
+    "description": "Migraine",
+    "instructions": null,
+    "source_ref": {
+      "guides_version": "6th Edition, 2025",
+      "chapter": "13",
+      "table": "Unspecified in tbleupload.md"
+    },
+    "class_options": [
+      {
+        "value": 0,
+        "label": "None",
+        "instructions": "Without symptoms on medications"
+      },
+      {
+        "value": 1,
+        "label": "Mild",
+        "instructions": "Migraine with some prodromal symptoms that are not controlled with medications without impairment in iADLs"
+      },
+      {
+        "value": 2,
+        "label": "Moderate",
+        "instructions": "Migraine intermittently interferes with some iADLs (consistent with HIT-6 or MSQ), but not basic ADLs"
+      },
+      {
+        "value": 3,
+        "label": "Severe",
+        "instructions": "Migraine continuously limits some basic ADLs and iADLs (consistent with HIT-6 or MSQ)"
+      },
+      {
+        "value": 4,
+        "label": "Extreme",
+        "instructions": "Migraine limits individual to home with severe impairment of basic ADLs and iADLs"
+      }
+    ],
+    "mod_options": {
+      "prompt": "Select the grade severity.",
+      "options": [
+        {
+          "id": "a",
+          "label": "None",
+          "text": "Grade severity A."
+        },
+        {
+          "id": "b",
+          "label": "Moderate",
+          "text": "Grade severity B."
+        },
+        {
+          "id": "c",
+          "label": "Significant",
+          "text": "Grade severity C."
+        }
+      ]
+    },
+    "results": [
+      {
+        "class_value": 0,
+        "mod_option_id": "a",
+        "wpi": 0
+      },
+      {
+        "class_value": 0,
+        "mod_option_id": "b",
+        "wpi": 0
+      },
+      {
+        "class_value": 0,
+        "mod_option_id": "c",
+        "wpi": 0
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "a",
+        "wpi": 1
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "b",
+        "wpi": 2
+      },
+      {
+        "class_value": 1,
+        "mod_option_id": "c",
+        "wpi": 3
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "a",
+        "wpi": 4
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "b",
+        "wpi": 5
+      },
+      {
+        "class_value": 2,
+        "mod_option_id": "c",
+        "wpi": 7
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "a",
+        "wpi": 8
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "b",
+        "wpi": 9
+      },
+      {
+        "class_value": 3,
+        "mod_option_id": "c",
+        "wpi": 10
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "a",
+        "wpi": 11
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "b",
+        "wpi": 12
+      },
+      {
+        "class_value": 4,
+        "mod_option_id": "c",
+        "wpi": 13
+      }
+    ]
+  }
+]

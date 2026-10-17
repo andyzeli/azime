@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Source-of-truth generator for the spine standards-of-care taxonomy (v0.1.0).
+"""Source-of-truth generator for the spine standards-of-care taxonomy (v0.2.0).
 
 Edit the data in this file, then run `python3 build.py && python3 validate.py`.
+canonical_diagnoses.json is copied byte-for-byte from input/canonical_diagnosis_v2.json (owner-maintained; never edited here).
 Outputs the six upload-ready JSON files in this directory.
 """
-import json, os
+import json, os, shutil
 
 OUT = os.path.dirname(os.path.abspath(__file__))
 REGIONS = {"cervical_spine": "cervical", "thoracic_spine": "thoracic", "lumbar_spine": "lumbar"}
@@ -142,68 +143,62 @@ REGION_EXTRAS = {
     ("revision_surgery", "cervical"): (None, ["revision ACDF", "revision cervical fusion"]),
 }
 
-# ----------------------------------------------------------------------------- canonical diagnoses
-# (id, region_id, label, description, icdPrefixes)
-DX = [
-    # ---- lumbar
-    ("lumbar_nonspecific_strain_sprain", "lumbar_spine", "Non-specific low back pain / lumbar strain-sprain",
-     "Axial low back pain without radicular findings, fracture or specific structural pathology; includes lumbar sprain/strain and muscle spasm. Corresponds to AMA Guides lumbar non-specific/soft-tissue rows.",
-     ["M54.5", "M54.50", "M54.59", "S33.5", "S39.012", "M62.830"]),
-    ("lumbar_disc_herniation_radiculopathy", "lumbar_spine", "Lumbar disc herniation with radiculopathy (sciatica)",
-     "Lumbar/lumbosacral disc herniation or displacement with concordant radicular pain, sensory or motor findings; includes sciatica and lumbar radiculopathy codes when a compressive disc lesion is the presumed cause.",
-     ["M51.16", "M51.17", "M51.26", "M51.27", "M54.16", "M54.17", "M54.3", "M54.4"]),
-    ("lumbar_spinal_stenosis", "lumbar_spine", "Degenerative lumbar spinal stenosis (neurogenic claudication / radiculopathy)",
-     "Central, lateral recess or foraminal stenosis from degenerative change producing neurogenic claudication and/or radiculopathy, without significant spondylolisthesis.",
-     ["M48.06", "M48.061", "M48.062", "M48.07", "M47.26", "M47.27"]),
-    ("lumbar_spondylolisthesis", "lumbar_spine", "Lumbar spondylolisthesis / spondylolysis (degenerative or isthmic)",
-     "Degenerative or isthmic (pars defect) slip or segmental instability, with axial pain and/or stenosis-type symptoms (claudication, radiculopathy).",
-     ["M43.16", "M43.17", "M43.06", "M43.07", "Q76.2", "M53.2X6", "M53.2X7"]),
-    ("lumbar_facet_degenerative_disc", "lumbar_spine", "Lumbar facet arthropathy / degenerative disc disease (axial spondylotic or discogenic pain)",
-     "Chronic axial low back pain attributed to facet (zygapophyseal) arthropathy, spondylosis or disc degeneration without radiculopathy, stenosis or instability; includes vertebrogenic low back pain (M54.51).",
-     ["M47.816", "M47.817", "M47.896", "M47.897", "M51.36", "M51.37", "M54.51"]),
-    ("lumbar_fracture", "lumbar_spine", "Lumbar vertebral fracture / dislocation (traumatic or osteoporotic compression)",
-     "Traumatic fractures or dislocations of lumbar vertebrae and osteoporotic/insufficiency compression fractures. M80.08 is not region-specific; resolve region from documentation.",
-     ["S32.0", "S33.1", "M48.56", "M48.57", "M80.08"]),
-    ("lumbar_post_surgical", "lumbar_spine", "Post-surgical lumbar spine / failed back surgery syndrome",
-     "Persistent or recurrent pain after lumbar spine surgery (post-laminectomy syndrome, pseudarthrosis, adjacent-segment disease, epidural fibrosis). M96.1, M96.0 and Z98.1 are not region-specific; resolve region from operative history.",
-     ["M96.1", "M96.0", "Z98.1"]),
-    # ---- cervical
-    ("cervical_nonspecific_strain_sprain", "cervical_spine", "Non-specific neck pain / cervical strain-sprain (incl. whiplash-associated disorder)",
-     "Axial neck pain without radicular or myelopathic findings, fracture or specific structural pathology; includes cervical sprain/strain and whiplash-associated disorder grades I-II.",
-     ["M54.2", "S13.4", "S16.1", "M53.1"]),
-    ("cervical_radiculopathy", "cervical_spine", "Cervical radiculopathy (disc herniation or foraminal stenosis)",
-     "Cervical nerve-root compression from disc herniation or spondylotic foraminal stenosis with concordant radicular pain, sensory, motor or reflex findings (NASS degenerative cervical radiculopathy).",
-     ["M50.1", "M50.2", "M54.12", "M54.13", "M47.22", "M47.23"]),
-    ("cervical_myelopathy_stenosis", "cervical_spine", "Degenerative cervical myelopathy / central canal stenosis",
-     "Spinal cord compression from spondylosis, disc disease, OPLL or central stenosis with or without clinical myelopathy.",
-     ["M50.0", "M47.12", "M47.13", "M48.02", "M48.03"]),
-    ("cervical_facet_degenerative", "cervical_spine", "Cervical facet arthropathy / degenerative disc disease (axial spondylosis)",
-     "Chronic axial neck pain (with or without cervicogenic headache) attributed to facet arthropathy, spondylosis or disc degeneration without radiculopathy or myelopathy.",
-     ["M47.812", "M47.813", "M47.892", "M47.893", "M50.3"]),
-    ("cervical_fracture", "cervical_spine", "Cervical vertebral fracture / dislocation",
-     "Traumatic fracture, subluxation or dislocation of C1-C7 and pathological/collapsed cervical vertebra.",
-     ["S12.0", "S12.1", "S12.2", "S12.3", "S12.4", "S12.5", "S12.6", "S12.9", "S13.1", "M48.52"]),
-    ("cervical_post_surgical", "cervical_spine", "Post-surgical cervical spine (post-laminectomy syndrome, pseudarthrosis, adjacent segment)",
-     "Persistent or recurrent neck/arm pain after cervical spine surgery. M96.1, M96.0 and Z98.1 are not region-specific; resolve region from operative history.",
-     ["M96.1", "M96.0", "Z98.1"]),
-    # ---- thoracic
-    ("thoracic_nonspecific_strain_sprain", "thoracic_spine", "Non-specific thoracic pain / thoracic strain-sprain",
-     "Mid-back pain without radicular or myelopathic findings, fracture or specific structural pathology; includes thoracic sprain/strain and muscle spasm.",
-     ["M54.6", "S23.3", "S29.012", "M62.830"]),
-    ("thoracic_disc_herniation_radiculopathy", "thoracic_spine", "Thoracic disc herniation with radiculopathy",
-     "Thoracic or thoracolumbar disc herniation/spondylosis with concordant thoracic radicular (band-like intercostal) pain, without myelopathy.",
-     ["M51.14", "M51.15", "M51.24", "M51.25", "M54.14", "M54.15", "M47.24", "M47.25"]),
-    ("thoracic_myelopathy_stenosis", "thoracic_spine", "Thoracic stenosis / myelopathy (disc, OLF, spondylosis)",
-     "Thoracic spinal cord compression from disc herniation, ossified ligamentum flavum or spondylosis with myelopathic signs or high-grade stenosis.",
-     ["M51.04", "M51.05", "M48.04", "M48.05", "M47.14", "M47.15"]),
-    ("thoracic_facet_degenerative", "thoracic_spine", "Thoracic facet arthropathy / degenerative disc disease (axial spondylosis)",
-     "Chronic axial thoracic pain attributed to spondylosis, facet arthropathy or disc degeneration without radiculopathy or myelopathy.",
-     ["M47.814", "M47.815", "M47.894", "M47.895", "M51.34", "M51.35"]),
-    ("thoracic_fracture", "thoracic_spine", "Thoracic vertebral fracture / dislocation (traumatic or osteoporotic compression)",
-     "Traumatic fracture, subluxation or dislocation of T1-T12 and osteoporotic/insufficiency compression fractures. M80.08 is not region-specific; resolve region from documentation.",
-     ["S22.0", "S23.1", "M48.54", "M48.55", "M80.08"]),
-]
+VERSION = "0.2.0"
+DX_INPUT = os.path.join(OUT, "input", "canonical_diagnosis_v2.json")
 
+# ----------------------------------------------------------------------------- v0.2.0 additions
+SOURCES += [
+    ("nass_bvna_2023", "North American Spine Society (NASS). NASS Coverage Policy Recommendations: Basivertebral Nerve Ablation.", "February 2023"),
+    ("aspn_bvna_2022", "Sayed D, Naidu RK, Patel KV, et al. Best Practice Guidelines on the Diagnosis and Treatment of Vertebrogenic Pain with Basivertebral Nerve Ablation from the American Society of Pain and Neuroscience. J Pain Res. 2022;15:2801-2819. doi:10.2147/JPR.S378544.", "2022 (published September 14, 2022)"),
+    ("tai_spinal_implant_infection_2024", "Tai DBG, Patel R, Lovecchio F, Kwee T, Wouthuyzen-Bakker M. State-of-the-Art Review: Diagnosis and Management of Spinal Implant Infections. Clin Infect Dis. 2024;79(6):e65-e71. doi:10.1093/cid/ciae436 (IDSA journal; correction published 2025).", "December 17, 2024"),
+    ("debnath_spondylolysis_2021", "Debnath UK. Lumbar spondylolysis - Current concepts review. J Clin Orthop Trauma (PMCID PMC8358467).", "2021 narrative review (not a formal guideline)"),
+    ("mohammed_pars_repair_2018", "Mohammed N, Patra DP, Narayan V, et al. A comparison of the techniques of direct pars interarticularis repairs for spondylolysis and low-grade spondylolisthesis: a meta-analysis. Neurosurg Focus. 2018;44(1):E10. doi:10.3171/2017.11.FOCUS17581.", "2018"),
+]
+CATALOG.update({
+    "bvna": ("injection", "Basivertebral nerve ablation (intraosseous RF ablation for vertebrogenic pain)",
+        ["BVNA", "BVN ablation", "basivertebral nerve ablation", "intraosseous basivertebral nerve ablation", "Intracept", "Intracept procedure", "basivertebral nerve RFA", "intraosseous nerve ablation"]),
+    "bone_growth_stimulator": ("conservative", "Bone growth stimulator (external, for fusion healing)",
+        ["bone growth stimulator", "bone stimulator", "bone stim", "spinal bone growth stimulator", "electrical bone growth stimulator", "PEMF", "pulsed electromagnetic field", "capacitive coupling stimulator", "Spinal-Stim", "Cervical-Stim", "SpinaLogic"]),
+    "antibiotics": ("medication", "Culture-directed antibiotic therapy (IV and/or oral, incl. suppression)",
+        ["antibiotics", "IV antibiotics", "intravenous antibiotics", "PICC antibiotics", "OPAT", "vancomycin", "cefazolin", "rifampin", "suppressive antibiotics", "antibiotic suppression", "culture-directed antibiotics"]),
+    "debridement": ("surgical", "Surgical irrigation and debridement of spinal wound (implant retention or exchange)",
+        ["I&D", "I and D", "irrigation and debridement", "incision and drainage", "debridement", "wound washout", "washout", "DAIR", "debridement and implant retention", "wound exploration", "second-look surgery"]),
+    "pars_repair": ("surgical", "Direct pars interarticularis repair",
+        ["pars repair", "direct pars repair", "pars interarticularis repair", "Buck repair", "Buck's repair", "Buck screw", "Scott wiring", "Morscher repair", "pedicle screw-hook pars repair", "spondylolysis repair"]),
+})
+REGION_EXTRAS.update({
+    ("revision_surgery", "thoracic"): (None, ["revision thoracic fusion"]),
+    ("debridement", "lumbar"): (None, ["lumbar wound washout"]),
+    ("debridement", "cervical"): (None, ["cervical wound washout"]),
+    ("disc_arthroplasty", "cervical"): (None, []),
+})
+
+# ----------------------------------------------------------------------------- v0.1.0 -> v2 diagnosis mapping (documentation + reuse)
+# kind: same | split | new ; v2 targets list
+DX_MAP_V1 = {
+    "lumbar_nonspecific_strain_sprain": ("same", ["lumbar_nonspecific_strain_sprain"]),
+    "lumbar_disc_herniation_radiculopathy": ("split", ["lumbar_radiculopathy", "lumbar_disc_herniation"]),
+    "lumbar_spinal_stenosis": ("same", ["lumbar_spinal_stenosis"]),
+    "lumbar_spondylolisthesis": ("split", ["lumbar_spondylolisthesis", "lumbar_spondylolysis", "lumbar_instability"]),
+    "lumbar_facet_degenerative_disc": ("split", ["lumbar_facet_pain", "lumbar_degenerative_disc_disease", "lumbar_vertebrogenic_pain"]),
+    "lumbar_fracture": ("same", ["lumbar_fracture"]),
+    "lumbar_post_surgical": ("split", ["lumbar_persistent_postoperative_pain", "lumbar_pseudarthrosis", "lumbar_fusion_arthroplasty_status", "lumbar_deep_spinal_wound_infection"]),
+    "cervical_nonspecific_strain_sprain": ("same", ["cervical_nonspecific_strain_sprain"]),
+    "cervical_radiculopathy": ("split", ["cervical_radiculopathy", "cervical_disc_herniation"]),
+    "cervical_myelopathy_stenosis": ("split", ["cervical_spinal_stenosis", "cervical_myelopathy"]),
+    "cervical_facet_degenerative": ("split", ["cervical_facet_pain", "cervical_degenerative_disc_disease"]),
+    "cervical_fracture": ("same", ["cervical_fracture"]),
+    "cervical_post_surgical": ("split", ["cervical_persistent_postoperative_pain", "cervical_pseudarthrosis", "cervical_fusion_arthroplasty_status", "cervical_deep_spinal_wound_infection"]),
+    "thoracic_nonspecific_strain_sprain": ("same", ["thoracic_nonspecific_strain_sprain"]),
+    "thoracic_disc_herniation_radiculopathy": ("split", ["thoracic_radiculopathy", "thoracic_disc_herniation"]),
+    "thoracic_myelopathy_stenosis": ("split", ["thoracic_spinal_stenosis", "thoracic_myelopathy"]),
+    "thoracic_facet_degenerative": ("split", ["thoracic_facet_pain", "thoracic_degenerative_disc_disease"]),
+    "thoracic_fracture": ("same", ["thoracic_fracture"]),
+}
+NEW_IN_V2 = ["cervical_instability", "thoracic_instability", "thoracic_persistent_postoperative_pain", "thoracic_pseudarthrosis",
+             "thoracic_fusion_arthroplasty_status", "thoracic_deep_spinal_wound_infection"]
+
+# ----------------------------------------------------------------------------- reusable adequacy text
 # ----------------------------------------------------------------------------- reusable adequacy text
 A = {
     "am": "Adequate when advice to stay active/avoid bed rest and education are documented alongside active care; not a stand-alone trial.",
@@ -237,9 +232,19 @@ A = {
     "va": "Single procedure per fracture level; adequate once performed; not required for MMI.",
 }
 
-# ----------------------------------------------------------------------------- ladders
-# dx_id -> list of (treatment base, applicability, adequacy, [source ids])   (order = ladder order, conservative first)
-L = {
+A.update({
+    "pt_postop_thoracic": "Post-op benchmarks roughly 16 visits/8 weeks after decompression and up to about 34 visits/16 weeks after fusion (lumbar ODG-style, extrapolated); continue only with objective gains.",
+    "bvna": "One ablation per qualifying level (L3-S1 endplates); adequate once performed; repeat at the same level not supported; not required for MMI if criteria unmet or declined.",
+    "abx": "Culture-directed course, typically at least 12 weeks after debridement for implant infection (IV start, oral step-down acceptable); adequate when course completed with clinical/lab (CRP/ESR) resolution, or long-term suppression is established.",
+    "debr": "Adequate once source control achieved (one or more debridements); implant retention for early infection with stable hardware, exchange/removal for chronic infection or loosening.",
+    "bgs": "Worn per prescribed daily protocol until radiographic fusion or about 9 months; optional adjunct - absence does not preclude MMI.",
+    "pars": "Adequate once performed and post-op rehab completed; best candidates young, small gap, healthy disc; not required for MMI if not indicated or declined.",
+    "orth_pars": "Rigid or soft brace for about 3 months (early-stage defects) with activity restriction; optional - not routine for all defects.",
+    "stab_pt": "About 10 visits over 8 weeks of stabilization-focused exercise (ODG-style); progression to HEP; continue only with objective gains.",
+})
+
+# ----------------------------------------------------------------------------- v0.1.0 ladders (kept verbatim for reuse)
+L1 = {
 "lumbar_nonspecific_strain_sprain": [
     ("activity_modification", "First-line for all acute and chronic non-specific LBP; advise to stay active, avoid bed rest, give reassurance.", A["am"], ["acp_lbp_2017", "nice_ng59", "acoem_low_back_2020"]),
     ("superficial_heat", "Acute/subacute LBP as first-line non-drug option.", A["heat"], ["acp_lbp_2017"]),
@@ -455,17 +460,193 @@ L = {
 ],
 }
 
+def pick(dx, *bases, drop=()):
+    """Reuse rows from a v0.1.0 ladder, optionally filtered to bases and excluding some."""
+    rows = L1[dx]
+    if bases: rows = [r for r in rows if r[0] in bases]
+    return [r for r in rows if r[0] not in drop]
+
+def postop_common(short, region_name):
+    pt_a = {"lumbar": A["pt_postop_lumbar"], "cervical": A["pt_postop_cervical"], "thoracic": A["pt_postop_thoracic"]}[short]
+    return pt_a
+
+# ----------------------------------------------------------------------------- v0.2.0 ladders (order = ladder order, conservative first)
+L = {}
+# ---------------- lumbar
+L["lumbar_nonspecific_strain_sprain"] = L1["lumbar_nonspecific_strain_sprain"]
+L["lumbar_radiculopathy"] = pick("lumbar_disc_herniation_radiculopathy") [:11] + [
+    ("microdiscectomy", "Radiculopathy from concordant disc herniation with disabling symptoms after 6 weeks or more of conservative care; urgent for progressive motor deficit or cauda equina.", A["surg"], ["nass_ldh_2012", "nice_ng59", "acoem_low_back_2020", "odg"]),
+    ("laminectomy", "Radiculopathy from lateral recess or foraminal stenosis concordant with imaging after failed conservative care (foraminotomy/decompression).", A["surg"], ["nass_stenosis_2011", "odg"]),
+    ("spinal_cord_stimulator", "Chronic neuropathic radicular leg pain 6 months or more despite conventional management, no surgical target, after successful trial.", A["scs"], ["nice_ta159", "odg"]),
+] + pick("lumbar_disc_herniation_radiculopathy", "functional_restoration")
+L["lumbar_disc_herniation"] = [
+    ("activity_modification", "All patients; herniation is common on imaging and often regresses; stay active.", A["am"], ["nice_ng59", "acoem_low_back_2020"]),
+    ("home_exercise", "All phases, as tolerated.", A["hep"], ["nice_ng59", "odg"]),
+    ("pt", "Active exercise-based therapy for back and/or leg symptoms.", A["pt"], ["nice_ng59", "acoem_low_back_2020", "odg"]),
+    ("manipulation", "Symptomatic relief without progressive neurologic deficit; NICE only with exercise.", A["manip"], ["nass_ldh_2012", "nice_ng59"]),
+    ("nsaids", "First-line analgesic.", A["nsaid"], ["acoem_low_back_2020", "nice_ng59"]),
+    ("muscle_relaxants", "Acute flare with spasm; short course only.", A["mr"], ["acoem_low_back_2020"]),
+    ("esi_transforaminal", "Only when concordant radicular pain is present (otherwise not indicated for herniation alone).", A["esi"], ["nass_ldh_2012", "odg"]),
+    ("microdiscectomy", "Only with concordant radiculopathy (see lumbar_radiculopathy); not indicated for axial pain from herniation alone.", A["surg"], ["nass_ldh_2012", "odg"]),
+]
+L["lumbar_spinal_stenosis"] = L1["lumbar_spinal_stenosis"] + [
+    ("functional_restoration", "Chronic disabling stenosis symptoms after failed or declined injections/surgery.", A["frp"], ["odg"]),
+]
+L["lumbar_spondylolisthesis"] = L1["lumbar_spondylolisthesis"]
+L["lumbar_spondylolysis"] = [
+    ("activity_modification", "First-line: restrict aggravating sport/hyperextension activity; most patients settle non-operatively.", A["am"], ["debnath_spondylolysis_2021"]),
+    ("pt", "Core stabilization, hamstring flexibility and graded return to activity.", A["stab_pt"], ["debnath_spondylolysis_2021", "odg"]),
+    ("home_exercise", "After instruction in PT.", A["hep"], ["debnath_spondylolysis_2021"]),
+    ("nsaids", "Analgesia during the conservative phase.", A["nsaid"], ["debnath_spondylolysis_2021"]),
+    ("spinal_orthosis", "Persistent symptoms after 2-4 weeks of rest or early-stage (acute) defects in young patients; not routine.", A["orth_pars"], ["debnath_spondylolysis_2021"]),
+    ("pars_repair", "Disabling pain after 6-12 months of failed conservative care, pars confirmed as pain generator, minimal slip and healthy disc.", A["pars"], ["debnath_spondylolysis_2021", "mohammed_pars_repair_2018"]),
+    ("fusion", "Defect with concurrent disc/facet degeneration, slip progression or instability where direct repair is unsuitable.", A["surg"], ["debnath_spondylolysis_2021", "odg"]),
+]
+L["lumbar_instability"] = [
+    ("activity_modification", "All patients; education and activity pacing.", A["am"], ["acoem_low_back_2020", "odg"]),
+    ("pt", "Stabilization-focused exercise for mechanical symptoms without neurologic deficit.", A["stab_pt"], ["acoem_low_back_2020", "odg"]),
+    ("home_exercise", "All patients after instruction.", A["hep"], ["odg"]),
+    ("nsaids", "First-line analgesic, subject to risk profile.", A["nsaid"], ["acoem_low_back_2020"]),
+    ("spinal_orthosis", "Short-term for acute traumatic instability pending surgical decision; not long-term for degenerative instability.", A["orth"], ["cns_thoracolumbar_trauma_2019"]),
+    ("fusion", "Documented dynamic instability (flexion-extension films) concordant with symptoms after failed conservative care, or traumatic/iatrogenic instability.", A["surg"], ["nass_spondylolisthesis_2014", "cns_thoracolumbar_trauma_2019", "odg"]),
+]
+L["lumbar_facet_pain"] = pick("lumbar_facet_degenerative_disc", drop=("fusion", "duloxetine_snri", "mind_body_exercise", "acupuncture"))
+L["lumbar_degenerative_disc_disease"] = pick("lumbar_facet_degenerative_disc", drop=("medial_branch_block", "facet_ia_injection", "rfa"))
+L["lumbar_vertebrogenic_pain"] = pick("lumbar_facet_degenerative_disc", "activity_modification", "home_exercise", "pt", "nsaids", "cbt") + [
+    ("bvna", "Chronic axial LBP 6 months or more, failed nonsurgical care, Modic type 1 or 2 endplate changes at L3-S1; not for radiculopathy, instability, fracture, infection or tumor.", A["bvna"], ["nass_bvna_2023", "aspn_bvna_2022"]),
+] + pick("lumbar_facet_degenerative_disc", "functional_restoration")
+L["lumbar_fracture"] = L1["lumbar_fracture"]
+L["lumbar_persistent_postoperative_pain"] = pick("lumbar_post_surgical")
+L["lumbar_pseudarthrosis"] = [
+    ("activity_modification", "Avoid high-load activity while nonunion is evaluated.", A["am"], ["odg"]),
+    ("bone_growth_stimulator", "Adjunct for established or high-risk nonunion after fusion.", A["bgs"], ["odg"]),
+    ("pt", "Symptom-limited conditioning; avoid aggressive loading of the nonunion.", A["pt_postop_lumbar"], ["odg"]),
+    ("nsaids", "Use cautiously or avoid during attempted fusion healing.", A["nsaid"], ["odg"]),
+    ("revision_surgery", "Symptomatic nonunion confirmed on CT with concordant pain or hardware failure (revision fusion).", A["surg"], ["odg"]),
+]
+L["lumbar_fusion_arthroplasty_status"] = [
+    ("pt", "Post-operative rehabilitation after fusion or disc arthroplasty.", A["pt_postop_lumbar"], ["odg"]),
+    ("home_exercise", "Long-term maintenance after instruction.", A["hep"], ["odg"]),
+    ("work_conditioning", "Job-demand gap remaining after post-op PT.", A["wc"], ["odg"]),
+]
+L["lumbar_deep_spinal_wound_infection"] = [
+    ("debridement", "Deep wound or implant infection: source control first; implant retention for early infection with stable hardware.", A["debr"], ["tai_spinal_implant_infection_2024"]),
+    ("antibiotics", "After deep cultures; culture-directed, biofilm-active agents for staphylococci.", A["abx"], ["tai_spinal_implant_infection_2024"]),
+    ("revision_surgery", "Chronic/late infection, loose or failed hardware, or pseudarthrosis: implant removal or exchange.", A["surg"], ["tai_spinal_implant_infection_2024"]),
+    ("pt", "After infection control, for deconditioning and post-op recovery.", A["pt_postop_lumbar"], ["odg"]),
+]
+# ---------------- cervical
+L["cervical_nonspecific_strain_sprain"] = L1["cervical_nonspecific_strain_sprain"]
+L["cervical_radiculopathy"] = L1["cervical_radiculopathy"] + [
+    ("spinal_cord_stimulator", "Refractory neuropathic arm pain 6 months or more with no surgical target, after successful trial.", A["scs"], ["nice_ta159", "odg"]),
+]
+L["cervical_disc_herniation"] = pick("cervical_radiculopathy", "activity_modification", "home_exercise", "pt", "nsaids") + [
+    ("muscle_relaxants", "Acute flare with spasm; short course only.", A["mr"], ["acoem_cervical_thoracic_2018"]),
+    ("esi_interlaminar", "Only when concordant radicular pain is present.", A["esi"], ["nass_cervical_radiculopathy_2010", "odg"]),
+    ("acdf", "Only with concordant radiculopathy or myelopathy; not indicated for herniation with axial pain alone.", A["surg"], ["nass_cervical_radiculopathy_2010", "fehlings_dcm_2017"]),
+    ("disc_arthroplasty", "Alternative to ACDF when a neural compression syndrome is present (1-2 levels, no instability).", A["surg"], ["nass_cervical_radiculopathy_2010", "odg"]),
+]
+L["cervical_spinal_stenosis"] = pick("cervical_radiculopathy", "activity_modification", "home_exercise", "pt", "nsaids", "neuropathic_agents", "esi_interlaminar") + [
+    ("posterior_foraminotomy", "Foraminal stenosis with concordant unilateral radiculopathy, no instability.", A["surg"], ["nass_cervical_radiculopathy_2010", "odg"]),
+    ("acdf", "Stenosis with concordant radiculopathy or myelopathy after failed care (asymptomatic cord compression: monitor, not operate routinely).", A["surg"], ["nass_cervical_radiculopathy_2010", "fehlings_dcm_2017"]),
+    ("laminoplasty", "Multilevel central stenosis with myelopathy and preserved lordosis.", A["surg"], ["fehlings_dcm_2017"]),
+]
+L["cervical_myelopathy"] = L1["cervical_myelopathy_stenosis"]
+L["cervical_facet_pain"] = L1["cervical_facet_degenerative"]
+L["cervical_degenerative_disc_disease"] = pick("cervical_facet_degenerative", drop=("medial_branch_block", "facet_ia_injection", "rfa"))
+L["cervical_instability"] = [
+    ("spinal_orthosis", "Acute traumatic or suspected instability pending definitive management (rigid collar/CTO/halo).", A["orth"], ["aans_cns_cervical_sci_2013"]),
+    ("activity_modification", "Avoid provocative loading; manipulation contraindicated.", A["am"], ["acoem_cervical_thoracic_2018"]),
+    ("pt", "Only after stability is confirmed or surgically addressed; isometric/stabilization focus.", A["stab_pt"], ["acoem_cervical_thoracic_2018", "odg"]),
+    ("nsaids", "Symptomatic analgesia.", A["nsaid"], ["acoem_cervical_thoracic_2018"]),
+    ("acdf", "Subaxial instability suited to anterior stabilization.", A["surg"], ["aans_cns_cervical_sci_2013", "odg"]),
+    ("posterior_fusion", "Instability needing posterior stabilization, including C1-C2.", A["surg"], ["aans_cns_cervical_sci_2013"]),
+]
+L["cervical_fracture"] = L1["cervical_fracture"]
+L["cervical_persistent_postoperative_pain"] = pick("cervical_post_surgical")
+L["cervical_pseudarthrosis"] = [
+    ("spinal_orthosis", "Short-term collar while nonunion is evaluated, per surgeon.", A["orth"], ["odg"]),
+    ("bone_growth_stimulator", "Adjunct for established or high-risk nonunion after cervical fusion.", A["bgs"], ["odg"]),
+    ("pt", "Symptom-limited; avoid aggressive loading.", A["pt_postop_cervical"], ["odg"]),
+    ("revision_surgery", "Symptomatic nonunion confirmed on CT with concordant pain or hardware failure (often posterior fusion).", A["surg"], ["odg"]),
+]
+L["cervical_fusion_arthroplasty_status"] = [
+    ("pt", "Post-operative rehabilitation after fusion or disc arthroplasty.", A["pt_postop_cervical"], ["odg"]),
+    ("home_exercise", "Long-term maintenance after instruction.", A["hep"], ["odg"]),
+    ("work_conditioning", "Job-demand gap remaining after post-op PT.", A["wc"], ["odg"]),
+]
+L["cervical_deep_spinal_wound_infection"] = [
+    ("debridement", "Deep wound or implant infection: source control first; implant retention for early infection with stable hardware.", A["debr"], ["tai_spinal_implant_infection_2024"]),
+    ("antibiotics", "After deep cultures; culture-directed therapy.", A["abx"], ["tai_spinal_implant_infection_2024"]),
+    ("revision_surgery", "Chronic infection or failed/loose hardware: implant removal or exchange.", A["surg"], ["tai_spinal_implant_infection_2024"]),
+    ("pt", "After infection control, for recovery of function.", A["pt_postop_cervical"], ["odg"]),
+]
+# ---------------- thoracic
+L["thoracic_nonspecific_strain_sprain"] = L1["thoracic_nonspecific_strain_sprain"]
+L["thoracic_radiculopathy"] = L1["thoracic_disc_herniation_radiculopathy"]
+L["thoracic_disc_herniation"] = pick("thoracic_disc_herniation_radiculopathy", "activity_modification", "pt", "nsaids") + [
+    ("home_exercise", "All phases after instruction.", A["hep"], ["acoem_cervical_thoracic_2018", "odg"]),
+    ("thoracic_discectomy", "Only with concordant myelopathy or intractable radiculopathy; incidental thoracic herniations are common and not surgical.", A["surg"], ["odg"]),
+]
+L["thoracic_spinal_stenosis"] = [
+    ("activity_modification", "All patients; evidence extrapolated from lumbar/cervical stenosis.", A["am"], ["acoem_cervical_thoracic_2018"]),
+    ("pt", "Mild symptoms without myelopathy.", A["pt"], ["acoem_cervical_thoracic_2018", "odg"]),
+    ("nsaids", "First-line analgesic.", A["nsaid"], ["acoem_cervical_thoracic_2018"]),
+    ("esi_interlaminar", "Concordant radicular pain only (consensus; thoracic evidence limited).", A["esi"], ["odg"]),
+    ("laminectomy", "Stenosis with myelopathy or intractable concordant radiculopathy (clinical consensus).", A["surg"], ["odg"]),
+]
+L["thoracic_myelopathy"] = L1["thoracic_myelopathy_stenosis"]
+L["thoracic_facet_pain"] = L1["thoracic_facet_degenerative"]
+L["thoracic_degenerative_disc_disease"] = pick("thoracic_facet_degenerative", drop=("manipulation",))
+L["thoracic_instability"] = [
+    ("spinal_orthosis", "Stable-enough injuries or pending surgical decision (TLSO).", A["orth"], ["cns_thoracolumbar_trauma_2019"]),
+    ("activity_modification", "Avoid provocative loading until stability addressed.", A["am"], ["cns_thoracolumbar_trauma_2019"]),
+    ("pt", "After stability confirmed or surgically addressed.", A["stab_pt"], ["acoem_cervical_thoracic_2018", "odg"]),
+    ("fusion", "Documented instability (traumatic, degenerative or postoperative) concordant with symptoms or neurologic risk.", A["surg"], ["cns_thoracolumbar_trauma_2019", "odg"]),
+]
+L["thoracic_fracture"] = L1["thoracic_fracture"]
+L["thoracic_persistent_postoperative_pain"] = [
+    ("pt", "Post-operative rehabilitation and persistent post-surgical pain.", A["pt_postop_thoracic"], ["odg"]),
+    ("home_exercise", "All patients after instruction.", A["hep"], ["odg"]),
+    ("nsaids", "Analgesia as risk profile allows.", A["nsaid"], ["odg"]),
+    ("neuropathic_agents", "Persistent neuropathic intercostal/radicular pain after surgery.", A["neuro"], ["odg"]),
+    ("cbt", "Chronic post-surgical pain with psychosocial contributors; part of SCS screening.", A["cbt"], ["odg"]),
+    ("spinal_cord_stimulator", "Refractory neuropathic pain 6 months or more despite conventional management, after successful trial.", A["scs"], ["nice_ta159", "odg"]),
+    ("functional_restoration", "Chronic disabling post-surgical pain with no surgical target.", A["frp"], ["odg"]),
+    ("revision_surgery", "Identified target only: nonunion, hardware failure or junctional disease concordant with symptoms.", A["surg"], ["odg"]),
+]
+L["thoracic_pseudarthrosis"] = [
+    ("bone_growth_stimulator", "Adjunct for established or high-risk nonunion.", A["bgs"], ["odg"]),
+    ("pt", "Symptom-limited; avoid aggressive loading.", A["pt_postop_thoracic"], ["odg"]),
+    ("revision_surgery", "Symptomatic CT-confirmed nonunion or hardware failure.", A["surg"], ["odg"]),
+]
+L["thoracic_fusion_arthroplasty_status"] = [
+    ("pt", "Post-operative rehabilitation after fusion.", A["pt_postop_thoracic"], ["odg"]),
+    ("home_exercise", "Long-term maintenance after instruction.", A["hep"], ["odg"]),
+]
+L["thoracic_deep_spinal_wound_infection"] = [
+    ("debridement", "Deep wound or implant infection: source control first.", A["debr"], ["tai_spinal_implant_infection_2024"]),
+    ("antibiotics", "After deep cultures; culture-directed therapy.", A["abx"], ["tai_spinal_implant_infection_2024"]),
+    ("revision_surgery", "Chronic infection or failed/loose hardware: implant removal or exchange.", A["surg"], ["tai_spinal_implant_infection_2024"]),
+    ("pt", "After infection control.", A["pt_postop_thoracic"], ["odg"]),
+]
+
 # ----------------------------------------------------------------------------- build
 def tid(base, short):
     return f"{base}_{short}"
 
 def main():
-    dx_region = {d[0]: d[1] for d in DX}
-    used = {}  # treatment id -> (base, short, region)
+    with open(DX_INPUT, encoding="utf-8") as f:
+        dxs = json.load(f)
+    dx_region = {d["id"]: d["region_id"] for d in dxs}
+    missing = sorted(set(dx_region) - set(L)); extra = sorted(set(L) - set(dx_region))
+    if missing or extra:
+        raise SystemExit(f"ladder/dx mismatch: missing={missing} extra={extra}")
+    used = {}
     ladder, les = [], []
-    for dx_id, rows in L.items():
-        region = dx_region[dx_id]; short = REGIONS[region]
-        for base, appl, adeq, srcs in rows:
+    for d in dxs:
+        dx_id = d["id"]; region = d["region_id"]; short = REGIONS[region]
+        for base, appl, adeq, srcs in L[dx_id]:
             t = tid(base, short)
             used[t] = (base, short, region)
             le_id = f"le_{dx_id}__{t}"
@@ -478,23 +659,21 @@ def main():
     region_order = list(REGIONS.values())
     for t, (base, short, region) in sorted(used.items(), key=lambda kv: (region_order.index(kv[1][1]), list(CATALOG).index(kv[1][0]))):
         cat, name, generic = CATALOG[base]
-        name_override, extra = REGION_EXTRAS.get((base, short), (None, []))
+        name_override, extra_a = REGION_EXTRAS.get((base, short), (None, []))
         treatments.append({"id": t, "region": region, "category": cat, "name": name_override or name})
         seen = set()
-        for a in generic + extra:
-            if a.lower() in seen:
-                continue
+        for a in generic + extra_a:
+            if a.lower() in seen: continue
             seen.add(a.lower())
             aliases.append({"treatmentId": t, "alias": a})
 
-    dxs = [{"id": i, "region_id": r, "label": lab, "description": desc, "icdPrefixes": icd} for i, r, lab, desc, icd in DX]
     srcs = [{"id": i, "ref": ref, "edition": ed} for i, ref, ed in SOURCES]
-
-    for fn, data in [("canonical_diagnoses.json", dxs), ("treatments.json", treatments), ("aliases.json", aliases),
+    shutil.copyfile(DX_INPUT, os.path.join(OUT, "canonical_diagnoses.json"))
+    print(f"copied canonical_diagnoses.json from input/canonical_diagnosis_v2.json: {len(dxs)} rows (unmodified)")
+    for fn, data in [("treatments.json", treatments), ("aliases.json", aliases),
                      ("ladder_entries.json", ladder), ("sources.json", srcs), ("ladder_entry_sources.json", les)]:
         with open(os.path.join(OUT, fn), "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
-            f.write("\n")
+            json.dump(data, f, indent=2, ensure_ascii=False); f.write("\n")
         print(f"wrote {fn}: {len(data)} rows")
 
 if __name__ == "__main__":

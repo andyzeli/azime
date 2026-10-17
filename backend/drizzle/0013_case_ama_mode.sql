@@ -1,0 +1,1 @@
+ALTER TABLE "patientcase" ADD COLUMN "ama_mode" varchar(20);

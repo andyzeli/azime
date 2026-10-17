@@ -1,0 +1,1 @@
+ALTER TABLE "ama_rating_tables" ADD COLUMN "instructions" text;

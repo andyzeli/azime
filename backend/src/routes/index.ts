@@ -16,6 +16,7 @@ import { testRecordsController } from "../controllers/testRecordsController.js";
 import { visitDocumentationController } from "../controllers/visitDocumentationController.js";
 import { canonicalDiagnosesController } from "../controllers/canonicalDiagnosesController.js";
 import { postExamAnalysisController } from "../controllers/postExamAnalysisController.js";
+import { amaCandidatesController } from "../controllers/amaCandidatesController.js";
 
 export const registerRoutes = (app: FastifyInstance) => {
   app.get("/", async () => ({ message: "Server is running!" }));
@@ -27,6 +28,7 @@ export const registerRoutes = (app: FastifyInstance) => {
   app.get("/cases", caseController.getHandler);
   app.get("/cases/:id", caseController.getByIdHandler);
   app.put("/cases/:id", caseController.updateHandler);
+  app.put("/cases/:id/ama-mode", caseController.updateAmaModeHandler);
 
   app.get("/cases/:caseId/providers", caseProvidersController.listHandler);
   app.post("/cases/:caseId/providers", caseProvidersController.createHandler);
@@ -125,6 +127,7 @@ export const registerRoutes = (app: FastifyInstance) => {
 
   app.post("/uploads/sign", uploadController.signUploadHandler);
   app.get("/regions/:region/canonical-diagnoses", canonicalDiagnosesController.getByRegionHandler);
+  app.post("/cases/:caseId/ama-candidates/:region", amaCandidatesController.getHandler);
   app.get("/cases/:caseId/visit", visitDocumentationController.getHandler);
   app.put("/cases/:caseId/visit", visitDocumentationController.saveHandler);
   app.post("/cases/:caseId/post-exam-analysis/:region/snapshot", postExamAnalysisController.takeSnapshotHandler);

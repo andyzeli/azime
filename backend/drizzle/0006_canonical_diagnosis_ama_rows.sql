@@ -1,0 +1,1 @@
+ALTER TABLE "canonical_diagnoses" ADD COLUMN "ama_row_ids" text[] DEFAULT '{}'::text[] NOT NULL;

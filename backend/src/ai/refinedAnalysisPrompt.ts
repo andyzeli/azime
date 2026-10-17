@@ -27,6 +27,7 @@ INPUT DOMAIN ORIENTATION
 - reviewedAnalysis: Selected results from an earlier analysis comparing treatment
   items from a diagnosis-specific standard-of-care taxonomy with treatments found
   in medical records, incorporating physician review and additions where provided.
+  
   - treatmentIssues: Treatments with unclear applicability, or applicable treatments
     assessed as not tried, inadequately trialed, or unclear in adequacy.
 

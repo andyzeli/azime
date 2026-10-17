@@ -36,6 +36,69 @@
       "when": 1791065701046,
       "tag": "0004_one_refined_and_case_visit",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1791932524002,
+      "tag": "0005_ama_diagnostic_rows",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791935542244,
+      "tag": "0006_canonical_diagnosis_ama_rows",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1792015526326,
+      "tag": "0007_light_ultimatum",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1792015526327,
+      "tag": "0008_ama_rating_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1792039694387,
+      "tag": "0009_even_vin_gonzales",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1792040272964,
+      "tag": "0010_ama_rating_mod_result_keys",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1792041281167,
+      "tag": "0011_ama_rating_table_instructions",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1792044672731,
+      "tag": "0012_ama_rating_result_wpi",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1792104662778,
+      "tag": "0013_case_ama_mode",
+      "breakpoints": true
     }
   ]
 }

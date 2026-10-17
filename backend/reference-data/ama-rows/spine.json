@@ -744,9 +744,20 @@
         ]
       },
       {
-        "id": "upper_arm_forearm_circumference",
-        "prompt": "Measure upper-arm and forearm circumference differences.",
-        "help": "Compare sides in cm at 10 cm above and 10 cm below the elbow, respectively, referenced from the lateral epicondyle. Record each difference separately; the linked questions retain their upper-arm OR forearm conditions.",
+        "id": "upper_arm_circumference",
+        "prompt": "Measure the upper-arm circumference difference.",
+        "help": "Compare sides in cm at 10 cm above the elbow, referenced from the lateral epicondyle.",
+        "question_ids": [
+          "atrophy",
+          "atrophy_2",
+          "atrophy_3",
+          "atrophy_4"
+        ]
+      },
+      {
+        "id": "forearm_circumference",
+        "prompt": "Measure the forearm circumference difference.",
+        "help": "Compare sides in cm at 10 cm below the elbow, referenced from the lateral epicondyle.",
         "question_ids": [
           "atrophy",
           "atrophy_2",
@@ -1135,25 +1146,29 @@
       {
         "id": "radial_wrist_extension_strength",
         "prompt": "Assess radial wrist extension strength.",
-        "help": "Record the observed strength grade out of 5 for the applicable root and side. The linked questions retain their original combinations of findings.",
+        "help": "Assess wrist extension using the radial wrist extensors (extensor carpi radialis longus/brevis). Record the strength grade out of 5 separately for each side; assess elbow flexion separately.",
         "question_ids": [
-          "motor_4"
-        ]
-      },
-      {
-        "id": "wrist_extension_strength",
-        "prompt": "Assess wrist extension strength.",
-        "help": "Record the observed strength grade out of 5 for the applicable root and side. The linked questions retain their original combinations of findings.",
-        "question_ids": [
+          "motor_4",
           "motor_3",
           "motor_2",
           "motor_0_to_1"
         ]
       },
       {
-        "id": "upper_arm_forearm_circumference",
-        "prompt": "Measure upper-arm and forearm circumference differences.",
-        "help": "Compare sides in cm at 10 cm above and 10 cm below the elbow, respectively, referenced from the lateral epicondyle. Record each difference separately; the linked questions retain their upper-arm OR forearm conditions.",
+        "id": "upper_arm_circumference",
+        "prompt": "Measure the upper-arm circumference difference.",
+        "help": "Compare sides in cm at 10 cm above the elbow, referenced from the lateral epicondyle.",
+        "question_ids": [
+          "atrophy",
+          "atrophy_2",
+          "atrophy_3",
+          "atrophy_4"
+        ]
+      },
+      {
+        "id": "forearm_circumference",
+        "prompt": "Measure the forearm circumference difference.",
+        "help": "Compare sides in cm at 10 cm below the elbow, referenced from the lateral epicondyle.",
         "question_ids": [
           "atrophy",
           "atrophy_2",
@@ -1531,7 +1546,7 @@
       {
         "id": "elbow_extension_strength",
         "prompt": "Assess elbow extension strength.",
-        "help": "Record the observed strength grade out of 5 for the applicable root and side. The linked questions retain their original combinations of findings.",
+        "help": "Record this movement’s strength grade out of 5 separately for each side. Record each tested movement independently rather than combining strength grades across movements.",
         "question_ids": [
           "motor_4",
           "motor_3",
@@ -1542,7 +1557,7 @@
       {
         "id": "wrist_flexion_strength",
         "prompt": "Assess wrist flexion strength.",
-        "help": "Record the observed strength grade out of 5 for the applicable root and side. The linked questions retain their original combinations of findings.",
+        "help": "Record this movement’s strength grade out of 5 separately for each side. Record each tested movement independently rather than combining strength grades across movements.",
         "question_ids": [
           "motor_4",
           "motor_3",
@@ -1553,7 +1568,7 @@
       {
         "id": "finger_extension_strength",
         "prompt": "Assess finger extension strength.",
-        "help": "Record the observed strength grade out of 5 for the applicable root and side. The linked questions retain their original combinations of findings.",
+        "help": "Record this movement’s strength grade out of 5 separately for each side. Record each tested movement independently rather than combining strength grades across movements.",
         "question_ids": [
           "motor_4",
           "motor_3",
@@ -1564,7 +1579,7 @@
       {
         "id": "ulnar_wrist_extensor_strength",
         "prompt": "Assess ulnar wrist extensor strength.",
-        "help": "Record the observed strength grade out of 5 for the applicable root and side. The linked questions retain their original combinations of findings.",
+        "help": "Record this movement’s strength grade out of 5 separately for each side. Record each tested movement independently rather than combining strength grades across movements.",
         "question_ids": [
           "motor_4",
           "motor_3",
@@ -1573,9 +1588,20 @@
         ]
       },
       {
-        "id": "upper_arm_forearm_circumference",
-        "prompt": "Measure upper-arm and forearm circumference differences.",
-        "help": "Compare sides in cm at 10 cm above and 10 cm below the elbow, respectively, referenced from the lateral epicondyle. Record each difference separately; the linked questions retain their upper-arm OR forearm conditions.",
+        "id": "upper_arm_circumference",
+        "prompt": "Measure the upper-arm circumference difference.",
+        "help": "Compare sides in cm at 10 cm above the elbow, referenced from the lateral epicondyle.",
+        "question_ids": [
+          "atrophy",
+          "atrophy_2",
+          "atrophy_3",
+          "atrophy_4"
+        ]
+      },
+      {
+        "id": "forearm_circumference",
+        "prompt": "Measure the forearm circumference difference.",
+        "help": "Compare sides in cm at 10 cm below the elbow, referenced from the lateral epicondyle.",
         "question_ids": [
           "atrophy",
           "atrophy_2",
@@ -1943,9 +1969,20 @@
         ]
       },
       {
-        "id": "upper_arm_forearm_circumference",
-        "prompt": "Measure upper-arm and forearm circumference differences.",
-        "help": "Compare sides in cm at 10 cm above and 10 cm below the elbow, respectively, referenced from the lateral epicondyle. Record each difference separately; the linked questions retain their upper-arm OR forearm conditions.",
+        "id": "upper_arm_circumference",
+        "prompt": "Measure the upper-arm circumference difference.",
+        "help": "Compare sides in cm at 10 cm above the elbow, referenced from the lateral epicondyle.",
+        "question_ids": [
+          "atrophy",
+          "atrophy_2",
+          "atrophy_3",
+          "atrophy_4"
+        ]
+      },
+      {
+        "id": "forearm_circumference",
+        "prompt": "Measure the forearm circumference difference.",
+        "help": "Compare sides in cm at 10 cm below the elbow, referenced from the lateral epicondyle.",
         "question_ids": [
           "atrophy",
           "atrophy_2",
@@ -2746,9 +2783,20 @@
         ]
       },
       {
-        "id": "upper_arm_forearm_circumference",
-        "prompt": "Measure upper-arm and forearm circumference differences.",
-        "help": "Compare sides in cm at 10 cm above and 10 cm below the elbow, respectively, referenced from the lateral epicondyle. Record each difference separately; the linked questions retain their upper-arm OR forearm conditions.",
+        "id": "upper_arm_circumference",
+        "prompt": "Measure the upper-arm circumference difference.",
+        "help": "Compare sides in cm at 10 cm above the elbow, referenced from the lateral epicondyle.",
+        "question_ids": [
+          "atrophy",
+          "atrophy_2",
+          "atrophy_3",
+          "atrophy_4"
+        ]
+      },
+      {
+        "id": "forearm_circumference",
+        "prompt": "Measure the forearm circumference difference.",
+        "help": "Compare sides in cm at 10 cm below the elbow, referenced from the lateral epicondyle.",
         "question_ids": [
           "atrophy",
           "atrophy_2",
@@ -3569,7 +3617,7 @@
       {
         "id": "l2_sensory_assessment",
         "prompt": "Assess L2 symptoms, pinprick sensation, and sharp/dull discrimination.",
-        "help": "Medial groin and front of the upper thigh. Document radicular pain or subjectively altered sensation (paresthesia-like numbness), objective dullness to pinprick, and whether sharp/dull perception is intact or lost (decreased protective sensibility). Distinguish symptoms without objective sensory loss from objective deficits. Record paresthesias and sharp/dull loss separately; the linked compound criterion retains the source’s ambiguous “and/or paresthesias” wording.",
+        "help": "Medial groin and front of the upper thigh. Document radicular pain or subjectively altered sensation (paresthesia-like numbness), objective dullness to pinprick, and whether sharp/dull perception is intact or lost (decreased protective sensibility). Record paresthesias separately from objective sensory findings; paresthesias alone do not establish objective sensory loss.",
         "question_ids": [
           "sensory_status",
           "sensory_criterion_2b"
@@ -3945,27 +3993,20 @@
         ]
       },
       {
-        "id": "l3_thigh_circumference_unspecified_distance",
-        "prompt": "Measure the L3 thigh circumference difference above the medial knee joint line; confirm the unspecified distance.",
-        "help": "Compare sides in cm and document the measurement site. The >1 cm to ≤1.5 cm thigh condition specifies “above medial knee joint line” but gives no distance; do not assume the 15 cm site stated in other ranges applies to this condition.",
+        "id": "thigh_circumference",
+        "prompt": "Measure the thigh circumference difference.",
+        "help": "Compare sides in cm at 15 cm above the medial knee joint line.",
         "question_ids": [
-          "atrophy"
-        ]
-      },
-      {
-        "id": "thigh_circumference_15_cm_above_medial_knee",
-        "prompt": "Measure the thigh circumference difference 15 cm above the medial knee joint line.",
-        "help": "Compare sides and record the difference in cm. The linked questions retain their thigh OR calf conditions.",
-        "question_ids": [
+          "atrophy",
           "atrophy_2",
           "atrophy_3",
           "atrophy_4"
         ]
       },
       {
-        "id": "calf_circumference_15_cm_below_medial_knee",
-        "prompt": "Measure the calf circumference difference 15 cm below the medial knee joint line.",
-        "help": "Compare sides and record the difference in cm. The linked questions retain their thigh OR calf conditions.",
+        "id": "calf_circumference",
+        "prompt": "Measure the calf circumference difference.",
+        "help": "Compare sides in cm at 15 cm below the medial knee joint line.",
         "question_ids": [
           "atrophy",
           "atrophy_2",
@@ -3975,7 +4016,7 @@
       {
         "id": "calf_circumference_15_cm_below_lower_patellar_border",
         "prompt": "Measure the calf circumference difference 15 cm below the lower patellar border.",
-        "help": "Compare sides and record the difference in cm. The L3 >2 cm to ≤3 cm calf condition specifies the lower patellar border, unlike the medial knee joint line used for its other calf ranges; retain the stated landmark for review.",
+        "help": "Compare sides in cm at 15 cm below the lower patellar border. For L3, the >2 cm to ≤3 cm calf condition uses this landmark instead of the medial knee joint line.",
         "question_ids": [
           "atrophy_3"
         ]
@@ -4361,9 +4402,20 @@
         ]
       },
       {
-        "id": "thigh_calf_circumference",
-        "prompt": "Measure thigh and calf circumference differences.",
-        "help": "Compare sides in cm at 15 cm above and 15 cm below the medial knee joint line, respectively. Record each difference separately; the linked questions retain their thigh OR calf conditions.",
+        "id": "thigh_circumference",
+        "prompt": "Measure the thigh circumference difference.",
+        "help": "Compare sides in cm at 15 cm above the medial knee joint line.",
+        "question_ids": [
+          "atrophy",
+          "atrophy_2",
+          "atrophy_3",
+          "atrophy_4"
+        ]
+      },
+      {
+        "id": "calf_circumference",
+        "prompt": "Measure the calf circumference difference.",
+        "help": "Compare sides in cm at 15 cm below the medial knee joint line.",
         "question_ids": [
           "atrophy",
           "atrophy_2",
@@ -4703,7 +4755,7 @@
       {
         "id": "l5_straight_leg_raise",
         "prompt": "Assess straight leg raise reproducibility, elevation angle, and L5 radicular symptoms.",
-        "help": "Flex the hip and raise the leg with the knee extended. Record reproducible radicular pain, numbness and/or paresthesias in the L5 dermatomal distribution and whether they occur between 35° and 70° of leg elevation with hip flexion. Lateral thigh, anterolateral leg, and middorsal foot. The source states: “back pain and posterior thigh pain or leg pain that is not in a dermatomal distribution with the SLR maneuver is not a positive finding.”",
+        "help": "Flex the hip and raise the leg with the knee extended. Record whether the maneuver reproducibly elicits the patient’s concordant radicular pain, numbness and/or paresthesias in the L5 dermatomal distribution, and document the elevation angle, including whether it is between 35° and 70° of hip flexion. Lateral thigh, anterolateral leg, and middorsal foot. Isolated back pain, nonradicular posterior-thigh/hamstring stretch discomfort, or nondermatomal leg pain alone does not establish a positive radicular test. Record coexisting discomfort separately from concordant radicular symptoms.",
         "question_ids": [
           "neural_tension"
         ]
@@ -4742,9 +4794,20 @@
         ]
       },
       {
-        "id": "thigh_calf_circumference",
-        "prompt": "Measure thigh and calf circumference differences.",
-        "help": "Compare sides in cm at 15 cm above and 15 cm below the medial knee joint line, respectively. Record each difference separately; the linked questions retain their thigh OR calf conditions.",
+        "id": "thigh_circumference",
+        "prompt": "Measure the thigh circumference difference.",
+        "help": "Compare sides in cm at 15 cm above the medial knee joint line.",
+        "question_ids": [
+          "atrophy",
+          "atrophy_2",
+          "atrophy_3",
+          "atrophy_4"
+        ]
+      },
+      {
+        "id": "calf_circumference",
+        "prompt": "Measure the calf circumference difference.",
+        "help": "Compare sides in cm at 15 cm below the medial knee joint line.",
         "question_ids": [
           "atrophy",
           "atrophy_2",
@@ -5105,15 +5168,15 @@
       {
         "id": "s1_straight_leg_raise",
         "prompt": "Assess straight leg raise reproducibility, elevation angle, and S1 radicular symptoms.",
-        "help": "Flex the hip and raise the leg with the knee extended. Record reproducible radicular pain, numbness and/or paresthesias in the S1 dermatomal distribution and whether they occur between 35° and 70° of leg elevation with hip flexion. Posterior calf/leg and lateral foot. The source states: “back pain and posterior thigh pain or leg pain that is not in a dermatomal distribution with the SLR maneuver is not a positive finding.”",
+        "help": "Flex the hip and raise the leg with the knee extended. Record whether the maneuver reproducibly elicits the patient’s concordant radicular pain, numbness and/or paresthesias in the S1 dermatomal distribution, and document the elevation angle, including whether it is between 35° and 70° of hip flexion. Posterior calf/leg and lateral foot. Isolated back pain, nonradicular posterior-thigh/hamstring stretch discomfort, or nondermatomal leg pain alone does not establish a positive radicular test. Record coexisting discomfort separately from concordant radicular symptoms.",
         "question_ids": [
           "neural_tension"
         ]
       },
       {
-        "id": "s1_ankle_plantar_flexion_pronation_strength",
-        "prompt": "Assess S1 ankle “plantar flexion pronation” strength.",
-        "help": "Record the observed strength grade out of 5. The source uses “ankle plantar flexion pronation weakness” without clarifying the relationship between the movements; retain that wording for review.",
+        "id": "s1_ankle_plantar_flexion_strength",
+        "prompt": "Assess S1 ankle plantar-flexion strength.",
+        "help": "Assess gastrocnemius/soleus plantar flexion and record the strength grade out of 5 separately for each side. Record manual strength separately from foot eversion and heel-raise endurance.",
         "question_ids": [
           "motor_4",
           "motor_3",
@@ -5122,9 +5185,9 @@
         ]
       },
       {
-        "id": "s1_tiptoe_fatigable_weakness",
-        "prompt": "Assess gastrocnemius/soleus fatigable weakness during ten tiptoe repetitions.",
-        "help": "Hold onto a chair for balance. Record fatigable weakness; the source lists this as an alternative to the specified ankle weakness in every linked motor-grade question, without a separate fatigue-to-grade rule.",
+        "id": "s1_foot_eversion_strength",
+        "prompt": "Assess foot eversion strength for the S1 motor examination.",
+        "help": "Assess resisted foot eversion using the fibularis/peroneal muscles and record the strength grade out of 5 separately for each side. This collects the eversion component of the source’s pronation wording; record it separately from plantar flexion.",
         "question_ids": [
           "motor_4",
           "motor_3",
@@ -5133,9 +5196,31 @@
         ]
       },
       {
-        "id": "thigh_calf_circumference",
-        "prompt": "Measure thigh and calf circumference differences.",
-        "help": "Compare sides in cm at 15 cm above and 15 cm below the medial knee joint line, respectively. Record each difference separately; the linked questions retain their thigh OR calf conditions.",
+        "id": "s1_single_leg_heel_raises",
+        "prompt": "Assess gastrocnemius/soleus fatigue with up to ten single-leg heel raises per side.",
+        "help": "When safe, test each side separately while the patient holds onto a chair for balance. Record completed repetitions out of ten, declining heel height or fatigable weakness, and pain or balance limitations. If single-leg testing is not feasible, document the limitation and any modified method. Keep the result separate from manual strength grades; do not assign a strength grade or impairment value from the repetition count alone.",
+        "question_ids": [
+          "motor_4",
+          "motor_3",
+          "motor_2",
+          "motor_0_to_1"
+        ]
+      },
+      {
+        "id": "thigh_circumference",
+        "prompt": "Measure the thigh circumference difference.",
+        "help": "Compare sides in cm at 15 cm above the medial knee joint line.",
+        "question_ids": [
+          "atrophy",
+          "atrophy_2",
+          "atrophy_3",
+          "atrophy_4"
+        ]
+      },
+      {
+        "id": "calf_circumference",
+        "prompt": "Measure the calf circumference difference.",
+        "help": "Compare sides in cm at 15 cm below the medial knee joint line.",
         "question_ids": [
           "atrophy",
           "atrophy_2",

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { amaMotorGradeSchema, amaNerveRootSchema } from "./amaReference.js";
 import { regionSchema } from "./regions.js";
 import {
   fullReviewedPreExamAnalysisSchema,
@@ -35,6 +36,37 @@ export const postExamQuestionnaireSchema = postExamPDQSchema.extend({
   title: z.string(),
 });
 
+// One AMA component's findings, frozen with the reference wording so each answer
+// traces to the test that produced it without the live reference data.
+export const postExamAmaFindingsSchema = z.object({
+  rowId: z.string(),
+  description: z.string(),
+  nerveRoot: amaNerveRootSchema.nullable(),
+  side: z.enum(["left", "right"]).nullable(),
+  canonicalDxIds: z.array(z.string()),
+  // Tests performed: a graded muscle, a measured site, or a task with an answered question.
+  examination: z.array(
+    z.object({
+      taskId: z.string(),
+      prompt: z.string(),
+      questionIds: z.array(z.string()),
+      motorGrade: amaMotorGradeSchema.nullable(),
+      atrophyCm: z.number().nullable(),
+    }),
+  ),
+  // Resolved answers only; a missing question was not assessed. criterion = the AMA wording.
+  answers: z.array(
+    z.object({
+      questionId: z.string(),
+      group: z.string(),
+      prompt: z.string(),
+      criterion: z.string().nullable(),
+      answer: z.union([z.boolean(), z.string()]),
+      answerLabel: z.string().nullable(),
+    }),
+  ),
+});
+
 export const postExamInputSchema = refinedAnalysisInputSchema
   .omit({ reviewedAnalysis: true })
   .extend({
@@ -42,13 +74,15 @@ export const postExamInputSchema = refinedAnalysisInputSchema
     refinedAnalysis: refinedAnalysisSchema.extend({
       visitPriority: storedRefinedAnalysisSchema.shape.visitPriority,
     }),
-    // The case-level note, and this region's priority responses only. Diagnosis reviews
-    // stay on the visit as a record for the report; the corrected scope is already in the input.
+    // The case-level note, and this region's priority responses and linked AMA findings
+    // only (none when AMA is off). Diagnosis reviews stay on the visit as a record for
+    // the report; the corrected scope is already in the input.
     visit: visitDocumentationSchema
       .pick({ note: true, priorityResponses: true })
       .extend({
         pdq: postExamPDQSchema.nullable(),
         questionnaires: z.array(postExamQuestionnaireSchema),
+        amaFindings: z.array(postExamAmaFindingsSchema).default([]),
       }),
   });
 export const postExamInputSnapshotSchema = z.object({
@@ -66,6 +100,7 @@ export const postExamInputSnapshotSchema = z.object({
 export type PostExamInputSnapshot = z.infer<typeof postExamInputSnapshotSchema>;
 export type PostExamInput = z.infer<typeof postExamInputSchema>;
 export type PostExamPDQ = z.infer<typeof postExamPDQSchema>;
+export type PostExamAmaFindings = z.infer<typeof postExamAmaFindingsSchema>;
 export type PostExamQuestionnaire = z.infer<typeof postExamQuestionnaireSchema>;
 // Provisional output; finalize descriptions and the prompt before enabling generation.
 export const postExamAnalysisSchema = z.object({

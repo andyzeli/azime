@@ -34,15 +34,15 @@ Originally, we made these cleanup changes with one-off scripts and targeted edit
 
 It writes [cervical](ama-rows-cervical.md), [thoracic](ama-rows-thoracic.md), and [lumbar](ama-rows-lumbar.md) working copies and applies these specific changes:
 
-| Change | Purpose |
-| --- | --- |
-| Remove Markdown link destinations while retaining their text | Keep section references and citation labels without URLs; 77 cervical, 15 thoracic, and 1 lumbar link |
-| Add the missing space in cervical C4 and thoracic T1 `class1B` headings | Make entry headings consistent |
-| Flatten the malformed lumbar L5 3B PE list into four sibling conditions | Preserve the intended top-level count |
-| Put lumbar fracture 1A/1B CS alternatives into properly indented bullets | Make all alternatives explicit |
-| Add explicit WPI units to the two lumbar claudication headers | Apply the previously reviewed table-wide unit; percentages remain 2 and 4 |
-| Correct cervical C6 1C's `C5 dermatome` to `C6 dermatome` | User-approved correction on 2026-10-12 |
-| Correct lumbar L1 1A's `L2 dermatome` to `L1 dermatome` | User-approved correction on 2026-10-12 |
+| Change                                                                   | Purpose                                                                                               |
+| ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| Remove Markdown link destinations while retaining their text             | Keep section references and citation labels without URLs; 77 cervical, 15 thoracic, and 1 lumbar link |
+| Add the missing space in cervical C4 and thoracic T1 `class1B` headings  | Make entry headings consistent                                                                        |
+| Flatten the malformed lumbar L5 3B PE list into four sibling conditions  | Preserve the intended top-level count                                                                 |
+| Put lumbar fracture 1A/1B CS alternatives into properly indented bullets | Make all alternatives explicit                                                                        |
+| Add explicit WPI units to the two lumbar claudication headers            | Apply the previously reviewed table-wide unit; percentages remain 2 and 4                             |
+| Correct cervical C6 1C's `C5 dermatome` to `C6 dermatome`                | User-approved correction on 2026-10-12                                                                |
+| Correct lumbar L1 1A's `L2 dermatome` to `L1 dermatome`                  | User-approved correction on 2026-10-12                                                                |
 
 The L2 2B wording ending in **“and/or paresthesias)” is left unchanged**, as requested. Missing CH/PE blocks are not filled with invented text.
 
@@ -70,13 +70,13 @@ I manually designed the normalization rules; the script applies them determinist
 
 Each output row contains:
 
-| Field | What it holds |
-| --- | --- |
-| `row_id`, `region_id`, `description` | The diagnosis-row identity and name |
-| `nerve_roots` | Spine-specific roots parsed from the description, with T2-T12 expanded; `[]` for non-root rows |
-| `questions` | The questions defined once for that row |
-| `entries` | Each class/grade, its impairment value/unit, and its complete matching rule |
-| Optional `help` | Row-level explanatory text retained from the source |
+| Field                                | What it holds                                                                                  |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| `row_id`, `region_id`, `description` | The diagnosis-row identity and name                                                            |
+| `nerve_roots`                        | Spine-specific roots parsed from the description, with T2-T12 expanded; `[]` for non-root rows |
+| `questions`                          | The questions defined once for that row                                                        |
+| `entries`                            | Each class/grade, its impairment value/unit, and its complete matching rule                    |
+| Optional `help`                      | Row-level explanatory text retained from the source                                            |
 
 Each question has an `id`, a physician-facing `prompt`, a `group` (`PE`, `CS`, or `diagnosis`), and a `type` (`boolean` or `choice`). Choice options have a stored `value` and displayed `label`. Question/option `help` holds fuller descriptions and qualifications. Essential conditions should be visible with the control; longer reference guidance can be expandable.
 
@@ -157,3 +157,25 @@ The proposed `ama_diagnostic_rows` table stores identity/description/row help in
 Our preferred canonical-diagnosis mapping is an `ama_row_ids text[]` column on `canonical_diagnoses`, supplied by the offline taxonomy project. Its import must check that referenced AMA row IDs exist. The column, mappings, AMA table/importer, and application queries/UI remain separate implementation steps; rebuilding this file does not perform them.
 
 Keep [this walkthrough](ama-source-to-upload.md) as the process overview and [ama-spine-upload.md](ama-spine-upload.md) as the detailed data contract.
+
+ama*diagnostic_rows reference: questions (criteria), examination_tasks (tests → question_ids), entries (rules)
+│ POST /ama-candidates/:region rows mapped from the Analysis dx scope
+▼
+Visit tab (draft)
+Diagnoses card → confirm dx, history Yes/No, pick root + side
+→ amaAssessments[] { rowId, nerveRoot, side, canonicalDxIds }
+AMA findings → per assessment, the physician records FINDINGS:
+motorGrades { taskId: "4" } → derives motor*_ (amaMotorAnswers)
+atrophyCm { taskId: 1.8 } → derives atrophy_ (amaAtrophyAnswers)
+answers { questionId: value } → SLR, sensory, reflex, CS, history directly
+│ PUT /cases/:id/visit validation: row/root/side, question ids, derived answers must match findings
+▼
+case_visit_documentation.documentation one JSON doc per case, revisioned (ids only, no wording)
+│ POST /post-exam-analysis/:region/snapshot (Save & run post-exam)
+▼
+case_post_exam_analysis.input_snapshot.input.visit.amaFindings[]
+only this region's linked assessments; empty when AMA is off
+freezeAmaFindings joins each assessment with its row:
+{ rowId, description, nerveRoot, side, canonicalDxIds,
+examination: [{ taskId, prompt, questionIds, motorGrade, atrophyCm }], tests performed
+answers: [{ questionId, group, prompt, criterion, answer, answerLabel }] } resolved only

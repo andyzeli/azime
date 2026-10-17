@@ -356,8 +356,11 @@ def validate(rows):
 
     require(isinstance(rows, list) and bool(rows), "Expected a nonempty row array")
     row_ids = set()
+    shared_tasks = {}
+    has_tasks = ["examination_tasks" in row for row in rows]
+    require(all(has_tasks) or not any(has_tasks), "Partial examination-task enrichment")
     for row in rows:
-        require(set(row) <= {"row_id", "region_id", "description", "nerve_roots", "help", "questions", "entries"},
+        require(set(row) <= {"row_id", "region_id", "description", "nerve_roots", "help", "questions", "entries", "examination_tasks"},
                 "Unexpected row property")
         require(re.fullmatch(r"\d{2}-\d{2}-\d{2}", row["row_id"]) and row["row_id"] not in row_ids,
                 "Invalid or duplicate row ID")
@@ -418,6 +421,31 @@ def validate(rows):
                     and 0 <= entry["impairment"]["value"] <= 100 and entry["impairment"]["unit"] == "WPI", "Invalid impairment")
             check_rule(entry["criteria"])
         require(used == set(questions), f"Unused questions in {row['row_id']}")
+        if "examination_tasks" in row:
+            require(isinstance(row["examination_tasks"], list), "Tasks must be an array")
+            task_ids = set()
+            covered = set()
+            for task in row["examination_tasks"]:
+                require(isinstance(task, dict) and set(task) <= {"id", "prompt", "help", "question_ids"},
+                        "Unexpected examination task property")
+                require(isinstance(task.get("id"), str) and re.fullmatch(r"[a-z][a-z0-9_]*", task["id"])
+                        and task["id"] not in task_ids, "Invalid/duplicate task ID")
+                task_ids.add(task["id"])
+                require(isinstance(task.get("prompt"), str) and bool(task["prompt"].strip()), "Invalid task prompt")
+                require("help" not in task or isinstance(task["help"], str) and bool(task["help"].strip()), "Invalid task help")
+                refs = task.get("question_ids")
+                require(isinstance(refs, list) and bool(refs) and all(isinstance(ref, str) for ref in refs),
+                        "Task needs question references")
+                require(len(set(refs)) == len(refs), "Duplicate task question reference")
+                require(all(ref in questions and questions[ref]["group"] == "PE" for ref in refs),
+                        "Task must reference local PE questions")
+                covered.update(refs)
+                meaning = (task["prompt"], task.get("help"))
+                require(task["id"] not in shared_tasks or shared_tasks[task["id"]] == meaning,
+                        f"Conflicting shared task {task['id']}")
+                shared_tasks[task["id"]] = meaning
+            require(covered == {key for key, question in questions.items() if question["group"] == "PE"},
+                    f"Uncovered PE questions in {row['row_id']}")
 
 
 def main():

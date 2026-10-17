@@ -1,5 +1,5 @@
 import { createRoute, Link, Outlet } from "@tanstack/react-router";
-import { rootRoute } from "../../main";
+import { rootRoute } from "../rootRoutes";
 
 export const billingRoute = createRoute({
   getParentRoute: () => rootRoute,

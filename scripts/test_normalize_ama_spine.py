@@ -60,7 +60,11 @@ class UploadDraftTests(unittest.TestCase):
                   for row in self.rows for entry in row["entries"]}
         self.assertEqual(expected, actual)
         self.assertEqual((len(self.rows), len(actual)), (30, 108))
-        self.assertEqual(normalizer.OUTPUT.read_text(), json.dumps(self.rows, ensure_ascii=False, indent=2) + "\n")
+        upload = json.loads(normalizer.OUTPUT.read_text())
+        normalizer.validate(upload)
+        self.assertEqual([{key: value for key, value in row.items() if key != "examination_tasks"}
+                          for row in upload], self.rows)
+        self.assertEqual(normalizer.normalize_rows(), self.rows)
         self.assertTrue(all("eligibility" not in row for row in self.rows))
         self.assertTrue(all(question["group"] != "CH" for row in self.rows for question in row["questions"]))
 
@@ -76,6 +80,35 @@ class UploadDraftTests(unittest.TestCase):
             with self.subTest(row_id=row["row_id"]):
                 self.assertEqual(row["nerve_roots"], expected.get(row["row_id"], []))
         self.assertEqual(sum(bool(row["nerve_roots"]) for row in self.rows), 16)
+
+    def test_enriched_tasks_require_complete_local_pe_links_and_shared_meanings(self):
+        upload = json.loads(normalizer.OUTPUT.read_text())
+        normalizer.validate(upload)
+        if "examination_tasks" not in upload[0]:
+            self.skipTest("Upload has not been enriched")
+        invalid = copy.deepcopy(upload)
+        invalid[0]["examination_tasks"] = []
+        with self.assertRaises(ValueError):
+            normalizer.validate(invalid)
+        invalid = copy.deepcopy(upload)
+        invalid[0]["examination_tasks"][0]["question_ids"] = ["cs_confirmed"]
+        with self.assertRaises(ValueError):
+            normalizer.validate(invalid)
+        invalid = copy.deepcopy(upload)
+        del invalid[0]["examination_tasks"]
+        with self.assertRaises(ValueError):
+            normalizer.validate(invalid)
+        invalid = copy.deepcopy(upload)
+        seen = set()
+        for row in invalid:
+            for task in row["examination_tasks"]:
+                if task["id"] in seen:
+                    task["help"] = "Conflicting collection instructions"
+                    with self.assertRaises(ValueError):
+                        normalizer.validate(invalid)
+                    return
+                seen.add(task["id"])
+        self.fail("Expected shared examination tasks")
 
     def test_validator_rejects_missing_or_inaccurate_root_metadata(self):
         cases = [

@@ -467,6 +467,9 @@ function AnalysisReview({
   const prunedCount = rows.filter(
     (row) => draft.treatments[row.id]?.disposition === "prune"
   ).length;
+  const prepStatus = examPrepStatus(refined, saved, visit);
+  const prepCurrent =
+    prepStatus.kind === "current" && !dirty && !examPrepMutation.isPending;
   const missingRationale = Object.values(draft.treatments).some((row) =>
     Object.values(row.assessments ?? {}).some(
       (a) =>
@@ -675,8 +678,7 @@ function AnalysisReview({
           · rev {revision}
         </span>
         <ExamPrepState
-          caseId={caseId}
-          status={examPrepStatus(refined, saved, visit)}
+          status={prepStatus}
           dirty={dirty}
           pending={examPrepMutation.isPending}
         />
@@ -691,27 +693,36 @@ function AnalysisReview({
         >
           Save steering
         </Btn>
-        <Btn
-          variant="primary"
-          disabled={busy || missingRationale}
-          onClick={generateExamPrepClick}
-        >
-          {examPrepMutation.isPending
-            ? "Generating exam prep…"
-            : "Save & generate exam prep →"}
-        </Btn>
+        {prepCurrent ? (
+          // Nothing to regenerate: send the physician to the result instead.
+          <Link
+            to="/p_cases/$caseId/exam-prep"
+            params={{ caseId }}
+            className="rounded-md border border-blue-600 bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-700"
+          >
+            View exam prep →
+          </Link>
+        ) : (
+          <Btn
+            variant="primary"
+            disabled={busy || missingRationale}
+            onClick={generateExamPrepClick}
+          >
+            {examPrepMutation.isPending
+              ? "Generating exam prep…"
+              : "Save & generate exam prep →"}
+          </Btn>
+        )}
       </footer>
     </>
   );
 }
 
 function ExamPrepState({
-  caseId,
   status,
   dirty,
   pending,
 }: {
-  caseId: string;
   status: ExamPrepStatus;
   dirty: boolean;
   pending: boolean;
@@ -721,16 +732,7 @@ function ExamPrepState({
   return (
     <span className="border-l border-slate-200 pl-3 text-[11px]">
       {status.kind === "current" && !dirty ? (
-        <span className="text-green-700">
-          Exam prep up to date ·{" "}
-          <Link
-            to="/p_cases/$caseId/exam-prep"
-            params={{ caseId }}
-            className="font-semibold underline"
-          >
-            view
-          </Link>
-        </span>
+        <span className="text-green-700">Exam prep up to date</span>
       ) : stale ? (
         <span className="font-semibold text-amber-700">
           Exam prep out of date

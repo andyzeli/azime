@@ -5,7 +5,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Check, ChevronRight, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { mockCaseQueryOptions } from "../../mockups/queries";
-import { useExamPrep } from "./examPrep";
+import { nextStep, useExamPrep } from "./examPrep";
 
 type TabStatus = "done" | "current" | "stale" | "todo";
 
@@ -115,8 +115,11 @@ export default function CockpitShell() {
       .join(" ") || "Unnamed patient";
   // Workflow status remains mock data while the tabs are ported.
   const { data: mockCase } = useSuspenseQuery(mockCaseQueryOptions);
-  const [hintDismissed, setHintDismissed] = useState(false);
-  const statuses = useExamPrep(caseId, patientCase.regions).regions.map((r) => r.status.kind);
+  const workflow = useExamPrep(caseId, patientCase.regions);
+  const statuses = workflow.regions.map((r) => r.status.kind);
+  // Dismissing hides only this message; a different next step shows again.
+  const [dismissedHint, setDismissedHint] = useState<string>();
+  const next = workflow.isPending ? null : nextStep(workflow.regions);
   const examPrep = {
     stale: statuses.includes("stale"),
     current: statuses.includes("current") && !statuses.includes("stale"),
@@ -190,20 +193,21 @@ export default function CockpitShell() {
         </TabGroup>
       </nav>
 
-      {!hintDismissed ? (
+      {next && next.message !== dismissedHint ? (
         <div className="flex shrink-0 items-center gap-2.5 border-b border-blue-200 bg-blue-50 px-5 py-2 text-[12.5px] text-blue-950">
-          <b>Next:</b> 2 treatments still unreviewed in Analysis (Lumbar).
+          <b>Next:</b> {next.message}
           <Link
-            to="/p_cases/$caseId/analysis"
+            to={next.tab === "analysis" ? "/p_cases/$caseId/analysis" : "/p_cases/$caseId/exam-prep"}
             params={{ caseId }}
+            search={next.tab === "analysis" ? { region: next.region } : {}}
             className="rounded-md bg-blue-600 px-2.5 py-0.5 text-xs font-semibold text-white hover:bg-blue-700"
           >
-            Go to Analysis →
+            {next.tab === "analysis" ? "Go to Analysis" : "Go to Exam prep"} →
           </Link>
           <span className="flex-1" />
           <button
             type="button"
-            onClick={() => setHintDismissed(true)}
+            onClick={() => setDismissedHint(next.message)}
             className="flex items-center gap-1 text-slate-500 hover:text-slate-800"
           >
             dismiss <X className="size-3.5" />

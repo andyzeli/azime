@@ -1,5 +1,5 @@
 import { createRoute, Link, Outlet } from "@tanstack/react-router";
-import { indexRoute } from "../../main";
+import { indexRoute } from "../rootRoutes";
 
 function AptComponent() {
   return (
