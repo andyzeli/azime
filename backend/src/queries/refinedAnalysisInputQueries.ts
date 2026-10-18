@@ -7,13 +7,13 @@ import { MissingPrerequisiteError } from "../errors/missingPrerequisiteError.js"
 import { getStoredCaseSummary } from "./caseSummaryQueries.js";
 import { getPhysicianSteering } from "./physicianSteeringQueries.js";
 import { getStoredPreExamAnalysis } from "./preExamAnalysisQueries.js";
+import { getRegionDiagnosisList } from "./regionDiagnosesQueries.js";
 
 export async function getRefinedAnalysisInput(
   caseId: number,
-  region: Region,
-  referralQuestions: string[] = []
+  region: Region
 ): Promise<RefinedAnalysisInputSnapshot> {
-  const [patientCase, caseSummary, preExam, steering] = await Promise.all([
+  const [patientCase, caseSummary, preExam, steering, diagnoses] = await Promise.all([
     db.query.PatientCase.findFirst({
       columns: {
         caseType: true,
@@ -26,6 +26,7 @@ export async function getRefinedAnalysisInput(
     getStoredCaseSummary(caseId),
     getStoredPreExamAnalysis(caseId, region),
     getPhysicianSteering(caseId, region),
+    getRegionDiagnosisList(caseId, region),
   ]);
 
   if (!patientCase?.regions.includes(region)) {
@@ -54,6 +55,7 @@ export async function getRefinedAnalysisInput(
       dateOfInjury: patientCase.dateOfInjury,
     },
     scope: preExam.inputSnapshot.scope,
+    diagnoses,
     caseSummary,
     preExam: {
       id: preExam.id,
@@ -61,6 +63,5 @@ export async function getRefinedAnalysisInput(
       analysis: preExam.analysis,
     },
     steering,
-    referralQuestions,
   });
 }

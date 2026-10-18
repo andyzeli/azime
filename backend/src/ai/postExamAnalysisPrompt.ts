@@ -9,4 +9,4 @@ Post-exam analysis prompt is not implemented.
 export const buildPostExamAnalysisUserPrompt = (input: PostExamInput) =>
   JSON.stringify(postExamInputSchema.parse(input), null, 2);
 
-//case context, scope, referral questions, case summary, reviewed analysis, pdq, questionnaire, exam, findings, post-exam steers
+//case context, scope, case summary, reviewed analysis, pdq, questionnaire, exam, findings, post-exam steers

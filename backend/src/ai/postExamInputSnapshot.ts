@@ -32,7 +32,7 @@ export function buildPostExamInputSnapshot({
 }) {
   if (visit.caseId !== refined.caseId)
     throw new MissingPrerequisiteError(
-      "Visit and exam prep belong to different cases",
+      "Visit and exam prep belong to different cases"
     );
   if (pdq && pdq.caseId !== visit.caseId)
     throw new MissingPrerequisiteError("PDQ belongs to a different case");
@@ -47,7 +47,9 @@ export function buildPostExamInputSnapshot({
           .map((a) => {
             const row = amaRows.get(a.rowId);
             if (!row)
-              throw new MissingPrerequisiteError(`AMA row ${a.rowId} is unavailable`);
+              throw new MissingPrerequisiteError(
+                `AMA row ${a.rowId} is unavailable`
+              );
             return freezeAmaFindings(a, row);
           });
   return postExamInputSnapshotSchema.parse({
@@ -58,7 +60,7 @@ export function buildPostExamInputSnapshot({
       visit: {
         note: visit.documentation.note,
         priorityResponses: visit.documentation.priorityResponses.filter(
-          (response) => response.region === refined.region,
+          (response) => response.region === refined.region
         ),
         pdq: pdq?.data ?? null,
         questionnaires,

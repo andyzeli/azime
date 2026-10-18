@@ -15,6 +15,7 @@ import {
   ClipboardList,
   Lightbulb,
   Mic,
+  Printer,
 } from "lucide-react";
 import {
   effectiveAmaMode,
@@ -23,9 +24,10 @@ import {
   type AmaAssessment,
   supportedRegions,
   type Region,
-  type RefinedAnalysisResponse,
+  isCurrentDiagnosis,
+  type RegionDiagnosesResponse,
   type StoredRefinedAnalysis,
-  type VisitDiagnosisReview,
+  type VisitAmaHistory,
   type VisitDocumentation,
   type VisitPriorityResponse,
 } from "@azime/contracts";
@@ -50,10 +52,14 @@ import {
   isComponent,
   regionAmaCandidatesQueryOptions,
   toggleComponent,
-  unlinkDiagnosis,
   type AmaComponentKey,
 } from "../amaAssessments";
 import { sourceLabel } from "../components/AmaExamTasks";
+import {
+  diagnosisStatusLabel,
+  diagnosisStatusTone,
+} from "../components/DiagnosisList";
+import { useExamPrepModal } from "../components/ExamPrepModal";
 import { RecordDrawer } from "../components/RecordDetail";
 import { Badge, Btn, Segmented } from "../components/shared";
 import { useExamPrep } from "../examPrep";
@@ -173,18 +179,11 @@ function Tab() {
     },
   });
 
-  // A diagnosis rejected after a region's exam prep was generated: that region must be redone in Analysis first.
-  const rejectedRegions = examPrep.regions.filter(({ region, refined }) =>
-    draft.diagnosisReviews.some(
-      (r) =>
-        r.region === region &&
-        r.status === "rejected" &&
-        r.refinedUpdatedAt === refined?.updatedAt
-    )
+  const diagnosisRegions = examPrep.regions.flatMap(({ region, diagnoses }) =>
+    diagnoses ? [{ region, list: diagnoses }] : []
   );
-  const blocker = rejectedRegions.length
-    ? `Redo Analysis for ${rejectedRegions.map((r) => regionLabel(r.region)).join(", ")}`
-    : draft.note.trim() === "" || draft.note.trim() === NOTE_TEMPLATE.trim()
+  const blocker =
+    draft.note.trim() === "" || draft.note.trim() === NOTE_TEMPLATE.trim()
       ? "Add a visit note"
       : draft.pdqId === null
         ? "Select a PDQ to include"
@@ -205,20 +204,21 @@ function Tab() {
             />
             <DiagnosesCard
               caseId={caseId}
-              regions={examPrep.regions.flatMap((r) =>
-                r.refined ? [{ region: r.region, refined: r.refined }] : []
-              )}
-              reviews={draft.diagnosisReviews}
+              regions={diagnosisRegions}
+              history={draft.amaHistory}
               assessments={draft.amaAssessments}
               amaMode={amaMode}
               dxLabel={dxLabel}
-              onChange={(diagnosisReviews, amaAssessments) =>
-                edit((d) => ({ ...d, diagnosisReviews, amaAssessments }))
+              onChange={(amaHistory, amaAssessments) =>
+                edit((d) => ({ ...d, amaHistory, amaAssessments }))
               }
             />
             <AmaFindingsCard
               caseId={caseId}
-              regions={examPrep.regions.flatMap((r) => r.refined ?? [])}
+              regions={diagnosisRegions.map(({ region, list }) => ({
+                region,
+                diagnoses: list.diagnoses.map((d) => d.canonicalDx),
+              }))}
               assessments={draft.amaAssessments}
               amaMode={amaMode}
               dxLabel={dxLabel}
@@ -403,132 +403,116 @@ function NoteCard({
   );
 }
 
-// Confirm or reject each diagnosis the region's exam prep was built on. A rejection
-// (wrong or incomplete) sends the physician back to Analysis; the visit itself is kept.
-// A confirmed diagnosis with AMA rows then goes through the AMA prerequisites:
-// history, then the roots/sides (or non-root rows) that become rated components.
+// The region's current diagnoses (conclusions are set in Analysis) with their AMA
+// prerequisites: the history answer, then the roots/sides (or non-root rows) whose
+// findings are recorded. Nothing here is gated: findings can be recorded for any
+// current diagnosis, and a "no" history answer only stops rating it.
 function DiagnosesCard({
   caseId,
   regions,
-  reviews,
+  history,
   assessments,
   amaMode,
   dxLabel,
   onChange,
 }: {
   caseId: string;
-  regions: { region: Region; refined: RefinedAnalysisResponse }[];
-  reviews: VisitDiagnosisReview[];
+  regions: { region: Region; list: RegionDiagnosesResponse }[];
+  history: VisitAmaHistory[];
   assessments: AmaAssessment[];
   amaMode: AmaMode;
   dxLabel: (dx: string) => string;
-  onChange: (
-    reviews: VisitDiagnosisReview[],
-    assessments: AmaAssessment[]
-  ) => void;
+  onChange: (history: VisitAmaHistory[], assessments: AmaAssessment[]) => void;
 }) {
   return (
     <section className="rounded-xl border border-slate-200 bg-white">
       <div className="flex items-baseline gap-2.5 border-b border-slate-200 px-4 py-2.5">
         <h2 className="text-[13.5px] font-semibold">Diagnoses</h2>
-        <span className="text-[11px] text-slate-500">
-          Confirm the working diagnoses. Reject one that is wrong or incomplete
-          to redo that region's analysis.
+        <span className="flex-1 text-[11px] text-slate-500">
+          Record AMA history and the affected roots for each diagnosis in scope.
         </span>
+        <Link
+          to="/p_cases/$caseId/analysis"
+          params={{ caseId }}
+          className="text-[11.5px] font-semibold text-blue-600 hover:text-blue-800"
+        >
+          Edit diagnoses →
+        </Link>
       </div>
-      {regions.map(({ region, refined }) => (
+      {regions.map(({ region, list }) => (
         <RegionDiagnoses
           key={region}
           caseId={caseId}
-          refined={refined}
-          reviews={reviews}
+          region={region}
+          list={list}
+          history={history}
           assessments={assessments}
           amaMode={amaMode}
           dxLabel={dxLabel}
           onChange={onChange}
         />
       ))}
-      {!regions.length ? (
-        <p className="px-4 py-3 text-[12.5px] text-slate-400">
-          No exam prep yet.
-        </p>
-      ) : null}
     </section>
   );
 }
 
 function RegionDiagnoses({
   caseId,
-  refined,
-  reviews,
+  region,
+  list,
+  history,
   assessments,
   amaMode,
   dxLabel,
   onChange,
 }: {
   caseId: string;
-  refined: RefinedAnalysisResponse;
-  reviews: VisitDiagnosisReview[];
+  region: Region;
+  list: RegionDiagnosesResponse;
+  history: VisitAmaHistory[];
   assessments: AmaAssessment[];
   // off: no AMA at all (saved assessments are kept, just not shown); guidance: rows, no rating tables.
   amaMode: AmaMode;
   dxLabel: (dx: string) => string;
-  onChange: (
-    reviews: VisitDiagnosisReview[],
-    assessments: AmaAssessment[]
-  ) => void;
+  onChange: (history: VisitAmaHistory[], assessments: AmaAssessment[]) => void;
 }) {
-  const { region } = refined;
-  const scope = refined.inputSnapshot.input.scope.diagnoses;
+  const current = list.diagnoses.filter(isCurrentDiagnosis);
+  const excluded = list.diagnoses.filter((d) => !isCurrentDiagnosis(d));
+  // Every listed diagnosis, so this shares one query with the AMA findings card.
   const candidates = useQuery({
-    ...regionAmaCandidatesQueryOptions(caseId, refined),
-    enabled: amaMode !== "off",
+    ...regionAmaCandidatesQueryOptions(
+      caseId,
+      region,
+      list.diagnoses.map((d) => d.canonicalDx)
+    ),
+    enabled: amaMode !== "off" && list.diagnoses.length > 0,
   });
   const rowsById = new Map(
     (candidates.data?.rows ?? []).map((row) => [row.row_id, row])
   );
+  const candidateFor = (dx: string) =>
+    candidates.data?.diagnoses.find((d) => d.canonicalDx === dx);
   const rowsFor = (dx: string) =>
-    (
-      candidates.data?.diagnoses.find((d) => d.canonicalDx === dx)
-        ?.candidateRowIds ?? []
-    ).flatMap((id) => rowsById.get(id) ?? []);
+    (candidateFor(dx)?.candidateRowIds ?? []).flatMap(
+      (id) => rowsById.get(id) ?? []
+    );
   const regionAssessments = assessments.filter((a) => a.region === region);
 
-  const find = (dx: string) =>
-    reviews.find((r) => r.region === region && r.canonicalDx === dx);
-  const setReview = (
-    canonicalDx: string,
-    next:
-      | (Pick<VisitDiagnosisReview, "status" | "note"> &
-          Partial<Pick<VisitDiagnosisReview, "amaHistoryConfirmed">>)
-      | null
-  ) => {
-    const current = find(canonicalDx);
-    const others = reviews.filter((r) => r !== current);
-    // Only a confirmed diagnosis that passed the history prerequisite is rated.
-    const amaHistoryConfirmed =
-      next?.status === "confirmed"
-        ? (next.amaHistoryConfirmed ?? current?.amaHistoryConfirmed ?? null)
-        : null;
-    const nextAssessments = amaHistoryConfirmed
-      ? assessments
-      : unlinkDiagnosis(assessments, region, canonicalDx);
-    if (!next) return onChange(others, nextAssessments);
-    // A decision is tied to the exam prep it was made against; editing the note keeps that link.
-    const refinedUpdatedAt =
-      current?.status === next.status
-        ? current.refinedUpdatedAt
-        : refined.updatedAt;
+  const historyOf = (dx: string) =>
+    history.find((h) => h.region === region && h.canonicalDx === dx)?.confirmed;
+  // Choosing the current answer again clears it.
+  const setHistory = (dx: string, confirmed: boolean) =>
     onChange(
       [
-        ...others,
-        { region, canonicalDx, ...next, amaHistoryConfirmed, refinedUpdatedAt },
+        ...history.filter((h) => h.region !== region || h.canonicalDx !== dx),
+        ...(historyOf(dx) === confirmed
+          ? []
+          : [{ region, canonicalDx: dx, confirmed }]),
       ],
-      nextAssessments
+      assessments
     );
-  };
   const toggle = (dx: string, key: AmaComponentKey) =>
-    onChange(reviews, toggleComponent(assessments, key, dx));
+    onChange(history, toggleComponent(assessments, key, dx));
   const linked = (dx: string, key: AmaComponentKey) =>
     regionAssessments.some(
       (a) => isComponent(a, key) && a.canonicalDxIds.includes(dx)
@@ -539,95 +523,31 @@ function RegionDiagnoses({
       <div className="mb-1.5 text-[10.5px] font-bold tracking-[.05em] text-slate-500">
         {regionLabel(region).toUpperCase()}
       </div>
-      {scope.map((dx) => {
-        const review = find(dx);
-        const pending =
-          review?.status === "rejected" &&
-          review.refinedUpdatedAt === refined.updatedAt;
+      {current.map(({ canonicalDx: dx, status }) => {
         const rows = rowsFor(dx);
         const rootRows = rows.filter((r) => r.nerve_roots.length);
         const otherRows = rows.filter((r) => !r.nerve_roots.length);
+        const answered = historyOf(dx);
         return (
           <div key={dx} className="py-1">
-            <div className="flex items-center gap-3 text-[12.5px]">
-              <span
-                className={cn(
-                  "flex-1 font-semibold",
-                  review?.status === "rejected" && "text-amber-800"
-                )}
-              >
-                {dxLabel(dx)}
-              </span>
-              <Segmented
-                value={review?.status}
-                onChange={(status) =>
-                  setReview(
-                    dx,
-                    review?.status === status
-                      ? null
-                      : { status, note: review?.note ?? null }
-                  )
-                }
-                options={[
-                  {
-                    value: "confirmed",
-                    label: "Confirm",
-                    activeClassName: "bg-green-100 text-green-700",
-                  },
-                  {
-                    value: "rejected",
-                    label: "Reject",
-                    activeClassName: "bg-amber-100 text-amber-800",
-                  },
-                ]}
-              />
+            <div className="flex items-center gap-2 text-[12.5px]">
+              <span className="font-semibold">{dxLabel(dx)}</span>
+              <Badge className={diagnosisStatusTone[status]}>
+                {diagnosisStatusLabel[status]}
+              </Badge>
             </div>
-            {review?.status === "rejected" ? (
-              <div className="mt-1.5 flex items-start gap-2">
-                <input
-                  value={review.note ?? ""}
-                  onChange={(e) =>
-                    setReview(dx, {
-                      status: "rejected",
-                      note: e.target.value || null,
-                    })
-                  }
-                  placeholder="What's wrong or missing?"
-                  className="min-w-0 flex-1 rounded-md border border-amber-300 px-2 py-1 text-[12px] outline-none focus:border-amber-500"
-                />
-                {pending ? (
-                  <Link
-                    to="/p_cases/$caseId/analysis"
-                    params={{ caseId }}
-                    search={{ region }}
-                    className="whitespace-nowrap pt-1 text-[11.5px] font-semibold text-blue-600 hover:text-blue-800"
-                  >
-                    Update in Analysis →
-                  </Link>
-                ) : (
-                  <span className="whitespace-nowrap pt-1 text-[11px] text-slate-500">
-                    exam prep redone since
-                  </span>
-                )}
-              </div>
-            ) : null}
-            {review?.status === "confirmed" &&
-            candidates.data &&
-            amaMode === "rating" ? (
+            {candidates.data && amaMode === "rating" ? (
               <AmaClassScaleSelector
                 key={`${caseId}:${region}:${dx}`}
                 tables={candidates.data.ratingTables.filter((table) =>
-                  candidates
-                    .data!.diagnoses.find((d) => d.canonicalDx === dx)
-                    ?.candidateTableIds.includes(table.table_id)
+                  candidateFor(dx)?.candidateTableIds.includes(table.table_id)
                 )}
               />
             ) : null}
-            {review?.status === "confirmed" && candidates.data ? (
+            {candidates.data ? (
               <div className="ml-3 mt-1.5 flex flex-col gap-2 border-l-2 border-slate-100 pl-3 text-[12px]">
                 {!rows.length ? (
-                  candidates.data.diagnoses.find((d) => d.canonicalDx === dx)
-                    ?.candidateTableIds.length ? (
+                  candidateFor(dx)?.candidateTableIds.length ? (
                     amaMode === "rating" ? null : (
                       <span className="text-slate-400">
                         Rating tables only (no rating requested).
@@ -646,19 +566,9 @@ function RegionDiagnoses({
                     </span>
                     <Segmented
                       value={
-                        review.amaHistoryConfirmed === null
-                          ? undefined
-                          : review.amaHistoryConfirmed
-                            ? "yes"
-                            : "no"
+                        answered === undefined ? undefined : answered ? "yes" : "no"
                       }
-                      onChange={(v) =>
-                        setReview(dx, {
-                          status: "confirmed",
-                          note: review.note,
-                          amaHistoryConfirmed: v === "yes",
-                        })
-                      }
+                      onChange={(v) => setHistory(dx, v === "yes")}
                       options={[
                         {
                           value: "yes",
@@ -674,10 +584,12 @@ function RegionDiagnoses({
                     />
                   </div>
                 )}
-                {review.amaHistoryConfirmed === false ? (
-                  <span className="text-slate-500">Not rated under AMA.</span>
+                {answered === false ? (
+                  <span className="text-slate-500">
+                    Not rated under AMA. Findings are still recorded.
+                  </span>
                 ) : null}
-                {review.amaHistoryConfirmed && rootRows.length ? (
+                {rootRows.length ? (
                   <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
                     <span className="text-[11px] font-semibold text-slate-500">
                       Affected roots
@@ -719,7 +631,7 @@ function RegionDiagnoses({
                     )}
                   </div>
                 ) : null}
-                {review.amaHistoryConfirmed && otherRows.length ? (
+                {otherRows.length ? (
                   <div className="flex flex-col gap-1">
                     {otherRows.map((row) => {
                       const key = {
@@ -750,6 +662,17 @@ function RegionDiagnoses({
           </div>
         );
       })}
+      {!current.length ? (
+        <p className="py-1 text-[12.5px] text-slate-400">
+          No diagnoses in scope.
+        </p>
+      ) : null}
+      {excluded.length ? (
+        <p className="mt-1 text-[11.5px] text-slate-400">
+          Not supported (no exam tasks):{" "}
+          {excluded.map((d) => dxLabel(d.canonicalDx)).join(", ")}
+        </p>
+      ) : null}
       {candidates.isError ? (
         <p className="mt-1 text-[11.5px] text-red-700">
           Could not load AMA rows: {apiErrorMessage(candidates.error)}
@@ -890,6 +813,7 @@ function PrioritiesColumn({
   responses: VisitPriorityResponse[];
   onChange: (responses: VisitPriorityResponse[]) => void;
 }) {
+  const prepModal = useExamPrepModal();
   const setResponse = (
     p: Priority,
     next: Pick<VisitPriorityResponse, "status" | "note"> | null
@@ -911,6 +835,14 @@ function PrioritiesColumn({
           <Badge className="bg-slate-100 text-slate-600">
             {priorities.length}
           </Badge>
+          <span className="flex-1" />
+          <button
+            type="button"
+            onClick={prepModal.open}
+            className="flex items-center gap-1 text-[11.5px] font-semibold text-blue-600 hover:text-blue-800"
+          >
+            <Printer className="size-3.5" /> Prep sheet
+          </button>
         </div>
         <p className="mt-1 text-[11px] leading-snug text-slate-500">
           Address these in your note. Marking them here is optional; use it for
@@ -1029,7 +961,7 @@ function PrioritiesColumn({
         })}
         {!priorities.length ? (
           <li className="p-6 text-center text-slate-500">
-            No visit priorities yet. Generate exam prep from Analysis.
+            No visit priorities yet. Use "Update prep sheet" in Analysis.
           </li>
         ) : null}
       </ol>

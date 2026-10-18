@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>One assessment, two outputs — AZIME design proposal</title>
+<style>
+:root{color-scheme:light;--ink:#192b3a;--muted:#516473;--line:#d6e0e5;--paper:#fff;--bg:#f3f6f7;--accent:#076c67;--soft:#e7f3ef;--code:#152632}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:var(--accent)}main{max-width:1100px;margin:auto;padding:52px 36px 80px}header{padding-bottom:30px}.eyebrow{font-size:12px;font-weight:750;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}h1{font-size:44px;line-height:1.12;letter-spacing:-.035em;margin:12px 0 16px;max-width:800px}h2{font-size:25px;line-height:1.25;letter-spacing:-.02em;margin:0 0 15px}h3{font-size:17px;margin:0 0 9px}p{margin:8px 0 15px}.lead{font-size:20px;max-width:790px;color:var(--muted)}.muted,.caption{color:var(--muted)}.caption{font-size:13px;margin-top:8px}.pill{display:inline-block;border:1px solid var(--line);border-radius:30px;padding:4px 10px;font-size:12px;background:white;margin:0 6px 6px 0}nav{display:flex;flex-wrap:wrap;gap:8px 20px;border-top:1px solid var(--line);padding-top:20px;font-size:14px}nav a{text-decoration:none}section{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:28px;margin:20px 0;scroll-margin-top:20px}.num{color:var(--accent);margin-right:10px;font-size:15px;vertical-align:middle}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.box{padding:20px;border:1px solid var(--line);border-radius:10px}.callout{border-left:4px solid var(--accent);background:var(--soft);padding:12px 16px;margin:18px 0}.flow{display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:16px;align-items:center;margin:22px 0}.flow .node{border:1px solid var(--line);padding:18px;border-radius:10px}.flow .hub{background:var(--soft);border-color:#a3c9bc}.flow .stack{display:grid;gap:15px}.flow small{display:block;color:var(--muted);margin-top:5px}.flow .direction{font-size:12px;letter-spacing:.04em;color:var(--accent);font-weight:700;margin-bottom:7px}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px}th{text-align:left;color:var(--muted);font-size:12px;letter-spacing:.04em;text-transform:uppercase}th,td{padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:top}th:first-child,td:first-child{padding-left:0}tr:last-child td{border-bottom:0}code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.86em}p code,td code,li code{background:#edf2f4;border-radius:4px;padding:2px 4px}pre{background:var(--code);color:#e4eef3;border-radius:10px;padding:19px 21px;overflow-x:auto;margin:10px 0 16px;font-size:14px;line-height:1.65;tab-size:2}pre code{font-size:inherit}.comment{color:#9fb9c7}.key{color:#98ddcc}.label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:16px 0 6px}ul,ol{padding-left:22px}li{margin:7px 0}.screen{border:1px solid #b9cbd4;border-radius:12px;overflow:hidden;margin:18px 0}.screen-bar{padding:14px 18px;background:#edf3f5;font-size:14px;border-bottom:1px solid var(--line);display:flex;gap:20px;flex-wrap:wrap}.screen-bar strong{color:var(--accent)}.screen-body{padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:16px}.screen-body .wide{grid-column:1/-1}.actions{display:flex;gap:10px;flex-wrap:wrap}.action{padding:7px 12px;border:1px solid #a8bec8;border-radius:6px;font-size:13px;background:white}.action.primary{background:var(--accent);color:#fff;border-color:var(--accent)}footer{font-size:13px;color:var(--muted);padding-top:15px}.check{color:var(--accent);font-weight:700}.no-break{break-inside:avoid}@media(max-width:760px){main{padding:26px 16px 45px}h1{font-size:34px}section{padding:20px}.grid,.flow,.screen-body{grid-template-columns:1fr}.screen-body .wide{grid-column:auto}.flow .direction{margin-top:0}pre{font-size:12px;padding:15px}.lead{font-size:18px}}@media print{body{background:white;font-size:11px}main{padding:0;max-width:none}header{padding-bottom:10px}h1{font-size:30px}h2{font-size:19px}section{padding:15px;margin:12px 0;border-radius:0}nav{display:none}pre{font-size:10px;white-space:pre-wrap;overflow-wrap:anywhere;background:#f0f3f4;color:#182a37}pre .comment{color:#526571}pre .key{color:#075e55}.grid,.flow{gap:12px}h2,h3,.label{break-after:avoid}pre,.box,.flow,.screen{break-inside:avoid}a{color:inherit;text-decoration:none}}
+</style>
+</head>
+<body><main>
+<header>
+<div class="eyebrow">AZIME · proposed design · October 16, 2026</div>
+<h1>One assessment.<br>Two outputs. No restart loop.</h1>
+<p class="lead">Keep Analysis. Add encounter evidence alongside it. Generate preparation or post-exam input from the same current assessment.</p>
+<div><span class="pill">Design proposal — not implemented</span><span class="pill">Reuse existing treatment steering</span><span class="pill">Documentation before or after the exam</span></div>
+<nav aria-label="Document sections"><a href="#flow">Flow</a><a href="#ui">Screen organization</a><a href="#state">State</a><a href="#snapshots">Two snapshots</a><a href="#changes">Changes</a><a href="#example">Example</a><a href="#implementation">Implementation</a></nav>
+</header>
+
+<section id="flow">
+<h2><span class="num">01</span>Analysis is the shared workspace</h2>
+<div class="flow" role="img" aria-label="Records and AI treatment analysis, plus visit evidence, feed one editable regional assessment. The assessment produces optional frozen exam preparation and a separate frozen post-exam input. There is no required connection from exam preparation to post-exam input.">
+ <div class="stack"><div class="node"><div class="direction">INPUT →</div><strong>Records + 3A</strong><small>Diagnoses, documented care,<br>AI treatment assessments</small></div><div class="node"><div class="direction">INPUT ↔</div><strong>Visit evidence</strong><small>Note, findings, questionnaires<br>Available whenever entered</small></div></div>
+ <div class="node hub"><strong>Current regional assessment</strong><small>Working diagnoses<br>Physician treatment steering<br>Diagnosis conclusions + reasons</small><p><strong>Editable at any time.</strong></p></div>
+ <div class="stack"><div class="node"><div class="direction">→ OPTIONAL OUTPUT</div><strong>Exam prep</strong><small>3B priorities + trajectories<br>AMA tasks · printable snapshot</small></div><div class="node"><div class="direction">→ SEPARATE OUTPUT</div><strong>Post-exam input</strong><small>Current assessment + evidence<br>Feeds MMI support / report drafting</small></div></div>
+</div>
+<div class="callout"><strong>Exam prep is an artifact, not a prerequisite.</strong> A change can make an old prep sheet different from today’s assessment. That does not block encounter documentation or post-exam analysis.</div>
+</section>
+
+<section id="ui">
+<h2><span class="num">02</span>Keep the tabs. Remove the stepper.</h2>
+<p>Keep <strong>Analysis</strong> as the home for diagnoses and treatment review. Keep <strong>Visit</strong> as an evidence-entry view. Both use the same assessment state.</p>
+<div class="screen" aria-label="Static screen organization sketch">
+ <div class="screen-bar"><span>Records</span><span>Summary</span><strong>Analysis</strong><span>Visit</span><span>Exam prep</span><span>MMI &amp; Report</span></div>
+ <div class="screen-body">
+  <div class="box wide"><h3>Working diagnoses · Lumbar spine</h3><p>Diagnosis A <span class="pill">Working</span> Diagnosis B <span class="pill">Supported</span></p><span class="caption">Add · Change conclusion · View excluded diagnoses and reasons</span></div>
+  <div class="box"><h3>Treatment analysis</h3><p>Existing applicability / adequacy controls.<br>Existing prune, notes, and add-treatment controls.</p><span class="caption">Open issues first. All treatments remain accessible.</span></div>
+  <div class="box"><h3>Encounter evidence</h3><p>Saved visit note and findings visible while reviewing treatments.</p><span class="caption">Open Visit to enter or edit evidence.</span></div>
+  <div class="actions wide"><span class="action">Save assessment</span><span class="action">Generate printable prep</span><span class="action primary">Prepare post-exam analysis</span></div>
+ </div>
+</div>
+<div class="grid">
+ <div><h3>Analysis</h3><p>One diagnosis editor. One treatment editor. Use either before or after the exam.</p></div>
+ <div><h3>Visit</h3><p>Note → examination findings → questionnaires. Show the shared diagnoses for context; link back to the same editor.</p></div>
+</div>
+<p class="caption">This is screen organization, not a finished UI mockup. No numbered tabs, forced redirects, or “confirm diagnosis to unlock findings.”</p>
+</section>
+
+<section id="state">
+<h2><span class="num">03</span>One owner for each input</h2>
+<div class="table-wrap"><table><thead><tr><th>Input</th><th>Owner</th><th>Design decision</th></tr></thead><tbody>
+<tr><td>AI treatment baseline</td><td>Existing 3A storage</td><td>Preserve provenance and row IDs; scope edits do not clear it.</td></tr>
+<tr><td>Current diagnoses + treatment steering</td><td>Regional assessment</td><td>Extend the existing regional steering record; one revision for both.</td></tr>
+<tr><td>Note, findings, questionnaires</td><td>Existing case visit document</td><td>One encounter across regions. No second diagnosis-review list.</td></tr>
+<tr><td>Preparation</td><td>Frozen prep artifact</td><td>Input + 3B output + selected AMA tasks/reference version.</td></tr>
+<tr><td>Post-exam input</td><td>Frozen downstream snapshot</td><td>Current assessment + visit evidence; old prep is optional context.</td></tr>
+</tbody></table></div>
+<div class="label">Proposed TypeScript · relevant fields only</div>
+<pre><code>type DiagnosisState = {
+  canonicalDx: string;
+  status: "working" | "supported" | "not_supported" | "not_evaluated";
+  reason: string | null;
+};
+
+type RegionalAssessment = {
+  caseId: number;
+  region: Region;
+  revision: number;
+  diagnoses: DiagnosisState[];
+  steering: PhysicianSteering; <span class="comment">// existing shape + existing resolver</span>
+};
+
+const currentDiagnoses = assessment.diagnoses.filter(
+  dx =&gt; dx.status === "working" || dx.status === "supported"
+);
+
+<span class="comment">// Existing visit document keeps note, PDQ, priority responses,
+// questionnaires and AMA findings. Diagnosis decisions move above.</span></code></pre>
+<p><strong>“Working” is enough to prepare and record findings.</strong> “Supported” is the physician’s conclusion. Removing from current scope asks: <em>not supported</em> or <em>not evaluated</em>?</p>
+<p class="caption">The frozen 3A input scope remains provenance. It stops serving as the editable source of current scope. Migrate existing Visit diagnosis decisions into this single owner.</p>
+</section>
+
+<section id="snapshots">
+<h2><span class="num">04</span>Resolve once. Project two ways.</h2>
+<p>Keep the existing treatment-issue projection. Stop reading current treatment judgments out of the old prep snapshot.</p>
+<pre><code><span class="comment">// Pseudocode. Helpers in green below already exist in the app.</span>
+const resolved = <span class="key">resolvePreExamReview</span>(baseline, assessment.steering);
+const scoped = selectDiagnosisAssessments(resolved, currentDiagnoses);
+
+const prepInput = {
+  caseContext, scope: currentScope, caseSummary, referralQuestions,
+  reviewedAnalysis: <span class="key">projectReviewedAnalysis</span>(scoped)
+};
+<span class="comment">// Current projection: open issues + adequate-treatment context
+// + retained gaps, inconsistencies and physician notes.</span>
+const prepOutput = await makeRefinedAnalysis(prepInput);
+
+const postExamInput = {
+  caseContext, scope: currentScope, caseSummary, referralQuestions,
+  diagnosisDecisions: assessment.diagnoses, <span class="comment">// includes exclusions + reasons</span>
+  reviewedTreatmentAnalysis: <span class="key">projectFullReviewedAnalysis</span>(scoped),
+  visit: freezeVisitEvidence(visit),
+  preparationContext: selectedPrep ? freezePrepContext(selectedPrep) : null
+};</code></pre>
+<div class="grid">
+<div class="box"><h3>Prep snapshot</h3><pre><code>{
+  kind: "exam_prep",
+  basedOn: {
+    assessmentRevision: 8,
+    baselineVersion: "…",
+    caseSummaryVersion: "…"
+  },
+  input: prepInput,
+  output: prepOutput,
+  amaTasks: frozenTasks
+}</code></pre><p class="caption">New generation creates a new artifact. Previously printed versions remain identifiable.</p></div>
+<div class="box"><h3>Post-exam snapshot</h3><pre><code>{
+  kind: "post_exam",
+  basedOn: {
+    assessmentRevision: 11,
+    baselineVersion: "…",
+    visitRevision: 5,
+    caseSummaryVersion: "…",
+    questionnaireVersions: []
+  },
+  input: postExamInput
+}</code></pre><p class="caption">Freeze complete input and reference definitions. Read source versions together in a consistent transaction.</p></div>
+</div>
+<div class="callout"><strong>Prep is optional, but its useful context is not silently lost.</strong> If included, retain its original scope and version. Old trajectories and priorities are pre-exam context; current diagnoses and visit evidence govern the new analysis. If absent, pass the case summary/timeline directly.</div>
+<p class="caption">Proposed changes require the post-exam prompt and schema to change together. The current schema requires refinedAnalysis, and the current builder copies scope and fullReviewedAnalysis from Exam prep.</p>
+</section>
+
+<section id="changes">
+<h2><span class="num">05</span>What happens when the physician changes something?</h2>
+<div class="table-wrap"><table><thead><tr><th>Action</th><th>Update now</th><th>Keep</th><th>AI needed?</th></tr></thead><tbody>
+<tr><td>Mark diagnosis unsupported</td><td>Record reason; exclude its treatment assessments from current scope and its rating eligibility.</td><td>Findings, old judgments, historical treatment evidence, prep.</td><td>No.</td></tr>
+<tr><td>Add diagnosis</td><td>Add as working; retrieve AMA tasks; load a proposed treatment analysis for that diagnosis.</td><td>All existing diagnoses and treatment judgments.</td><td>3A for the addition; never automatic 3B.</td></tr>
+<tr><td>Change applicability / adequacy</td><td>Save existing steering override + rationale.</td><td>Original AI judgment and other physician decisions.</td><td>No.</td></tr>
+<tr><td>Add treatment</td><td>Use existing addedTreatments. Identify prior care versus a proposed option.</td><td>Other steering and all visit findings.</td><td>No.</td></tr>
+<tr><td>Add or change findings</td><td>Save visit revision; flag affected conclusions/results for review.</td><td>Existing judgments until physician revises them.</td><td>No automatic rerun.</td></tr>
+</tbody></table></div>
+<div class="label">Diagnosis addition · proposed server behavior</div>
+<pre><code>saveDiagnosis({ canonicalDx: newDx, status: "working" });
+showAmaTasksFor(newDx); <span class="comment">// reference lookup; may reveal unrecorded findings</span>
+
+const delta = await run3A({ diagnoses: [newDx], recordEvidence });
+validate(delta);
+transaction(() =&gt; {
+  assertAssessmentRevision(expectedRevision);
+  assertDiagnosisStillInScope(newDx);
+  mergeNewDiagnosisAssessments(delta);
+  <span class="comment">// Match shared taxonomy treatments by treatmentId.
+  // Keep existing row IDs and prior diagnosis-specific assessments.
+  // Unmatched / free-text treatments get new IDs; no fuzzy carryover.
+  // Keep existing steering; new assessments start unreviewed.
+  // A prior whole-row prune must be reviewed for the new diagnosis;
+  // it cannot silently hide that diagnosis's treatment assessment.</span>
+  rebindSteeringToNewBaselineVersion();
+  incrementAssessmentRevision();
+});</code></pre>
+<p class="caption">While 3A is pending or fails: keep the diagnosis, show “treatment analysis needed,” allow evidence entry, and retry. Do not silently treat the missing analysis as no treatment issues.</p>
+<div class="label">Diagnosis exclusion · proposed server behavior</div>
+<pre><code>setDiagnosisStatus(dx, "not_supported", reason);
+<span class="comment">// Current treatment view filters diagnosis-specific assessments.
+// A shared treatment stays active for its other diagnoses.
+// Do not delete answers or regenerate prep.</span>
+retainFindingsEvenWithoutAnActiveDiagnosis();
+excludeUnsupportedDiagnosisFromRating();</code></pre>
+<p><strong>Historical care remains report evidence.</strong> “Not supported now” does not answer whether earlier treatment was appropriate. Keep that question separate from today’s treatment options.</p>
+</section>
+
+<section id="example">
+<h2><span class="num">06</span>Example: the examination changes the diagnosis</h2>
+<div class="label">Illustrative state changes · not clinical guidance</div>
+<pre><code><span class="comment">// Before the exam</span>
+assessment = {
+  revision: 8,
+  diagnoses: [{ canonicalDx: "diagnosis_a", status: "working" }]
+};
+prep = { id: "prep-17", assessmentRevision: 8 }; <span class="comment">// generated + printed</span>
+
+<span class="comment">// After the exam — using the same Analysis editor</span>
+assessment = {
+  revision: 11,
+  diagnoses: [
+    { canonicalDx: "diagnosis_a", status: "not_supported", reason: "…" },
+    { canonicalDx: "diagnosis_b", status: "supported", reason: "…" }
+  ]
+};
+visit = { revision: 5, note: "…", amaAssessments: [/* retained findings */] };
+
+<span class="comment">// Generate after reviewing B's treatment analysis.</span>
+postExam.basedOn = { assessmentRevision: 11, visitRevision: 5 };
+prep.assessmentRevision === 8; <span class="comment">// still valid as the sheet used that day</span></code></pre>
+<div class="callout"><strong>No return to preparation.</strong> The physician changes the current assessment, completes any missing evidence, and generates a new post-exam snapshot.</div>
+<h3>Readiness belongs to actions</h3>
+<div class="table-wrap"><table><thead><tr><th>Action</th><th>Requirement</th></tr></thead><tbody>
+<tr><td>Save / navigate / enter findings</td><td>Valid data and revision check. No diagnosis confirmation or prep prerequisite.</td></tr>
+<tr><td>Generate prep</td><td>Usable 3A baseline for selected working diagnoses. Save the current assessment first; unreviewed AI judgments stay explicitly unreviewed.</td></tr>
+<tr><td>Generate draft post-exam analysis</td><td>Coherent saved assessment + visit input; missing treatment coverage and unresolved judgments remain visible. No requirement for a current prep artifact.</td></tr>
+<tr><td>Finalize conclusions / report</td><td>Physician explicitly resolves or documents uncertainty in relevant diagnosis and treatment judgments. Required note, questionnaire and referral-answer rules remain separate product rules.</td></tr>
+<tr><td>Finalize a rating</td><td>Applicable physician MMI decision, supported diagnosis and completed rating prerequisites. Draft findings never imply rating eligibility.</td></tr>
+</tbody></table></div>
+<p class="caption">An empty current diagnosis set can still support a report explaining non-support. It must not silently produce “no treatment issues” or “0% impairment.”</p>
+</section>
+
+<section id="implementation">
+<h2><span class="num">07</span>Smallest coherent implementation</h2>
+<ol>
+<li><strong>Give current scope a durable owner.</strong> Extend regional steering storage with diagnosis state. Move Visit diagnosis decisions there; retain legacy data during migration.</li>
+<li><strong>Extract reusable Analysis editors.</strong> Preserve treatment controls and resolver. Remove numbered progression and the rejected-diagnosis redirect/blocker.</li>
+<li><strong>Unlock findings independently.</strong> Candidate lookup uses current working scope. Allow assessment answers before diagnosis support/history eligibility; retain unlinked findings in post-exam evidence.</li>
+<li><strong>Separate snapshot builders.</strong> Prep retains the reduced projection. Post-exam resolves current steering directly and uses the full projection. Prep becomes optional context.</li>
+<li><strong>Handle scope changes without destructive resets.</strong> Filter removals; merge additions by explicit identity. Full 3A regeneration is a separate operation requiring review of affected carried-over judgments.</li>
+<li><strong>Freeze output versions.</strong> Preserve generated prep; bind priority responses to the specific prep artifact + priority identity. Mark downstream results “inputs changed” after relevant edits.</li>
+</ol>
+<div class="label">Existing code to reuse / change</div>
+<div class="table-wrap"><table><thead><tr><th>File</th><th>Role</th></tr></thead><tbody>
+<tr><td><a href="../packages/contracts/src/physicianSteeringReview.ts"><code>physicianSteeringReview.ts</code></a></td><td>Reuse initialization and resolvePreExamReview; keep unreviewed distinct from agreement.</td></tr>
+<tr><td><a href="../backend/src/ai/refinedAnalysisInputSnapshot.ts"><code>refinedAnalysisInputSnapshot.ts</code></a></td><td>Reuse reduced/full projections. Extract shared projection helpers for both builders.</td></tr>
+<tr><td><a href="../backend/src/ai/makeRefinedAnalysis.ts"><code>makeRefinedAnalysis.ts</code></a></td><td>Keep as the preparation generator; generation remains an explicit action.</td></tr>
+<tr><td><a href="../backend/src/ai/postExamInputSnapshot.ts"><code>postExamInputSnapshot.ts</code></a></td><td>Replace refined-snapshot authority with current regional assessment. Retain unsupported/unlinked findings as evidence.</td></tr>
+<tr><td><a href="../backend/src/queries/postExamInputQueries.ts"><code>postExamInputQueries.ts</code></a></td><td>Read current scope, baseline, steering and visit coherently; remove required refined row.</td></tr>
+<tr><td><a href="../frontend/azimeclient/src/routes/p_cases/p_case/examPrep.ts"><code>examPrep.ts</code></a></td><td>Replace workflow-blocking “stale” with artifact provenance: “Generated from assessment revision 8.”</td></tr>
+</tbody></table></div>
+<p class="caption">New types and helper names in this document are proposals. Existing helper names are identified explicitly. No application code is changed by this document.</p>
+</section>
+
+<section>
+<h2><span class="num">08</span>Acceptance examples</h2>
+<div class="table-wrap"><table><thead><tr><th>Given / when</th><th>Expected</th></tr></thead><tbody>
+<tr><td>No prep generated; physician enters visit findings.</td><td><span class="check">Allowed.</span> Findings save without confirming a diagnosis.</td></tr>
+<tr><td>Prep printed; diagnosis later marked unsupported.</td><td>Prep stays unchanged. Findings persist. No 3B rerun required.</td></tr>
+<tr><td>New diagnosis added; it shares a treatment with an existing diagnosis.</td><td>Existing row ID and physician judgments survive; new diagnosis assessment is unreviewed.</td></tr>
+<tr><td>Physician adds a treatment after the visit.</td><td>The next post-exam input includes it, even if prep predates it.</td></tr>
+<tr><td>Findings remain after all linked diagnoses leave scope.</td><td>Report evidence retains them; rating excludes ineligible components.</td></tr>
+<tr><td>Assessment changes while an AI addition is running.</td><td>Reject stale write; reload/reconcile. Never overwrite newer steering.</td></tr>
+<tr><td>New findings follow a completed post-exam run.</td><td>Preserve the old result; require a new snapshot for updated conclusions.</td></tr>
+</tbody></table></div>
+</section>
+<footer>Recommendation: keep the useful Analysis tab, make its state authoritative, and let preparation and post-exam analysis branch from it. Snapshot the inputs at generation time; do not make a printed preparation artifact control the live assessment.</footer>
+</main></body></html>

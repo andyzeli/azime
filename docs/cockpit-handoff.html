@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Case cockpit — handoff (2026-10-17)</title>
+<style>
+  body { font: 14px/1.5 -apple-system, system-ui, sans-serif; color: #1e293b; max-width: 860px; margin: 32px auto; padding: 0 20px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  h2 { font-size: 16px; margin: 28px 0 8px; padding-bottom: 4px; border-bottom: 1px solid #e2e8f0; }
+  p, li { margin: 4px 0; }
+  ul { padding-left: 20px; }
+  code { font: 12px ui-monospace, Menlo, monospace; background: #f1f5f9; padding: 1px 4px; border-radius: 3px; }
+  pre { font: 12px/1.5 ui-monospace, Menlo, monospace; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 12px; overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  td, th { text-align: left; vertical-align: top; padding: 5px 8px; border-bottom: 1px solid #e2e8f0; }
+  th { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: #64748b; }
+  .muted { color: #64748b; }
+  .done { color: #15803d; font-weight: 600; }
+  .todo { color: #b45309; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<h1>Case cockpit — handoff</h1>
+<p class="muted">As of 2026-10-17. Human-readable copy of the Claude handoff memory. Design details: <code>docs/assessment-workspace-design.html</code>, <code>docs/pipeline-detail.md</code>.</p>
+
+<h2>Current direction</h2>
+<p>There's no stepper. Each part of the cockpit is an input:</p>
+<ul>
+  <li><b>Analysis</b> holds the shared assessment: the diagnosis list and the treatment review.</li>
+  <li><b>Prep sheet</b> is an optional printout in a modal. It isn't a workflow step.</li>
+  <li><b>Visit</b> is where evidence is entered, during the exam or afterward.</li>
+</ul>
+
+<table>
+  <tr><th>Phase</th><th>What</th><th>Status</th></tr>
+  <tr><td>1</td><td>Per-region diagnosis list replaces the Visit confirm/reject step and the "redo Analysis" loop. Exam prep becomes a modal.</td><td><span class="done">done, checked in the browser</span></td></tr>
+  <tr><td>2</td><td>Pass 4 builds its input directly instead of from exam prep. Trajectory moves into pass 4.</td><td><span class="todo">planned, not built</span></td></tr>
+  <tr><td>3</td><td>Adding a diagnosis runs 3A for that diagnosis only, without resetting steering</td><td><span class="todo">pending</span></td></tr>
+  <tr><td>4</td><td>Assessment tab: Analysis and Post Visit merged (<code>docs/assessment-mockup.html</code>), plus printout polish</td><td><span class="todo">pending</span></td></tr>
+  <tr><td>5</td><td>Opinions tab: pass 4 results, trajectory, remaining care, necessity questions, MMI choice and branches</td><td><span class="todo">pending</span></td></tr>
+  <tr><td>6</td><td>Report tab: frozen Opinions snapshot + draft, with "draft out of date"</td><td><span class="todo">pending</span></td></tr>
+</table>
+<p><b>Agreed order:</b> backend restart + require reason/basis → <b>3</b> → <b>2</b> → <b>4</b> → <b>5</b> → <b>6</b>. Phase 3 moved ahead because diagnoses mostly change after the visit, and today that wipes the review.</p>
+<p>Tabs after 4–6: <code>Records · Summary · Assessment · Visit · Opinions · Report</code></p>
+<p class="todo">Waiting on a backend restart for the latest build. Until then, new snapshots still default to only the Working and Supported diagnoses, and exam prep doesn't store the steering it used.</p>
+
+<h2>Diagnosis list</h2>
+<p>One list per case and region, in table <code>case_region_diagnoses</code> (migration 0014), read and saved through <code>GET/PUT /cases/:id/diagnoses/:region</code>. It's kept separate from steering, because steering belongs to a single 3A run.</p>
+<pre>{ canonicalDx, source: "records" | "added",
+  status: "working" | "supported" | "not_supported", reason }</pre>
+<ul>
+  <li><b>Every listed diagnosis needs a verdict.</b> A wrong diagnosis is marked Not supported with a reason. Only diagnoses the physician added can be removed.</li>
+  <li><b>Before the first save</b> (revision 0), the list is the 3A scope plus every records diagnosis, all set to Working.</li>
+  <li><b>Editor:</b> <code>components/DiagnosisList.tsx</code>, in the Analysis setup strip. Every change saves immediately.</li>
+</ul>
+<table>
+  <tr><th></th><th>Working / Supported</th><th>Not supported</th></tr>
+  <tr><td>3A treatment analysis</td><td>✓</td><td>✓ (treatment given for it still needs a necessity opinion)</td></tr>
+  <tr><td>Treatment table</td><td>✓</td><td>✓, greyed and tagged "dx not supported"</td></tr>
+  <tr><td>Exam prep, AMA tasks, Visit root pickers</td><td>✓</td><td>✗</td></tr>
+  <tr><td>Pass 4 (phase 2)</td><td>✓</td><td>✓, with its status</td></tr>
+</table>
+<p>A diagnosis added after 3A shows "Not covered" until a new snapshot and 3A run. That run currently resets steering, which phase 3 fixes.</p>
+
+<h2>Prep sheet</h2>
+<ul>
+  <li><b>Where it lives:</b> <code>components/ExamPrepModal.tsx</code>. It's opened by <code>?prep=true</code> in the URL, which <code>useExamPrepModal()</code> sets.</li>
+  <li><b>How to open it:</b> the "Prep sheet" button at the right of the case header, or the Visit priorities header. The header button is disabled until some region has exam prep, and it shows "out of date" when the sheet is stale.</li>
+  <li><b>Toolbar:</b>
+    <ul>
+      <li>the AMA mode control, which also appears in the Analysis header;</li>
+      <li><b>Update sheet</b>, which only updates regions whose steering has been saved;</li>
+      <li><b>Print</b>, which prints exactly what's shown, with a footer that says how current each part is.</li>
+    </ul>
+    Opening the sheet never runs AI.
+  </li>
+  <li><b>Analysis footer:</b> "Save steering" is the primary button. "Update prep sheet" is secondary; it saves steering if needed and then runs 3B.</li>
+  <li><b>"Out of date" compares contents, not revision numbers.</b> A saved edit that is later undone doesn't count. It checks:
+    <ul>
+      <li>the exam prep scope against the current diagnoses;</li>
+      <li>the steering each run used against the saved steering;</li>
+      <li>whether 3A has been re-run.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2>Phase 2 plan (pass 4 input)</h2>
+<pre>input = { caseContext, region, caseSummary,
+          diagnoses,                  // every listed diagnosis, with status + reason
+          reviewedTreatmentAnalysis,  // 3A + steering; not-supported diagnoses included and labelled
+          visit: { note, pdq, questionnaires, amaFindings, priorityResponses? } }
+output += trajectoryAnalysis           // moved from exam prep
+basedOn = { caseSummaryId, 3A id/updatedAt, steering rev, diagnoses rev,
+            visit rev, pdq id/updatedAt, questionnaire ids }</pre>
+<ul>
+  <li><b>A current diagnosis with no 3A coverage</b> is allowed, but flagged as "no treatment analysis" rather than "no issues".</li>
+  <li><b>AMA findings are kept</b> even when no linked diagnosis remains, or the diagnosis is not supported.</li>
+  <li><b>Assessment footer</b> (not Visit) gets the readiness checklist and "Run post-exam analysis": visit documented, every diagnosis decided, every row reviewed, every current diagnosis analyzed. The Visit footer just drops "needs exam prep".</li>
+  <li><b>Remaining care isn't a pass 4 output.</b> It's computed from steering after the visit (applicable and not adequately trialed, for current diagnoses), and the physician confirms it in Opinions. Design pass 4's output around what Opinions shows.</li>
+</ul>
+<p><b>Gaps phase 2 must close for "not medically necessary":</b></p>
+<ul>
+  <li>Today <code>postExamInputSnapshot.ts</code> reuses exam prep's <code>fullReviewedAnalysis</code>. <code>scopeReview</code> has already cut that down to current diagnoses, so verdicts for not-supported diagnoses are lost.</li>
+  <li>The diagnosis list (status + reason) isn't in the snapshot at all.</li>
+  <li><b>Necessity (corrected):</b> Not supported does <i>not</i> automatically mean "not medically necessary". A diagnosis that has since resolved may have justified the earlier treatment. Add <code>basis: "never" | "resolved"</code> to Not supported entries. Pass 4 raises treatments whose linked diagnoses are all Not supported as necessity questions, and the physician answers them in Opinions. Applicability stays a separate judgement of how well the treatment fits the diagnosis.</li>
+  <li>Pass 4 refuses unreviewed rows. Prep's "update anyway" is fine for the printout only.</li>
+  <li>Small, do first: require a reason (and basis) for Not supported.</li>
+  <li>Prune removes the row, so use it only when the treatment didn't happen, never for treatment given for a rejected diagnosis.</li>
+</ul>
+
+<h2>Phase 3 plan (add a diagnosis without resetting steering)</h2>
+<p>Adding a diagnosis runs 3A for that diagnosis only. The model gets the existing rows as input, so it assesses them and doesn't suggest them again.</p>
+<pre>type PreExamDelta = {
+  canonicalDx: string;                       // the added diagnosis
+  existingRowAssessments: { rowId: string; assessment: TreatmentAssessment }[];
+  newRows: TreatmentRow[];                   // source: "taxonomy" | "ai" only
+};</pre>
+<table>
+  <tr><th>Delta item</th><th>Merge</th></tr>
+  <tr><td>Existing row</td><td>Append the assessment for the new diagnosis (unreviewed). Row id, prior assessments, and steering are untouched.</td></tr>
+  <tr><td>New taxonomy row</td><td>Add if its <code>treatmentId</code> isn't present. If its <code>episodeIds</code> overlap a record_only row, upgrade that row instead (keep its id, set <code>treatmentId</code>, add the assessment), so there's no duplicate.</td></tr>
+  <tr><td>New ai row</td><td>Add as a suggestion, assessed for the new diagnosis only, unreviewed. No server-side fuzzy dedupe; the prompt says not to repeat existing rows.</td></tr>
+  <tr><td>record_only</td><td>Never created by a delta. Records don't change when a diagnosis is added, and the original 3A already made every non-taxonomy episode a record_only row. The only possible change is an episode gaining a taxonomy home, which is the upgrade case.</td></tr>
+</table>
+<p>Removing a diagnosis is a filter, which already works through status. A full 3A regeneration stays a separate, explicit action.</p>
+
+<h2>Where things live</h2>
+<table>
+  <tr><td>Cockpit</td><td><code>frontend/azimeclient/src/routes/p_cases/</code></td></tr>
+  <tr><td>Shell, tab groups</td><td><code>p_case/p_case.lazy.tsx</code>: Records, Summary, Analysis · Visit · MMI &amp; Report (placeholder). The Prep sheet button is in the case header.</td></tr>
+  <tr><td>Tabs</td><td><code>p_case/tabs/*.lazy.tsx</code></td></tr>
+  <tr><td>Shared UI</td><td><code>p_case/components/shared.tsx</code> (Btn, Badge, Cite, Segmented)</td></tr>
+  <tr><td>Status logic</td><td><code>p_case/examPrep.ts</code>: prep sheet staleness (informational only) and next-step rules (Analysis only)</td></tr>
+  <tr><td>AMA helpers</td><td><code>p_case/amaAssessments.ts</code>, <code>components/AmaFindings.tsx</code>, <code>components/AmaExamTasks.tsx</code></td></tr>
+  <tr><td>AMA backend</td><td><code>backend/src/ama/</code>: candidates, rows, assessments (save validation), findings (snapshot freeze)</td></tr>
+  <tr><td>AMA plan of record</td><td><code>docs/ama-spine-implementation-handoff.md</code> §3–5</td></tr>
+</table>
+
+<h2>Visit document</h2>
+<p>One JSON document per case, read and saved through <code>GET/PUT /cases/:id/visit</code> with <code>expectedRevision</code>.</p>
+<pre>{ note, pdqId, includedQuestionnaireIds, priorityResponses,
+  amaHistory:     [{ region, canonicalDx, confirmed }],
+  amaAssessments: [{ id, region, canonicalDxIds, rowId, nerveRoot, side,
+                     answers, motorGrades, atrophyCm }] }</pre>
+<ul>
+  <li><b>One assessment</b> = one AMA row + the actual root + side. A bilateral finding is two assessments.</li>
+  <li><b>Diagnoses that share a component share one assessment</b> (<code>canonicalDxIds</code>).</li>
+  <li><b>A missing or null answer</b> means unresolved, never false.</li>
+  <li><b>Strength:</b> a grade per muscle (<code>motorGrades</code>) derives the <code>motor_*</code> answers.</li>
+  <li><b>Atrophy:</b> centimetres per measurement site (<code>atrophyCm</code>) derive the atrophy bands. Circumference tasks are split by site (thigh/calf, upper arm/forearm).</li>
+  <li><b>Reflex</b> is the only check-all-that-apply section left.</li>
+  <li><b>Save validation</b> rejects:
+    <ul>
+      <li>a bad root or side;</li>
+      <li>an unknown question or task;</li>
+      <li>derived answers that don't match the grades or measurements.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2>Post-exam snapshot</h2>
+<p>"Save &amp; run post-exam analysis" adds a row to <code>case_post_exam_analysis</code>: a frozen copy of everything pass 4 will read. AI generation is still disabled (it returns 501).</p>
+<ul>
+  <li><b><code>visit.amaFindings</code></b> stores each answer next to the test and question text that produced it, so the report can say what was tested.</li>
+  <li>It's currently built from exam prep. Phase 2 changes that (see above).</li>
+</ul>
+
+<h2>AMA</h2>
+<ul>
+  <li><b>Reference data</b> is maintained by the user:
+    <ul>
+      <li><code>ama_diagnostic_rows</code>;</li>
+      <li><code>canonical_diagnoses.ama_row_ids</code> / <code>ama_rating_table_ids</code>;</li>
+      <li><code>ama_rating_tables</code>. Only the myelopathy diagnoses map to tables in v1.</li>
+    </ul>
+    Import with <code>pnpm --filter backend ama:import</code>.
+  </li>
+  <li><b>Mode is set per case</b> (<code>patientcase.ama_mode</code>):
+    <ul>
+      <li><b>rating</b>: everything;</li>
+      <li><b>guidance</b>: rows and findings, but no rating tables;</li>
+      <li><b>off</b>: hidden. The default is rating for work-injury cases and off otherwise.</li>
+    </ul>
+  </li>
+  <li><b>Class/modifier picker</b> (<code>AmaClassScaleSelector</code>): its choices are local only and not saved yet.</li>
+  <li><b>Exam prep root and table pre-selection</b> isn't saved either, by design for now.</li>
+</ul>
+
+<h2>Roadmap after the redesign</h2>
+<ol>
+  <li>Save rating-table answers (class and modifier per table).</li>
+  <li>Imaging review card: per study, agree or disagree with the radiologist and record the physician's own findings.</li>
+  <li>Function and work capacity card, structured. Decide the data model first.</li>
+  <li>Deterministic AMA evaluator, plus imaging and function data in the post-exam snapshot.</li>
+  <li>MMI &amp; Report tab: opinions, answers to the standard questions, and any custom questions, drafted by AI and edited by the physician.</li>
+</ol>
+<p class="muted">Not planned: a SOAP-structured note, or merging priorities into the AMA findings.</p>
+<p class="muted">Per-case referral questions were removed on 2026-10-17, because the standard question set covers them. Questions outside that set become custom questions in MMI &amp; Report. Still waiting on a decision: the patient_declined prompt line.</p>
+
+<h2>Dev environment</h2>
+<ul>
+  <li><b>Backend:</b> runs from <code>dist</code> on port 4000 with no watcher, so after a change run <code>pnpm build</code> in <code>backend/</code> and restart the server. An old server silently drops unknown fields when saving.</li>
+  <li><b>Contracts:</b> <code>pnpm --filter @azime/contracts build</code>.</li>
+  <li><b>Tests:</b> <code>node --test tests/</code> in <code>backend/</code>. There are 7 known extraction-schema failures, unrelated to this work.</li>
+  <li><b>Frontend typecheck:</b> <code>npx tsc --noEmit -p tsconfig.app.json</code> in <code>frontend/azimeclient</code>.</li>
+  <li><b>Database:</b> there's no <code>psql</code>. Query with node <code>pg</code> at <code>postgres://localhost/azime</code>.</li>
+  <li><b>Test case:</b> case 1, lumbar, at <code>localhost:5173/p_cases/1/...</code>.</li>
+</ul>
+
+</body>
+</html>

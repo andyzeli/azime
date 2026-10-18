@@ -71,26 +71,10 @@ function RegionalRefinedAnalysis({
   const queryClient = useQueryClient();
   const options = refinedAnalysisQueryOptions(caseId, region);
   const analysisQuery = useQuery(options);
-  const [referralDraft, setReferralDraft] = useState<string | null>(null);
   const stored = analysisQuery.data;
-  const referralText =
-    referralDraft ??
-    stored?.inputSnapshot.input.referralQuestions.join("\n") ??
-    "";
   const generateMutation = useMutation({
-    mutationFn: () =>
-      generateRefinedAnalysis(
-        caseId,
-        region,
-        referralText
-          .split("\n")
-          .map((question) => question.trim())
-          .filter(Boolean),
-      ),
-    onSuccess: (result) => {
-      queryClient.setQueryData(options.queryKey, result);
-      setReferralDraft(null);
-    },
+    mutationFn: () => generateRefinedAnalysis(caseId, region),
+    onSuccess: (result) => queryClient.setQueryData(options.queryKey, result),
   });
 
   if (analysisQuery.isPending)
@@ -103,16 +87,6 @@ function RegionalRefinedAnalysis({
           Failed to load Refined Analysis: {errorMessage(analysisQuery.error)}
         </p>
       ) : null}
-      <label className="block space-y-1 text-sm">
-        <span>Referral questions (optional, one per line)</span>
-        <textarea
-          aria-label="Referral questions"
-          value={referralText}
-          onChange={(event) => setReferralDraft(event.target.value)}
-          disabled={generateMutation.isPending}
-          className="min-h-24 w-full rounded-md border border-slate-300 p-3"
-        />
-      </label>
       <div className="flex flex-wrap items-center gap-3">
         <button
           type="button"
@@ -134,8 +108,8 @@ function RegionalRefinedAnalysis({
         ) : null}
       </div>
       <p className="text-xs text-slate-500">
-        Generating builds a fresh input from the case summary, physician review
-        and referral questions, and replaces the result only if the run succeeds.
+        Generating builds a fresh input from the case summary and physician
+        review, and replaces the result only if the run succeeds.
       </p>
       {generateMutation.isError ? (
         <p className="text-sm text-red-600">

@@ -154,6 +154,7 @@ export const storedPreExamAnalysisSchema = preExamAnalysisSchema.extend({
   }),
 });
 
+// Omitted = the region's current diagnoses (see regionDiagnoses.ts). Only the old cockpit sends a list.
 export const preExamSnapshotRequestSchema = z.object({
   selectedDiagnoses: z.array(z.string()).optional(),
 });
@@ -175,6 +176,8 @@ export const preExamAnalysisResponseSchema = z.object({
   caseId: z.number().int(),
   region: regionSchema,
   hasInputSnapshot: z.boolean(),
+  // The snapshot's scope: diagnoses the treatment analysis covers (or will, once run).
+  analyzedDiagnoses: z.array(z.string()).default([]),
   analysis: storedPreExamAnalysisSchema.nullable(),
   createdAt: z.string(),
   updatedAt: z.string(),

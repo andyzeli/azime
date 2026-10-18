@@ -40,9 +40,12 @@ export const pCasesIndexRoute = createRoute({
 export const pCaseRoute = createRoute({
   getParentRoute: () => pCasesRoute,
   path: "$caseId",
-  // Shared by Records and, later, record citation drawers on other tabs.
-  validateSearch: (search: Record<string, unknown>): { record?: string } => ({
+  // record: the record drawer, shared by every tab. prep: the exam prep sheet modal.
+  validateSearch: (
+    search: Record<string, unknown>
+  ): { record?: string; prep?: true } => ({
     record: typeof search.record === "string" ? search.record : undefined,
+    prep: search.prep === true || search.prep === 1 || search.prep === "1" ? true : undefined,
   }),
   loader: ({ context: { queryClient }, params: { caseId } }) =>
     queryClient.ensureQueryData(caseQueryOptions(caseId)),

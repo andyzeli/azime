@@ -13,7 +13,6 @@ import {
   caseSummaryResponseSchema,
   caseSummaryCardResponseSchema,
   refinedAnalysisResponseSchema,
-  generateRefinedAnalysisRequestSchema,
   physicianSteeringResponseSchema,
   savePhysicianSteeringRequestSchema,
   preExamAnalysisResponseSchema,
@@ -26,6 +25,9 @@ import {
   type CreateCaseProviderInput,
   type SavePhysicianSteeringRequest,
   visitDocumentationResponseSchema,
+  regionDiagnosesResponseSchema,
+  saveRegionDiagnosesRequestSchema,
+  type SaveRegionDiagnosesRequest,
   canonicalDiagnosisListSchema,
   saveVisitDocumentationRequestSchema,
   generatePostExamAnalysisRequestSchema,
@@ -315,16 +317,9 @@ export const refinedAnalysisQueryOptions = (caseId: string, region: Region) =>
 
 // Builds the input from saved steering, runs exam prep, and replaces the region's
 // current result only when the run succeeds.
-export const generateRefinedAnalysis = async (
-  caseId: string,
-  region: Region,
-  referralQuestions: string[] = []
-) =>
+export const generateRefinedAnalysis = async (caseId: string, region: Region) =>
   axios
-    .post<unknown>(
-      `${API_BASE_URL}/cases/${caseId}/refined-analysis/${region}`,
-      generateRefinedAnalysisRequestSchema.parse({ referralQuestions })
-    )
+    .post<unknown>(`${API_BASE_URL}/cases/${caseId}/refined-analysis/${region}`)
     .then((response) => refinedAnalysisResponseSchema.parse(response.data));
 
 export const recordsQueryOptions = (caseId: string) =>
@@ -564,6 +559,28 @@ export const amaCandidatesQueryOptions = (
         )
         .then((response) => response.data),
   });
+
+// The region's diagnosis list: scope for analysis and exam tasks, plus the physician's conclusions.
+export const regionDiagnosesQueryOptions = (caseId: string, region: Region) =>
+  queryOptions({
+    queryKey: ["regionDiagnoses", { caseId, region }],
+    queryFn: () =>
+      axios
+        .get<unknown>(`${API_BASE_URL}/cases/${caseId}/diagnoses/${region}`)
+        .then((response) => regionDiagnosesResponseSchema.parse(response.data)),
+  });
+
+export const saveRegionDiagnoses = (
+  caseId: string,
+  region: Region,
+  input: SaveRegionDiagnosesRequest
+) =>
+  axios
+    .put<unknown>(
+      `${API_BASE_URL}/cases/${caseId}/diagnoses/${region}`,
+      saveRegionDiagnosesRequestSchema.parse(input)
+    )
+    .then((response) => regionDiagnosesResponseSchema.parse(response.data));
 
 export const visitQueryOptions = (caseId: string) =>
   queryOptions({

@@ -11,3 +11,4 @@ export * from "./visitDocumentation.js";
 export * from "./postExamAnalysis.js";
 export * from "./amaReference.js";
 export * from "./amaRatingTables.js";
+export * from "./regionDiagnoses.js";

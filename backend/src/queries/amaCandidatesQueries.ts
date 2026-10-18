@@ -17,8 +17,7 @@ import {
   AmaDiagnosticRows,
   CanonicalDiagnoses,
 } from "../db/schema.js";
-import { MissingPrerequisiteError } from "../errors/missingPrerequisiteError.js";
-import { getStoredPreExamSnapshot } from "./preExamAnalysisQueries.js";
+import { getRegionDiagnosisList } from "./regionDiagnosesQueries.js";
 
 export { OutOfScopeDiagnosisError } from "../ama/candidates.js";
 
@@ -27,14 +26,12 @@ export async function getAmaCandidates(
   region: Region,
   diagnoses: AmaCandidatesRequest["diagnoses"]
 ): Promise<AmaCandidatesResponse> {
-  // The diagnosis scope selected in Analysis, not every diagnosis in the records.
-  const snapshot = await getStoredPreExamSnapshot(caseId, region);
-  if (!snapshot) {
-    throw new MissingPrerequisiteError(
-      "Take a pre-exam snapshot before looking up AMA rows"
-    );
-  }
-  assertAmaDiagnosisScope(diagnoses, snapshot.scope.diagnoses);
+  // Any diagnosis on the region's list, excluded ones too so their retained findings keep their rows.
+  const list = await getRegionDiagnosisList(caseId, region);
+  assertAmaDiagnosisScope(
+    diagnoses,
+    list.diagnoses.map((d) => d.canonicalDx)
+  );
 
   const dxIds = diagnoses.map((d) => d.canonicalDx);
   const mapped = dxIds.length

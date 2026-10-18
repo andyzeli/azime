@@ -7,7 +7,7 @@ import {
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
-import { ChevronDown, ChevronRight, Pencil, Plus } from "lucide-react";
+import { ChevronDown, ChevronRight, Pencil } from "lucide-react";
 import {
   initializePhysicianSteering,
   supportedRegions,
@@ -16,8 +16,8 @@ import {
   type PhysicianSteering,
   type PreExamAnalysisResponse,
   type Region,
+  type RegionDiagnosesResponse,
   type StoredPreExamAnalysis,
-  type VisitDocumentationResponse,
 } from "@azime/contracts";
 import { cn } from "@/lib/utils";
 import {
@@ -25,22 +25,25 @@ import {
   caseQueryOptions,
   caseSummaryCardQueryOptions,
   generatePreExamAnalysis,
+  generateRefinedAnalysis,
   physicianSteeringQueryOptions,
   preExamAnalysisQueryOptions,
   preExamSnapshotQueryOptions,
   recordsQueryOptions,
   refinedAnalysisQueryOptions,
+  regionDiagnosesQueryOptions,
   savePhysicianSteering,
   takePreExamSnapshot,
-  visitQueryOptions,
 } from "../../../cases/queries";
+import { AmaModeControl } from "../components/AmaExamTasks";
+import { DiagnosisList } from "../components/DiagnosisList";
 import { RecordDrawer } from "../components/RecordDetail";
 import { Badge, Btn, Cite, Segmented } from "../components/shared";
 import {
   examPrepStatus,
-  generateExamPrep,
-  rejectedDiagnoses,
+  sameSteering,
   savedSteeringFor,
+  scopedRows,
   type ExamPrepStatus,
 } from "../examPrep";
 import { toTimeline, type TimelineEvent } from "../recordPresentation";
@@ -111,6 +114,8 @@ const episodeKind: Record<string, string> = {
 type Lookups = {
   dxLabel: (canonicalDx: string) => string;
   events: Map<string, TimelineEvent>;
+  // Diagnoses the physician found not supported: still reviewed, shown greyed.
+  notSupported: Set<string>;
 };
 
 function Tab() {
@@ -119,7 +124,6 @@ function Tab() {
   const { data: patientCase } = useSuspenseQuery(caseQueryOptions(caseId));
   const { data: records } = useSuspenseQuery(recordsQueryOptions(caseId));
   const card = useQuery(caseSummaryCardQueryOptions(caseId)).data;
-  const visit = useQuery(visitQueryOptions(caseId)).data;
   const regions = patientCase.regions;
   const region =
     regionParam && regions.includes(regionParam) ? regionParam : regions[0];
@@ -127,8 +131,8 @@ function Tab() {
   const preExamQueries = useQueries({
     queries: regions.map((r) => preExamAnalysisQueryOptions(caseId, r)),
   });
-  const refinedQueries = useQueries({
-    queries: regions.map((r) => refinedAnalysisQueryOptions(caseId, r)),
+  const diagnosesQueries = useQueries({
+    queries: regions.map((r) => regionDiagnosesQueryOptions(caseId, r)),
   });
   const steeringQueries = useQueries({
     queries: regions.map((r, i) => ({
@@ -147,6 +151,7 @@ function Tab() {
   const lookups: Lookups = {
     dxLabel: (dx) => (labels.get(dx) ?? dx).replace(/_/g, " "),
     events: new Map(toTimeline(records).map((event) => [event.id, event])),
+    notSupported: new Set(),
   };
 
   if (!region) {
@@ -165,12 +170,13 @@ function Tab() {
             {regions.map((r, i) => {
               const stored = preExamQueries[i].data;
               const saved = savedSteeringFor(stored, steeringQueries[i].data);
-              const rows = stored?.analysis?.treatmentAnalysis ?? [];
+              const rows = scopedRows(
+                stored?.analysis?.treatmentAnalysis ?? [],
+                (diagnosesQueries[i].data?.diagnoses ?? []).map((d) => d.canonicalDx)
+              );
               const reviewed = rows.filter(
                 (row) => saved?.steering.treatments[row.id]?.disposition
               ).length;
-              const rejected =
-                rejectedDiagnoses(visit, refinedQueries[i].data).length > 0;
               return (
                 <Link
                   key={r}
@@ -191,14 +197,18 @@ function Tab() {
                       not run
                     </Badge>
                   )}
-                  {rejected ? (
-                    <Badge className="bg-amber-100 text-amber-800">
-                      dx rejected at visit
-                    </Badge>
-                  ) : null}
                 </Link>
               );
             })}
+            <span className="flex-1" />
+            {/* Case-level: also controls Visit and the report, so it is shown here, not only on the prep sheet. */}
+            <span className="self-center pb-1">
+              <AmaModeControl
+                caseId={caseId}
+                caseType={patientCase.caseType}
+                amaMode={patientCase.amaMode}
+              />
+            </span>
           </div>
         </div>
         <Suspense
@@ -209,7 +219,6 @@ function Tab() {
             caseId={caseId}
             region={region}
             card={card}
-            visit={visit}
             lookups={lookups}
           />
         </Suspense>
@@ -223,51 +232,44 @@ function RegionAnalysis({
   caseId,
   region,
   card,
-  visit,
   lookups: caseLookups,
 }: {
   caseId: string;
   region: Region;
   card: Card;
-  visit: VisitDocumentationResponse | null | undefined;
   lookups: Lookups;
 }) {
   const queryClient = useQueryClient();
   const canonical = useQuery(canonicalDiagnosesQueryOptions(region)).data ?? [];
-  const lookups: Lookups = {
-    ...caseLookups,
-    dxLabel: (dx) =>
-      canonical.find((d) => d.canonicalDx === dx)?.label ??
-      caseLookups.dxLabel(dx),
-  };
   const { data: stored } = useSuspenseQuery(
     preExamAnalysisQueryOptions(caseId, region)
   );
   const { data: snapshotResponse } = useSuspenseQuery(
     preExamSnapshotQueryOptions(caseId, region)
   );
+  const { data: list } = useSuspenseQuery(
+    regionDiagnosesQueryOptions(caseId, region)
+  );
+  const lookups: Lookups = {
+    ...caseLookups,
+    dxLabel: (dx) =>
+      canonical.find((d) => d.canonicalDx === dx)?.label ??
+      caseLookups.dxLabel(dx),
+    notSupported: new Set(
+      list.diagnoses
+        .filter((d) => d.status === "not_supported")
+        .map((d) => d.canonicalDx)
+    ),
+  };
   const snapshot = snapshotResponse.inputSnapshot;
-  const availableDiagnoses = snapshotResponse.availableDiagnoses;
-  // Before the first snapshot every diagnosis found in the records is in scope.
-  const scopeDiagnoses = snapshot?.scope.diagnoses ?? availableDiagnoses;
-  // null follows the latest snapshot's scope.
-  const [selectedDraft, setSelectedDraft] = useState<string[] | null>(null);
-  const selectedDx = selectedDraft ?? scopeDiagnoses;
-  // Diagnoses added by the physician stay listed even when unchecked.
-  const [added, setAdded] = useState<string[]>([]);
-  const shownDiagnoses = [
-    ...new Set([
-      ...availableDiagnoses,
-      ...(snapshot?.scope.diagnoses ?? []),
-      ...added,
-    ]),
-  ];
-  const refined = useQuery(refinedAnalysisQueryOptions(caseId, region)).data;
-  const rejections = rejectedDiagnoses(visit, refined);
+  const listed = list.diagnoses.map((d) => d.canonicalDx);
+  // Listed diagnoses the snapshot doesn't cover: the treatment analysis must be redone for them.
+  const needsAnalysis = listed.filter(
+    (dx) => !snapshot?.scope.diagnoses.includes(dx)
+  );
 
-  const invalidate = () => {
-    setSelectedDraft(null);
-    return Promise.all([
+  const invalidate = () =>
+    Promise.all([
       queryClient.invalidateQueries({
         queryKey: preExamAnalysisQueryOptions(caseId, region).queryKey,
       }),
@@ -278,19 +280,14 @@ function RegionAnalysis({
         queryKey: ["physicianSteering", { caseId, region }],
       }),
     ]);
-  };
   const snapshotMutation = useMutation({
-    mutationFn: () => takePreExamSnapshot(caseId, region, selectedDx),
+    mutationFn: () => takePreExamSnapshot(caseId, region),
     onSuccess: invalidate,
   });
   const analysisMutation = useMutation({
     mutationFn: () => generatePreExamAnalysis(caseId, region),
     onSuccess: invalidate,
   });
-
-  const scopeChanged =
-    snapshot !== null &&
-    [...selectedDx].sort().join() !== [...scopeDiagnoses].sort().join();
 
   const takeSnapshot = () => {
     if (
@@ -317,47 +314,24 @@ function RegionAnalysis({
     <>
       <div className="px-5">
         <SetupStrip
+          caseId={caseId}
+          region={region}
           stored={stored}
           card={card}
           lookups={lookups}
-          scopeDiagnoses={scopeDiagnoses}
-          shownDiagnoses={shownDiagnoses}
+          list={list}
           addable={canonical.filter(
-            (d) => !shownDiagnoses.includes(d.canonicalDx)
+            (d) => !list.diagnoses.some((x) => x.canonicalDx === d.canonicalDx)
           )}
-          onAddDx={(dx) => {
-            setAdded((a) => [...a, dx]);
-            setSelectedDraft([...selectedDx, dx]);
-          }}
+          analyzedCount={snapshot?.scope.diagnoses.length ?? 0}
           hasSnapshot={snapshot !== null}
-          selectedDx={selectedDx}
-          onToggleDx={(dx) =>
-            setSelectedDraft(
-              selectedDx.includes(dx)
-                ? selectedDx.filter((d) => d !== dx)
-                : [...selectedDx, dx]
-            )
-          }
-          scopeChanged={scopeChanged}
+          hasCurrent={listed.length > 0}
+          needsAnalysis={needsAnalysis}
           snapshotPending={snapshotMutation.isPending}
           analysisPending={analysisMutation.isPending}
           onSnapshot={takeSnapshot}
           onRun={runAnalysis}
         />
-        {rejections.length ? (
-          <div className="mt-3 rounded-lg border border-amber-300 bg-amber-50 px-4 py-2.5 text-[12.5px] text-amber-900">
-            <b>Diagnosis rejected at the visit:</b>{" "}
-            {rejections.map((r, i) => (
-              <span key={r.canonicalDx}>
-                {i > 0 ? "; " : ""}
-                {lookups.dxLabel(r.canonicalDx)}
-                {r.note ? <i> — "{r.note}"</i> : null}
-              </span>
-            ))}
-            . Correct the diagnoses above, take a new snapshot and re-run the
-            analysis, then review and regenerate exam prep. The visit is kept.
-          </div>
-        ) : null}
         {snapshotMutation.isError ? (
           <p className="mt-2 text-red-700">
             Snapshot failed: {apiErrorMessage(snapshotMutation.error)}
@@ -380,7 +354,7 @@ function RegionAnalysis({
             caseId={caseId}
             region={region}
             stored={stored as StoredWithAnalysis}
-            visit={visit}
+            list={list}
             lookups={lookups}
           />
         </Suspense>
@@ -391,7 +365,7 @@ function RegionAnalysis({
               No analysis for {regionLabel(region)} yet
             </div>
             <p className="mt-1">
-              Choose diagnoses, take a snapshot, then run the analysis.
+              Set the diagnoses, take a snapshot, then run the analysis.
             </p>
           </div>
         </div>
@@ -404,13 +378,13 @@ function AnalysisReview({
   caseId,
   region,
   stored,
-  visit,
+  list,
   lookups,
 }: {
   caseId: string;
   region: Region;
   stored: StoredWithAnalysis;
-  visit: VisitDocumentationResponse | null | undefined;
+  list: RegionDiagnosesResponse;
   lookups: Lookups;
 }) {
   const queryClient = useQueryClient();
@@ -450,24 +424,30 @@ function AnalysisReview({
       queryClient.setQueryData(steeringOptions.queryKey, response);
     },
   });
-  // One click for the physician: save steering, snapshot it, and generate exam prep.
+  // Saves steering first if needed, then regenerates this region's trajectory and
+  // priorities (3B), which appear on the prep sheet and in the Visit priorities column.
   const examPrepMutation = useMutation({
     mutationFn: async () => {
       if (dirty || !saved) await saveMutation.mutateAsync();
-      return generateExamPrep(caseId, region, refined);
+      return generateRefinedAnalysis(caseId, region);
     },
     onSuccess: (result) =>
       queryClient.setQueryData(refinedOptions.queryKey, result),
   });
 
-  const rows = stored.analysis.treatmentAnalysis;
+  // Every listed diagnosis is reviewed, not supported ones too (treatment given for them
+  // still needs a necessity opinion). Assessments for removed diagnoses are hidden.
+  const rows = scopedRows(
+    stored.analysis.treatmentAnalysis,
+    list.diagnoses.map((d) => d.canonicalDx)
+  );
   const reviewedCount = rows.filter(
     (row) => draft.treatments[row.id]?.disposition
   ).length;
   const prunedCount = rows.filter(
     (row) => draft.treatments[row.id]?.disposition === "prune"
   ).length;
-  const prepStatus = examPrepStatus(refined, saved, visit);
+  const prepStatus = examPrepStatus(refined, saved, list, stored.analyzedDiagnoses);
   const prepCurrent =
     prepStatus.kind === "current" && !dirty && !examPrepMutation.isPending;
   const missingRationale = Object.values(draft.treatments).some((row) =>
@@ -485,7 +465,7 @@ function AnalysisReview({
     if (
       unreviewed > 0 &&
       !window.confirm(
-        `${unreviewed} treatments are unreviewed. Generate exam prep anyway?`
+        `${unreviewed} treatments are unreviewed. Update the prep sheet anyway?`
       )
     )
       return;
@@ -688,31 +668,18 @@ function AnalysisReview({
           </Btn>
         ) : null}
         <Btn
+          disabled={busy || prepCurrent || missingRationale}
+          onClick={generateExamPrepClick}
+        >
+          {examPrepMutation.isPending ? "Updating prep sheet…" : "Update prep sheet"}
+        </Btn>
+        <Btn
+          variant="primary"
           disabled={!dirty || busy || missingRationale}
           onClick={() => saveMutation.mutate()}
         >
           Save steering
         </Btn>
-        {prepCurrent ? (
-          // Nothing to regenerate: send the physician to the result instead.
-          <Link
-            to="/p_cases/$caseId/exam-prep"
-            params={{ caseId }}
-            className="rounded-md border border-blue-600 bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-700"
-          >
-            View exam prep →
-          </Link>
-        ) : (
-          <Btn
-            variant="primary"
-            disabled={busy || missingRationale}
-            onClick={generateExamPrepClick}
-          >
-            {examPrepMutation.isPending
-              ? "Generating exam prep…"
-              : "Save & generate exam prep →"}
-          </Btn>
-        )}
       </footer>
     </>
   );
@@ -732,164 +699,95 @@ function ExamPrepState({
   return (
     <span className="border-l border-slate-200 pl-3 text-[11px]">
       {status.kind === "current" && !dirty ? (
-        <span className="text-green-700">Exam prep up to date</span>
+        <span className="text-green-700">Prep sheet up to date</span>
       ) : stale ? (
         <span className="font-semibold text-amber-700">
-          Exam prep out of date
+          Prep sheet out of date
         </span>
       ) : (
-        <span className="text-slate-500">No exam prep yet</span>
+        <span className="text-slate-500">No prep sheet yet</span>
       )}
     </span>
   );
 }
 
-function StepNum({ n }: { n: number }) {
-  return (
-    <span className="mr-1.5 inline-grid size-5 place-items-center rounded-full bg-slate-900 text-[11px] font-bold text-white">
-      {n}
-    </span>
-  );
-}
-
 function SetupStrip({
+  caseId,
+  region,
   stored,
   card,
   lookups,
-  scopeDiagnoses,
-  shownDiagnoses,
+  list,
   addable,
-  onAddDx,
+  analyzedCount,
   hasSnapshot,
-  selectedDx,
-  onToggleDx,
-  scopeChanged,
+  hasCurrent,
+  needsAnalysis,
   snapshotPending,
   analysisPending,
   onSnapshot,
   onRun,
 }: {
+  caseId: string;
+  region: Region;
   stored: PreExamAnalysisResponse | null;
   card: Card;
   lookups: Lookups;
-  scopeDiagnoses: string[];
-  shownDiagnoses: string[];
+  list: RegionDiagnosesResponse;
   addable: CanonicalDiagnosis[];
-  onAddDx: (dx: string) => void;
+  analyzedCount: number;
   hasSnapshot: boolean;
-  selectedDx: string[];
-  onToggleDx: (dx: string) => void;
-  scopeChanged: boolean;
+  hasCurrent: boolean;
+  needsAnalysis: string[];
   snapshotPending: boolean;
   analysisPending: boolean;
   onSnapshot: () => void;
   onRun: () => void;
 }) {
   const busy = snapshotPending || analysisPending;
-  const [adding, setAdding] = useState(false);
+  const outdated = hasSnapshot && needsAnalysis.length > 0;
   // The stored row's updatedAt is bumped by both snapshot and analysis.
-  const snapshotStatus = scopeChanged
-    ? "Diagnoses changed — take a new snapshot"
+  const snapshotStatus = outdated
+    ? `Not covered: ${needsAnalysis.map(lookups.dxLabel).join(", ")} — take a new snapshot`
     : !hasSnapshot
       ? "No snapshot yet"
       : stored?.analysis
-        ? `${scopeDiagnoses.length} dx`
-        : `${stored ? formatTime(stored.updatedAt) : "Taken"} · ${scopeDiagnoses.length} dx`;
+        ? `${analyzedCount} dx`
+        : `${stored ? formatTime(stored.updatedAt) : "Taken"} · ${analyzedCount} dx`;
 
   return (
-    <div className="grid grid-cols-[1fr_auto] items-start gap-4 rounded-b-xl border border-t-0 border-slate-200 bg-white px-4 py-3.5">
+    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 rounded-b-xl border border-t-0 border-slate-200 bg-white px-4 py-3.5">
       <div>
         <div className="mb-2 flex items-center">
-          <StepNum n={1} />
-          <b>Diagnoses in scope</b>
+          <b>Diagnoses</b>
           <span className="ml-2 text-[11px] text-slate-500">
-            from records, or add one · each checked dx gets its own treatment
-            ladder
+            from records, or add one · working and supported ones are in scope
+            · set a conclusion any time, before or after the exam
           </span>
         </div>
-        <div className="flex flex-wrap gap-2">
-          {shownDiagnoses.map((dx) => {
-            const on = selectedDx.includes(dx);
-            const codes =
-              card?.diagnoses.find((d) => d.canonicalDx === dx)?.icdPrefixes ??
-              [];
-            return (
-              <label
-                key={dx}
-                className={cn(
-                  "flex cursor-pointer items-center gap-2 rounded-lg border px-2.5 py-1.5 text-[12.5px]",
-                  on
-                    ? "border-blue-300 bg-blue-50/40"
-                    : "border-slate-200 bg-white"
-                )}
-              >
-                <input
-                  type="checkbox"
-                  checked={on}
-                  onChange={() => onToggleDx(dx)}
-                  className="size-4 accent-blue-600"
-                />
-                {codes.length ? (
-                  <Badge
-                    className={cn(
-                      "rounded",
-                      on
-                        ? "bg-blue-50 text-blue-700"
-                        : "bg-slate-100 text-slate-600"
-                    )}
-                  >
-                    {codes.join(", ")}
-                  </Badge>
-                ) : null}
-                {lookups.dxLabel(dx)}
-              </label>
-            );
-          })}
-          {adding ? (
-            <select
-              autoFocus
-              value=""
-              onChange={(e) => {
-                onAddDx(e.target.value);
-                setAdding(false);
-              }}
-              onBlur={() => setAdding(false)}
-              className="rounded-lg border border-blue-300 bg-white px-2 py-1.5 text-[12.5px]"
-            >
-              <option value="" disabled>
-                Choose a diagnosis…
-              </option>
-              {addable.map((d) => (
-                <option key={d.canonicalDx} value={d.canonicalDx}>
-                  {d.label}
-                  {d.icdPrefixes.length ? ` (${d.icdPrefixes.join(", ")})` : ""}
-                </option>
-              ))}
-            </select>
-          ) : (
-            <button
-              type="button"
-              disabled={!addable.length}
-              onClick={() => setAdding(true)}
-              className="flex items-center gap-1 rounded-lg border border-dashed border-slate-300 px-2.5 py-1.5 text-[12.5px] text-slate-500 hover:text-slate-800 disabled:opacity-50"
-            >
-              <Plus className="size-3.5" /> add diagnosis
-            </button>
-          )}
-        </div>
+        <DiagnosisList
+          caseId={caseId}
+          region={region}
+          list={list}
+          addable={addable}
+          dxLabel={lookups.dxLabel}
+          icdCodes={(dx) =>
+            card?.diagnoses.find((d) => d.canonicalDx === dx)?.icdPrefixes ?? []
+          }
+        />
       </div>
 
-      <div className="min-w-[420px] border-l border-slate-200 pl-4">
+      <div className="w-[340px] border-l border-slate-200 pl-4">
+        <div className="mb-2 text-[11px] font-semibold text-slate-500">
+          Treatment analysis
+        </div>
         <div className="flex items-center gap-2.5">
           <div className="flex-1">
-            <div className="flex items-center">
-              <StepNum n={2} />
-              <b>Snapshot</b>
-            </div>
+            <b>Snapshot</b>
             <div
               className={cn(
-                "ml-[26px] mt-1 text-[11px]",
-                scopeChanged ? "font-semibold text-amber-700" : "text-slate-500"
+                "mt-1 text-[11px]",
+                outdated ? "font-semibold text-amber-700" : "text-slate-500"
               )}
             >
               {snapshotStatus}
@@ -897,19 +795,16 @@ function SetupStrip({
           </div>
           <Btn
             onClick={onSnapshot}
-            disabled={!selectedDx.length || busy}
-            className={cn(scopeChanged && "border-amber-400 bg-amber-50")}
+            disabled={!hasCurrent || busy}
+            className={cn(outdated && "border-amber-400 bg-amber-50")}
           >
             {snapshotPending ? "Taking…" : "Take snapshot"}
           </Btn>
         </div>
         <div className="mt-2.5 flex items-center gap-2.5">
           <div className="flex-1">
-            <div className="flex items-center">
-              <StepNum n={3} />
-              <b>Analysis</b>
-            </div>
-            <div className="ml-[26px] mt-1 text-[11px] text-slate-500">
+            <b>Analysis</b>
+            <div className="mt-1 text-[11px] text-slate-500">
               {stored?.analysis
                 ? `Ran ${formatTime(stored.updatedAt)} · ${stored.analysis.treatmentAnalysis.length} treatments`
                 : "Not run"}
@@ -918,7 +813,7 @@ function SetupStrip({
           <Btn
             variant={stored?.analysis ? "default" : "primary"}
             onClick={onRun}
-            disabled={!stored?.hasInputSnapshot || scopeChanged || busy}
+            disabled={!stored?.hasInputSnapshot || outdated || busy}
           >
             {analysisPending
               ? "Running…"
@@ -931,19 +826,6 @@ function SetupStrip({
     </div>
   );
 }
-
-// Order-insensitive, ignoring undefined and empty entries, so undoing an edit counts as no change.
-const normalize = (value: unknown): unknown => {
-  if (Array.isArray(value)) return value.map(normalize);
-  if (!value || typeof value !== "object") return value;
-  const entries = Object.entries(value)
-    .map(([key, v]) => [key, normalize(v)] as const)
-    .filter(([, v]) => v !== undefined && !(v && typeof v === "object" && !Array.isArray(v) && !Object.keys(v).length))
-    .sort(([a], [b]) => a.localeCompare(b));
-  return Object.fromEntries(entries);
-};
-const sameSteering = (a: PhysicianSteering, b: PhysicianSteering) =>
-  JSON.stringify(normalize(a)) === JSON.stringify(normalize(b));
 
 const gridCols = "grid grid-cols-[24px_1.2fr_1.05fr_1.5fr_190px] gap-3.5";
 
@@ -1119,11 +1001,17 @@ function TreatmentRowView({
               key={a.canonicalDx}
               className={cn(
                 "grid grid-cols-[100px_auto_auto_1fr] items-center gap-1.5 py-0.5 text-[11.5px]",
-                i > 0 && "mt-1 border-t border-dashed border-slate-200 pt-1.5"
+                i > 0 && "mt-1 border-t border-dashed border-slate-200 pt-1.5",
+                lookups.notSupported.has(a.canonicalDx) && "opacity-55"
               )}
             >
               <span className="text-[11px] font-semibold text-slate-500">
                 {lookups.dxLabel(a.canonicalDx)}
+                {lookups.notSupported.has(a.canonicalDx) ? (
+                  <span className="block text-[10px] font-semibold text-amber-700">
+                    dx not supported
+                  </span>
+                ) : null}
               </span>
               <Chip
                 value={app}

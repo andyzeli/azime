@@ -10,7 +10,6 @@ import {
   pRecordsRoute,
   pSummaryRoute,
   pAnalysisRoute,
-  pExamPrepRoute,
   pVisitRoute,
 } from "./routes/p_cases/p_case/tabs";
 import {
@@ -47,7 +46,6 @@ const routeTree = rootRoute.addChildren([
       pRecordsRoute,
       pSummaryRoute,
       pAnalysisRoute,
-      pExamPrepRoute,
       pVisitRoute,
     ]),
   ]),

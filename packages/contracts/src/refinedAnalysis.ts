@@ -11,6 +11,7 @@ import {
   treatmentAnalysisItemSchema,
 } from "./preExamAnalysis.js";
 import { regionSchema } from "./regions.js";
+import { physicianSteeringSchema } from "./physicianSteering.js";
 
 const originalAssessment =
   treatmentAnalysisItemSchema.shape.assessments.element;
@@ -103,7 +104,6 @@ export const refinedAnalysisInputSchema = z.object({
       caseType: z.string().nullable(),
     }),
   scope: z.object({ region: regionSchema, diagnoses: z.array(z.string()) }),
-  referralQuestions: z.array(z.string()),
   // The enriched Pass 2 timeline includes dates/providers absent from raw AI output.
   caseSummary: caseClinicalSummarySchema.extend({
     statusTimeline: z.array(caseSummaryTimelineEntrySchema),
@@ -116,6 +116,9 @@ export const refinedAnalysisInputSnapshotSchema = z.object({
   input: refinedAnalysisInputSchema,
   // Retained for post-exam analysis, never sent to the 3B model.
   fullReviewedAnalysis: fullReviewedPreExamAnalysisSchema,
+  // The saved steering this run used, so "out of date" can compare contents, not revisions.
+  // Missing on older runs.
+  physicianSteering: physicianSteeringSchema.optional(),
   // Application provenance is persisted, but never included in the model prompt.
   basedOn: z.object({
     caseSummaryId: z.number().int().positive(),
@@ -123,17 +126,14 @@ export const refinedAnalysisInputSnapshotSchema = z.object({
     preExamAnalysisUpdatedAt: z.iso.datetime(),
     physicianSteeringId: z.number().int().positive(),
     physicianSteeringRevision: z.number().int().positive(),
+    // Revision of the region's diagnosis list (0 = never saved). Missing on older runs.
+    diagnosesRevision: z.number().int().nonnegative().optional(),
   }),
 });
 export type RefinedAnalysisInputSnapshot = z.infer<
   typeof refinedAnalysisInputSnapshotSchema
 >;
 
-// POST /cases/:caseId/refined-analysis/:region builds the input, runs the model,
-// and replaces the region's exam prep only when the run succeeds.
-export const generateRefinedAnalysisRequestSchema = z.object({
-  referralQuestions: z.array(z.string().trim().min(1)).default([]),
-});
 
 const trajectorySchema = z.object({
   direction: z.enum([
@@ -243,8 +243,8 @@ export const refinedAnalysisSchema = z.object({
   `),
   visitPriority: z.array(visitPrioritySchema).describe(`
   Open questions for the physician's upcoming examination that are
-  important to understanding current condition, recovery, treatment response,
-  or a supplied referral question. Identify uncertainties in the supplied case
+  important to understanding current condition, recovery, or treatment
+  response. Identify uncertainties in the supplied case
   summary and treatment analysis whose clarification could materially
   change interpretation of the patient's condition or recovery trajectory.
 

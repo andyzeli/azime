@@ -14,9 +14,26 @@ Types below summarize the shared contracts in `packages/contracts/src/`. Visit d
 
 Compare diagnosis-specific treatment taxonomy entries with documented care, including additional AI suggestions and record-only treatments. Assess applicability and adequacy separately for each diagnosis. Completion alone does not establish treatment exhaustion; 3A does not determine MMI.
 
-Diagnosis selection belongs upstream in the server input snapshot: effective diagnoses determine the taxonomy ladder before 3A runs. It is not part of physician steering. The physician chooses the scope from diagnoses found in the region's records, and may add any `canonical_diagnoses` entry for the region (`GET /regions/:region/canonical-diagnoses`). The snapshot request is `{ selectedDiagnoses?: string[] }`; omitted means every diagnosis found in the records.
+Diagnosis selection belongs upstream in the server input snapshot: effective diagnoses determine the taxonomy ladder before 3A runs. It is not part of physician steering. Scope comes from the region's diagnosis list (below); the snapshot request `{ selectedDiagnoses?: string[] }` is only sent by the old cockpit, and omitted means the list's current diagnoses.
 
-If the physician rejects a diagnosis at the visit (wrong or incomplete), the region goes back through scope → snapshot → 3A → steering → 3B. See [Visit documentation](#visit-documentation-and-pass-4).
+## Diagnosis list
+
+One list per case/region (`case_region_diagnoses`, revisioned) holds both the scope and the physician's conclusions. It is separate from steering because steering belongs to one 3A run, while the list exists before any 3A and outlives reruns. It can be edited before or after the exam; there is no confirm step and no return to Analysis.
+
+```typescript
+type DiagnosisState = {
+  canonicalDx: string;
+  source: "records" | "added"; // found by the case summary, or added by the physician
+  status: "working" | "supported" | "not_supported"; // every listed diagnosis gets a verdict
+  reason: string | null;
+};
+// every listed diagnosis: 3A scope, treatment review (not_supported greyed), pass 4
+// current = working | supported: AMA exam tasks and 3B
+```
+
+- `GET /cases/:caseId/diagnoses/:region` returns the saved list, or (revision 0) one derived from the 3A scope. Record diagnoses missing from the list are always appended as working.
+- `PUT` with `{ diagnoses, expectedRevision }`. Entries are record diagnoses or any `canonical_diagnoses` entry for the region. There is no "leave out of scope": a wrong diagnosis is not supported with a reason; only added entries can be removed.
+- Marking a diagnosis not supported needs no AI. Its treatment assessments stay in the review (greyed), because the report must still give a necessity opinion on treatment given for it, but it leaves 3B and AMA tasks. Adding a diagnosis needs 3A for it; until a new snapshot and run, Analysis shows it as not covered. (Planned: a 3A run for the added diagnosis only, merged without resetting steering.)
 
 ```typescript
 type Applicability =
@@ -131,7 +148,6 @@ type RefinedAnalysisInput = {
     dateOfInjury: string | null;
   };
   scope: { region: Region; diagnoses: string[] };
-  referralQuestions: string[]; // May be empty
   caseSummary: CaseClinicalSummaryWithEnrichedTimeline; // Pass 2A
   reviewedAnalysis: ReviewedPreExamAnalysis;
 };
@@ -242,27 +258,21 @@ type VisitPriorityResponse = {
   note: string | null;
 };
 
-// Confirm or reject each diagnosis the region's 3B was built on.
-type VisitDiagnosisReview = {
-  region: Region;
-  canonicalDx: string;
-  status: "confirmed" | "rejected"; // Rejected = wrong or incomplete
-  note: string | null;
-  refinedUpdatedAt: string; // updatedAt of the 3B the decision was made against
-};
+// AMA history prerequisite per diagnosis. Missing = not asked; false stops rating, findings are kept.
+type VisitAmaHistory = { region: Region; canonicalDx: string; confirmed: boolean };
 
 type VisitDocumentation = {
   note: string; // Optional [LUMBAR SPINE]-style section labels; unlabeled text applies to every region
   pdqId: number | null; // The one PDQ pass 4 uses
   includedQuestionnaireIds: number[]; // Other completed questionnaires, e.g. regional
   priorityResponses: VisitPriorityResponse[];
-  diagnosisReviews: VisitDiagnosisReview[];
+  amaHistory: VisitAmaHistory[];
+  amaAssessments: AmaAssessment[]; // Findings per AMA row + root + side
 };
 
 type PostExamInput = {
   caseContext: RefinedAnalysisInput["caseContext"];
   scope: RefinedAnalysisInput["scope"];
-  referralQuestions: string[];
   caseSummary: RefinedAnalysisInput["caseSummary"];
   reviewedTreatmentAnalysis: FullReviewedPreExamAnalysis; // Retained treatments with all effective assessments
   refinedAnalysis: {
@@ -289,15 +299,15 @@ type Pass4Output = {
 
 Visit GET returns the saved document or null. `initializeVisitDocumentation()` creates an empty local draft; PUT saves `{ documentation, expectedRevision }`. Responses start as `[]`; omission means unaddressed, not resolved. Responses whose priority no longer exists after 3B is regenerated are kept, never deleted; the visit is not redone. Answers may already be documented in the exam or note, so duplicate entry is unnecessary. Pass 4 considers both, preserves unresolved uncertainty, and treats questions as questions rather than evidence. The physician makes the final MMI decision separately.
 
-A diagnosis rejection is pending while the region's current 3B `updatedAt` equals the review's `refinedUpdatedAt`. A pending rejection marks that region's 3B stale and blocks its pass 4. The physician corrects the scope in Analysis, re-runs 3A, re-reviews, and regenerates 3B, which clears it. Diagnosis reviews are not sent to pass 4, because the corrected scope is already in its input. They stay on the visit as a record for the report.
+Diagnosis conclusions are not part of the visit; they live in the diagnosis list. AMA findings can be recorded for any current diagnosis without a confirm step or a history answer.
 
 ## Persistence and downstream recall
 
-`case_refined_pre_exam_analysis` holds one current 3B per case/region, with its frozen `inputSnapshot` and `analysis`. The snapshot contains model `input`, server-only `fullReviewedAnalysis`, and `basedOn`: case summary ID, 3A ID/timestamp, and steering ID/revision. `POST /cases/:caseId/refined-analysis/:region` with `{ referralQuestions }` builds the input from saved steering, runs 3B, and replaces the row only if the run succeeds, so a failed run keeps the previous result. Staleness compares `basedOn` with the current 3A and steering.
+`case_refined_pre_exam_analysis` holds one current 3B per case/region, with its frozen `inputSnapshot` and `analysis`. The snapshot contains model `input`, server-only `fullReviewedAnalysis`, and `basedOn`: case summary ID, 3A ID/timestamp, steering ID/revision, and diagnosis list revision. Its scope is the 3A scope narrowed to the current diagnoses. `POST /cases/:caseId/refined-analysis/:region` (no body) builds the input from saved steering, runs 3B, and replaces the row only if the run succeeds, so a failed run keeps the previous result. Staleness compares `basedOn` with the current 3A, steering and diagnosis list; it is informational and blocks nothing.
 
 `case_visit_documentation` stores one revisioned document per case. `case_post_exam_analysis` stores a frozen `inputSnapshot` and nullable `analysis` for each run, with creation/update timestamps. Inputs are assembled from the region's current 3B, the saved visit, and the PDQ and questionnaires the visit selects. Its `basedOn` records the 3B ID and `updatedAt` (the row is overwritten on regeneration, so the ID alone is not a version), visit ID/revision, and PDQ ID/update time. It never reconstructs prior treatment judgments from current mutable 3A/steering rows.
 
-- `GET /cases/:caseId/refined-analysis/:region` (null if none) and `POST` with `{ referralQuestions }`
+- `GET /cases/:caseId/refined-analysis/:region` (null if none) and `POST` (no body)
 - `GET/PUT /cases/:caseId/visit`
 - `POST /cases/:caseId/post-exam-analysis/:region/snapshot` (no body; reads the visit)
 - `POST /cases/:caseId/post-exam-analysis/:region` with `{ snapshotId }` to generate and save output

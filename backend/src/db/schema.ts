@@ -16,6 +16,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { InferSelectModel, InferInsertModel } from "drizzle-orm";
 import type {
+  DiagnosisState,
   ProviderDiscipline,
   ProviderKind,
   Region,
@@ -181,6 +182,30 @@ export const CasePhysicianSteering = pgTable(
 export type CasePhysicianSteering = InferSelectModel<
   typeof CasePhysicianSteering
 >;
+
+// The region's diagnosis list (scope + physician conclusions). Separate from steering,
+// which belongs to one 3A run; this list exists before any 3A and outlives reruns.
+export const CaseRegionDiagnoses = pgTable(
+  "case_region_diagnoses",
+  {
+    id: serial("id").primaryKey(),
+    caseId: integer("case_id")
+      .notNull()
+      .references(() => PatientCase.id),
+    region: text("region").$type<Region>().notNull(),
+    diagnoses: jsonb("diagnoses").$type<DiagnosisState[]>().notNull(),
+    revision: integer("revision").notNull().default(1),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => ({
+    caseRegionUnique: uniqueIndex("case_region_diagnoses_case_region_unique").on(
+      table.caseId,
+      table.region
+    ),
+  })
+);
+export type CaseRegionDiagnoses = InferSelectModel<typeof CaseRegionDiagnoses>;
 
 export const CaseRefinedAnalysis = pgTable(
   "case_refined_analysis",

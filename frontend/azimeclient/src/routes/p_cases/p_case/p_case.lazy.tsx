@@ -2,10 +2,11 @@ import { useState, type ReactNode } from "react";
 import { Link, Outlet, createLazyRoute } from "@tanstack/react-router";
 import { caseQueryOptions } from "../queries";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Check, ChevronRight, X } from "lucide-react";
+import { Check, ChevronRight, Printer, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { mockCaseQueryOptions } from "../../mockups/queries";
 import { nextStep, useExamPrep } from "./examPrep";
+import { ExamPrepModal, useExamPrepModal } from "./components/ExamPrepModal";
 
 type TabStatus = "done" | "current" | "stale" | "todo";
 
@@ -28,7 +29,6 @@ function WorkflowTab({
     | "/p_cases/$caseId/records"
     | "/p_cases/$caseId/summary"
     | "/p_cases/$caseId/analysis"
-    | "/p_cases/$caseId/exam-prep"
     | "/p_cases/$caseId/visit";
   n: number;
   status: TabStatus;
@@ -108,6 +108,8 @@ const GroupDivider = () => (
 
 export default function CockpitShell() {
   const { caseId } = Route.useParams();
+  const { prep } = Route.useSearch();
+  const prepModal = useExamPrepModal();
   const { data: patientCase } = useSuspenseQuery(caseQueryOptions(caseId));
   const patientName =
     [patientCase.patientName, patientCase.patientLastName]
@@ -121,8 +123,8 @@ export default function CockpitShell() {
   const [dismissedHint, setDismissedHint] = useState<string>();
   const next = workflow.isPending ? null : nextStep(workflow.regions);
   const examPrep = {
+    generated: workflow.regions.some((r) => r.refined),
     stale: statuses.includes("stale"),
-    current: statuses.includes("current") && !statuses.includes("stale"),
   };
 
   return (
@@ -135,6 +137,20 @@ export default function CockpitShell() {
           {patientName} · Case #{caseId}
         </span>
         <span className="text-slate-500">Provider cockpit</span>
+        <span className="flex-1" />
+        {/* Optional printout, not a workflow step. Available once any region has exam prep (3B). */}
+        <button
+          type="button"
+          onClick={prepModal.open}
+          disabled={!examPrep.generated}
+          title={examPrep.generated ? undefined : "Update the prep sheet in Analysis first"}
+          className="flex items-center gap-1.5 rounded-md border border-slate-300 px-2.5 py-1 text-[12px] font-semibold text-slate-600 hover:border-slate-400 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <Printer className="size-3.5" /> Prep sheet
+          {examPrep.stale ? (
+            <span className="text-[11px] font-medium text-amber-700">out of date</span>
+          ) : null}
+        </button>
       </header>
 
       <nav
@@ -165,23 +181,12 @@ export default function CockpitShell() {
             label="Analysis"
             meta="2 of 3 regions"
           />
-          <Chevron />
-          <WorkflowTab
-            to="/p_cases/$caseId/exam-prep"
-            n={4}
-            status={
-              examPrep.stale ? "stale" : examPrep.current ? "done" : "todo"
-            }
-            label="Exam prep"
-            meta={examPrep.stale ? "stale" : undefined}
-            metaClassName="text-amber-700"
-          />
         </TabGroup>
         <GroupDivider />
         <TabGroup label="EXAM DAY">
           <WorkflowTab
             to="/p_cases/$caseId/visit"
-            n={5}
+            n={4}
             status="todo"
             label="Visit"
             meta="Oct 8"
@@ -189,7 +194,7 @@ export default function CockpitShell() {
         </TabGroup>
         <GroupDivider />
         <TabGroup label="REPORT">
-          <PlaceholderTab n={6} label="MMI & Report" />
+          <PlaceholderTab n={5} label="MMI & Report" />
         </TabGroup>
       </nav>
 
@@ -197,12 +202,12 @@ export default function CockpitShell() {
         <div className="flex shrink-0 items-center gap-2.5 border-b border-blue-200 bg-blue-50 px-5 py-2 text-[12.5px] text-blue-950">
           <b>Next:</b> {next.message}
           <Link
-            to={next.tab === "analysis" ? "/p_cases/$caseId/analysis" : "/p_cases/$caseId/exam-prep"}
+            to="/p_cases/$caseId/analysis"
             params={{ caseId }}
-            search={next.tab === "analysis" ? { region: next.region } : {}}
+            search={{ region: next.region }}
             className="rounded-md bg-blue-600 px-2.5 py-0.5 text-xs font-semibold text-white hover:bg-blue-700"
           >
-            {next.tab === "analysis" ? "Go to Analysis" : "Go to Exam prep"} →
+            Go to Analysis →
           </Link>
           <span className="flex-1" />
           <button
@@ -218,6 +223,7 @@ export default function CockpitShell() {
       <div className="flex min-h-0 flex-1">
         <Outlet />
       </div>
+      <ExamPrepModal caseId={caseId} open={Boolean(prep)} onClose={prepModal.close} />
     </div>
   );
 }

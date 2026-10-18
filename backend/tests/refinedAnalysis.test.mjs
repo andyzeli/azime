@@ -4,7 +4,6 @@ import {
   initializePhysicianSteering,
   refinedAnalysisInputSnapshotSchema,
   refinedAnalysisResponseSchema,
-  generateRefinedAnalysisRequestSchema,
 } from "@azime/contracts";
 import { buildRefinedAnalysisInputSnapshot } from "../dist/ai/refinedAnalysisInputSnapshot.js";
 import { buildRefinedAnalysisUserPrompt } from "../dist/ai/refinedAnalysisPrompt.js";
@@ -23,6 +22,18 @@ function fixture() {
       dateOfInjury: "2026-01-01",
     },
     scope: { region: "lumbar_spine", diagnoses: ["strain", "disc_herniation"] },
+    diagnoses: {
+      caseId: 1,
+      region: "lumbar_spine",
+      diagnoses: ["strain", "disc_herniation"].map((canonicalDx) => ({
+        canonicalDx,
+        source: "records",
+        status: "working",
+        reason: null,
+      })),
+      revision: 3,
+      updatedAt: "2026-01-02T00:00:00.000Z",
+    },
     caseSummary: {
       id: 7,
       caseId: 1,
@@ -115,12 +126,10 @@ test("snapshot includes enriched Pass 2 chronology and only the agreed clinical 
     [
       "caseContext",
       "scope",
-      "referralQuestions",
       "caseSummary",
       "reviewedAnalysis",
     ].sort(),
   );
-  assert.deepEqual(snapshot.input.referralQuestions, []);
   assert.deepEqual(
     snapshot.input.caseSummary.statusTimeline,
     args.caseSummary.summary.statusTimeline,
@@ -129,6 +138,8 @@ test("snapshot includes enriched Pass 2 chronology and only the agreed clinical 
   assert.equal(snapshot.input.caseSummary.sourceMetadata, undefined);
   assert.equal(snapshot.basedOn.caseSummaryId, 7);
   assert.equal(snapshot.basedOn.physicianSteeringRevision, 2);
+  assert.equal(snapshot.basedOn.diagnosesRevision, 3);
+  assert.deepEqual(snapshot.physicianSteering, args.steering.steering);
   assert.equal(snapshot.fullReviewedAnalysis.treatments[0].assessments.length, 2);
   assert.deepEqual(snapshot.input.reviewedAnalysis.treatmentIssues, []);
   const prompt = JSON.parse(buildRefinedAnalysisUserPrompt(snapshot.input));
@@ -248,23 +259,6 @@ test("physician additions join active treatments without fabricating record hist
     "provided",
   );
   assert.equal(reviewed.physicianNotes, "Focus on function");
-});
-
-test("referral questions may be empty, or captured exactly in the snapshot", () => {
-  assert.deepEqual(generateRefinedAnalysisRequestSchema.parse({}), {
-    referralQuestions: [],
-  });
-  assert.equal(
-    generateRefinedAnalysisRequestSchema.safeParse({ referralQuestions: [" "] })
-      .success,
-    false,
-  );
-  const args = fixture();
-  args.referralQuestions = ["What should the examination clarify?"];
-  assert.deepEqual(
-    buildRefinedAnalysisInputSnapshot(args).input.referralQuestions,
-    args.referralQuestions,
-  );
 });
 
 test("snapshot rejects unsaved, different-region, and obsolete steering", () => {
@@ -510,4 +504,25 @@ test("snapshots require the current reviewed-analysis shape", () => {
   };
   assert.equal(refinedAnalysisInputSnapshotSchema.safeParse(snapshot).success, false);
   assert.throws(() => buildRefinedAnalysisUserPrompt(snapshot.input));
+});
+
+test("diagnoses excluded from the list leave the scope and the treatment review", () => {
+  const args = fixture();
+  args.diagnoses.diagnoses[1] = {
+    ...args.diagnoses.diagnoses[1],
+    status: "not_supported",
+    reason: "No radicular findings",
+  };
+  const snapshot = buildRefinedAnalysisInputSnapshot(args);
+  assert.deepEqual(snapshot.input.scope.diagnoses, ["strain"]);
+  for (const row of snapshot.fullReviewedAnalysis.treatments)
+    assert.deepEqual(
+      row.assessments.map((a) => a.canonicalDx),
+      ["strain"],
+    );
+
+  args.diagnoses.diagnoses[0] = { ...args.diagnoses.diagnoses[0], status: "not_evaluated" };
+  assert.throws(() => buildRefinedAnalysisInputSnapshot(args), {
+    name: "MissingPrerequisiteError",
+  });
 });

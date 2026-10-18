@@ -99,7 +99,6 @@ function fixture() {
             dateOfInjury: null,
           },
           scope: { region: "lumbar_spine", diagnoses: ["strain"] },
-          referralQuestions: [],
           caseSummary: {
             incidentNarrative: "Lifting injury",
             caseWideSummary: "Completed therapy",

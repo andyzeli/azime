@@ -7,3 +7,10 @@
   }
 }
 
+
+/* Printing with the exam prep sheet open prints only the sheet (ExamPrepModal). */
+@media print {
+  /* Radix portals the dialog into <body>; hide everything else, at any depth. */
+  body > :not([data-prep-sheet]):not(:has([data-prep-sheet])) { display: none !important; }
+  :has(> [data-prep-sheet]) > :not([data-prep-sheet]) { display: none !important; }
+}

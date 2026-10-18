@@ -1,0 +1,322 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Assessment tab mockup</title>
+<style>
+  :root { --s50:#f8fafc; --s100:#f1f5f9; --s200:#e2e8f0; --s300:#cbd5e1; --s400:#94a3b8; --s500:#64748b; --s600:#475569; --s700:#334155; --s900:#0f172a;
+          --b50:#eff6ff; --b100:#dbeafe; --b200:#bfdbfe; --b600:#2563eb; --b700:#1d4ed8; --b800:#1e40af;
+          --g100:#dcfce7; --g700:#15803d; --a50:#fffbeb; --a100:#fef3c7; --a700:#b45309; --a800:#92400e; --v700:#6d28d9; --r700:#b91c1c; }
+  html, body { margin:0; background:transparent; }
+  #fit { width:100%; overflow:hidden; }
+  #app { width:1280px; transform-origin:top left; font:13px/1.4 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; color:var(--s900);
+         background:var(--s100); border-radius:10px; overflow:hidden; border:1px solid var(--s300); }
+  button { font:inherit; cursor:pointer; }
+  .row { display:flex; align-items:center; }
+  .grow { flex:1; }
+  header { height:52px; background:#fff; border-bottom:1px solid var(--s200); padding:0 20px; gap:14px; }
+  header .name { font-size:15px; font-weight:600; }
+  .btn-o { border:1px solid var(--s300); background:#fff; border-radius:6px; padding:4px 10px; font-size:12px; font-weight:600; color:var(--s600); display:flex; gap:6px; align-items:center; }
+  .btn-p { border:0; background:var(--b600); color:#fff; border-radius:7px; padding:7px 14px; font-weight:600; font-size:12.5px; }
+  .btn-p[disabled] { background:var(--s300); cursor:not-allowed; }
+  .btn-s { border:1px solid var(--s300); background:#fff; color:var(--s700); border-radius:7px; padding:6px 12px; font-weight:600; font-size:12.5px; }
+  nav.tabs { background:#fff; border-bottom:1px solid var(--s200); padding:0 14px; gap:2px; }
+  nav.tabs a { padding:11px 14px 10px; font-size:13px; font-weight:600; color:var(--s600); border-bottom:2.5px solid transparent; text-decoration:none; }
+  nav.tabs a.on { color:var(--b700); border-color:var(--b600); }
+  nav.tabs .sep { width:1px; height:22px; background:var(--s200); margin:0 6px; }
+  .sub { padding:10px 20px 0; gap:8px; }
+  .reg { padding:5px 12px; border-radius:7px 7px 0 0; font-weight:600; font-size:12.5px; color:var(--s500); }
+  .reg.on { background:#fff; color:var(--s900); border:1px solid var(--s200); border-bottom:0; }
+  .seg { display:inline-flex; border:1px solid var(--s300); border-radius:7px; overflow:hidden; background:#fff; }
+  .seg span { white-space:nowrap; padding:3px 9px; font-size:11.5px; font-weight:600; color:var(--s500); border-left:1px solid var(--s200); }
+  .seg span:first-child { border-left:0; }
+  .banner { margin:0 20px; background:#fff; border:1px solid var(--s200); border-bottom:0; padding:9px 14px; font-size:12.5px; gap:10px; color:var(--s600); }
+  .banner b { color:var(--s900); }
+  .body { margin:0 20px; background:#fff; border:1px solid var(--s200); display:grid; grid-template-columns:400px 1fr; min-height:560px; }
+  .dxcol { border-right:1px solid var(--s200); padding:14px; display:flex; flex-direction:column; gap:10px; background:var(--s50); }
+  h3 { margin:0; font-size:11px; letter-spacing:.07em; font-weight:700; color:var(--s400); text-transform:uppercase; }
+  .dx { background:#fff; border:1px solid var(--s200); border-radius:9px; padding:10px 11px; display:flex; flex-direction:column; gap:7px; }
+  .dx.sel { border-color:var(--b600); box-shadow:0 0 0 2px var(--b100); }
+  [data-show="post"] .dx.ns .lbl { color:var(--s400); text-decoration:line-through; text-decoration-color:var(--s300); }
+  .icd { background:var(--s100); color:var(--s600); border-radius:4px; padding:1px 5px; font-size:11px; font-weight:600; }
+  .lbl { font-weight:600; font-size:12.5px; }
+  .tag { font-size:10.5px; font-weight:700; }
+  .t-added { color:var(--v700); }
+  .stat span.on-w { background:var(--b100); color:var(--b800); }
+  .stat span.on-s { background:var(--g100); color:var(--g700); }
+  .stat span.on-n { background:var(--a100); color:var(--a800); }
+  .reason { border:1px solid var(--s300); border-radius:6px; padding:4px 8px; font-size:12px; color:var(--s700); background:#fff; }
+  .reason.need { border-color:#f59e0b; background:var(--a50); color:var(--a700); }
+  .ev { border-top:1px dashed var(--s200); padding-top:7px; display:flex; flex-direction:column; gap:3px; font-size:11.5px; color:var(--s600); }
+  .ev .k { font-weight:700; color:var(--s500); font-size:10.5px; letter-spacing:.04em; text-transform:uppercase; }
+  .ev .pos { color:var(--g700); font-weight:600; }
+  .ev .neg { color:var(--a700); font-weight:600; }
+  .meta { font-size:11.5px; color:var(--s500); gap:6px; }
+  .meta .warn { color:var(--a700); font-weight:600; }
+  .add { border:1px dashed var(--s300); border-radius:8px; padding:6px 10px; font-size:12px; color:var(--s500); background:transparent; text-align:left; }
+  .tx { padding:14px 16px; display:flex; flex-direction:column; gap:10px; min-width:0; }
+  table { border-collapse:separate; border-spacing:0; width:100%; font-size:12px; }
+  th { text-align:left; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase; color:var(--s500); font-weight:700; padding:6px 8px; border-bottom:1px solid var(--s200); vertical-align:bottom; }
+  th.dxh { text-transform:none; letter-spacing:0; font-size:11.5px; color:var(--s700); width:118px; }
+  th.dxh.ns { color:var(--s400); }
+  th.dxh.sel, td.sel { background:var(--b50); }
+  td { padding:8px; border-bottom:1px solid var(--s100); vertical-align:top; }
+  td.tname b { font-size:12.5px; }
+  td.tname div { color:var(--s500); font-size:11.5px; }
+  .src { font-size:10px; font-weight:700; padding:0 4px; border-radius:3px; margin-left:4px; }
+  .src.ai { background:#ede9fe; color:var(--v700); }
+  .cell { font-size:11.5px; line-height:1.3; }
+  .cell .ap { font-weight:700; }
+  .cell .ap.y { color:var(--g700); } .cell .ap.n { color:var(--s400); } .cell .ap.u { color:var(--a700); }
+  .cell .ad { color:var(--s500); }
+  .cell .phys { color:var(--b700); font-weight:700; }
+  [data-show="post"] td.nsc .cell { opacity:.45; }
+  .nmn { display:inline-block; margin-top:3px; font-size:10px; font-weight:700; color:var(--a800); background:var(--a100); border-radius:3px; padding:0 4px; }
+  .nc { font-size:11px; color:var(--s400); font-style:italic; }
+  .dec span { cursor:pointer; }
+  .dec span.agree { background:var(--g100); color:var(--g700); }
+  .dec span.over { background:var(--b100); color:var(--b800); }
+  .unrev { font-size:11px; color:var(--a700); font-weight:600; }
+  .covbar { background:var(--a50); border:1px solid #fde68a; border-radius:8px; padding:8px 11px; font-size:12px; color:var(--a800); gap:10px; }
+  .covbar .btn-s { padding:3px 9px; font-size:11.5px; white-space:nowrap; } .covbar > span:last-child { white-space:nowrap; }
+  footer { margin:0 20px 20px; background:#fff; border:1px solid var(--s200); border-top:1px solid var(--s300); padding:10px 16px; gap:12px; }
+  .chk { gap:16px; font-size:12px; color:var(--s600); }
+  .chk span::before { content:"○ "; color:var(--s400); }
+  .chk span.ok::before { content:"✓ "; color:var(--g700); font-weight:700; }
+  .chk span.todo { color:var(--a700); font-weight:600; }
+  .note { font-size:12px; color:var(--s500); }
+  .toggle { margin:0 0 10px; gap:8px; font:12.5px system-ui, sans-serif; color:var(--foreground, #333); }
+  .toggle button { border:1px solid var(--border, #ccc); background:transparent; color:inherit; border-radius:6px; padding:4px 10px; }
+  .toggle button.on { background:var(--primary, #2563eb); color:var(--primary-foreground, #fff); border-color:transparent; }
+  [data-show="pre"] .post-only, [data-show="post"] .pre-only { display:none !important; }
+</style>
+</head>
+<body>
+<div class="toggle row">
+  <span>Show the Assessment tab:</span>
+  <button id="b-pre" onclick="show('pre')">Before the visit</button>
+  <button id="b-post" class="on" onclick="show('post')">After the visit</button>
+</div>
+<div id="fit"><div id="app" data-show="post">
+
+  <header class="row">
+    <span class="name">Martinez, Daniel</span><span style="color:var(--s500)">IME · DOI 03/2024 · Lumbar, Cervical</span>
+    <span class="grow"></span>
+    <button class="btn-o">🖨 Prep sheet</button>
+  </header>
+
+  <nav class="tabs row">
+    <a>Records</a><a>Summary</a><span class="sep"></span>
+    <a class="on">Assessment</a><a>Visit <span class="post-only" style="color:var(--g700)">✓</span></a><span class="sep"></span>
+    <a>Report</a>
+  </nav>
+
+  <div class="sub row">
+    <span class="reg on">Lumbar</span><span class="reg">Cervical</span>
+    <span class="grow"></span>
+    <span style="font-size:12px;color:var(--s500);margin-right:6px">AMA rating</span>
+    <span class="seg"><span style="border-left:0;background:var(--b100);color:var(--b800)">Requested</span><span>Not requested</span></span>
+  </div>
+
+  <div class="banner row pre-only">
+    <b>Before the visit.</b> Steering is optional here. It shapes the prep sheet, and you can finish it after the exam.
+    <span class="grow"></span><span>3A run Oct 12 · snapshot of 4 diagnoses</span>
+  </div>
+  <div class="banner row post-only">
+    <b>Visit documented Oct 15.</b> Exam evidence now appears under each diagnosis. Decide each one, finish the review, then run the post-exam analysis.
+    <span class="grow"></span><span>3A run Oct 12</span>
+  </div>
+
+  <div class="body">
+    <!-- Diagnoses -->
+    <div class="dxcol">
+      <div class="row"><h3>Diagnoses</h3><span class="grow"></span><span class="meta row post-only"><span class="warn">2 undecided</span></span></div>
+
+      <div class="dx sel">
+        <div class="row" style="gap:7px"><span class="icd">M54.16</span><span class="lbl">Lumbar radiculopathy</span></div>
+        <div class="row" style="gap:8px">
+          <span class="seg stat"><span class="pre-only on-w">Working</span><span class="post-only">Working</span><span class="post-only on-s">Supported</span><span class="pre-only">Supported</span><span>Not supported</span></span>
+          <span class="grow"></span><span class="meta">6 treatments</span>
+        </div>
+        <div class="reason post-only">L5 sensory loss, +SLR left 40°, EMG 3/24 concordant</div>
+        <div class="ev post-only">
+          <span class="k">From the visit</span>
+          <span><span class="pos">+</span> Dermatomal sensory loss, L5 left (AMA)</span>
+          <span><span class="pos">+</span> Straight leg raise positive, left 40°</span>
+          <span><span class="neg">–</span> Motor 5/5 bilateral; reflexes symmetric</span>
+          <span>Prep Q: “Pain below the knee?” → <i>Yes, L lateral calf</i></span>
+        </div>
+      </div>
+
+      <div class="dx">
+        <div class="row" style="gap:7px"><span class="icd">M47.816</span><span class="lbl">Lumbar spondylosis w/o myelopathy</span></div>
+        <div class="row" style="gap:8px">
+          <span class="seg stat"><span class="on-w">Working</span><span>Supported</span><span>Not supported</span></span>
+          <span class="grow"></span><span class="meta">5 treatments</span>
+        </div>
+        <div class="ev post-only">
+          <span class="k">From the visit</span>
+          <span><span class="pos">+</span> Extension-rotation pain, bilateral</span>
+          <span>ROM flexion 45° / extension 10°</span>
+        </div>
+      </div>
+
+      <div class="dx ns">
+        <div class="row" style="gap:7px"><span class="icd">M53.3</span><span class="lbl">Sacroiliac joint dysfunction</span></div>
+        <div class="row" style="gap:8px">
+          <span class="seg stat"><span class="pre-only on-w">Working</span><span class="post-only">Working</span><span>Supported</span><span class="post-only on-n">Not supported</span><span class="pre-only">Not supported</span></span>
+          <span class="grow"></span><span class="meta">2 treatments</span>
+        </div>
+        <div class="reason post-only">Never supported: 0/5 SI provocation tests positive; pain is L5 dermatomal</div>
+        <div class="ev post-only">
+          <span class="k">From the visit</span>
+          <span><span class="neg">–</span> FABER, thigh thrust, compression: negative</span>
+          <span class="meta"><span class="warn">Treatment given only for this → necessity question in Opinions</span></span>
+        </div>
+      </div>
+
+      <div class="dx post-only">
+        <div class="row" style="gap:7px"><span class="lbl">Myofascial pain syndrome</span><span class="tag t-added">added</span><span class="grow"></span><span style="color:var(--s400)">×</span></div>
+        <div class="row" style="gap:8px">
+          <span class="seg stat"><span class="on-w">Working</span><span>Supported</span><span>Not supported</span></span>
+          <span class="grow"></span><span class="meta"><span class="warn">not analyzed yet</span></span>
+        </div>
+        <div class="ev">
+          <span class="k">From the visit</span>
+          <span><span class="pos">+</span> Trigger points, L paraspinals, reproduce pain</span>
+        </div>
+      </div>
+
+      <button class="add">+ add diagnosis</button>
+    </div>
+
+    <!-- Treatments -->
+    <div class="tx">
+      <div class="row" style="gap:10px">
+        <h3>Treatment review</h3>
+        <span class="seg"><span style="background:var(--s100);color:var(--s900)">All 9</span><span>Unreviewed <b class="pre-only">7</b><b class="post-only">1</b></span><span>Pruned 0</span></span>
+        <span class="grow"></span>
+        <span class="note">Each cell: applicability · adequacy, for that diagnosis</span>
+      </div>
+
+      <div class="covbar row post-only">
+        <span><b>Myofascial pain syndrome</b> was added after the analysis, so no treatment has been assessed for it.</span>
+        <span class="grow"></span>
+        <button class="btn-s">Analyze this diagnosis</button>
+        <span style="font-size:11px;color:var(--a700)">keeps your review</span>
+      </div>
+
+      <table>
+        <tr>
+          <th>Treatment</th>
+          <th class="dxh sel">Radiculopathy</th>
+          <th class="dxh">Spondylosis</th>
+          <th class="dxh"><span class="post-only" style="color:var(--s400)">SIJ dysfunction<br><span class="nmn">not supported</span></span><span class="pre-only">SIJ dysfunction</span></th>
+          <th class="dxh post-only">Myofascial</th>
+          <th style="width:150px">Review</th>
+        </tr>
+
+        <tr>
+          <td class="tname"><b>Physical therapy</b><div>24 visits, 2024–25 · partial relief</div></td>
+          <td class="sel"><div class="cell"><span class="ap y">Applicable</span><br><span class="ad">Adequately trialed</span></div></td>
+          <td><div class="cell"><span class="ap y">Applicable</span><br><span class="ad">Adequately trialed</span></div></td>
+          <td class="nsc"><div class="cell"><span class="ap y">Applicable</span><br><span class="ad">Adequately trialed</span></div></td>
+          <td class="post-only"><span class="nc">not assessed</span></td>
+          <td><span class="seg dec"><span class="post-only agree">Agree</span><span class="pre-only">Agree</span><span>Override</span><span>Prune</span></span></td>
+        </tr>
+
+        <tr>
+          <td class="tname"><b>L5–S1 epidural steroid injection</b><div>×2, 2024 · 6 wk relief each</div></td>
+          <td class="sel"><div class="cell"><span class="ap y">Applicable</span><br><span class="ad">Not adequately trialed</span></div></td>
+          <td><div class="cell"><span class="ap n">Not applicable</span></div></td>
+          <td class="nsc"><div class="cell"><span class="ap n">Not applicable</span></div></td>
+          <td class="post-only"><span class="nc">not assessed</span></td>
+          <td><span class="seg dec"><span class="post-only agree">Agree</span><span class="pre-only agree">Agree</span><span>Override</span><span>Prune</span></span></td>
+        </tr>
+
+        <tr>
+          <td class="tname"><b>Gabapentin</b><div>300 mg tid, ongoing</div></td>
+          <td class="sel"><div class="cell"><span class="ap y">Applicable</span><br><span class="ad">Not adequately trialed</span><br><span class="phys">↳ you: Adequately trialed</span></div></td>
+          <td><div class="cell"><span class="ap n">Not applicable</span></div></td>
+          <td class="nsc"><div class="cell"><span class="ap n">Not applicable</span></div></td>
+          <td class="post-only"><span class="nc">not assessed</span></td>
+          <td><span class="seg dec"><span>Agree</span><span class="post-only over">Override</span><span class="pre-only over">Override</span><span>Prune</span></span></td>
+        </tr>
+
+        <tr>
+          <td class="tname"><b>SI joint injection</b><div>×1, Aug 2024 · no relief</div><span class="nmn post-only" title="Only applicable to diagnoses found not supported; physician answers in Opinions">necessity question</span></td>
+          <td class="sel"><div class="cell"><span class="ap n">Not applicable</span></div></td>
+          <td><div class="cell"><span class="ap n">Not applicable</span></div></td>
+          <td class="nsc"><div class="cell"><span class="ap y">Applicable</span><br><span class="ad">Adequately trialed</span></div></td>
+          <td class="post-only"><span class="nc">not assessed</span></td>
+          <td><span class="seg dec"><span class="post-only agree">Agree</span><span class="pre-only">Agree</span><span>Override</span><span>Prune</span></span></td>
+        </tr>
+
+        <tr>
+          <td class="tname"><b>Medial branch block → RFA</b><div>MBB ×2 positive, RFA Jan 2025</div></td>
+          <td class="sel"><div class="cell"><span class="ap n">Not applicable</span></div></td>
+          <td><div class="cell"><span class="ap y">Applicable</span><br><span class="ad">Not adequately trialed</span></div></td>
+          <td class="nsc"><div class="cell"><span class="ap n">Not applicable</span></div></td>
+          <td class="post-only"><span class="nc">not assessed</span></td>
+          <td><span class="seg dec"><span class="post-only agree">Agree</span><span class="pre-only">Agree</span><span>Override</span><span>Prune</span></span></td>
+        </tr>
+
+        <tr>
+          <td class="tname"><b>Chiropractic</b><div>18 visits, 2024</div></td>
+          <td class="sel"><div class="cell"><span class="ap u">Unclear</span><br><span class="ad">Adequately trialed</span></div></td>
+          <td><div class="cell"><span class="ap y">Applicable</span><br><span class="ad">Adequately trialed</span></div></td>
+          <td class="nsc"><div class="cell"><span class="ap y">Applicable</span><br><span class="ad">Adequately trialed</span></div></td>
+          <td class="post-only"><span class="nc">not assessed</span></td>
+          <td><span class="seg dec"><span>Agree</span><span>Override</span><span>Prune</span></span><div class="unrev">unreviewed</div></td>
+        </tr>
+
+        <tr>
+          <td class="tname"><b>L5–S1 microdiscectomy</b><span class="src ai">AI</span><div>proposed, not in records</div></td>
+          <td class="sel"><div class="cell"><span class="ap y">Applicable</span><br><span class="ad">Not trialed</span></div></td>
+          <td><div class="cell"><span class="ap n">Not applicable</span></div></td>
+          <td class="nsc"><div class="cell"><span class="ap n">Not applicable</span></div></td>
+          <td class="post-only"><span class="nc">not assessed</span></td>
+          <td><span class="seg dec"><span class="post-only agree">Agree</span><span class="pre-only">Agree</span><span>Override</span><span>Prune</span></span></td>
+        </tr>
+      </table>
+      <div class="note">+ 2 more rows · <span style="color:var(--b700);font-weight:600">+ add treatment</span></div>
+    </div>
+  </div>
+
+  <footer class="row pre-only">
+    <span class="note">Optional before the visit. 2 of 9 reviewed.</span>
+    <span class="grow"></span>
+    <span class="note">Prep sheet up to date</span>
+    <button class="btn-s">Update prep sheet</button>
+    <button class="btn-p">Save steering</button>
+  </footer>
+  <footer class="row post-only">
+    <span class="chk row">
+      <span class="ok">Visit documented</span>
+      <span class="todo">Diagnoses 2/4 decided</span>
+      <span class="todo">Treatments 8/9 reviewed</span>
+      <span class="todo">Myofascial not analyzed</span>
+    </span>
+    <span class="grow"></span>
+    <button class="btn-s">Save</button>
+    <button class="btn-p" disabled title="Finish the items on the left">Run post-exam analysis →</button>
+  </footer>
+
+</div></div>
+<script>
+  const app = document.getElementById('app'), fit = document.getElementById('fit');
+  function size() {
+    const s = Math.min(1, fit.clientWidth / 1282);
+    app.style.transform = `scale(${s})`;
+    fit.style.height = app.offsetHeight * s + 'px';
+  }
+  function show(m) {
+    app.dataset.show = m;
+    document.getElementById('b-pre').classList.toggle('on', m === 'pre');
+    document.getElementById('b-post').classList.toggle('on', m === 'post');
+    size();
+  }
+  addEventListener('resize', size); show('post');
+</script>
+</body>
+</html>

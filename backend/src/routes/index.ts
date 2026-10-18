@@ -17,6 +17,7 @@ import { visitDocumentationController } from "../controllers/visitDocumentationC
 import { canonicalDiagnosesController } from "../controllers/canonicalDiagnosesController.js";
 import { postExamAnalysisController } from "../controllers/postExamAnalysisController.js";
 import { amaCandidatesController } from "../controllers/amaCandidatesController.js";
+import { regionDiagnosesController } from "../controllers/regionDiagnosesController.js";
 
 export const registerRoutes = (app: FastifyInstance) => {
   app.get("/", async () => ({ message: "Server is running!" }));
@@ -107,6 +108,14 @@ export const registerRoutes = (app: FastifyInstance) => {
   app.get(
     "/cases/:caseId/pre-exam-analysis/:region/snapshot",
     preExamAnalysisController.getSnapshotHandler,
+  );
+  app.get(
+    "/cases/:caseId/diagnoses/:region",
+    regionDiagnosesController.getHandler,
+  );
+  app.put(
+    "/cases/:caseId/diagnoses/:region",
+    regionDiagnosesController.saveHandler,
   );
   app.get(
     "/cases/:caseId/physician-steering/:region",

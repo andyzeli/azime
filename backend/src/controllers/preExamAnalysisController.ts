@@ -22,6 +22,7 @@ import {
   getPreExamInputSnapshot,
   getRegionDiagnoses,
 } from "../queries/preExamInputSnapshotQueries.js";
+import { getRegionDiagnosisList } from "../queries/regionDiagnosesQueries.js";
 
 const parseCaseId = (value: string) => {
   const caseId = Number(value);
@@ -166,7 +167,11 @@ export const preExamAnalysisController = {
         caseId,
         region,
         extractionArtifacts,
-        requestBody.data.selectedDiagnoses,
+        // Every listed diagnosis, not supported ones too: their treatment history still counts.
+        requestBody.data.selectedDiagnoses ??
+          (await getRegionDiagnosisList(caseId, region)).diagnoses.map(
+            (d) => d.canonicalDx,
+          ),
       );
 
       if (!inputSnapshot) {
@@ -227,7 +232,11 @@ export const preExamAnalysisController = {
       }
 
       const { inputSnapshot, ...rest } = stored;
-      return reply.send({ ...rest, hasInputSnapshot: inputSnapshot !== null });
+      return reply.send({
+        ...rest,
+        hasInputSnapshot: inputSnapshot !== null,
+        analyzedDiagnoses: inputSnapshot?.scope.diagnoses ?? [],
+      });
     } catch (error) {
       console.error(error);
       return reply

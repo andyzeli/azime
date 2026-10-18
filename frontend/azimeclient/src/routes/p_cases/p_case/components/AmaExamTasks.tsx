@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  currentDiagnoses,
   effectiveAmaMode,
   supportedRegions,
   type AmaMode,
@@ -11,7 +12,7 @@ import {
   amaCandidatesQueryOptions,
   canonicalDiagnosesQueryOptions,
   caseQueryOptions,
-  preExamSnapshotQueryOptions,
+  regionDiagnosesQueryOptions,
   updateAmaMode,
 } from "../../../cases/queries";
 import { cn } from "@/lib/utils";
@@ -56,16 +57,14 @@ function collect(
   return [...items.values()];
 }
 
-// Deterministic AMA Guides checklist for the exam, from the region's Analysis scope.
-// Roots are unknown before the visit, so every mapped root row is shown provisionally.
-export function AmaExamTasks({
+// The case's AMA setting. It affects Visit and the report, not just the prep sheet,
+// so Analysis and the prep sheet both show it. Changing it re-runs only the reference lookup.
+export function AmaModeControl({
   caseId,
-  regions,
   caseType,
   amaMode,
 }: {
   caseId: string;
-  regions: Region[];
   caseType: string | null;
   amaMode: AmaMode | null;
 }) {
@@ -76,39 +75,55 @@ export function AmaExamTasks({
     onSuccess: (saved) =>
       queryClient.setQueryData(caseQueryOptions(caseId).queryKey, (c) => (c ? { ...c, amaMode: saved.amaMode } : c)),
   });
+  return (
+    <span className="flex items-center gap-2">
+      <span className="text-[11px] font-semibold text-slate-500">AMA</span>
+      <Segmented
+        value={mode}
+        onChange={(next) => setMode.mutate(next)}
+        options={[
+          { value: "rating" as const, label: "Rating requested" },
+          { value: "guidance" as const, label: "Guidance only" },
+          { value: "off" as const, label: "Off" },
+        ]}
+      />
+      <span className="text-[11px] text-slate-400">
+        {amaMode == null ? (
+          "default for case type"
+        ) : (
+          <button
+            type="button"
+            onClick={() => setMode.mutate(null)}
+            className="font-semibold text-blue-600 hover:text-blue-800"
+          >
+            Reset to default
+          </button>
+        )}
+      </span>
+    </span>
+  );
+}
 
+// Deterministic AMA Guides checklist for the exam, from the region's current diagnoses.
+// Roots are unknown before the visit, so every mapped root row is shown provisionally.
+export function AmaExamTasks({
+  caseId,
+  regions,
+  mode,
+}: {
+  caseId: string;
+  regions: Region[];
+  mode: AmaMode;
+}) {
   return (
     <section>
-      <div className="mb-2.5 flex items-center gap-2.5">
+      <div className="mb-2.5 flex items-baseline gap-2.5">
         <h2 className="text-[15px] font-semibold">AMA examination</h2>
         <span className="text-[11px] text-slate-500">
           {mode === "off"
             ? "No AMA rating requested."
             : "Findings the AMA Guides rows need for each in-scope diagnosis. Roots are confirmed at the visit."}
         </span>
-        <span className="flex-1" />
-        <span className="text-[11px] text-slate-400">
-          {amaMode == null ? (
-            "Default for case type"
-          ) : (
-            <button
-              type="button"
-              onClick={() => setMode.mutate(null)}
-              className="font-semibold text-blue-600 hover:text-blue-800"
-            >
-              Reset to default
-            </button>
-          )}
-        </span>
-        <Segmented
-          value={mode}
-          onChange={(next) => setMode.mutate(next)}
-          options={[
-            { value: "rating" as const, label: "Rating requested" },
-            { value: "guidance" as const, label: "Guidance only" },
-            { value: "off" as const, label: "Off" },
-          ]}
-        />
       </div>
       {mode === "off" ? null : (
         <div className="flex flex-col gap-3">
@@ -123,8 +138,8 @@ export function AmaExamTasks({
 
 // Guidance mode keeps the exam rows (tasks, roots, answers for the report) but no rating tables.
 function RegionTasks({ caseId, region, withTables }: { caseId: string; region: Region; withTables: boolean }) {
-  const snapshot = useQuery(preExamSnapshotQueryOptions(caseId, region));
-  const scope = snapshot.data?.inputSnapshot?.scope.diagnoses ?? [];
+  const list = useQuery(regionDiagnosesQueryOptions(caseId, region));
+  const scope = currentDiagnoses(list.data?.diagnoses ?? []);
   const candidates = useQuery({
     ...amaCandidatesQueryOptions(
       caseId,
@@ -140,7 +155,7 @@ function RegionTasks({ caseId, region, withTables }: { caseId: string; region: R
     labels.data?.find((d) => d.canonicalDx === dx)?.label ?? dx;
 
   let body;
-  if (snapshot.isPending || (scope.length && candidates.isPending))
+  if (list.isPending || (scope.length && candidates.isPending))
     body = <Empty>Loading…</Empty>;
   else if (!scope.length)
     body = <Empty>No diagnoses in scope. Choose them in Analysis.</Empty>;
@@ -215,7 +230,7 @@ function RegionTasks({ caseId, region, withTables }: { caseId: string; region: R
           <AmaRatingTablesPrep tables={ratingTables} />
         ) : null}
         {rootOptions.length ? (
-          <div className="flex flex-wrap items-center gap-1.5 border-b border-slate-100 px-4 py-2">
+          <div className="flex flex-wrap items-center gap-1.5 border-b border-slate-100 px-4 py-2 print:hidden">
             <span className="mr-1 text-[11px] font-semibold text-slate-500">
               Affected roots
             </span>

@@ -49,11 +49,6 @@ export const pAnalysisRoute = createRoute({
     queryClient.ensureQueryData(recordsQueryOptions(caseId)),
 }).lazy(() => import("./analysis.lazy").then((d) => d.Route));
 
-export const pExamPrepRoute = createRoute({
-  getParentRoute: () => pCaseRoute,
-  path: "exam-prep",
-}).lazy(() => import("./exam-prep.lazy").then((d) => d.Route));
-
 export const pVisitRoute = createRoute({
   getParentRoute: () => pCaseRoute,
   path: "visit",

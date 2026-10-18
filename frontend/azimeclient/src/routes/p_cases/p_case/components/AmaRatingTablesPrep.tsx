@@ -16,7 +16,7 @@ export function AmaRatingTablesPrep({ tables }: { tables: AmaRatingTable[] }) {
     <div className="border-b border-slate-100 px-4 py-3">
       <div className="mb-1.5 flex items-baseline gap-2">
         <h3 className="text-[10.5px] font-bold tracking-[.05em] text-slate-500 uppercase">Rating tables</h3>
-        <span className="text-[11px] text-slate-400">
+        <span className="text-[11px] text-slate-400 print:hidden">
           {selected.length ? (
             <button type="button" onClick={() => setSelected([])} className="font-semibold text-blue-600 hover:text-blue-800">
               Show all
@@ -26,7 +26,7 @@ export function AmaRatingTablesPrep({ tables }: { tables: AmaRatingTable[] }) {
           )}
         </span>
       </div>
-      <div className="mb-2.5 flex flex-wrap gap-1.5">
+      <div className="mb-2.5 flex flex-wrap gap-1.5 print:hidden">
         {tables.map((t) => (
           <button
             key={t.table_id}

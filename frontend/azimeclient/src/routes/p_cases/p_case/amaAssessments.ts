@@ -4,7 +4,6 @@ import {
   type AmaAssessment,
   type AmaDiagnosticRow,
   type AmaMotorGrade,
-  type RefinedAnalysisResponse,
   type Region,
 } from "@azime/contracts";
 import { amaCandidatesQueryOptions } from "../../cases/queries";
@@ -15,18 +14,16 @@ export type AmaComponentKey = Pick<
   "region" | "rowId" | "nerveRoot" | "side"
 >;
 
-// Candidate rows for a region's exam prep scope. Roots are chosen per assessment, so all mapped rows load.
+// Candidate rows for a region's current diagnoses. Roots are chosen per assessment, so all mapped rows load.
 export const regionAmaCandidatesQueryOptions = (
   caseId: string,
-  refined: RefinedAnalysisResponse
+  region: Region,
+  diagnoses: string[]
 ) =>
   amaCandidatesQueryOptions(
     caseId,
-    refined.region,
-    refined.inputSnapshot.input.scope.diagnoses.map((canonicalDx) => ({
-      canonicalDx,
-      affectedRoots: null,
-    }))
+    region,
+    diagnoses.map((canonicalDx) => ({ canonicalDx, affectedRoots: null }))
   );
 
 export const isComponent = (a: AmaAssessment, key: AmaComponentKey) =>
@@ -74,20 +71,6 @@ export function toggleComponent(
     )
   );
 }
-
-// When a diagnosis is rejected, cleared, or fails the history prerequisite, it stops being rated.
-export const unlinkDiagnosis = (
-  assessments: AmaAssessment[],
-  region: Region,
-  dx: string
-) =>
-  prune(
-    assessments.map((a) =>
-      a.region === region
-        ? { ...a, canonicalDxIds: a.canonicalDxIds.filter((d) => d !== dx) }
-        : a
-    )
-  );
 
 type Answer = AmaAssessment["answers"][string];
 

@@ -1,4 +1,5 @@
 import {
+  currentDiagnoses,
   refinedAnalysisInputSnapshotSchema,
   fullReviewedPreExamAnalysisSchema,
   reviewedPreExamAnalysisSchema,
@@ -8,6 +9,7 @@ import {
   type PhysicianSteeringResponse,
   type RefinedAnalysisInput,
   type RefinedAnalysisInputSnapshot,
+  type RegionDiagnosesResponse,
   type ReviewedPreExamAnalysis,
   type StoredPreExamAnalysis,
 } from "@azime/contracts";
@@ -172,21 +174,57 @@ export function projectReviewedAnalysis(
   });
 }
 
+// Leaves out assessments for diagnoses no longer in scope, and rows left with none.
+function scopeReview(
+  review: ReturnType<typeof resolvePreExamReview>,
+  diagnoses: string[]
+): ReturnType<typeof resolvePreExamReview> {
+  const keep = (dx: string) => diagnoses.includes(dx);
+  return {
+    ...review,
+    treatmentAnalysis: review.treatmentAnalysis.flatMap((row) => {
+      const assessments = row.assessments.filter((a) => keep(a.canonicalDx));
+      return row.assessments.length && !assessments.length
+        ? []
+        : [{ ...row, assessments }];
+    }),
+    addedTreatments: review.addedTreatments.flatMap((row) => {
+      const entries = Object.entries(row.assessments);
+      const kept = entries.filter(([dx]) => keep(dx));
+      return entries.length && !kept.length
+        ? []
+        : [{ ...row, assessments: Object.fromEntries(kept) }];
+    }),
+  };
+}
+
+// The scope is the 3A scope narrowed to the region's current diagnoses. A current
+// diagnosis without a 3A run is not covered until 3A runs for it.
 export function buildRefinedAnalysisInputSnapshot({
   caseContext,
-  scope,
+  scope: analysisScope,
+  diagnoses,
   caseSummary,
   preExam,
   steering,
-  referralQuestions = [],
 }: {
   caseContext: RefinedAnalysisInput["caseContext"];
   scope: RefinedAnalysisInput["scope"];
+  diagnoses: RegionDiagnosesResponse;
   caseSummary: CaseSummaryResponse;
   preExam: { id: number; updatedAt: string; analysis: StoredPreExamAnalysis };
   steering: PhysicianSteeringResponse;
-  referralQuestions?: string[];
 }): RefinedAnalysisInputSnapshot {
+  const current = currentDiagnoses(diagnoses.diagnoses);
+  const scope = {
+    region: analysisScope.region,
+    diagnoses: analysisScope.diagnoses.filter((dx) => current.includes(dx)),
+  };
+  if (!scope.diagnoses.length) {
+    throw new MissingPrerequisiteError(
+      "None of the analyzed diagnoses is still in scope. Run the analysis for the current diagnoses"
+    );
+  }
   if (steering.id === null) {
     throw new MissingPrerequisiteError(
       "Save physician steering before taking a refined analysis snapshot"
@@ -200,23 +238,27 @@ export function buildRefinedAnalysisInputSnapshot({
       "Physician steering does not match this pre-exam analysis. Reload and save the current review"
     );
   }
-  const review = resolvePreExamReview(preExam.analysis, steering.steering);
+  const review = scopeReview(
+    resolvePreExamReview(preExam.analysis, steering.steering),
+    scope.diagnoses
+  );
 
   return refinedAnalysisInputSnapshotSchema.parse({
     input: {
       caseContext,
       scope,
-      referralQuestions,
       caseSummary: caseSummary.summary,
       reviewedAnalysis: projectReviewedAnalysis(review),
     },
     fullReviewedAnalysis: projectFullReviewedAnalysis(review),
+    physicianSteering: steering.steering,
     basedOn: {
       caseSummaryId: caseSummary.id,
       preExamAnalysisId: preExam.id,
       preExamAnalysisUpdatedAt: preExam.updatedAt,
       physicianSteeringId: steering.id,
       physicianSteeringRevision: steering.revision,
+      diagnosesRevision: diagnoses.revision,
     },
   });
 }

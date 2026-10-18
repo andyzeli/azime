@@ -10,7 +10,6 @@ import {
   type AmaMode,
   type AmaMotorGrade,
   type AmaQuestion,
-  type RefinedAnalysisResponse,
   type Region,
 } from "@azime/contracts";
 import { cn } from "@/lib/utils";
@@ -72,7 +71,8 @@ export function AmaFindingsCard({
   onChange,
 }: {
   caseId: string;
-  regions: RefinedAnalysisResponse[];
+  // Every listed diagnosis per region, excluded ones too, so retained findings keep their rows.
+  regions: { region: Region; diagnoses: string[] }[];
   assessments: AmaAssessment[];
   amaMode: AmaMode;
   dxLabel: (dx: string) => string;
@@ -91,11 +91,12 @@ export function AmaFindingsCard({
         </span>
         {amaMode === "guidance" ? <Badge className="bg-slate-100 text-slate-600">Guidance only</Badge> : null}
       </div>
-      {shown.map((refined) => (
+      {shown.map(({ region, diagnoses }) => (
         <RegionFindings
-          key={refined.region}
+          key={region}
           caseId={caseId}
-          refined={refined}
+          region={region}
+          diagnoses={diagnoses}
           assessments={assessments}
           dxLabel={dxLabel}
           onChange={onChange}
@@ -107,25 +108,27 @@ export function AmaFindingsCard({
 
 function RegionFindings({
   caseId,
-  refined,
+  region,
+  diagnoses,
   assessments,
   dxLabel,
   onChange,
 }: {
   caseId: string;
-  refined: RefinedAnalysisResponse;
+  region: Region;
+  diagnoses: string[];
   assessments: AmaAssessment[];
   dxLabel: (dx: string) => string;
   onChange: (assessments: AmaAssessment[]) => void;
 }) {
-  const candidates = useQuery(regionAmaCandidatesQueryOptions(caseId, refined));
+  const candidates = useQuery(regionAmaCandidatesQueryOptions(caseId, region, diagnoses));
   const rowsById = new Map((candidates.data?.rows ?? []).map((row) => [row.row_id, row]));
   return (
     <div className="border-b border-slate-100 px-4 py-2.5 last:border-b-0">
-      <div className="mb-1 text-[10.5px] font-bold tracking-[.05em] text-slate-500">{regionLabel(refined.region).toUpperCase()}</div>
+      <div className="mb-1 text-[10.5px] font-bold tracking-[.05em] text-slate-500">{regionLabel(region).toUpperCase()}</div>
       <div className="divide-y divide-slate-100">
         {assessments
-          .filter((a) => a.region === refined.region)
+          .filter((a) => a.region === region)
           .map((a) => (
             <ComponentFindings
               key={a.id}

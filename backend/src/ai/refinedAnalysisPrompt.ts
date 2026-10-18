@@ -17,8 +17,6 @@ INPUT DOMAIN ORIENTATION
 - scope: The region and diagnoses being evaluated. Focus on this scope; use other
   regions only when they help explain the scoped condition or function.
 
-- referralQuestions: Questions the examination should address. May be empty.
-
 - caseSummary: A record-derived overview, incident narrative, psychosocial factors,
   and statusTimeline. Timeline entries summarize symptoms, function, and examination
   findings with record IDs, dates, and providers. This summary may cover the whole

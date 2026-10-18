@@ -11,26 +11,20 @@ export const visitPriorityResponseSchema = z.object({
   note: z.string().nullable(),
 });
 
-// The physician confirms or rejects each in-scope diagnosis at the visit. A rejection
-// (wrong or incomplete) marks the region's exam prep stale until it is regenerated
-// (after Analysis is redone); the visit itself is kept as is.
-export const visitDiagnosisReviewSchema = z.object({
+// AMA history prerequisite, asked at the visit: residual symptoms and a mechanism
+// consistent with the diagnosis. Missing = not asked; false stops rating the diagnosis
+// but keeps its findings. Diagnosis conclusions live in the region's diagnosis list.
+export const visitAmaHistorySchema = z.object({
   region: regionSchema,
   canonicalDx: z.string(),
-  status: z.enum(["confirmed", "rejected"]),
-  note: z.string().nullable(),
-  // updatedAt of the exam prep the decision was made against.
-  refinedUpdatedAt: z.string(),
-  // AMA history prerequisite: residual symptoms and a mechanism consistent with the
-  // diagnosis. null = not asked; false stops rating this diagnosis.
-  amaHistoryConfirmed: z.boolean().nullable().default(null),
+  confirmed: z.boolean(),
 });
 
 // One AMA component: a reference row + actual root + side, linked to every diagnosis
 // it supports, so diagnoses sharing a component share one set of answers.
 // Root and side are null for rows without nerve roots. Missing/null answers are
-// unresolved, never false. An assessment with no linked diagnosis keeps its answers
-// but is not rated until it is linked again.
+// unresolved, never false. Findings are kept whatever happens to the diagnoses;
+// rating eligibility comes from the diagnosis list and the history answer.
 export const amaAssessmentSchema = z.object({
   id: z.string().min(1),
   region: regionSchema,
@@ -42,6 +36,9 @@ export const amaAssessmentSchema = z.object({
   // Strength grade per muscle-strength task id, so reports can cite the muscle.
   // The motor_* answers are derived from these (amaMotorAnswers).
   motorGrades: z.record(z.string(), amaMotorGradeSchema).default({}),
+  // Side-to-side circumference difference in cm per measurement-site task.
+  // The atrophy* answers are derived from these (amaAtrophyAnswers).
+  atrophyCm: z.record(z.string(), z.number().nonnegative()).default({}),
 });
 
 // One visit per case. The note may contain optional [REGION] section labels;
@@ -52,12 +49,12 @@ export const visitDocumentationSchema = z.object({
   pdqId: z.number().int().positive().nullable(),
   includedQuestionnaireIds: z.array(z.number().int().positive()),
   priorityResponses: z.array(visitPriorityResponseSchema),
-  diagnosisReviews: z.array(visitDiagnosisReviewSchema),
+  amaHistory: z.array(visitAmaHistorySchema).default([]),
   amaAssessments: z.array(amaAssessmentSchema).default([]),
 });
 export type VisitDocumentation = z.infer<typeof visitDocumentationSchema>;
 export type VisitPriorityResponse = z.infer<typeof visitPriorityResponseSchema>;
-export type VisitDiagnosisReview = z.infer<typeof visitDiagnosisReviewSchema>;
+export type VisitAmaHistory = z.infer<typeof visitAmaHistorySchema>;
 export type AmaAssessment = z.infer<typeof amaAssessmentSchema>;
 
 export function initializeVisitDocumentation(): VisitDocumentation {
@@ -66,7 +63,7 @@ export function initializeVisitDocumentation(): VisitDocumentation {
     pdqId: null,
     includedQuestionnaireIds: [],
     priorityResponses: [],
-    diagnosisReviews: [],
+    amaHistory: [],
     amaAssessments: [],
   };
 }

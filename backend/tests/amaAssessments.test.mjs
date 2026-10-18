@@ -108,7 +108,7 @@ test("atrophy answers are derived from per-site measurements", () => {
   );
 });
 
-test("old visits parse with no assessments and no history answer", () => {
+test("old visits parse: diagnosis reviews dropped, no assessments, no history answers", () => {
   const doc = visitDocumentationSchema.parse({
     note: "",
     pdqId: null,
@@ -122,7 +122,8 @@ test("old visits parse with no assessments and no history answer", () => {
   const [a] = visitDocumentationSchema.parse({ ...doc, amaAssessments: [l5({ motorGrades: undefined, atrophyCm: undefined })] }).amaAssessments;
   assert.deepEqual(a.motorGrades, {});
   assert.deepEqual(a.atrophyCm, {});
-  assert.equal(doc.diagnosisReviews[0].amaHistoryConfirmed, null);
+  assert.equal(doc.diagnosisReviews, undefined);
+  assert.deepEqual(doc.amaHistory, []);
 });
 
 test("frozen findings trace each answer to the test that produced it", () => {
