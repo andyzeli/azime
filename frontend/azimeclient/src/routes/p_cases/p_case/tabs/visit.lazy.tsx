@@ -20,6 +20,7 @@ import {
 import {
   effectiveAmaMode,
   initializeVisitDocumentation,
+  currentDiagnoses,
   type AmaMode,
   type AmaAssessment,
   supportedRegions,
@@ -29,7 +30,6 @@ import {
   type StoredRefinedAnalysis,
   type VisitAmaHistory,
   type VisitDocumentation,
-  type VisitPriorityResponse,
 } from "@azime/contracts";
 import { cn } from "@/lib/utils";
 import {
@@ -42,9 +42,7 @@ import {
   canonicalDiagnosesQueryOptions,
   caseQueryOptions,
   patientQuestionnairesQueryOptions,
-  postExamAnalysisQueryOptions,
   saveVisit,
-  takePostExamSnapshot,
   visitQueryOptions,
   type PatientQuestionnaireWithDefinition,
 } from "../../../cases/queries";
@@ -62,7 +60,7 @@ import {
 import { useExamPrepModal } from "../components/ExamPrepModal";
 import { RecordDrawer } from "../components/RecordDetail";
 import { Badge, Btn, Segmented } from "../components/shared";
-import { useExamPrep } from "../examPrep";
+import { NOTE_TEMPLATE, useExamPrep, visitBlocker } from "../examPrep";
 
 type Priority = StoredRefinedAnalysis["visitPriority"][number] & {
   region: Region;
@@ -86,15 +84,6 @@ const apiErrorMessage = (error: unknown) =>
   (error as { data?: { error?: string } } | null)?.data?.error ??
   "Request failed";
 
-// Responses are keyed by region + focus because priority IDs are positional per exam prep run.
-const sameResponse = (
-  a: Pick<VisitPriorityResponse, "region" | "focus">,
-  b: Pick<VisitPriorityResponse, "region" | "focus">
-) => a.region === b.region && a.focus === b.focus;
-
-// New visits start with these headings; an untouched template counts as an empty note.
-const NOTE_TEMPLATE = "Chief complaint:\n\nHPI:\n\nSubjective:\n\nObjective:\n";
-
 function Tab() {
   const { caseId } = Route.useParams();
   const { record } = Route.useSearch();
@@ -106,11 +95,6 @@ function Tab() {
   );
   const examPrep = useExamPrep(caseId, patientCase.regions);
   const amaMode = effectiveAmaMode(patientCase.caseType, patientCase.amaMode);
-  const postExam = useQueries({
-    queries: patientCase.regions.map((r) =>
-      postExamAnalysisQueryOptions(caseId, r)
-    ),
-  });
   const canonical = useQueries({
     queries: patientCase.regions.map((r) => canonicalDiagnosesQueryOptions(r)),
   });
@@ -131,13 +115,6 @@ function Tab() {
     setDirty(true);
   };
 
-  // Regions with exam prep are the ones this visit feeds; each gets its own post-exam analysis.
-  const preparedRegions = examPrep.regions
-    .filter((r) => r.refined)
-    .map((r) => r.region);
-  const unpreparedRegions = patientCase.regions.filter(
-    (r) => !preparedRegions.includes(r)
-  );
   const priorities: Priority[] = examPrep.regions.flatMap(
     ({ region, refined, status }) =>
       (refined?.analysis.visitPriority ?? []).map((p) => ({
@@ -146,12 +123,20 @@ function Tab() {
         stale: status.kind === "stale",
       }))
   );
-  const lastRun = postExam
-    .map((q) => q.data)
-    .filter((d) => d != null)
-    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0];
-
   const visitKey = visitQueryOptions(caseId).queryKey;
+  // Start over: saves a blank visit (a new revision; nothing else is touched).
+  const clear = useMutation({
+    mutationFn: () =>
+      saveVisit(caseId, {
+        documentation: { ...initializeVisitDocumentation(), note: NOTE_TEMPLATE },
+        expectedRevision: visit?.revision ?? 0,
+      }),
+    onSuccess: (saved) => {
+      queryClient.setQueryData(visitKey, saved);
+      setDraft(saved.documentation);
+      setDirty(false);
+    },
+  });
   const save = useMutation({
     mutationFn: () =>
       saveVisit(caseId, {
@@ -163,34 +148,13 @@ function Tab() {
       setDirty(false);
     },
   });
-  // Post-exam generation is gated on the backend until its prompt is final, so this
-  // saves the visit and snapshots each prepared region's post-exam input.
-  const runPostExam = useMutation({
-    mutationFn: async () => {
-      if (dirty || !visit) await save.mutateAsync();
-      await Promise.all(
-        preparedRegions.map(async (region) =>
-          queryClient.setQueryData(
-            postExamAnalysisQueryOptions(caseId, region).queryKey,
-            await takePostExamSnapshot(caseId, region)
-          )
-        )
-      );
-    },
-  });
 
   const diagnosisRegions = examPrep.regions.flatMap(({ region, diagnoses }) =>
     diagnoses ? [{ region, list: diagnoses }] : []
   );
-  const blocker =
-    draft.note.trim() === "" || draft.note.trim() === NOTE_TEMPLATE.trim()
-      ? "Add a visit note"
-      : draft.pdqId === null
-        ? "Select a PDQ to include"
-        : !preparedRegions.length
-          ? "No exam prep yet"
-          : null;
-  const error = save.error ?? runPostExam.error;
+  // Shown as a hint; the post-exam analysis itself runs from Analysis.
+  const blocker = visitBlocker(draft);
+  const error = save.error ?? clear.error;
 
   return (
     <>
@@ -218,6 +182,7 @@ function Tab() {
               regions={diagnosisRegions.map(({ region, list }) => ({
                 region,
                 diagnoses: list.diagnoses.map((d) => d.canonicalDx),
+                current: currentDiagnoses(list.diagnoses),
               }))}
               assessments={draft.amaAssessments}
               amaMode={amaMode}
@@ -261,10 +226,6 @@ function Tab() {
 
           <PrioritiesColumn
             priorities={priorities}
-            responses={draft.priorityResponses}
-            onChange={(priorityResponses) =>
-              edit((d) => ({ ...d, priorityResponses }))
-            }
           />
         </div>
 
@@ -281,29 +242,24 @@ function Tab() {
 
         <footer className="sticky bottom-0 mt-auto flex items-center gap-3 border-t border-slate-200 bg-white px-5 py-2.5 shadow-[0_-6px_16px_rgba(15,23,42,.05)]">
           <span className="text-[11px] text-slate-500">
-            Post-exam analysis runs per region:{" "}
-            <b className="text-slate-800">
-              {preparedRegions.length
-                ? preparedRegions.map(regionLabel).join(", ")
-                : "none yet"}
-            </b>
-            {unpreparedRegions.length ? (
-              <>
-                {" "}
-                · {unpreparedRegions.map(regionLabel).join(", ")} has no exam
-                prep, skipped
-              </>
-            ) : null}
+            {blocker ? (
+              <b className="text-amber-700">{blocker}</b>
+            ) : (
+              "Visit ready"
+            )}{" "}
+            · run the post-exam analysis per region from{" "}
+            <Link
+              to="/p_cases/$caseId/analysis"
+              params={{ caseId }}
+              className="font-semibold text-blue-700 hover:underline"
+            >
+              Analysis →
+            </Link>
           </span>
           <span className="flex-1" />
           {error ? (
             <span className="text-[11px] font-semibold text-red-700">
               {apiErrorMessage(error)}
-            </span>
-          ) : lastRun && !runPostExam.isPending ? (
-            <span className="border-r border-slate-200 pr-3 text-[11px] text-green-700">
-              Post-exam input taken {formatTime(lastRun.createdAt)} · visit rev{" "}
-              {lastRun.inputSnapshot.basedOn.visitDocumentationRevision}
             </span>
           ) : null}
           <span className="text-[11px] text-slate-500">
@@ -317,24 +273,24 @@ function Tab() {
             · rev {visit?.revision ?? 0}
           </span>
           <Btn
+            disabled={save.isPending}
+            onClick={() => {
+              if (
+                window.confirm(
+                  "Clear the whole visit: note, PDQ choice and AMA findings? This saves immediately."
+                )
+              )
+                clear.mutate();
+            }}
+          >
+            Clear visit
+          </Btn>
+          <Btn
             disabled={!dirty || save.isPending}
             onClick={() => save.mutate()}
           >
             Save visit
           </Btn>
-          <span title={blocker ?? undefined}>
-            <Btn
-              variant="primary"
-              disabled={
-                Boolean(blocker) || save.isPending || runPostExam.isPending
-              }
-              onClick={() => runPostExam.mutate()}
-            >
-              {runPostExam.isPending
-                ? "Preparing post-exam analysis…"
-                : (blocker ?? "Save & run post-exam analysis →")}
-            </Btn>
-          </span>
         </footer>
       </main>
       <RecordDrawer recordId={record} />
@@ -406,7 +362,7 @@ function NoteCard({
 // The region's current diagnoses (conclusions are set in Analysis) with their AMA
 // prerequisites: the history answer, then the roots/sides (or non-root rows) whose
 // findings are recorded. Nothing here is gated: findings can be recorded for any
-// current diagnosis, and a "no" history answer only stops rating it.
+// current diagnosis, and a "no" history answer rates it 0% regardless of them.
 function DiagnosesCard({
   caseId,
   regions,
@@ -586,7 +542,7 @@ function RegionDiagnoses({
                 )}
                 {answered === false ? (
                   <span className="text-slate-500">
-                    Not rated under AMA. Findings are still recorded.
+                    Rated 0% WPI under AMA. Findings are still recorded.
                   </span>
                 ) : null}
                 {rootRows.length ? (
@@ -795,38 +751,9 @@ function QuestionnaireRow({ q }: { q: PatientQuestionnaireWithDefinition }) {
   );
 }
 
-const quickResponses: {
-  status: Exclude<VisitPriorityResponse["status"], "response">;
-  label: string;
-}[] = [
-  { status: "couldnt_assess", label: "Couldn't assess" },
-  { status: "declined", label: "Patient declined" },
-  { status: "not_relevant", label: "Not relevant" },
-];
-
-function PrioritiesColumn({
-  priorities,
-  responses,
-  onChange,
-}: {
-  priorities: Priority[];
-  responses: VisitPriorityResponse[];
-  onChange: (responses: VisitPriorityResponse[]) => void;
-}) {
+// Exam prep's priorities as read-only suggestions; anything they prompt goes in the note.
+function PrioritiesColumn({ priorities }: { priorities: Priority[] }) {
   const prepModal = useExamPrepModal();
-  const setResponse = (
-    p: Priority,
-    next: Pick<VisitPriorityResponse, "status" | "note"> | null
-  ) =>
-    onChange([
-      ...responses.filter((r) => !sameResponse(r, p)),
-      ...(next ? [{ region: p.region, focus: p.focus, ...next }] : []),
-    ]);
-  // Responses whose priority disappeared when exam prep was regenerated.
-  const orphaned = responses.filter(
-    (r) => !priorities.some((p) => sameResponse(r, p))
-  );
-
   return (
     <aside className="sticky top-4 flex max-h-[calc(100vh-250px)] flex-col overflow-hidden rounded-xl border border-slate-200 bg-white">
       <div className="border-b border-slate-200 px-4 py-3">
@@ -845,123 +772,53 @@ function PrioritiesColumn({
           </button>
         </div>
         <p className="mt-1 text-[11px] leading-snug text-slate-500">
-          Address these in your note. Marking them here is optional; use it for
-          what the note won't say.
-          {orphaned.length ? (
-            <span className="font-semibold text-amber-700">
-              {" "}
-              {orphaned.length} earlier response{orphaned.length > 1 ? "s" : ""}{" "}
-              no longer match a priority.
-            </span>
-          ) : null}
+          Suggestions from exam prep. Cover whatever matters in your note.
         </p>
       </div>
       <ol className="min-h-0 flex-1 divide-y divide-slate-100 overflow-y-auto">
-        {priorities.map((p, i) => {
-          const response = responses.find((r) => sameResponse(r, p));
-          return (
-            <li key={`${p.region}:${p.id}`} className="px-4 py-3">
-              <Collapsible>
-                <div className="flex items-start gap-2.5">
-                  <span className="mt-px grid size-5 shrink-0 place-items-center rounded-full bg-slate-900 text-[10px] font-bold text-white">
-                    {i + 1}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-1.5">
-                      <Badge
-                        className={cn(
-                          "rounded",
-                          p.stale
-                            ? "bg-amber-100 text-amber-800"
-                            : "bg-slate-100 text-slate-600"
-                        )}
-                      >
-                        {regionLabel(p.region).replace(" Spine", "")}
-                        {p.stale ? " · stale" : ""}
-                      </Badge>
-                    </div>
-                    <CollapsibleTrigger className="group mt-1 flex w-full items-start gap-1 text-left text-[13px] font-semibold text-slate-900">
-                      <span className="flex-1">{p.focus}</span>
-                      <ChevronRight className="mt-0.5 size-4 shrink-0 text-slate-400 group-data-[state=open]:hidden" />
-                      <ChevronDown className="mt-0.5 hidden size-4 shrink-0 text-slate-400 group-data-[state=open]:block" />
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="mt-1.5 space-y-1.5 text-[12px] leading-relaxed text-slate-600">
-                      <p>{p.whyItMatters}</p>
-                      {p.suggestedApproach ? (
-                        <div className="flex gap-1.5 rounded-md bg-blue-50 px-2 py-1.5 text-blue-950">
-                          <Lightbulb className="mt-0.5 size-3.5 shrink-0 text-blue-600" />
-                          {p.suggestedApproach}
-                        </div>
-                      ) : null}
-                    </CollapsibleContent>
-
-                    <div className="mt-2 flex flex-wrap gap-1.5">
-                      {quickResponses.map((q) => (
-                        <button
-                          key={q.status}
-                          type="button"
-                          onClick={() =>
-                            setResponse(
-                              p,
-                              response?.status === q.status
-                                ? null
-                                : { status: q.status, note: null }
-                            )
-                          }
-                          className={cn(
-                            "rounded-full border px-2 py-0.5 text-[11px] font-semibold",
-                            response?.status === q.status
-                              ? "border-slate-800 bg-slate-800 text-white"
-                              : "border-slate-300 text-slate-500 hover:border-slate-500 hover:text-slate-800"
-                          )}
-                        >
-                          {q.label}
-                        </button>
-                      ))}
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setResponse(
-                            p,
-                            response?.status === "response"
-                              ? null
-                              : { status: "response", note: "" }
-                          )
-                        }
-                        className={cn(
-                          "rounded-full border px-2 py-0.5 text-[11px] font-semibold",
-                          response?.status === "response"
-                            ? "border-blue-600 bg-blue-600 text-white"
-                            : "border-slate-300 text-slate-500 hover:border-slate-500 hover:text-slate-800"
-                        )}
-                      >
-                        + Response
-                      </button>
-                    </div>
-                    {response?.status === "response" ? (
-                      <textarea
-                        autoFocus
-                        rows={2}
-                        value={response.note ?? ""}
-                        onChange={(e) =>
-                          setResponse(p, {
-                            status: "response",
-                            note: e.target.value,
-                          })
-                        }
-                        placeholder="Short answer, if the note doesn't cover it"
-                        className="mt-1.5 w-full resize-none rounded-md border border-slate-300 px-2 py-1 text-[12px] outline-none focus:border-blue-400"
-                      />
+        {priorities.map((p, i) => (
+          <li key={`${p.region}:${p.id}`} className="px-4 py-3">
+            <Collapsible>
+              <div className="flex items-start gap-2.5">
+                <span className="mt-px grid size-5 shrink-0 place-items-center rounded-full bg-slate-900 text-[10px] font-bold text-white">
+                  {i + 1}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <Badge
+                    className={cn(
+                      "rounded",
+                      p.stale
+                        ? "bg-amber-100 text-amber-800"
+                        : "bg-slate-100 text-slate-600"
+                    )}
+                  >
+                    {regionLabel(p.region).replace(" Spine", "")}
+                    {p.stale ? " · stale" : ""}
+                  </Badge>
+                  <CollapsibleTrigger className="group mt-1 flex w-full items-start gap-1 text-left text-[13px] font-semibold text-slate-900">
+                    <span className="flex-1">{p.focus}</span>
+                    <ChevronRight className="mt-0.5 size-4 shrink-0 text-slate-400 group-data-[state=open]:hidden" />
+                    <ChevronDown className="mt-0.5 hidden size-4 shrink-0 text-slate-400 group-data-[state=open]:block" />
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="mt-1.5 space-y-1.5 text-[12px] leading-relaxed text-slate-600">
+                    <p>{p.whyItMatters}</p>
+                    {p.suggestedApproach ? (
+                      <div className="flex gap-1.5 rounded-md bg-blue-50 px-2 py-1.5 text-blue-950">
+                        <Lightbulb className="mt-0.5 size-3.5 shrink-0 text-blue-600" />
+                        {p.suggestedApproach}
+                      </div>
                     ) : null}
-                  </div>
+                  </CollapsibleContent>
                 </div>
-              </Collapsible>
-            </li>
-          );
-        })}
+              </div>
+            </Collapsible>
+          </li>
+        ))}
         {!priorities.length ? (
           <li className="p-6 text-center text-slate-500">
-            No visit priorities yet. Use "Update prep sheet" in Analysis.
+            No visit priorities. They come from the prep sheet (Analysis →
+            Create prep sheet), and may be empty when nothing case-specific
+            stands out.
           </li>
         ) : null}
       </ol>

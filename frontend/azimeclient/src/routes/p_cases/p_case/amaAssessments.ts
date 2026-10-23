@@ -35,8 +35,6 @@ export const isComponent = (a: AmaAssessment, key: AmaComponentKey) =>
 const hasAnswers = (a: AmaAssessment) =>
   Object.values(a.answers).some((v) => v !== null);
 
-export const answeredCount = (a: AmaAssessment, row: AmaDiagnosticRow) =>
-  row.questions.filter((q) => a.answers[q.id] != null).length;
 
 // Unlinked assessments without answers are dropped; ones with answers are kept for review.
 const prune = (assessments: AmaAssessment[]) =>

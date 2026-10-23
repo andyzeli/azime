@@ -151,7 +151,8 @@ const aRow = (
   recordStatus: StoredPreExamAnalysis["treatmentAnalysis"][number]["recordStatus"],
   recordDetail: string | null,
   episodeIds: string[],
-  assessments: [dx: string, app: "applicable" | "not_applicable" | "contraIndicated" | "unclear", adq: "adequately_trialed" | "inadequately_trialed" | "not_tried" | "unclear"][],
+  assessments: [dx: string, app: "applicable" | "not_applicable" | "contraIndicated" | "unclear"][],
+  aiExhaustion: "exhausted" | "not_exhausted" | "unclear",
   suggestionReasoning = "",
 ): StoredPreExamAnalysis["treatmentAnalysis"][number] => ({
   id,
@@ -163,7 +164,7 @@ const aRow = (
   recordStatus,
   recordDetail,
   episodeIds,
-  assessments: assessments.map(([canonicalDx, aiApplicability, aiAdequacy]) => ({
+  assessments: assessments.map(([canonicalDx, aiApplicability]) => ({
     canonicalDx,
     aiApplicability,
     aiApplicabilityRationale:
@@ -172,37 +173,36 @@ const aRow = (
         : aiApplicability === "contraIndicated"
           ? "Not indicated without failed surgical options and psychological screening."
           : "Does not address the pain generator for this diagnosis.",
-    aiAdequacy,
-    aiAdequacyRationale:
-      aiAdequacy === "unclear"
-        ? "One procedure documented; magnitude and duration of response not quantified, so adequacy cannot be determined."
-        : aiAdequacy === "adequately_trialed"
-          ? "Multi-visit course with documented plateau despite completion."
-          : aiAdequacy === "inadequately_trialed"
-            ? "Short course without documented response."
-            : "No trial documented in the supplied records.",
   })),
+  aiExhaustion,
+  aiExhaustionRationale:
+    aiExhaustion === "unclear"
+      ? "One procedure documented; magnitude and duration of response not quantified, so exhaustion cannot be determined."
+      : aiExhaustion === "exhausted"
+        ? "Multi-visit course with documented plateau despite completion."
+        : "A relevant, feasible trial has not been documented.",
 });
 
 const lumbarAnalysis: StoredPreExamAnalysis = {
   schemaVersion: "draft-v2",
   sourceMetadata: { provider: "gemini", model: "gemini-2.5-pro" },
+  addedDiagnoses: [],
   treatmentAnalysis: [
-    aRow("physical-therapy", "Physical therapy", "taxonomy", "Completed", "12 visits; gains then plateau", ["r5"], [["disc_herniation", "applicable", "adequately_trialed"], ["lumbar_strain", "applicable", "adequately_trialed"]]),
-    aRow("lumbar-esi", "Lumbar epidural steroid injection", "taxonomy", "Completed", "1 TFESI; relief magnitude/duration unclear", ["r6", "r8"], [["disc_herniation", "applicable", "unclear"], ["lumbar_strain", "not_applicable", "not_tried"]]),
-    aRow("nsaids", "NSAIDs", "taxonomy", "Completed", "Ibuprofen 800 mg, 6 wks", ["r3"], [["disc_herniation", "applicable", "adequately_trialed"], ["lumbar_strain", "applicable", "adequately_trialed"]]),
-    aRow("muscle-relaxants", "Muscle relaxants", "taxonomy", "Completed", "Cyclobenzaprine, 2 wks", ["r3"], [["lumbar_strain", "applicable", "inadequately_trialed"]]),
-    aRow("chiropractic", "Chiropractic", "record_only", "Unclear", "Mentioned in history, no notes", [], [["lumbar_strain", "applicable", "unclear"]]),
-    aRow("lumbar-discectomy", "Lumbar discectomy", "taxonomy", "Not Documented", null, [], [["disc_herniation", "unclear", "not_tried"]]),
-    aRow("gabapentinoids", "Neuropathic agents (gabapentin)", "ai", "Not Documented", null, [], [["disc_herniation", "applicable", "not_tried"]], "Persistent radicular symptoms with no neuropathic agent trial."),
-    aRow("scs", "Spinal cord stimulator", "taxonomy", "Not Documented", null, [], [["disc_herniation", "contraIndicated", "not_tried"]]),
+    aRow("physical-therapy", "Physical therapy", "taxonomy", "Completed", "12 visits; gains then plateau", ["r5"], [["disc_herniation", "applicable"], ["lumbar_strain", "applicable"]], "exhausted"),
+    aRow("lumbar-esi", "Lumbar epidural steroid injection", "taxonomy", "Completed", "1 TFESI; relief magnitude/duration unclear", ["r6", "r8"], [["disc_herniation", "applicable"], ["lumbar_strain", "not_applicable"]], "unclear"),
+    aRow("nsaids", "NSAIDs", "taxonomy", "Completed", "Ibuprofen 800 mg, 6 wks", ["r3"], [["disc_herniation", "applicable"], ["lumbar_strain", "applicable"]], "exhausted"),
+    aRow("muscle-relaxants", "Muscle relaxants", "taxonomy", "Completed", "Cyclobenzaprine, 2 wks", ["r3"], [["lumbar_strain", "applicable"]], "not_exhausted"),
+    aRow("chiropractic", "Chiropractic", "record_only", "Unclear", "Mentioned in history, no notes", [], [["lumbar_strain", "applicable"]], "unclear"),
+    aRow("lumbar-discectomy", "Lumbar discectomy", "taxonomy", "Not Documented", null, [], [["disc_herniation", "unclear"]], "not_exhausted"),
+    aRow("gabapentinoids", "Neuropathic agents (gabapentin)", "ai", "Not Documented", null, [], [["disc_herniation", "applicable"]], "not_exhausted", "Persistent radicular symptoms with no neuropathic agent trial."),
+    aRow("scs", "Spinal cord stimulator", "taxonomy", "Not Documented", null, [], [["disc_herniation", "contraIndicated"]], "not_exhausted"),
   ],
   inconsistencies: [
     { id: "inc-1", type: "Clinical", description: "Ortho reports full lumbar ROM on 01/09/25; PT measured 50% flexion the same week." },
     { id: "inc-2", type: "Record", description: "Injury date 03/12 on PCP intake vs 03/14 elsewhere." },
   ],
   evidenceGaps: [
-    { id: "gap-1", gap: "ESI response not quantified.", significance: "Magnitude and duration of relief are unclear, so adequacy can't be judged." },
+    { id: "gap-1", gap: "ESI response not quantified.", significance: "Magnitude and duration of relief are unclear, so exhaustion can't be judged." },
     { id: "gap-2", gap: "No EMG/NCS.", significance: "Radiculopathy is clinical only." },
     { id: "gap-3", gap: "No home-exercise compliance notes", significance: "after PT discharge." },
   ],
@@ -212,8 +212,8 @@ const lumbarSteering: PhysicianSteering = {
   preExamAnalysisId: 1,
   preExamAnalysisUpdatedAt: "2026-09-29T10:16:00.000Z",
   treatments: {
-    "physical-therapy": { disposition: "keep", assessments: { disc_herniation: { applicability: { action: "agree" }, adequacy: { action: "agree" } }, lumbar_strain: { applicability: { action: "agree" }, adequacy: { action: "agree" } } } },
-    "lumbar-esi": { disposition: "keep", assessments: { disc_herniation: { applicability: { action: "agree" }, adequacy: { action: "override", value: "inadequately_trialed", rationale: "Single injection with 40% relief at 6 wks meets criteria for a repeat; trial not complete." } }, lumbar_strain: { applicability: { action: "agree" }, adequacy: { action: "agree" } } } },
+    "physical-therapy": { disposition: "keep", assessments: { disc_herniation: { applicability: { action: "agree" } }, lumbar_strain: { applicability: { action: "agree" } } }, exhaustion: { action: "agree" } },
+    "lumbar-esi": { disposition: "keep", assessments: { disc_herniation: { applicability: { action: "agree" } }, lumbar_strain: { applicability: { action: "agree" } } }, exhaustion: { action: "override", value: "not_exhausted", rationale: "Single injection with 40% relief at 6 wks meets criteria for a repeat; trial not complete." } },
     "muscle-relaxants": { disposition: "keep" },
     chiropractic: { disposition: "prune" },
     gabapentinoids: { disposition: "keep" },
@@ -229,9 +229,10 @@ const lumbarSteering: PhysicianSteering = {
 export const cervicalAnalysis: StoredPreExamAnalysis = {
   schemaVersion: "draft-v2",
   sourceMetadata: { provider: "gemini", model: "gemini-2.5-pro" },
+  addedDiagnoses: [],
   treatmentAnalysis: [
-    aRow("cervical-pt", "Physical therapy (cervical)", "taxonomy", "Not Documented", null, [], [["cervical_strain", "applicable", "not_tried"]]),
-    aRow("cervical-nsaids", "NSAIDs", "taxonomy", "Completed", "Ibuprofen 800 mg, 6 wks", ["r3"], [["cervical_strain", "applicable", "adequately_trialed"]]),
+    aRow("cervical-pt", "Physical therapy (cervical)", "taxonomy", "Not Documented", null, [], [["cervical_strain", "applicable"]], "not_exhausted"),
+    aRow("cervical-nsaids", "NSAIDs", "taxonomy", "Completed", "Ibuprofen 800 mg, 6 wks", ["r3"], [["cervical_strain", "applicable"]], "exhausted"),
   ],
   inconsistencies: [],
   evidenceGaps: [{ id: "c-gap-1", gap: "No cervical exam documented after the ED visit.", significance: "Current cervical status is unknown." }],

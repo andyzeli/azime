@@ -13,7 +13,7 @@ export default function CaseHeader({ caseId }: { caseId: string }) {
     mutationKey: ["cases", caseId, "update"],
     onSuccess: async (injuryDetails) => {
       queryClient.setQueryData(caseQueryOptions(caseId).queryKey, (current) =>
-        current ? { ...current, ...injuryDetails } : current,
+        current ? { ...current, ...injuryDetails } : current
       );
       await queryClient.invalidateQueries({ queryKey: ["cases"] });
       setDraft(null);
@@ -42,9 +42,6 @@ export default function CaseHeader({ caseId }: { caseId: string }) {
     <header className="rounded-lg bg-white p-6 shadow-md">
       <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
         <div>
-          <p className="text-sm font-medium uppercase tracking-wide text-slate-500">
-            Provider cockpit
-          </p>
           <h1 className="mt-1 text-3xl font-bold text-gray-900">
             {caseData.patientName} {caseData.patientLastName}
           </h1>
@@ -61,7 +58,7 @@ export default function CaseHeader({ caseId }: { caseId: string }) {
                     .map(
                       (region) =>
                         supportedRegions.find(({ value }) => value === region)
-                          ?.label ?? region,
+                          ?.label ?? region
                     )
                     .join(", ")
                 : "Not specified"}

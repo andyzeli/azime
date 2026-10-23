@@ -215,7 +215,7 @@ function SummaryTab() {
             </div>
             <section className="self-start rounded-xl border border-slate-200 bg-white px-4 py-3.5">
               <h2 className="mb-1.5 text-[13.5px] font-semibold">
-                Consolidated diagnoses
+                Working diagnoses
               </h2>
               {cardQuery.isPending ? (
                 <p className="py-2 text-[12.5px] text-slate-500">
@@ -258,28 +258,46 @@ function SummaryTab() {
                 Current work status
               </h2>
               {cardQuery.isPending ? (
-                <p className="py-2 text-[12.5px] text-slate-500">Loading work status…</p>
+                <p className="py-2 text-[12.5px] text-slate-500">
+                  Loading work status…
+                </p>
               ) : cardQuery.isError ? (
-                <p className="py-2 text-[12.5px] text-red-600">Could not load work status.</p>
+                <p className="py-2 text-[12.5px] text-red-600">
+                  Could not load work status.
+                </p>
               ) : !currentWorkStatus ? (
-                <p className="py-2 text-[12.5px] text-slate-500">No work status available yet.</p>
+                <p className="py-2 text-[12.5px] text-slate-500">
+                  No work status available yet.
+                </p>
               ) : (
                 <>
                   <div className="flex border-t border-slate-100 py-2 text-[12.5px]">
-                    <span className="w-[90px] shrink-0 text-slate-500">Work</span>
+                    <span className="w-[90px] shrink-0 text-slate-500">
+                      Work
+                    </span>
                     {workStatusLabels[currentWorkStatus.status]}
                   </div>
                   {currentWorkStatus.restrictions.length > 0 ? (
                     <div className="flex border-t border-slate-100 py-2 text-[12.5px]">
-                      <span className="w-[90px] shrink-0 text-slate-500">Restrictions</span>
+                      <span className="w-[90px] shrink-0 text-slate-500">
+                        Restrictions
+                      </span>
                       <ul className="min-w-0 list-disc space-y-1 pl-4">
-                        {currentWorkStatus.restrictions.map((restriction, index) => <li key={index}>{restriction}</li>)}
+                        {currentWorkStatus.restrictions.map(
+                          (restriction, index) => (
+                            <li key={index}>{restriction}</li>
+                          )
+                        )}
                       </ul>
                     </div>
                   ) : null}
                   <div className="flex border-t border-slate-100 py-2 text-[12.5px]">
-                    <span className="w-[90px] shrink-0 text-slate-500">As of</span>
-                    <Cite recordId={String(currentWorkStatus.recordId)}>{currentWorkStatus.date ?? "Undated"}</Cite>
+                    <span className="w-[90px] shrink-0 text-slate-500">
+                      As of
+                    </span>
+                    <Cite recordId={String(currentWorkStatus.recordId)}>
+                      {currentWorkStatus.date ?? "Undated"}
+                    </Cite>
                   </div>
                 </>
               )}

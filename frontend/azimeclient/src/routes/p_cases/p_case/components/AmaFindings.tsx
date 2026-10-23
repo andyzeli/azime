@@ -1,8 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
 import {
   isAmaCircumferenceTask,
   isAmaMuscleStrengthTask,
+  radiculopathyCheck,
   supportedRegions,
   type AmaAssessment,
   type AmaDiagnosticRow,
@@ -10,11 +12,12 @@ import {
   type AmaMode,
   type AmaMotorGrade,
   type AmaQuestion,
+  type RadiculopathyMismatch,
   type Region,
 } from "@azime/contracts";
 import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { answeredCount, regionAmaCandidatesQueryOptions, setAnswers, setAtrophyCm, setMotorGrade } from "../amaAssessments";
+import { regionAmaCandidatesQueryOptions, setAnswers, setAtrophyCm, setMotorGrade } from "../amaAssessments";
 import { sourceLabel } from "./AmaExamTasks";
 import { Badge, Segmented } from "./shared";
 
@@ -60,6 +63,25 @@ function taskSections(row: AmaDiagnosticRow) {
   return sections;
 }
 
+// Progress counts what the physician fills in, as the form shows it: each graded muscle,
+// each measured site, a checklist (reflexes) once, and every other question. The motor
+// and atrophy criteria derived from grades and measurements are not counted again.
+function inputProgress(row: AmaDiagnosticRow, a: AmaAssessment) {
+  const inputs: boolean[] = [];
+  for (const { tasks, questions } of taskSections(row)) {
+    if (tasks.some(isAmaMuscleStrengthTask))
+      tasks.filter(isAmaMuscleStrengthTask).forEach((t) => inputs.push(t.id in a.motorGrades));
+    else if (tasks.some(isAmaCircumferenceTask)) tasks.forEach((t) => inputs.push(t.id in a.atrophyCm));
+    else if (questions.length > 1 && questions.every((q) => q.type === "boolean"))
+      inputs.push(questions.some((q) => a.answers[q.id] != null));
+    else questions.forEach((q) => inputs.push(a.answers[q.id] != null));
+  }
+  row.questions
+    .filter((q) => q.group === "CS" || q.group === "diagnosis")
+    .forEach((q) => inputs.push(a.answers[q.id] != null));
+  return { answered: inputs.filter(Boolean).length, total: inputs.length };
+}
+
 // Today's findings for each AMA component created in the Diagnoses card. Answers are
 // optional in both modes; in guidance mode they are recorded but nothing is rated.
 export function AmaFindingsCard({
@@ -72,7 +94,7 @@ export function AmaFindingsCard({
 }: {
   caseId: string;
   // Every listed diagnosis per region, excluded ones too, so retained findings keep their rows.
-  regions: { region: Region; diagnoses: string[] }[];
+  regions: { region: Region; diagnoses: string[]; current: string[] }[];
   assessments: AmaAssessment[];
   amaMode: AmaMode;
   dxLabel: (dx: string) => string;
@@ -91,12 +113,13 @@ export function AmaFindingsCard({
         </span>
         {amaMode === "guidance" ? <Badge className="bg-slate-100 text-slate-600">Guidance only</Badge> : null}
       </div>
-      {shown.map(({ region, diagnoses }) => (
+      {shown.map(({ region, diagnoses, current }) => (
         <RegionFindings
           key={region}
           caseId={caseId}
           region={region}
           diagnoses={diagnoses}
+          current={current}
           assessments={assessments}
           dxLabel={dxLabel}
           onChange={onChange}
@@ -110,6 +133,7 @@ function RegionFindings({
   caseId,
   region,
   diagnoses,
+  current,
   assessments,
   dxLabel,
   onChange,
@@ -117,15 +141,18 @@ function RegionFindings({
   caseId: string;
   region: Region;
   diagnoses: string[];
+  current: string[];
   assessments: AmaAssessment[];
   dxLabel: (dx: string) => string;
   onChange: (assessments: AmaAssessment[]) => void;
 }) {
   const candidates = useQuery(regionAmaCandidatesQueryOptions(caseId, region, diagnoses));
   const rowsById = new Map((candidates.data?.rows ?? []).map((row) => [row.row_id, row]));
+  const mismatch = radiculopathyCheck(region, current, assessments, candidates.data?.rows ?? []);
   return (
     <div className="border-b border-slate-100 px-4 py-2.5 last:border-b-0">
       <div className="mb-1 text-[10.5px] font-bold tracking-[.05em] text-slate-500">{regionLabel(region).toUpperCase()}</div>
+      {mismatch ? <RadiculopathyWarning caseId={caseId} region={region} mismatch={mismatch} /> : null}
       <div className="divide-y divide-slate-100">
         {assessments
           .filter((a) => a.region === region)
@@ -143,6 +170,43 @@ function RegionFindings({
             />
           ))}
       </div>
+    </div>
+  );
+}
+
+// A warning, not a block: the diagnosis is the physician's call, made in Analysis.
+function RadiculopathyWarning({
+  caseId,
+  region,
+  mismatch: { kind, components },
+}: {
+  caseId: string;
+  region: Region;
+  mismatch: RadiculopathyMismatch;
+}) {
+  const roots = components.map((c) => `${c.nerveRoot} ${c.side === "left" ? "left" : "right"}`).join(", ");
+  return (
+    <div className="mb-1.5 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[12px] text-amber-900">
+      {kind === "findings_without_diagnosis" ? (
+        <>
+          <b>Positive radicular findings, but radiculopathy is not diagnosed.</b> Objective findings at {roots}.
+          Add radiculopathy in{" "}
+        </>
+      ) : (
+        <>
+          <b>Radiculopathy is diagnosed, but every root's exam is negative.</b> No objective radicular findings at{" "}
+          {roots}. Re-check the findings, or review the diagnosis in{" "}
+        </>
+      )}
+      <Link
+        to="/p_cases/$caseId/analysis"
+        params={{ caseId }}
+        search={{ region }}
+        className="font-semibold underline"
+      >
+        Analysis
+      </Link>
+      {kind === "findings_without_diagnosis" ? ", or re-check the findings." : "."}
     </div>
   );
 }
@@ -172,8 +236,7 @@ function ComponentFindings({
         {loading ? "Loading…" : `AMA row ${a.rowId} is not in this region's current candidates.`}
       </p>
     );
-  const answered = answeredCount(a, row);
-  const total = row.questions.length;
+  const { answered, total } = inputProgress(row, a);
   const unlinked = !a.canonicalDxIds.length;
   return (
     // Incomplete components open by default, so newly added ones are ready to fill in.

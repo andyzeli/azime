@@ -30,7 +30,7 @@ import { Badge, Btn, Cite, Segmented } from "./shared";
 type TreatmentRow = StoredPreExamAnalysis["treatmentAnalysis"][number];
 type AiAssessment = TreatmentRow["assessments"][number];
 type Applicability = AiAssessment["aiApplicability"];
-type Adequacy = AiAssessment["aiAdequacy"];
+type Exhaustion = TreatmentRow["aiExhaustion"];
 type RowSteering = PhysicianSteering["treatments"][string];
 type AssessmentSteering = NonNullable<RowSteering["assessments"]>[string];
 
@@ -40,22 +40,18 @@ const applicabilityLabel: Record<Applicability, string> = {
   contraIndicated: "Contraindicated",
   unclear: "Unclear",
 };
-const adequacyLabel: Record<Adequacy, string> = {
-  adequately_trialed: "Adequate",
-  inadequately_trialed: "Inadequate",
-  not_tried: "Not tried",
-  patient_declined: "Patient declined",
+const exhaustionLabel: Record<Exhaustion, string> = {
+  exhausted: "Exhausted",
+  not_exhausted: "Not exhausted",
   unclear: "Unclear",
 };
-const chipTone: Record<Applicability | Adequacy, string> = {
+const chipTone: Record<Applicability | Exhaustion, string> = {
   applicable: "bg-green-50 border-green-200 text-green-800",
-  adequately_trialed: "bg-green-50 border-green-200 text-green-800",
   not_applicable: "bg-red-50 border-red-200 text-red-800",
   contraIndicated: "bg-red-50 border-red-200 text-red-800",
-  inadequately_trialed: "bg-amber-50 border-amber-200 text-amber-800",
   unclear: "bg-amber-50 border-amber-200 text-amber-800",
-  not_tried: "bg-slate-50 border-slate-200 text-slate-600",
-  patient_declined: "bg-sky-50 border-sky-200 text-sky-800",
+  exhausted: "bg-slate-100 border-slate-300 text-slate-700",
+  not_exhausted: "bg-sky-50 border-sky-200 text-sky-800",
 };
 
 const regionLabel = (region: Region) =>
@@ -242,7 +238,7 @@ function RegionPreExam({ setup }: { setup: PreExamSetup }) {
                 <span />
                 <span>TREATMENT</span>
                 <span>IN RECORDS</span>
-                <span>AI ASSESSMENT · APPLICABLE / ADEQUATE</span>
+                <span>AI ASSESSMENT · APPLICABLE / EXHAUSTION</span>
                 <span>DECISION</span>
               </div>
               {[
@@ -459,7 +455,7 @@ type Decision = "agree" | "override" | "prune";
 
 const hasOverride = (steering: RowSteering) =>
   Object.values(steering.assessments ?? {}).some(
-    (a) => a.applicability?.action === "override" || a.adequacy?.action === "override",
+    (a) => a.applicability?.action === "override",
   );
 
 // Every assessment on the row marked agree, keeping any existing overrides.
@@ -469,7 +465,7 @@ const agreeAll = (row: TreatmentRow, steering: RowSteering, keepOverrides: boole
       const current = steering.assessments?.[canonicalDx];
       const keep = <T,>(review: T | undefined) =>
         keepOverrides && (review as { action?: string } | undefined)?.action === "override" ? review! : { action: "agree" as const };
-      return [canonicalDx, { applicability: keep(current?.applicability), adequacy: keep(current?.adequacy) }];
+      return [canonicalDx, { applicability: keep(current?.applicability) }];
     }),
   ) as RowSteering["assessments"];
 
@@ -548,15 +544,16 @@ function TreatmentRowView({
         {row.assessments.map((a, i) => {
           const review = steering.assessments?.[a.canonicalDx];
           const app = review?.applicability?.action === "override" ? review.applicability.value : a.aiApplicability;
-          const adq = review?.adequacy?.action === "override" ? review.adequacy.value : a.aiAdequacy;
           return (
             <div key={a.canonicalDx} className={cn("grid grid-cols-[100px_auto_auto_1fr] items-center gap-1.5 py-0.5 text-[11.5px]", i > 0 && "mt-1 border-t border-dashed border-slate-200 pt-1.5")}>
               <span className="text-[11px] font-semibold text-slate-500">{a.canonicalDx.replace(/_/g, " ")}</span>
               <Chip value={app} label={applicabilityLabel[app]} overridden={review?.applicability?.action === "override"} />
-              <Chip value={adq} label={adequacyLabel[adq]} overridden={review?.adequacy?.action === "override"} />
             </div>
           );
         })}
+        <div className="mt-1 text-[11.5px]">
+          <Chip value={row.aiExhaustion} label={exhaustionLabel[row.aiExhaustion]} />
+        </div>
       </div>
       <div>
         <Segmented
@@ -603,7 +600,7 @@ function EpisodeCite({ recordId }: { recordId: string }) {
   return <Cite recordId={recordId}>{event ? `${event.name.split(" · ")[0]} ${event.date.slice(0, 5)}` : recordId}</Cite>;
 }
 
-function Chip({ value, label, overridden }: { value: Applicability | Adequacy; label: string; overridden?: boolean }) {
+function Chip({ value, label, overridden }: { value: Applicability | Exhaustion; label: string; overridden?: boolean }) {
   return (
     <span className={cn("inline-flex items-center gap-1 whitespace-nowrap rounded border px-1.5 py-0.5 text-[11px] font-semibold", chipTone[value], overridden && "outline outline-2 outline-offset-1 outline-violet-500")}>
       {label}
@@ -623,23 +620,16 @@ function AssessmentEditor({
   onChange: (fn: (a: AssessmentSteering) => AssessmentSteering) => void;
 }) {
   const appOverride = review?.applicability?.action === "override" ? review.applicability : null;
-  const adqOverride = review?.adequacy?.action === "override" ? review.adequacy : null;
-  const rationale = appOverride?.rationale ?? adqOverride?.rationale ?? "";
+  const rationale = appOverride?.rationale ?? "";
 
   const setApp = (value: string) =>
     onChange((a) => ({
       ...a,
       applicability: value === "ai" ? { action: "agree" } : { action: "override", value: value as Applicability, rationale: rationale || " " },
     }));
-  const setAdq = (value: string) =>
-    onChange((a) => ({
-      ...a,
-      adequacy: value === "ai" ? { action: "agree" } : { action: "override", value: value as Adequacy, rationale: rationale || " " },
-    }));
   const setRationale = (text: string) =>
     onChange((a) => ({
       applicability: a.applicability?.action === "override" ? { ...a.applicability, rationale: text } : a.applicability,
-      adequacy: a.adequacy?.action === "override" ? { ...a.adequacy, rationale: text } : a.adequacy,
     }));
 
   return (
@@ -647,10 +637,9 @@ function AssessmentEditor({
       <div>
         <div className="mb-1 text-[11px] font-semibold text-slate-500">AI RATIONALE · {ai.canonicalDx.replace(/_/g, " ").toUpperCase()}</div>
         <p><b>{applicabilityLabel[ai.aiApplicability]}:</b> {ai.aiApplicabilityRationale}</p>
-        <p className="mt-1"><b>Adequacy ({adequacyLabel[ai.aiAdequacy].toLowerCase()}):</b> {ai.aiAdequacyRationale}</p>
       </div>
       <div>
-        <div className={cn("mb-1 text-[11px] font-semibold", appOverride || adqOverride ? "text-violet-600" : "text-slate-500")}>YOUR REVIEW</div>
+        <div className={cn("mb-1 text-[11px] font-semibold", appOverride ? "text-violet-600" : "text-slate-500")}>YOUR REVIEW</div>
         <div className="flex gap-2">
           <select value={appOverride?.value ?? "ai"} onChange={(e) => setApp(e.target.value)} className="rounded-md border border-slate-300 bg-white px-1.5 py-1">
             <option value="ai">Applicability: agree with AI</option>
@@ -658,14 +647,8 @@ function AssessmentEditor({
               <option key={v} value={v}>Override → {l}</option>
             ))}
           </select>
-          <select value={adqOverride?.value ?? "ai"} onChange={(e) => setAdq(e.target.value)} className="rounded-md border border-slate-300 bg-white px-1.5 py-1">
-            <option value="ai">Adequacy: agree with AI</option>
-            {Object.entries(adequacyLabel).filter(([v]) => v !== ai.aiAdequacy).map(([v, l]) => (
-              <option key={v} value={v}>Override → {l}</option>
-            ))}
-          </select>
         </div>
-        {appOverride || adqOverride ? (
+        {appOverride ? (
           <textarea
             value={rationale.trim()}
             onChange={(e) => setRationale(e.target.value)}

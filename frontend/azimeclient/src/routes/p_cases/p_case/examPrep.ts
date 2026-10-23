@@ -1,6 +1,8 @@
-import { useQueries } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import {
   currentDiagnoses,
+  isRowReviewed,
+  scopedRows,
   steeringMatchesAnalysis,
   supportedRegions,
   type PhysicianSteering,
@@ -9,13 +11,28 @@ import {
   type RefinedAnalysisResponse,
   type Region,
   type RegionDiagnosesResponse,
+  type VisitDocumentation,
 } from "@azime/contracts";
 import {
   physicianSteeringQueryOptions,
   preExamAnalysisQueryOptions,
   refinedAnalysisQueryOptions,
   regionDiagnosesQueryOptions,
+  visitQueryOptions,
 } from "../../cases/queries";
+
+// New visits start with these headings; an untouched template counts as an empty note.
+export const NOTE_TEMPLATE = "Chief complaint:\n\nHPI:\n\nPMH:\n\nSubjective:\n\nObjective:\n\nImages personally reviewed:\n";
+
+// What the visit still needs before the post-exam analysis can use it.
+export const visitBlocker = (visit: VisitDocumentation | undefined) =>
+  !visit
+    ? "Save the visit"
+    : visit.note.trim() === "" || visit.note.trim() === NOTE_TEMPLATE.trim()
+      ? "Add a visit note"
+      : visit.pdqId === null
+        ? "Select a PDQ in the visit"
+        : null;
 
 export type ExamPrepStatus =
   | { kind: "needs-steering" }
@@ -29,16 +46,7 @@ export const savedSteeringFor = (
   response: PhysicianSteeringResponse | null | undefined,
 ) => (stored && response?.id && steeringMatchesAnalysis(response.steering, stored) ? response : null);
 
-// Treatment rows narrowed to the given diagnoses: assessments for other diagnoses are
-// hidden (their steering is kept), and rows left with none are dropped.
-export const scopedRows = <T extends { assessments: { canonicalDx: string }[] }>(
-  rows: T[],
-  current: string[],
-) =>
-  rows.flatMap((row) => {
-    const assessments = row.assessments.filter((a) => current.includes(a.canonicalDx));
-    return row.assessments.length && !assessments.length ? [] : [{ ...row, assessments }];
-  });
+export { isRowReviewed, scopedRows } from "@azime/contracts";
 
 // Order-insensitive, ignoring undefined and empty entries, so undoing an edit counts as no change.
 const normalize = (value: unknown): unknown => {
@@ -88,6 +96,7 @@ export function examPrepStatus(
 
 // Exam prep status for every region. Non-suspense so the cockpit shell doesn't wait on it.
 export function useExamPrep(caseId: string, regions: Region[]) {
+  const visit = useQuery(visitQueryOptions(caseId));
   const preExam = useQueries({
     queries: regions.map((r) => preExamAnalysisQueryOptions(caseId, r)),
   });
@@ -107,20 +116,26 @@ export function useExamPrep(caseId: string, regions: Region[]) {
     preExam.some((q) => q.isPending) ||
     refined.some((q) => q.isPending) ||
     steering.some((q, i) => preExam[i].data?.analysis && q.isPending) ||
-    diagnoses.some((q) => q.isPending);
+    diagnoses.some((q) => q.isPending) ||
+    visit.isPending;
 
   return {
     isPending,
+    // A saved visit switches Analysis from optional prep to finishing the assessment.
+    visitSaved: Boolean(visit.data),
     regions: regions.map((region, i) => {
       const saved = savedSteeringFor(preExam[i].data, steering[i].data);
       const analyzed = preExam[i].data?.analysis?.treatmentAnalysis;
       const listed = (diagnoses[i].data?.diagnoses ?? []).map((d) => d.canonicalDx);
       const rows = analyzed && scopedRows(analyzed, listed);
+      // After the visit the sheet is a record of what was prepared, so later edits
+      // (most review happens then) don't mark it out of date.
+      const status = examPrepStatus(refined[i].data, saved, diagnoses[i].data, preExam[i].data?.analyzedDiagnoses ?? []);
       return {
         region,
         refined: refined[i].data ?? null,
         diagnoses: diagnoses[i].data ?? null,
-        status: examPrepStatus(refined[i].data, saved, diagnoses[i].data, preExam[i].data?.analyzedDiagnoses ?? []),
+        status: visit.data && status.kind === "stale" ? { kind: "current" as const } : status,
         analysisRun: Boolean(rows),
         // Listed diagnoses the treatment analysis doesn't cover yet.
         needsAnalysis: listed.filter(
@@ -128,8 +143,9 @@ export function useExamPrep(caseId: string, regions: Region[]) {
         ),
         // Update sheet needs saved steering for the current 3A run.
         steeringSaved: Boolean(saved),
-        // Same count as the Analysis region tab: treatments without a saved disposition.
-        unreviewed: rows?.filter((row) => !saved?.steering.treatments[row.id]?.disposition).length ?? 0,
+        undecided: (diagnoses[i].data?.diagnoses ?? []).filter((d) => d.status === "working").length,
+        // Same count as the Analysis region tab, from saved steering.
+        unreviewed: rows?.filter((row) => !isRowReviewed(row, saved?.steering.treatments[row.id])).length ?? 0,
       };
     }),
   };
@@ -142,13 +158,21 @@ export type NextStep = { message: string; region: Region };
 const regionLabel = (region: Region) =>
   supportedRegions.find(({ value }) => value === region)?.label ?? region;
 
-// First outstanding Analysis step across regions. The prep sheet is optional, so it is never a next step.
-// TODO: add visit / post-exam steps once MMI & Report exists.
-export function nextStep(regions: RegionWorkflow[]): NextStep | null {
+// First outstanding Analysis step across regions. Before the visit, review is optional and
+// the prep sheet is only suggested; after it, the assessment must be finished for pass 4.
+export function nextStep(regions: RegionWorkflow[], visitSaved: boolean): NextStep | null {
+  const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
   const rules: [(r: RegionWorkflow) => boolean, (r: RegionWorkflow) => NextStep][] = [
     [(r) => !r.analysisRun, (r) => ({ message: `Analysis not run yet (${regionLabel(r.region)}).`, region: r.region })],
-    [(r) => r.needsAnalysis.length > 0, (r) => ({ message: `Treatment analysis needed for ${r.needsAnalysis.length} added diagnos${r.needsAnalysis.length === 1 ? "is" : "es"} (${regionLabel(r.region)}).`, region: r.region })],
-    [(r) => r.unreviewed > 0, (r) => ({ message: `${r.unreviewed} treatment${r.unreviewed === 1 ? "" : "s"} still unreviewed in Analysis (${regionLabel(r.region)}).`, region: r.region })],
+    [(r) => r.needsAnalysis.length > 0, (r) => ({ message: `Treatment analysis needed for ${plural(r.needsAnalysis.length, "added diagnosis", "added diagnoses")} (${regionLabel(r.region)}).`, region: r.region })],
+    ...(visitSaved
+      ? ([
+          [(r) => r.undecided > 0, (r) => ({ message: `Decide ${plural(r.undecided, "diagnosis", "diagnoses")} (${regionLabel(r.region)}) before the post-exam analysis.`, region: r.region })],
+          [(r) => r.unreviewed > 0, (r) => ({ message: `${plural(r.unreviewed, "treatment", "treatments")} still unreviewed (${regionLabel(r.region)}) before the post-exam analysis.`, region: r.region })],
+        ] as typeof rules)
+      : ([
+          [(r) => !r.refined, (r) => ({ message: `Optional: create the prep sheet (${regionLabel(r.region)}), or go to Visit.`, region: r.region })],
+        ] as typeof rules)),
   ];
   for (const [applies, step] of rules) {
     const region = regions.find(applies);

@@ -53,3 +53,15 @@ export const pVisitRoute = createRoute({
   getParentRoute: () => pCaseRoute,
   path: "visit",
 }).lazy(() => import("./visit.lazy").then((d) => d.Route));
+
+// MMI: the latest post-exam analysis per region and the physician's opinions on it.
+export const pMmiRoute = createRoute({
+  getParentRoute: () => pCaseRoute,
+  path: "mmi",
+}).lazy(() => import("./mmi.lazy").then((d) => d.Route));
+
+// Report: combined impairment and the final report (phase 6).
+export const pReportRoute = createRoute({
+  getParentRoute: () => pCaseRoute,
+  path: "report",
+}).lazy(() => import("./report.lazy").then((d) => d.Route));

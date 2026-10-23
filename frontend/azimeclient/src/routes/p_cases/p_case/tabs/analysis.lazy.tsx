@@ -21,29 +21,37 @@ import {
 } from "@azime/contracts";
 import { cn } from "@/lib/utils";
 import {
+  analyzeAddedDiagnosis,
   canonicalDiagnosesQueryOptions,
   caseQueryOptions,
   caseSummaryCardQueryOptions,
   generatePreExamAnalysis,
   generateRefinedAnalysis,
   physicianSteeringQueryOptions,
+  postExamAnalysisQueryOptions,
   preExamAnalysisQueryOptions,
   preExamSnapshotQueryOptions,
   recordsQueryOptions,
   refinedAnalysisQueryOptions,
   regionDiagnosesQueryOptions,
+  runPostExamAnalysis,
   savePhysicianSteering,
   takePreExamSnapshot,
+  visitQueryOptions,
+  type PreExamSnapshotResponse,
 } from "../../../cases/queries";
 import { AmaModeControl } from "../components/AmaExamTasks";
 import { DiagnosisList } from "../components/DiagnosisList";
+import { useExamPrepModal } from "../components/ExamPrepModal";
 import { RecordDrawer } from "../components/RecordDetail";
 import { Badge, Btn, Cite, Segmented } from "../components/shared";
 import {
   examPrepStatus,
+  isRowReviewed,
   sameSteering,
   savedSteeringFor,
   scopedRows,
+  visitBlocker,
   type ExamPrepStatus,
 } from "../examPrep";
 import { toTimeline, type TimelineEvent } from "../recordPresentation";
@@ -51,9 +59,14 @@ import { toTimeline, type TimelineEvent } from "../recordPresentation";
 type TreatmentRow = StoredPreExamAnalysis["treatmentAnalysis"][number];
 type AiAssessment = TreatmentRow["assessments"][number];
 type Applicability = AiAssessment["aiApplicability"];
-type Adequacy = AiAssessment["aiAdequacy"];
+type Exhaustion = TreatmentRow["aiExhaustion"];
 type RowSteering = PhysicianSteering["treatments"][string];
 type AssessmentSteering = NonNullable<RowSteering["assessments"]>[string];
+type AddedTreatment = PhysicianSteering["addedTreatments"][number];
+type Category = AddedTreatment["category"];
+type LadderEntry = NonNullable<
+  PreExamSnapshotResponse["inputSnapshot"]
+>["ladder"][number];
 type Card = CaseSummaryCardResponse | undefined;
 type StoredWithAnalysis = PreExamAnalysisResponse & {
   analysis: StoredPreExamAnalysis;
@@ -65,22 +78,25 @@ const applicabilityLabel: Record<Applicability, string> = {
   contraIndicated: "Contraindicated",
   unclear: "Unclear",
 };
-const adequacyLabel: Record<Adequacy, string> = {
-  adequately_trialed: "Adequate",
-  inadequately_trialed: "Inadequate",
-  not_tried: "Not tried",
-  patient_declined: "Patient declined",
+const exhaustionLabel: Record<Exhaustion, string> = {
+  exhausted: "Exhausted",
+  not_exhausted: "Not exhausted",
   unclear: "Unclear",
 };
-const chipTone: Record<Applicability | Adequacy, string> = {
+const categoryLabel: Record<Category, string> = {
+  conservative: "Conservative",
+  medication: "Medication",
+  injection: "Injection",
+  surgical: "Surgical",
+  multimodal: "Multimodal",
+};
+const chipTone: Record<Applicability | Exhaustion, string> = {
   applicable: "bg-green-50 border-green-200 text-green-800",
-  adequately_trialed: "bg-green-50 border-green-200 text-green-800",
   not_applicable: "bg-red-50 border-red-200 text-red-800",
   contraIndicated: "bg-red-50 border-red-200 text-red-800",
-  inadequately_trialed: "bg-amber-50 border-amber-200 text-amber-800",
   unclear: "bg-amber-50 border-amber-200 text-amber-800",
-  not_tried: "bg-slate-50 border-slate-200 text-slate-600",
-  patient_declined: "bg-sky-50 border-sky-200 text-sky-800",
+  exhausted: "bg-slate-100 border-slate-300 text-slate-700",
+  not_exhausted: "bg-sky-50 border-sky-200 text-sky-800",
 };
 
 const regionLabel = (region: Region) =>
@@ -174,8 +190,8 @@ function Tab() {
                 stored?.analysis?.treatmentAnalysis ?? [],
                 (diagnosesQueries[i].data?.diagnoses ?? []).map((d) => d.canonicalDx)
               );
-              const reviewed = rows.filter(
-                (row) => saved?.steering.treatments[row.id]?.disposition
+              const reviewed = rows.filter((row) =>
+                isRowReviewed(row, saved?.steering.treatments[row.id])
               ).length;
               return (
                 <Link
@@ -356,6 +372,7 @@ function RegionAnalysis({
             stored={stored as StoredWithAnalysis}
             list={list}
             lookups={lookups}
+            ladder={snapshot?.ladder ?? []}
           />
         </Suspense>
       ) : (
@@ -380,12 +397,14 @@ function AnalysisReview({
   stored,
   list,
   lookups,
+  ladder,
 }: {
   caseId: string;
   region: Region;
   stored: StoredWithAnalysis;
   list: RegionDiagnosesResponse;
   lookups: Lookups;
+  ladder: LadderEntry[];
 }) {
   const queryClient = useQueryClient();
   const steeringOptions = physicianSteeringQueryOptions(
@@ -407,6 +426,7 @@ function AnalysisReview({
   const [resetCount, setResetCount] = useState(0);
   const [expanded, setExpanded] = useState<string[]>([]);
   const [filter, setFilter] = useState<"all" | "unreviewed" | "pruned">("all");
+  const [adding, setAdding] = useState(false);
 
   const edit = (fn: (d: PhysicianSteering) => PhysicianSteering) => setDraft(fn);
   const discard = () => {
@@ -435,14 +455,34 @@ function AnalysisReview({
       queryClient.setQueryData(refinedOptions.queryKey, result),
   });
 
+  // Listed diagnoses the run doesn't cover. Analyzing them adds an assessment to every row
+  // (and maybe new rows); saved steering is kept, so unsaved edits are saved first.
+  const notAnalyzed = list.diagnoses
+    .map((d) => d.canonicalDx)
+    .filter((dx) => !stored.analyzedDiagnoses.includes(dx));
+  const analyzeMutation = useMutation({
+    mutationFn: async () => {
+      if (dirty) await saveMutation.mutateAsync();
+      for (const dx of notAnalyzed) await analyzeAddedDiagnosis(caseId, region, dx);
+    },
+    onSettled: () =>
+      Promise.all(
+        [
+          preExamAnalysisQueryOptions(caseId, region).queryKey,
+          preExamSnapshotQueryOptions(caseId, region).queryKey,
+          ["physicianSteering", { caseId, region }],
+        ].map((queryKey) => queryClient.invalidateQueries({ queryKey }))
+      ),
+  });
+
   // Every listed diagnosis is reviewed, not supported ones too (treatment given for them
   // still needs a necessity opinion). Assessments for removed diagnoses are hidden.
   const rows = scopedRows(
     stored.analysis.treatmentAnalysis,
     list.diagnoses.map((d) => d.canonicalDx)
   );
-  const reviewedCount = rows.filter(
-    (row) => draft.treatments[row.id]?.disposition
+  const reviewedCount = rows.filter((row) =>
+    isRowReviewed(row, draft.treatments[row.id])
   ).length;
   const prunedCount = rows.filter(
     (row) => draft.treatments[row.id]?.disposition === "prune"
@@ -450,27 +490,58 @@ function AnalysisReview({
   const prepStatus = examPrepStatus(refined, saved, list, stored.analyzedDiagnoses);
   const prepCurrent =
     prepStatus.kind === "current" && !dirty && !examPrepMutation.isPending;
-  const missingRationale = Object.values(draft.treatments).some((row) =>
-    Object.values(row.assessments ?? {}).some(
-      (a) =>
-        (a.applicability?.action === "override" &&
-          !a.applicability.rationale.trim()) ||
-        (a.adequacy?.action === "override" && !a.adequacy.rationale.trim())
-    )
-  );
-  const busy = saveMutation.isPending || examPrepMutation.isPending;
-
-  const generateExamPrepClick = () => {
-    const unreviewed = rows.length - reviewedCount;
-    if (
-      unreviewed > 0 &&
-      !window.confirm(
-        `${unreviewed} treatments are unreviewed. Update the prep sheet anyway?`
+  const missingRationale = Object.values(draft.treatments).some(
+    (row) =>
+      (row.exhaustion?.action === "override" &&
+        !row.exhaustion.rationale.trim()) ||
+      Object.values(row.assessments ?? {}).some(
+        (a) =>
+          a.applicability?.action === "override" &&
+          !a.applicability.rationale.trim()
       )
-    )
-      return;
-    examPrepMutation.mutate();
-  };
+  );
+  const prepModal = useExamPrepModal();
+  const busy =
+    saveMutation.isPending ||
+    examPrepMutation.isPending ||
+    analyzeMutation.isPending;
+
+  // After the visit is saved, the footer runs the post-exam analysis (pass 4) once the
+  // assessment is finished. The backend enforces the same checks.
+  const { data: visit } = useQuery(visitQueryOptions(caseId));
+  const postExamOptions = postExamAnalysisQueryOptions(caseId, region);
+  const { data: lastPostExam } = useQuery(postExamOptions);
+  const undecided = list.diagnoses.filter((d) => d.status === "working").length;
+  const visitMissing = visitBlocker(visit?.documentation);
+  const readiness = [
+    { label: visitMissing ?? "Visit documented", ok: !visitMissing },
+    {
+      label: undecided
+        ? `${undecided} diagnos${undecided === 1 ? "is" : "es"} still working`
+        : list.diagnoses.some((d) => d.status === "supported")
+          ? "Diagnoses decided"
+          : "No diagnosis supported",
+      ok: !undecided && list.diagnoses.some((d) => d.status === "supported"),
+    },
+    {
+      label: notAnalyzed.length
+        ? `${notAnalyzed.length} diagnos${notAnalyzed.length === 1 ? "is" : "es"} not analyzed`
+        : "Diagnoses analyzed",
+      ok: !notAnalyzed.length,
+    },
+    {
+      label: `${reviewedCount} of ${rows.length} treatments reviewed`,
+      ok: reviewedCount === rows.length,
+    },
+  ];
+  const postExamMutation = useMutation({
+    mutationFn: async () => {
+      if (dirty || !saved) await saveMutation.mutateAsync();
+      return runPostExamAnalysis(caseId, region);
+    },
+    onSuccess: (result) =>
+      queryClient.setQueryData(postExamOptions.queryKey, result),
+  });
 
   const setRow = (id: string, fn: (row: RowSteering) => RowSteering) =>
     edit((d) => ({
@@ -478,10 +549,34 @@ function AnalysisReview({
       treatments: { ...d.treatments, [id]: fn(d.treatments[id] ?? {}) },
     }));
 
+  // Physician-added treatments are reviewed by definition, so they show only under "All".
+  // They can be assessed for analyzed diagnoses (the backend checks the snapshot scope).
+  const addedVisible = filter === "all" ? draft.addedTreatments : [];
+  const assessable = list.diagnoses.filter((d) =>
+    stored.analyzedDiagnoses.includes(d.canonicalDx)
+  );
+  // Ladder treatments that no row or added treatment covers yet.
+  const covered = new Set([
+    ...rows.map((row) => row.treatmentId),
+    ...draft.addedTreatments.map((t) => t.treatmentId),
+  ]);
+  const addableLadder = [
+    ...new Map(
+      ladder
+        .filter((entry) => !covered.has(entry.treatmentId))
+        .map((entry) => [entry.treatmentId, entry])
+    ).values(),
+  ];
+  const setAdded = (id: string, fn: (t: AddedTreatment) => AddedTreatment) =>
+    edit((d) => ({
+      ...d,
+      addedTreatments: d.addedTreatments.map((t) => (t.id === id ? fn(t) : t)),
+    }));
+
   const visibleRows = rows.filter((row) => {
-    const disposition = draft.treatments[row.id]?.disposition;
-    if (filter === "unreviewed") return !disposition;
-    if (filter === "pruned") return disposition === "prune";
+    const steering = draft.treatments[row.id];
+    if (filter === "unreviewed") return !isRowReviewed(row, steering);
+    if (filter === "pruned") return steering?.disposition === "prune";
     return true;
   });
   const groups: [string, TreatmentRow[]][] = [
@@ -496,8 +591,8 @@ function AnalysisReview({
           <div className="flex items-center gap-2.5 border-b border-slate-200 px-4 py-3">
             <h2 className="text-[13.5px] font-semibold">Treatment analysis</h2>
             <span className="text-[11px] text-slate-500">
-              AI assessment per diagnosis · agree, override, or prune each
-              treatment
+              Applicability per diagnosis, exhaustion per treatment · agree,
+              override, or prune each treatment
             </span>
             <span className="flex-1" />
             <Segmented
@@ -513,6 +608,31 @@ function AnalysisReview({
               ]}
             />
           </div>
+          {notAnalyzed.length ? (
+            <div className="flex items-center gap-3 border-b border-amber-200 bg-amber-50 px-4 py-2.5 text-[12px] text-amber-900">
+              <span className="flex-1">
+                <b>{notAnalyzed.map(lookups.dxLabel).join(", ")}</b>{" "}
+                {notAnalyzed.length === 1 ? "isn't" : "aren't"} in this analysis
+                yet. Analyzing adds{" "}
+                {notAnalyzed.length === 1 ? "it" : "them"} to every treatment
+                and keeps your review.
+                {analyzeMutation.isError ? (
+                  <span className="ml-2 font-semibold text-red-700">
+                    {apiErrorMessage(analyzeMutation.error)}
+                  </span>
+                ) : null}
+              </span>
+              <Btn
+                disabled={busy || missingRationale}
+                onClick={() => analyzeMutation.mutate()}
+                className="border-amber-400 bg-white"
+              >
+                {analyzeMutation.isPending
+                  ? "Analyzing…"
+                  : `Analyze ${notAnalyzed.length === 1 ? "diagnosis" : `${notAnalyzed.length} diagnoses`}`}
+              </Btn>
+            </div>
+          ) : null}
           <div
             className={cn(
               gridCols,
@@ -522,7 +642,8 @@ function AnalysisReview({
             <span />
             <span>TREATMENT</span>
             <span>IN RECORDS</span>
-            <span>AI ASSESSMENT · APPLICABLE / ADEQUATE</span>
+            <span>APPLICABILITY</span>
+            <span>EXHAUSTION</span>
             <span>DECISION</span>
           </div>
           {groups.map(([label, group]) =>
@@ -556,9 +677,54 @@ function AnalysisReview({
               </div>
             ) : null
           )}
-          {!visibleRows.length ? (
+          {addedVisible.length ? (
+            <div>
+              <div className="border-b border-slate-200 bg-slate-100 px-4 py-2 text-[11px] font-bold tracking-[.04em] text-slate-700">
+                ADDED BY PHYSICIAN
+              </div>
+              {addedVisible.map((t) => (
+                <AddedTreatmentRow
+                  key={t.id}
+                  treatment={t}
+                  lookups={lookups}
+                  onChange={(fn) => setAdded(t.id, fn)}
+                  onRemove={() =>
+                    edit((d) => ({
+                      ...d,
+                      addedTreatments: d.addedTreatments.filter(
+                        (x) => x.id !== t.id
+                      ),
+                    }))
+                  }
+                />
+              ))}
+            </div>
+          ) : null}
+          {!visibleRows.length && !addedVisible.length ? (
             <p className="p-6 text-center text-slate-500">Nothing here.</p>
           ) : null}
+          {filter !== "all" ? null : adding ? (
+            <AddTreatmentForm
+              ladder={addableLadder}
+              diagnoses={assessable}
+              lookups={lookups}
+              onCancel={() => setAdding(false)}
+              onAdd={(t) => {
+                edit((d) => ({
+                  ...d,
+                  addedTreatments: [...d.addedTreatments, t],
+                }));
+                setAdding(false);
+              }}
+            />
+          ) : (
+            <button
+              onClick={() => setAdding(true)}
+              className="w-full px-4 py-2.5 text-left text-[12px] font-semibold text-blue-700 hover:bg-slate-50"
+            >
+              + Add treatment
+            </button>
+          )}
         </section>
 
         <div className="flex flex-col gap-3.5">
@@ -620,27 +786,57 @@ function AnalysisReview({
       </div>
 
       <footer className="sticky bottom-0 mt-auto flex items-center gap-3 border-t border-slate-200 bg-white px-5 py-2.5 shadow-[0_-6px_16px_rgba(15,23,42,.05)]">
-        <div className="h-1.5 w-44 overflow-hidden rounded bg-slate-200">
-          <div
-            className="h-full bg-blue-600 transition-all"
-            style={{
-              width: `${rows.length ? (reviewedCount / rows.length) * 100 : 0}%`,
-            }}
-          />
-        </div>
-        <span className="text-[11px] text-slate-500">
-          <b className="text-slate-900">
-            {reviewedCount} of {rows.length}
-          </b>{" "}
-          treatments reviewed
-          {rows.length - reviewedCount
-            ? ` · ${rows.length - reviewedCount} unreviewed`
-            : ""}
-        </span>
+        {visit ? (
+          <span className="flex items-center gap-3 text-[11px]">
+            {readiness.map((item) => (
+              <span
+                key={item.label}
+                className={item.ok ? "text-slate-500" : "font-semibold text-amber-700"}
+              >
+                {item.ok ? "✓" : "○"} {item.label}
+              </span>
+            ))}
+            {lastPostExam?.analysis ? (
+              <Link
+                to="/p_cases/$caseId/mmi"
+                params={{ caseId }}
+                className="border-l border-slate-200 pl-3 text-blue-700 hover:underline"
+              >
+                Post-exam analysis {formatTime(lastPostExam.updatedAt)} →
+              </Link>
+            ) : null}
+          </span>
+        ) : (
+          <>
+          <div className="h-1.5 w-44 overflow-hidden rounded bg-slate-200">
+            <div
+              className="h-full bg-blue-600 transition-all"
+              style={{
+                width: `${rows.length ? (reviewedCount / rows.length) * 100 : 0}%`,
+              }}
+            />
+          </div>
+          <span className="text-[11px] text-slate-500">
+            <b className="text-slate-900">
+              {reviewedCount} of {rows.length}
+            </b>{" "}
+            treatments reviewed
+            {rows.length - reviewedCount
+              ? ` · ${rows.length - reviewedCount} unreviewed`
+              : ""}
+          </span>
+          </>
+        )}
         <span className="flex-1" />
-        {saveMutation.isError || examPrepMutation.isError ? (
+        {saveMutation.isError ||
+        examPrepMutation.isError ||
+        postExamMutation.isError ? (
           <span className="text-[11px] font-semibold text-red-700">
-            {apiErrorMessage(saveMutation.error ?? examPrepMutation.error)}
+            {apiErrorMessage(
+              saveMutation.error ??
+                examPrepMutation.error ??
+                postExamMutation.error
+            )}
           </span>
         ) : missingRationale ? (
           <span className="text-[11px] font-semibold text-violet-700">
@@ -657,29 +853,55 @@ function AnalysisReview({
                 : "Not saved"}{" "}
           · rev {revision}
         </span>
-        <ExamPrepState
-          status={prepStatus}
-          dirty={dirty}
-          pending={examPrepMutation.isPending}
-        />
+        {visit ? null : (
+          <ExamPrepState
+            status={prepStatus}
+            dirty={dirty}
+            pending={examPrepMutation.isPending}
+            onOpen={prepModal.open}
+          />
+        )}
         {dirty ? (
           <Btn disabled={busy} onClick={discard}>
             Discard changes
           </Btn>
         ) : null}
         <Btn
-          disabled={busy || prepCurrent || missingRationale}
-          onClick={generateExamPrepClick}
-        >
-          {examPrepMutation.isPending ? "Updating prep sheet…" : "Update prep sheet"}
-        </Btn>
-        <Btn
-          variant="primary"
           disabled={!dirty || busy || missingRationale}
           onClick={() => saveMutation.mutate()}
         >
           Save steering
         </Btn>
+        {/* Before the visit, review is optional; the prep sheet is the useful next thing. */}
+        {visit ? null : (
+          <Btn
+            variant="primary"
+            disabled={busy || prepCurrent || missingRationale}
+            onClick={() => examPrepMutation.mutate()}
+          >
+            {examPrepMutation.isPending
+              ? "Preparing sheet…"
+              : refined?.analysis
+                ? "Update prep sheet"
+                : "Create prep sheet"}
+          </Btn>
+        )}
+        {visit ? (
+          <Btn
+            variant="primary"
+            disabled={
+              busy ||
+              postExamMutation.isPending ||
+              missingRationale ||
+              !readiness.every((item) => item.ok)
+            }
+            onClick={() => postExamMutation.mutate()}
+          >
+            {postExamMutation.isPending
+              ? "Running post-exam analysis…"
+              : "Run post-exam analysis"}
+          </Btn>
+        ) : null}
       </footer>
     </>
   );
@@ -689,23 +911,38 @@ function ExamPrepState({
   status,
   dirty,
   pending,
+  onOpen,
 }: {
   status: ExamPrepStatus;
   dirty: boolean;
   pending: boolean;
+  onOpen: () => void;
 }) {
   if (pending) return null;
+  const exists = status.kind === "current" || status.kind === "stale";
   const stale = status.kind === "stale" || (status.kind === "current" && dirty);
   return (
     <span className="border-l border-slate-200 pl-3 text-[11px]">
-      {status.kind === "current" && !dirty ? (
-        <span className="text-green-700">Prep sheet up to date</span>
-      ) : stale ? (
-        <span className="font-semibold text-amber-700">
-          Prep sheet out of date
-        </span>
-      ) : (
+      {!exists ? (
         <span className="text-slate-500">No prep sheet yet</span>
+      ) : (
+        <>
+          {stale ? (
+            <span className="font-semibold text-amber-700">
+              Prep sheet out of date
+            </span>
+          ) : (
+            <span className="text-green-700">Prep sheet ready</span>
+          )}
+          {" · "}
+          <button
+            type="button"
+            onClick={onOpen}
+            className="font-semibold text-blue-700 hover:underline"
+          >
+            Open
+          </button>
+        </>
       )}
     </span>
   );
@@ -747,8 +984,12 @@ function SetupStrip({
   const busy = snapshotPending || analysisPending;
   const outdated = hasSnapshot && needsAnalysis.length > 0;
   // The stored row's updatedAt is bumped by both snapshot and analysis.
+  // With a run, uncovered diagnoses are analyzed into it (bar above the treatments);
+  // a new snapshot is the full redo. Without one, the snapshot must include them.
   const snapshotStatus = outdated
-    ? `Not covered: ${needsAnalysis.map(lookups.dxLabel).join(", ")} — take a new snapshot`
+    ? stored?.analysis
+      ? `Not covered: ${needsAnalysis.map(lookups.dxLabel).join(", ")} — analyze below, or take a new snapshot to redo everything`
+      : `Not covered: ${needsAnalysis.map(lookups.dxLabel).join(", ")} — take a new snapshot`
     : !hasSnapshot
       ? "No snapshot yet"
       : stored?.analysis
@@ -796,7 +1037,9 @@ function SetupStrip({
           <Btn
             onClick={onSnapshot}
             disabled={!hasCurrent || busy}
-            className={cn(outdated && "border-amber-400 bg-amber-50")}
+            className={cn(
+              outdated && !stored?.analysis && "border-amber-400 bg-amber-50"
+            )}
           >
             {snapshotPending ? "Taking…" : "Take snapshot"}
           </Btn>
@@ -827,41 +1070,38 @@ function SetupStrip({
   );
 }
 
-const gridCols = "grid grid-cols-[24px_1.2fr_1.05fr_1.5fr_190px] gap-3.5";
+const gridCols =
+  "grid grid-cols-[24px_1.2fr_1.05fr_1.25fr_110px_190px] gap-3.5";
 
 type Decision = "agree" | "override" | "prune";
 
 const hasOverride = (steering: RowSteering) =>
+  steering.exhaustion?.action === "override" ||
   Object.values(steering.assessments ?? {}).some(
-    (a) =>
-      a.applicability?.action === "override" ||
-      a.adequacy?.action === "override"
+    (a) => a.applicability?.action === "override"
   );
 
-// Every assessment on the row marked agree, optionally keeping existing overrides.
+// Every judgment on the row (applicability per diagnosis, exhaustion) marked agree,
+// optionally keeping existing overrides.
 const agreeAll = (
   row: TreatmentRow,
   steering: RowSteering,
   keepOverrides: boolean
-) =>
-  Object.fromEntries(
-    row.assessments.map(({ canonicalDx }) => {
-      const current = steering.assessments?.[canonicalDx];
-      return [
+): Pick<RowSteering, "assessments" | "exhaustion"> => {
+  const keep = <T extends { action: string }>(review: T | undefined) =>
+    keepOverrides && review?.action === "override"
+      ? review
+      : { action: "agree" as const };
+  return {
+    assessments: Object.fromEntries(
+      row.assessments.map(({ canonicalDx }) => [
         canonicalDx,
-        {
-          applicability:
-            keepOverrides && current?.applicability?.action === "override"
-              ? current.applicability
-              : { action: "agree" as const },
-          adequacy:
-            keepOverrides && current?.adequacy?.action === "override"
-              ? current.adequacy
-              : { action: "agree" as const },
-        },
-      ];
-    })
-  ) as RowSteering["assessments"];
+        { applicability: keep(steering.assessments?.[canonicalDx]?.applicability) },
+      ])
+    ),
+    exhaustion: keep(steering.exhaustion),
+  };
+};
 
 function TreatmentRowView({
   row,
@@ -884,11 +1124,12 @@ function TreatmentRowView({
   const [overridePending, setOverridePending] = useState(false);
   const overridden = hasOverride(steering);
   const pruned = steering.disposition === "prune";
+  const reviewed = isRowReviewed(row, steering);
   const decision: Decision | undefined = pruned
     ? "prune"
     : overridden || overridePending
       ? "override"
-      : steering.disposition === "keep"
+      : reviewed
         ? "agree"
         : undefined;
 
@@ -898,7 +1139,7 @@ function TreatmentRowView({
       onChange((r) => ({
         ...r,
         disposition: "keep",
-        assessments: agreeAll(row, r, false),
+        ...agreeAll(row, r, false),
       }));
     } else if (next === "prune") {
       onChange((r) => ({ ...r, disposition: "prune" }));
@@ -911,18 +1152,24 @@ function TreatmentRowView({
     }
   };
 
-  // Editing an assessment counts as reviewing the row; untouched assessments become agree.
-  const setAssessment = (
-    dx: string,
-    fn: (a: AssessmentSteering) => AssessmentSteering
+  // Editing a judgment counts as reviewing the row; untouched judgments become agree.
+  const edit = (
+    fn: (filled: ReturnType<typeof agreeAll>) => Partial<RowSteering>
   ) =>
     onChange((r) => {
-      const assessments = {
-        ...agreeAll(row, r, true),
-        [dx]: fn(r.assessments?.[dx] ?? {}),
-      };
-      return { ...r, disposition: r.disposition ?? "keep", assessments };
+      const filled = agreeAll(row, r, true);
+      return { ...r, ...filled, disposition: r.disposition ?? "keep", ...fn(filled) };
     });
+  const setApplicability = (dx: string, review: AssessmentSteering["applicability"]) =>
+    edit((filled) => ({
+      assessments: { ...filled.assessments, [dx]: { applicability: review } },
+    }));
+  const setExhaustion = (review: RowSteering["exhaustion"]) =>
+    edit(() => ({ exhaustion: review }));
+  const exhaustion =
+    steering.exhaustion?.action === "override"
+      ? steering.exhaustion.value
+      : row.aiExhaustion;
 
   return (
     <div
@@ -992,15 +1239,11 @@ function TreatmentRowView({
             review?.applicability?.action === "override"
               ? review.applicability.value
               : a.aiApplicability;
-          const adq =
-            review?.adequacy?.action === "override"
-              ? review.adequacy.value
-              : a.aiAdequacy;
           return (
             <div
               key={a.canonicalDx}
               className={cn(
-                "grid grid-cols-[100px_auto_auto_1fr] items-center gap-1.5 py-0.5 text-[11.5px]",
+                "grid grid-cols-[100px_auto_1fr] items-center gap-1.5 py-0.5 text-[11.5px]",
                 i > 0 && "mt-1 border-t border-dashed border-slate-200 pt-1.5",
                 lookups.notSupported.has(a.canonicalDx) && "opacity-55"
               )}
@@ -1012,20 +1255,34 @@ function TreatmentRowView({
                     dx not supported
                   </span>
                 ) : null}
+                {/* The rest of the row was reviewed before this diagnosis was added. */}
+                {steering.disposition === "keep" && !review?.applicability ? (
+                  <span className="block text-[10px] font-semibold text-blue-700">
+                    new · unreviewed
+                  </span>
+                ) : null}
               </span>
               <Chip
                 value={app}
                 label={applicabilityLabel[app]}
                 overridden={review?.applicability?.action === "override"}
               />
-              <Chip
-                value={adq}
-                label={adequacyLabel[adq]}
-                overridden={review?.adequacy?.action === "override"}
-              />
             </div>
           );
         })}
+      </div>
+      <div className={cn(pruned && "opacity-50")}>
+        <Chip
+          value={exhaustion}
+          label={exhaustionLabel[exhaustion]}
+          overridden={steering.exhaustion?.action === "override"}
+        />
+        {/* Re-judged after a diagnosis was added; the earlier review was cleared. */}
+        {steering.disposition === "keep" && !steering.exhaustion ? (
+          <span className="mt-0.5 block text-[10px] font-semibold text-blue-700">
+            new · unreviewed
+          </span>
+        ) : null}
       </div>
       <div>
         <Segmented
@@ -1053,7 +1310,7 @@ function TreatmentRowView({
           <div className="mt-1 text-[11px] font-medium text-violet-600">
             choose what you disagree with ↓
           </div>
-        ) : !decision ? (
+        ) : !reviewed ? (
           <div className="mt-1 text-[11px] text-slate-400">unreviewed</div>
         ) : null}
       </div>
@@ -1061,19 +1318,29 @@ function TreatmentRowView({
       {expanded ? (
         <div
           className={cn(
-            "col-span-4 col-start-2 mt-1 space-y-3 rounded-lg border bg-slate-50 p-3",
+            "col-span-5 col-start-2 mt-1 space-y-3 rounded-lg border bg-slate-50 p-3",
             decision === "override" ? "border-violet-200" : "border-slate-200"
           )}
         >
           {row.assessments.map((a) => (
-            <AssessmentEditor
+            <ReviewEditor
               key={a.canonicalDx}
-              ai={a}
-              dxLabel={lookups.dxLabel(a.canonicalDx)}
-              review={steering.assessments?.[a.canonicalDx]}
-              onChange={(fn) => setAssessment(a.canonicalDx, fn)}
+              title={`Applicability · ${lookups.dxLabel(a.canonicalDx)}`}
+              labels={applicabilityLabel}
+              aiValue={a.aiApplicability}
+              aiRationale={a.aiApplicabilityRationale}
+              review={steering.assessments?.[a.canonicalDx]?.applicability}
+              onChange={(review) => setApplicability(a.canonicalDx, review)}
             />
           ))}
+          <ReviewEditor
+            title="Exhaustion · across applicable diagnoses"
+            labels={exhaustionLabel}
+            aiValue={row.aiExhaustion}
+            aiRationale={row.aiExhaustionRationale}
+            review={steering.exhaustion}
+            onChange={setExhaustion}
+          />
           <input
             value={steering.note ?? ""}
             onChange={(e) =>
@@ -1084,6 +1351,210 @@ function TreatmentRowView({
           />
         </div>
       ) : null}
+    </div>
+  );
+}
+
+// A treatment the physician added: a proposal, or care the records don't show.
+// Applicability and exhaustion are the physician's own, edited in place.
+function AddedTreatmentRow({
+  treatment,
+  lookups,
+  onChange,
+  onRemove,
+}: {
+  treatment: AddedTreatment;
+  lookups: Lookups;
+  onChange: (fn: (t: AddedTreatment) => AddedTreatment) => void;
+  onRemove: () => void;
+}) {
+  const setAssessment = (
+    dx: string,
+    patch: Partial<AddedTreatment["assessments"][string]>
+  ) =>
+    onChange((t) => ({
+      ...t,
+      assessments: { ...t.assessments, [dx]: { ...t.assessments[dx], ...patch } },
+    }));
+  const select =
+    "rounded-md border border-slate-300 bg-white px-1 py-0.5 text-[11px]";
+  return (
+    <div className={cn(gridCols, "items-start border-b border-slate-200 px-4 py-3")}>
+      <span />
+      <div>
+        <span className="text-[13px] font-semibold">{treatment.treatment}</span>
+        <Badge className="ml-1.5 rounded bg-violet-100 text-violet-700">
+          physician
+        </Badge>
+        <div className="mt-1 text-[11px] text-slate-500">
+          {categoryLabel[treatment.category]}
+          {treatment.treatmentId ? "" : " · not in taxonomy"}
+        </div>
+      </div>
+      <div className="text-[11px] text-slate-500">Added by you</div>
+      <div>
+        {Object.entries(treatment.assessments).map(([dx, a], i) => (
+          <div
+            key={dx}
+            className={cn(
+              "grid grid-cols-[100px_auto_1fr] items-center gap-1.5 py-0.5",
+              i > 0 && "mt-1 border-t border-dashed border-slate-200 pt-1.5",
+              lookups.notSupported.has(dx) && "opacity-55"
+            )}
+          >
+            <span className="text-[11px] font-semibold text-slate-500">
+              {lookups.dxLabel(dx)}
+            </span>
+            <select
+              value={a.applicability}
+              onChange={(e) =>
+                setAssessment(dx, { applicability: e.target.value as Applicability })
+              }
+              className={select}
+            >
+              {Object.entries(applicabilityLabel).map(([v, l]) => (
+                <option key={v} value={v}>
+                  {l}
+                </option>
+              ))}
+            </select>
+            <span />
+            <input
+              value={a.rationale}
+              onChange={(e) => setAssessment(dx, { rationale: e.target.value })}
+              placeholder="Rationale (optional)"
+              className="col-span-2 col-start-2 rounded-md border border-slate-300 px-1.5 py-0.5 text-[11px] outline-none focus:border-blue-400"
+            />
+          </div>
+        ))}
+      </div>
+      <div className="grid gap-1">
+        <select
+          value={treatment.exhaustion}
+          onChange={(e) =>
+            onChange((t) => ({ ...t, exhaustion: e.target.value as Exhaustion }))
+          }
+          className={select}
+        >
+          {Object.entries(exhaustionLabel).map(([v, l]) => (
+            <option key={v} value={v}>
+              {l}
+            </option>
+          ))}
+        </select>
+        <input
+          value={treatment.exhaustionRationale}
+          onChange={(e) =>
+            onChange((t) => ({ ...t, exhaustionRationale: e.target.value }))
+          }
+          placeholder="Rationale (optional)"
+          className="rounded-md border border-slate-300 px-1.5 py-0.5 text-[11px] outline-none focus:border-blue-400"
+        />
+      </div>
+      <div>
+        <Btn onClick={onRemove}>Remove</Btn>
+      </div>
+    </div>
+  );
+}
+
+// New treatments default to applicable and not exhausted: the usual "I'd recommend X".
+function AddTreatmentForm({
+  ladder,
+  diagnoses,
+  lookups,
+  onAdd,
+  onCancel,
+}: {
+  ladder: LadderEntry[];
+  diagnoses: RegionDiagnosesResponse["diagnoses"];
+  lookups: Lookups;
+  onAdd: (treatment: AddedTreatment) => void;
+  onCancel: () => void;
+}) {
+  const [name, setName] = useState("");
+  const [category, setCategory] = useState<Category>("conservative");
+  const [dxs, setDxs] = useState(() =>
+    diagnoses
+      .filter((d) => d.status !== "not_supported")
+      .map((d) => d.canonicalDx)
+  );
+  const match = ladder.find(
+    (e) => e.treatment.toLowerCase() === name.trim().toLowerCase()
+  );
+  const add = () =>
+    onAdd({
+      id: crypto.randomUUID(),
+      treatmentId: match?.treatmentId ?? null,
+      treatment: match?.treatment ?? name.trim(),
+      category: match?.category ?? category,
+      assessments: Object.fromEntries(
+        dxs.map((dx) => [
+          dx,
+          { applicability: "applicable", rationale: "" },
+        ])
+      ),
+      exhaustion: "not_exhausted",
+      exhaustionRationale: "",
+    });
+  return (
+    <div className="flex flex-wrap items-center gap-2 bg-slate-50 px-4 py-3 text-[12px]">
+      <input
+        autoFocus
+        list="add-treatment-ladder"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder="Treatment: pick from the list or type your own"
+        className="w-80 rounded-md border border-slate-300 bg-white px-2 py-1.5 outline-none focus:border-blue-400"
+      />
+      <datalist id="add-treatment-ladder">
+        {ladder.map((e) => (
+          <option key={e.treatmentId} value={e.treatment} />
+        ))}
+      </datalist>
+      {match ? (
+        <span className="text-[11px] text-slate-500">
+          {categoryLabel[match.category]} · taxonomy
+        </span>
+      ) : (
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value as Category)}
+          className="rounded-md border border-slate-300 bg-white px-1.5 py-1.5"
+        >
+          {Object.entries(categoryLabel).map(([v, l]) => (
+            <option key={v} value={v}>
+              {l}
+            </option>
+          ))}
+        </select>
+      )}
+      <span className="text-slate-500">for</span>
+      {diagnoses.map((d) => (
+        <label key={d.canonicalDx} className="flex items-center gap-1">
+          <input
+            type="checkbox"
+            checked={dxs.includes(d.canonicalDx)}
+            onChange={(e) =>
+              setDxs((current) =>
+                e.target.checked
+                  ? [...current, d.canonicalDx]
+                  : current.filter((x) => x !== d.canonicalDx)
+              )
+            }
+          />
+          {lookups.dxLabel(d.canonicalDx)}
+        </label>
+      ))}
+      <span className="flex-1" />
+      <Btn onClick={onCancel}>Cancel</Btn>
+      <Btn
+        variant="primary"
+        disabled={!name.trim() || !dxs.length}
+        onClick={add}
+      >
+        Add
+      </Btn>
     </div>
   );
 }
@@ -1111,7 +1582,7 @@ function Chip({
   label,
   overridden,
 }: {
-  value: Applicability | Adequacy;
+  value: Applicability | Exhaustion;
   label: string;
   overridden?: boolean;
 }) {
@@ -1129,116 +1600,80 @@ function Chip({
   );
 }
 
-// One diagnosis: AI rationale on the left, physician agree/override on the right.
-function AssessmentEditor({
-  ai,
-  dxLabel,
+// One judgment (applicability for a diagnosis, or the treatment's exhaustion): AI
+// rationale on the left, physician agree/override on the right.
+function ReviewEditor<T extends string>({
+  title,
+  labels,
+  aiValue,
+  aiRationale,
   review,
   onChange,
 }: {
-  ai: AiAssessment;
-  dxLabel: string;
-  review: AssessmentSteering | undefined;
-  onChange: (fn: (a: AssessmentSteering) => AssessmentSteering) => void;
+  title: string;
+  labels: Record<T, string>;
+  aiValue: T;
+  aiRationale: string;
+  review:
+    | { action: "agree"; note?: string }
+    | { action: "override"; value: T; rationale: string }
+    | undefined;
+  onChange: (
+    review:
+      | { action: "agree" }
+      | { action: "override"; value: T; rationale: string }
+  ) => void;
 }) {
-  const appOverride =
-    review?.applicability?.action === "override" ? review.applicability : null;
-  const adqOverride =
-    review?.adequacy?.action === "override" ? review.adequacy : null;
-  // One rationale per diagnosis, stored on each overridden field. Save is blocked while it is empty.
-  const rationale = appOverride?.rationale ?? adqOverride?.rationale ?? "";
-
-  const setApp = (value: string) =>
-    onChange((a) => ({
-      ...a,
-      applicability:
-        value === "ai"
-          ? { action: "agree" }
-          : { action: "override", value: value as Applicability, rationale },
-    }));
-  const setAdq = (value: string) =>
-    onChange((a) => ({
-      ...a,
-      adequacy:
-        value === "ai"
-          ? { action: "agree" }
-          : { action: "override", value: value as Adequacy, rationale },
-    }));
-  const setRationale = (text: string) =>
-    onChange((a) => ({
-      applicability:
-        a.applicability?.action === "override"
-          ? { ...a.applicability, rationale: text }
-          : a.applicability,
-      adequacy:
-        a.adequacy?.action === "override"
-          ? { ...a.adequacy, rationale: text }
-          : a.adequacy,
-    }));
-
+  // Save is blocked while an override's rationale is empty.
+  const override = review?.action === "override" ? review : null;
   return (
     <div className="grid grid-cols-2 gap-3 text-xs leading-normal text-slate-700">
       <div>
         <div className="mb-1 text-[11px] font-semibold text-slate-500">
-          AI RATIONALE · {dxLabel.toUpperCase()}
+          AI RATIONALE · {title.toUpperCase()}
         </div>
         <p>
-          <b>{applicabilityLabel[ai.aiApplicability]}:</b>{" "}
-          {ai.aiApplicabilityRationale}
-        </p>
-        <p className="mt-1">
-          <b>Adequacy ({adequacyLabel[ai.aiAdequacy].toLowerCase()}):</b>{" "}
-          {ai.aiAdequacyRationale}
+          <b>{labels[aiValue]}:</b> {aiRationale}
         </p>
       </div>
       <div>
         <div
           className={cn(
             "mb-1 text-[11px] font-semibold",
-            appOverride || adqOverride ? "text-violet-600" : "text-slate-500"
+            override ? "text-violet-600" : "text-slate-500"
           )}
         >
           YOUR REVIEW
         </div>
-        <div className="flex gap-2">
-          <select
-            value={appOverride?.value ?? "ai"}
-            onChange={(e) => setApp(e.target.value)}
-            className="rounded-md border border-slate-300 bg-white px-1.5 py-1"
-          >
-            <option value="ai">Applicability: agree with AI</option>
-            {Object.entries(applicabilityLabel)
-              .filter(([v]) => v !== ai.aiApplicability)
-              .map(([v, l]) => (
-                <option key={v} value={v}>
-                  Override → {l}
-                </option>
-              ))}
-          </select>
-          <select
-            value={adqOverride?.value ?? "ai"}
-            onChange={(e) => setAdq(e.target.value)}
-            className="rounded-md border border-slate-300 bg-white px-1.5 py-1"
-          >
-            <option value="ai">Adequacy: agree with AI</option>
-            {Object.entries(adequacyLabel)
-              .filter(([v]) => v !== ai.aiAdequacy)
-              .map(([v, l]) => (
-                <option key={v} value={v}>
-                  Override → {l}
-                </option>
-              ))}
-          </select>
-        </div>
-        {appOverride || adqOverride ? (
+        <select
+          value={override?.value ?? "ai"}
+          onChange={(e) =>
+            onChange(
+              e.target.value === "ai"
+                ? { action: "agree" }
+                : {
+                    action: "override",
+                    value: e.target.value as T,
+                    rationale: override?.rationale ?? "",
+                  }
+            )
+          }
+          className="rounded-md border border-slate-300 bg-white px-1.5 py-1"
+        >
+          <option value="ai">Agree with AI</option>
+          {(Object.entries(labels) as [T, string][])
+            .filter(([v]) => v !== aiValue)
+            .map(([v, l]) => (
+              <option key={v} value={v}>
+                Override → {l}
+              </option>
+            ))}
+        </select>
+        {override ? (
           <textarea
-            value={rationale}
-            onChange={(e) => setRationale(e.target.value)}
-            placeholder={
-              adqOverride?.value === "patient_declined"
-                ? "Basis of decline: what was offered and why the patient declined (required)"
-                : "Why do you disagree? (required)"
-            }
+            value={override.rationale}
+            onChange={(e) => onChange({ ...override, rationale: e.target.value })}
+            placeholder="Why do you disagree? (required)"
             className="mt-1.5 h-14 w-full resize-none rounded-md border-[1.5px] border-violet-300 bg-white px-2 py-1.5 outline-none focus:border-violet-500"
           />
         ) : null}

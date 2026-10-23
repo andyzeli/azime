@@ -24,6 +24,7 @@ import {
   type CaseProviderDto,
   type CreateCaseProviderInput,
   type SavePhysicianSteeringRequest,
+  type PhysicianAddedTreatment,
   visitDocumentationResponseSchema,
   regionDiagnosesResponseSchema,
   saveRegionDiagnosesRequestSchema,
@@ -36,6 +37,13 @@ import {
   type AmaCandidatesRequest,
   type AmaMode,
   type AmaCandidatesResponse,
+  caseOpinionsResponseSchema,
+  amaRegionRatingResponseSchema,
+  reportInputResponseSchema,
+  pastMedicalHistorySchema,
+  caseReportResponseSchema,
+  saveCaseOpinionsRequestSchema,
+  type SaveCaseOpinionsRequest,
 } from "@azime/contracts";
 import type {
   QuestionnaireDefinition,
@@ -64,6 +72,7 @@ type DbPatientCase = {
   caseType: string | null;
   status: string | null;
   amaMode: AmaMode | null;
+  referralQuestions: string[];
 } & CaseInjuryDetails;
 
 export type PatientQuestionnaireDefinition = Omit<
@@ -159,6 +168,17 @@ export const updateAmaMode = async (caseId: string, amaMode: AmaMode | null) =>
     .put<{ amaMode: AmaMode | null }>(`${API_BASE_URL}/cases/${caseId}/ama-mode`, { amaMode })
     .then((response) => response.data);
 
+export const updateReferralQuestions = async (
+  caseId: string,
+  referralQuestions: string[]
+) =>
+  axios
+    .put<{ referralQuestions: string[] }>(
+      `${API_BASE_URL}/cases/${caseId}/referral-questions`,
+      { referralQuestions }
+    )
+    .then((response) => response.data);
+
 export const fetchCaseSummary = async (caseId: string) => {
   return axios
     .get<unknown>(`${API_BASE_URL}/cases/${caseId}/case-summary`)
@@ -231,13 +251,34 @@ export const takePreExamSnapshot = async (
     selectedDiagnoses === undefined ? {} : { selectedDiagnoses }
   );
 
+// Treatment analysis for one listed diagnosis the run doesn't cover; keeps rows and steering.
+export const analyzeAddedDiagnosis = async (
+  caseId: string,
+  region: Region,
+  canonicalDx: string
+) =>
+  axios.post(
+    `${API_BASE_URL}/cases/${caseId}/pre-exam-analysis/${region}/diagnoses`,
+    { canonicalDx }
+  );
+
 interface InputSnapshot {
   scope: {
     region: Region;
     diagnoses: string[];
   };
-  ladder: unknown[];
-  treatmentEpisodes: unknown[];
+  ladder: {
+    canonicalDx: string;
+    treatmentId: string;
+    treatment: string;
+    category: PhysicianAddedTreatment["category"];
+  }[];
+  treatmentEpisodes: {
+    id: string;
+    kind: "therapy" | "chiropractic" | "intervention" | "surgery";
+    name: string;
+    records: { recordId: number; eventDate: string | null }[];
+  }[];
   currentMedications: unknown[];
   completedStudies: unknown[];
   workStatusHistory: unknown[];
@@ -604,6 +645,81 @@ export const saveVisit = (
     )
     .then((response) => visitDocumentationResponseSchema.parse(response.data));
 
+// Draft AMA rating of the region's saved visit assessments.
+export const amaRatingQueryOptions = (caseId: string, region: Region) =>
+  queryOptions({
+    queryKey: ["amaRating", { caseId, region }],
+    queryFn: () =>
+      axios
+        .get<unknown>(`${API_BASE_URL}/cases/${caseId}/ama-rating/${region}`)
+        .then((response) => amaRegionRatingResponseSchema.parse(response.data)),
+  });
+
+// The report drafter's input as the builder shows it, or what blocks it.
+export const reportInputQueryOptions = (caseId: string) =>
+  queryOptions({
+    queryKey: ["reportInput", { caseId }],
+    queryFn: () =>
+      axios
+        .get<unknown>(`${API_BASE_URL}/cases/${caseId}/report-input`)
+        .then((response) => reportInputResponseSchema.parse(response.data)),
+  });
+
+// The latest report generation (null before the first).
+export const caseReportQueryOptions = (caseId: string) =>
+  queryOptions({
+    queryKey: ["caseReport", { caseId }],
+    queryFn: () =>
+      axios
+        .get<unknown>(`${API_BASE_URL}/cases/${caseId}/report`)
+        .then((response) => caseReportResponseSchema.nullable().parse(response.data)),
+  });
+
+// TEMP: what Generate would send the model, without calling it or saving.
+export const generateCaseReportDryRun = (caseId: string) =>
+  axios
+    .post<{ input: unknown; variant: string; systemPrompt: string; userPrompt: string }>(
+      `${API_BASE_URL}/cases/${caseId}/report?dryRun=1`
+    )
+    .then((response) => response.data);
+
+export const generateCaseReport = (caseId: string) =>
+  axios
+    .post<unknown>(`${API_BASE_URL}/cases/${caseId}/report`)
+    .then((response) => caseReportResponseSchema.parse(response.data));
+
+// Past medical history documented in the records, for the causation questions.
+export const pastMedicalHistoryQueryOptions = (caseId: string) =>
+  queryOptions({
+    queryKey: ["pastMedicalHistory", { caseId }],
+    queryFn: () =>
+      axios
+        .get<unknown>(`${API_BASE_URL}/cases/${caseId}/past-medical-history`)
+        .then((response) => pastMedicalHistorySchema.parse(response.data)),
+  });
+
+export const caseOpinionsQueryOptions = (caseId: string) =>
+  queryOptions({
+    queryKey: ["opinions", { caseId }],
+    queryFn: () =>
+      axios
+        .get<unknown>(`${API_BASE_URL}/cases/${caseId}/opinions`)
+        .then((response) =>
+          caseOpinionsResponseSchema.nullable().parse(response.data)
+        ),
+  });
+
+export const saveCaseOpinions = (
+  caseId: string,
+  input: SaveCaseOpinionsRequest
+) =>
+  axios
+    .put<unknown>(
+      `${API_BASE_URL}/cases/${caseId}/opinions`,
+      saveCaseOpinionsRequestSchema.parse(input)
+    )
+    .then((response) => caseOpinionsResponseSchema.parse(response.data));
+
 export const postExamAnalysisQueryOptions = (
   caseId: string,
   region: Region,
@@ -640,3 +756,11 @@ export const generatePostExamAnalysis = (
       generatePostExamAnalysisRequestSchema.parse({ snapshotId })
     )
     .then((response) => postExamAnalysisResponseSchema.parse(response.data));
+
+// Freezes the current inputs, then runs pass 4 on them. The snapshot is kept even if the run fails.
+export const runPostExamAnalysis = async (caseId: string, region: Region) =>
+  generatePostExamAnalysis(
+    caseId,
+    region,
+    (await takePostExamSnapshot(caseId, region)).id
+  );

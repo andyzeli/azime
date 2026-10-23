@@ -29,7 +29,9 @@ function WorkflowTab({
     | "/p_cases/$caseId/records"
     | "/p_cases/$caseId/summary"
     | "/p_cases/$caseId/analysis"
-    | "/p_cases/$caseId/visit";
+    | "/p_cases/$caseId/visit"
+    | "/p_cases/$caseId/mmi"
+    | "/p_cases/$caseId/report";
   n: number;
   status: TabStatus;
   label: string;
@@ -80,16 +82,6 @@ function TabIcon({ n, status }: { n: number; status: TabStatus }) {
   );
 }
 
-// Tabs for steps not built in the mockup yet.
-function PlaceholderTab({ n, label }: { n: number; label: string }) {
-  return (
-    <span className="flex cursor-not-allowed items-center gap-2 px-3.5 pb-3 pt-2.5 text-[13px] font-semibold text-slate-400">
-      <TabIcon n={n} status="todo" />
-      {label}
-    </span>
-  );
-}
-
 function TabGroup({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div>
@@ -121,9 +113,10 @@ export default function CockpitShell() {
   const statuses = workflow.regions.map((r) => r.status.kind);
   // Dismissing hides only this message; a different next step shows again.
   const [dismissedHint, setDismissedHint] = useState<string>();
-  const next = workflow.isPending ? null : nextStep(workflow.regions);
+  const next = workflow.isPending ? null : nextStep(workflow.regions, workflow.visitSaved);
   const examPrep = {
-    generated: workflow.regions.some((r) => r.refined),
+    // The modal creates the sheet ("Update sheet"), so it opens once any steering is saved.
+    available: workflow.regions.some((r) => r.refined || r.steeringSaved),
     stale: statuses.includes("stale"),
   };
 
@@ -138,12 +131,12 @@ export default function CockpitShell() {
         </span>
         <span className="text-slate-500">Provider cockpit</span>
         <span className="flex-1" />
-        {/* Optional printout, not a workflow step. Available once any region has exam prep (3B). */}
+        {/* Optional printout, not a workflow step. Available once any region has saved steering. */}
         <button
           type="button"
           onClick={prepModal.open}
-          disabled={!examPrep.generated}
-          title={examPrep.generated ? undefined : "Update the prep sheet in Analysis first"}
+          disabled={!examPrep.available}
+          title={examPrep.available ? undefined : "Save the treatment review in Analysis first"}
           className="flex items-center gap-1.5 rounded-md border border-slate-300 px-2.5 py-1 text-[12px] font-semibold text-slate-600 hover:border-slate-400 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <Printer className="size-3.5" /> Prep sheet
@@ -194,7 +187,19 @@ export default function CockpitShell() {
         </TabGroup>
         <GroupDivider />
         <TabGroup label="REPORT">
-          <PlaceholderTab n={5} label="MMI & Report" />
+          <WorkflowTab
+            to="/p_cases/$caseId/mmi"
+            n={5}
+            status="todo"
+            label="MMI"
+          />
+          <Chevron />
+          <WorkflowTab
+            to="/p_cases/$caseId/report"
+            n={6}
+            status="todo"
+            label="Report"
+          />
         </TabGroup>
       </nav>
 
