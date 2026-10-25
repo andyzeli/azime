@@ -7,7 +7,7 @@ function ProviderCasesHome() {
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-8">
-      <h1 className="text-2xl font-semibold text-slate-900">Provider Cases</h1>
+      <h1 className="text-2xl font-semibold text-slate-900">Physician Workspace</h1>
       <p className="mt-2 text-slate-600">
         Select a case to open the provider cockpit.
       </p>

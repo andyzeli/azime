@@ -1,0 +1,1 @@
+DROP TABLE "gen_report" CASCADE;

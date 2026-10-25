@@ -20,15 +20,6 @@ import {
   billingRoute,
   billingIndexRoute,
 } from "./routes/billing";
-import {
-  mockPreExamRoute,
-  mockRecordsRoute,
-  mockRefinedRoute,
-  mockSummaryRoute,
-  mockVisitRoute,
-  mockupsRoute,
-  mockupsIndexRoute,
-} from "./routes/mockups";
 import { aptRoute, calistRoute, calRoute, listRoute } from "./routes/apts";
 import { contactsRoute } from "./routes/contacts";
 import PatientQuestionnairePatientPage from "./routes/patient/PatientQuestionnairePatientPage";
@@ -54,19 +45,10 @@ const routeTree = rootRoute.addChildren([
     ]),
   ]),
   billingRoute.addChildren([billingIndexRoute, layoutARoute, layoutBRoute]),
-  mockupsRoute.addChildren([
-    mockupsIndexRoute,
-    mockRecordsRoute,
-    mockSummaryRoute,
-    mockPreExamRoute,
-    mockRefinedRoute,
-    mockVisitRoute,
-  ]),
   contactsRoute,
   patientQuestionnaireRoute,
-  indexRoute.addChildren([
-    aptRoute.addChildren([calistRoute.addChildren([calRoute, listRoute])]),
-  ]),
+  indexRoute,
+  aptRoute.addChildren([calistRoute.addChildren([calRoute, listRoute])]),
 ]);
 
 export const queryClient = new QueryClient();

@@ -1,7 +1,7 @@
 import { AmaClassScaleSelector } from "../components/AmaClassScaleSelector";
 import { AmaFindingsCard } from "../components/AmaFindings";
 import { useRef, useState } from "react";
-import { createLazyRoute, Link } from "@tanstack/react-router";
+import { createLazyRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
   useMutation,
   useQueries,
@@ -18,7 +18,6 @@ import {
   Printer,
 } from "lucide-react";
 import {
-  effectiveAmaMode,
   initializeVisitDocumentation,
   currentDiagnoses,
   type AmaMode,
@@ -28,6 +27,7 @@ import {
   isCurrentDiagnosis,
   type RegionDiagnosesResponse,
   type StoredRefinedAnalysis,
+  type AmaTableSelection,
   type VisitAmaHistory,
   type VisitDocumentation,
 } from "@azime/contracts";
@@ -88,13 +88,14 @@ function Tab() {
   const { caseId } = Route.useParams();
   const { record } = Route.useSearch();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const { data: patientCase } = useSuspenseQuery(caseQueryOptions(caseId));
   const { data: visit } = useSuspenseQuery(visitQueryOptions(caseId));
   const { data: questionnaires } = useSuspenseQuery(
     patientQuestionnairesQueryOptions(caseId)
   );
   const examPrep = useExamPrep(caseId, patientCase.regions);
-  const amaMode = effectiveAmaMode(patientCase.caseType, patientCase.amaMode);
+  const amaMode = patientCase.amaMode;
   const canonical = useQueries({
     queries: patientCase.regions.map((r) => canonicalDiagnosesQueryOptions(r)),
   });
@@ -171,10 +172,14 @@ function Tab() {
               regions={diagnosisRegions}
               history={draft.amaHistory}
               assessments={draft.amaAssessments}
+              tableSelections={draft.amaTableSelections}
               amaMode={amaMode}
               dxLabel={dxLabel}
               onChange={(amaHistory, amaAssessments) =>
                 edit((d) => ({ ...d, amaHistory, amaAssessments }))
+              }
+              onTableSelectionsChange={(amaTableSelections) =>
+                edit((d) => ({ ...d, amaTableSelections }))
               }
             />
             <AmaFindingsCard
@@ -247,14 +252,7 @@ function Tab() {
             ) : (
               "Visit ready"
             )}{" "}
-            · run the post-exam analysis per region from{" "}
-            <Link
-              to="/p_cases/$caseId/analysis"
-              params={{ caseId }}
-              className="font-semibold text-blue-700 hover:underline"
-            >
-              Analysis →
-            </Link>
+            · then finish the review and run the post-exam analysis in Analysis
           </span>
           <span className="flex-1" />
           {error ? (
@@ -290,6 +288,18 @@ function Tab() {
             onClick={() => save.mutate()}
           >
             Save visit
+          </Btn>
+          {/* Saves first and stays here if that fails; never runs the post-exam analysis. */}
+          <Btn
+            variant="primary"
+            disabled={save.isPending}
+            onClick={() => {
+              const toAnalysis = () => navigate({ to: "/p_cases/$caseId/analysis", params: { caseId } });
+              if (dirty) save.mutate(undefined, { onSuccess: toAnalysis });
+              else void toAnalysis();
+            }}
+          >
+            {dirty ? "Save & continue to Analysis →" : "Continue to Analysis →"}
           </Btn>
         </footer>
       </main>
@@ -368,17 +378,21 @@ function DiagnosesCard({
   regions,
   history,
   assessments,
+  tableSelections,
   amaMode,
   dxLabel,
   onChange,
+  onTableSelectionsChange,
 }: {
   caseId: string;
   regions: { region: Region; list: RegionDiagnosesResponse }[];
   history: VisitAmaHistory[];
   assessments: AmaAssessment[];
+  tableSelections: AmaTableSelection[];
   amaMode: AmaMode;
   dxLabel: (dx: string) => string;
   onChange: (history: VisitAmaHistory[], assessments: AmaAssessment[]) => void;
+  onTableSelectionsChange: (selections: AmaTableSelection[]) => void;
 }) {
   return (
     <section className="rounded-xl border border-slate-200 bg-white">
@@ -403,9 +417,11 @@ function DiagnosesCard({
           list={list}
           history={history}
           assessments={assessments}
+          tableSelections={tableSelections}
           amaMode={amaMode}
           dxLabel={dxLabel}
           onChange={onChange}
+          onTableSelectionsChange={onTableSelectionsChange}
         />
       ))}
     </section>
@@ -418,19 +434,23 @@ function RegionDiagnoses({
   list,
   history,
   assessments,
+  tableSelections,
   amaMode,
   dxLabel,
   onChange,
+  onTableSelectionsChange,
 }: {
   caseId: string;
   region: Region;
   list: RegionDiagnosesResponse;
   history: VisitAmaHistory[];
   assessments: AmaAssessment[];
+  tableSelections: AmaTableSelection[];
   // off: no AMA at all (saved assessments are kept, just not shown); guidance: rows, no rating tables.
   amaMode: AmaMode;
   dxLabel: (dx: string) => string;
   onChange: (history: VisitAmaHistory[], assessments: AmaAssessment[]) => void;
+  onTableSelectionsChange: (selections: AmaTableSelection[]) => void;
 }) {
   const current = list.diagnoses.filter(isCurrentDiagnosis);
   const excluded = list.diagnoses.filter((d) => !isCurrentDiagnosis(d));
@@ -484,6 +504,9 @@ function RegionDiagnoses({
         const rootRows = rows.filter((r) => r.nerve_roots.length);
         const otherRows = rows.filter((r) => !r.nerve_roots.length);
         const answered = historyOf(dx);
+        // Rated tables need the history answer too (myelopathy has tables only).
+        const ratedTables =
+          amaMode === "rating" && !!candidateFor(dx)?.candidateTableIds.length;
         return (
           <div key={dx} className="py-1">
             <div className="flex items-center gap-2 text-[12.5px]">
@@ -494,21 +517,22 @@ function RegionDiagnoses({
             </div>
             {candidates.data && amaMode === "rating" ? (
               <AmaClassScaleSelector
-                key={`${caseId}:${region}:${dx}`}
+                region={region}
+                dx={dx}
                 tables={candidates.data.ratingTables.filter((table) =>
                   candidateFor(dx)?.candidateTableIds.includes(table.table_id)
                 )}
+                selections={tableSelections}
+                onChange={onTableSelectionsChange}
               />
             ) : null}
             {candidates.data ? (
               <div className="ml-3 mt-1.5 flex flex-col gap-2 border-l-2 border-slate-100 pl-3 text-[12px]">
-                {!rows.length ? (
+                {!rows.length && !ratedTables ? (
                   candidateFor(dx)?.candidateTableIds.length ? (
-                    amaMode === "rating" ? null : (
-                      <span className="text-slate-400">
-                        Rating tables only (no rating requested).
-                      </span>
-                    )
+                    <span className="text-slate-400">
+                      Rating tables only (no rating requested).
+                    </span>
                   ) : (
                     <span className="text-slate-400">
                       No mapped AMA reference.

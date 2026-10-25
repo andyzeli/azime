@@ -13,8 +13,8 @@ export function AmaRatingTablesPrep({ tables }: { tables: AmaRatingTable[] }) {
     setSelected(selected.includes(id) ? selected.filter((s) => s !== id) : [...selected, id]);
 
   return (
-    <div className="border-b border-slate-100 px-4 py-3">
-      <div className="mb-1.5 flex items-baseline gap-2">
+    <div className="prep-rating-tables border-b border-slate-100 px-4 py-3">
+      <div className="prep-task-heading mb-1.5 flex items-baseline gap-2">
         <h3 className="text-[10.5px] font-bold tracking-[.05em] text-slate-500 uppercase">Rating tables</h3>
         <span className="text-[11px] text-slate-400 print:hidden">
           {selected.length ? (
@@ -45,7 +45,7 @@ export function AmaRatingTablesPrep({ tables }: { tables: AmaRatingTable[] }) {
       </div>
       <ul className="flex flex-col gap-2">
         {visible.map((t) => (
-          <li key={t.table_id} className="text-[12.5px]">
+          <li key={t.table_id} className="prep-rating-table text-[12.5px]">
             <div className="font-semibold text-slate-900">{t.description}</div>
             <div className="text-[12px] text-slate-600">
               {[...t.class_options].sort((a, b) => a.value - b.value).map((o) => `${o.value} ${o.label}`).join(" · ")}

@@ -81,7 +81,7 @@ function Tab() {
       setCopyStatus("failed");
     }
   };
-  // TEMP: Generate copies the model's input instead of drafting.
+  // Inspection uses the same input and prompts as generation.
   const dryRun = useMutation({
     mutationFn: () => generateCaseReportDryRun(caseId),
     onMutate: () => setCopyStatus("idle"),
@@ -118,9 +118,8 @@ function Tab() {
         ) : (
           <Blockers caseId={caseId} blockers={data.blockers} />
         )}
-        {dryRun.data ? (
-          <DryRun result={dryRun.data} />
-        ) : latest ? (
+        {dryRun.data ? <ReportInputInspection result={dryRun.data} /> : null}
+        {latest ? (
           <Review
             report={latest}
             outOfDate={outOfDate}
@@ -151,22 +150,40 @@ function Tab() {
         {copyStatus === "failed" && dryRun.data ? (
           <Btn onClick={() => void copyInput(dryRun.data.input)}>Copy JSON</Btn>
         ) : null}
+        {generate.isError ? (
+          <span role="alert" className="text-[11px] font-semibold text-red-700">
+            {apiErrorMessage(generate.error)}
+          </span>
+        ) : null}
         <Btn
-          variant="primary"
           disabled={
-            !data?.input || dryRun.isPending || copyStatus === "copying"
+            !data?.input ||
+            dryRun.isPending ||
+            generate.isPending ||
+            copyStatus === "copying"
           }
           onClick={() => dryRun.mutate()}
         >
           {dryRun.isPending ? "Assembling…" : "Generate draft (dry run)"}
+        </Btn>
+        <Btn
+          variant="primary"
+          disabled={!data?.input || generate.isPending || dryRun.isPending}
+          onClick={() => generate.mutate()}
+        >
+          {generate.isPending
+            ? "Generating draft…"
+            : latest
+              ? "Regenerate draft"
+              : "Generate draft"}
         </Btn>
       </footer>
     </main>
   );
 }
 
-// TEMP: the model's input in place of the draft.
-function DryRun({
+// Inspect the exact prompts while retaining the report below.
+function ReportInputInspection({
   result,
 }: {
   result: {
@@ -331,7 +348,7 @@ function BlockerLink({
           params={{ caseId }}
           className={className}
         >
-          MMI →
+          Opinions →
         </Link>
       );
   }

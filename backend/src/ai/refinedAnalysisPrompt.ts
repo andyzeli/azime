@@ -27,9 +27,9 @@ INPUT DOMAIN ORIENTATION
   in medical records, incorporating physician review and additions where provided.
   
   - treatmentIssues: Treatments with unclear applicability, or applicable treatments
-    assessed as not tried, inadequately trialed, or unclear in adequacy.
+    whose exhaustion is not_exhausted or unclear.
 
-  - treatmentContext: Compact entries for applicable + adequately trialed treatments.
+  - treatmentContext: Compact entries for applicable, exhausted treatments.
     recordDetail describes the documented course or response when available.
 
   - treatmentNotes: Treatment-specific physician comments.
@@ -39,12 +39,15 @@ INPUT DOMAIN ORIENTATION
   - inconsistencies and evidenceGaps: Retained issues from that analysis, with
     physician comments when present.
 
-  Each treatment assessment applies to its named diagnosis (canonicalDx). Its value
-  and rationale contain the current judgment; source and reviewStatus indicate
+  Each applicability assessment applies to its named diagnosis (canonicalDx). Each
+  treatment has one exhaustion judgment across its applicable diagnoses: exhausted
+  (further use is unlikely to give meaningful additional improvement), not_exhausted
+  (a relevant, feasible opportunity remains insufficiently explored) or unclear.
+  Value and rationale contain the current judgment; source and reviewStatus indicate
   origin and review state. Unreviewed does not mean physician agreement.
   recordStatus and recordDetail describe documented care; inclusion in this selected
   treatment analysis does not mean a treatment was administered or is recommended.
-  An adequate trial alone does not establish benefit, failure, or treatment exhaustion.
+  Exhaustion does not establish that a treatment helped, failed, or is or is not recommended.
 
 ANALYSIS RULES
 

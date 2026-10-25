@@ -45,9 +45,6 @@ export function validatePhysicianSteeringReferences(
 
   const addedIds = new Set<string>();
   const diagnoses = new Set(snapshot.scope.diagnoses);
-  const episodeIds = new Set(
-    snapshot.treatmentEpisodes.map((episode) => episode.id),
-  );
   const taxonomyIds = new Set(
     snapshot.ladder.map((entry) => entry.treatmentId),
   );
@@ -71,9 +68,6 @@ export function validatePhysicianSteeringReferences(
     for (const diagnosis of Object.keys(treatment.assessments)) {
       if (!diagnoses.has(diagnosis))
         invalid(`Diagnosis is outside the snapshot scope: ${diagnosis}`);
-    }
-    for (const id of treatment.episodeIds) {
-      if (!episodeIds.has(id)) invalid(`Unknown treatment episode: ${id}`);
     }
   }
 }

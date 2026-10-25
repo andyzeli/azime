@@ -6,7 +6,7 @@ import { amaAssessmentProblems } from "../dist/ama/assessments.js";
 import { freezeAmaFindings } from "../dist/ama/findings.js";
 
 const rows = new Map(
-  JSON.parse(await readFile(new URL("../../docs/ama-spine.upload.json", import.meta.url), "utf8")).map((row) => [
+  JSON.parse(await readFile(new URL("../reference-data/ama-rows/spine.json", import.meta.url), "utf8")).map((row) => [
     row.row_id,
     { ...row, region_id: normalizeAmaRegion(row.region_id) },
   ]),
@@ -113,7 +113,6 @@ test("old visits parse: diagnosis reviews dropped, no assessments, no history an
     note: "",
     pdqId: null,
     includedQuestionnaireIds: [],
-    priorityResponses: [],
     diagnosisReviews: [
       { region: "lumbar_spine", canonicalDx: "x", status: "confirmed", note: null, refinedUpdatedAt: "t" },
     ],

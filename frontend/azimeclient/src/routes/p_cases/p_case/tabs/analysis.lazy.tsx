@@ -40,7 +40,6 @@ import {
   visitQueryOptions,
   type PreExamSnapshotResponse,
 } from "../../../cases/queries";
-import { AmaModeControl } from "../components/AmaExamTasks";
 import { DiagnosisList } from "../components/DiagnosisList";
 import { useExamPrepModal } from "../components/ExamPrepModal";
 import { RecordDrawer } from "../components/RecordDetail";
@@ -74,7 +73,7 @@ type StoredWithAnalysis = PreExamAnalysisResponse & {
 
 const applicabilityLabel: Record<Applicability, string> = {
   applicable: "Applicable",
-  not_applicable: "Not applicable",
+  not_applicable: "Not appropriate or applicable",
   contraIndicated: "Contraindicated",
   unclear: "Unclear",
 };
@@ -188,7 +187,9 @@ function Tab() {
               const saved = savedSteeringFor(stored, steeringQueries[i].data);
               const rows = scopedRows(
                 stored?.analysis?.treatmentAnalysis ?? [],
-                (diagnosesQueries[i].data?.diagnoses ?? []).map((d) => d.canonicalDx)
+                (diagnosesQueries[i].data?.diagnoses ?? []).map(
+                  (d) => d.canonicalDx
+                )
               );
               const reviewed = rows.filter((row) =>
                 isRowReviewed(row, saved?.steering.treatments[row.id])
@@ -217,14 +218,6 @@ function Tab() {
               );
             })}
             <span className="flex-1" />
-            {/* Case-level: also controls Visit and the report, so it is shown here, not only on the prep sheet. */}
-            <span className="self-center pb-1">
-              <AmaModeControl
-                caseId={caseId}
-                caseType={patientCase.caseType}
-                amaMode={patientCase.amaMode}
-              />
-            </span>
           </div>
         </div>
         <Suspense
@@ -296,30 +289,21 @@ function RegionAnalysis({
         queryKey: ["physicianSteering", { caseId, region }],
       }),
     ]);
-  const snapshotMutation = useMutation({
-    mutationFn: () => takePreExamSnapshot(caseId, region),
-    onSuccess: invalidate,
-  });
+  // One action for the physician: freeze the current records and diagnoses (the input
+  // snapshot), then run 3A on them. A re-run therefore always reads the latest records.
   const analysisMutation = useMutation({
-    mutationFn: () => generatePreExamAnalysis(caseId, region),
-    onSuccess: invalidate,
+    mutationFn: async () => {
+      await takePreExamSnapshot(caseId, region);
+      return generatePreExamAnalysis(caseId, region);
+    },
+    onSettled: invalidate,
   });
 
-  const takeSnapshot = () => {
-    if (
-      stored?.analysis &&
-      !window.confirm(
-        "A new snapshot clears this region's analysis and steering. Continue?"
-      )
-    )
-      return;
-    snapshotMutation.mutate();
-  };
   const runAnalysis = () => {
     if (
       stored?.analysis &&
       !window.confirm(
-        "Re-running the analysis replaces the treatment rows. Saved steering for this region will be discarded. Continue?"
+        "Re-running reads the latest records and replaces the treatment rows. Your saved treatment review for this region will be discarded. Continue?"
       )
     )
       return;
@@ -339,20 +323,11 @@ function RegionAnalysis({
           addable={canonical.filter(
             (d) => !list.diagnoses.some((x) => x.canonicalDx === d.canonicalDx)
           )}
-          analyzedCount={snapshot?.scope.diagnoses.length ?? 0}
-          hasSnapshot={snapshot !== null}
           hasCurrent={listed.length > 0}
           needsAnalysis={needsAnalysis}
-          snapshotPending={snapshotMutation.isPending}
           analysisPending={analysisMutation.isPending}
-          onSnapshot={takeSnapshot}
           onRun={runAnalysis}
         />
-        {snapshotMutation.isError ? (
-          <p className="mt-2 text-red-700">
-            Snapshot failed: {apiErrorMessage(snapshotMutation.error)}
-          </p>
-        ) : null}
         {analysisMutation.isError ? (
           <p className="mt-2 text-red-700">
             Analysis failed: {apiErrorMessage(analysisMutation.error)}
@@ -362,7 +337,7 @@ function RegionAnalysis({
 
       {stored?.analysis ? (
         <Suspense
-          fallback={<p className="p-5 text-slate-500">Loading steering…</p>}
+          fallback={<p className="p-5 text-slate-500">Loading review…</p>}
         >
           {/* Remount when the analysis run changes so drafts reset. */}
           <AnalysisReview
@@ -382,7 +357,7 @@ function RegionAnalysis({
               No analysis for {regionLabel(region)} yet
             </div>
             <p className="mt-1">
-              Set the diagnoses, take a snapshot, then run the analysis.
+              Set the diagnoses, then run the analysis.
             </p>
           </div>
         </div>
@@ -428,7 +403,8 @@ function AnalysisReview({
   const [filter, setFilter] = useState<"all" | "unreviewed" | "pruned">("all");
   const [adding, setAdding] = useState(false);
 
-  const edit = (fn: (d: PhysicianSteering) => PhysicianSteering) => setDraft(fn);
+  const edit = (fn: (d: PhysicianSteering) => PhysicianSteering) =>
+    setDraft(fn);
   const discard = () => {
     setDraft(baseline);
     setResetCount((n) => n + 1);
@@ -463,7 +439,8 @@ function AnalysisReview({
   const analyzeMutation = useMutation({
     mutationFn: async () => {
       if (dirty) await saveMutation.mutateAsync();
-      for (const dx of notAnalyzed) await analyzeAddedDiagnosis(caseId, region, dx);
+      for (const dx of notAnalyzed)
+        await analyzeAddedDiagnosis(caseId, region, dx);
     },
     onSettled: () =>
       Promise.all(
@@ -487,7 +464,12 @@ function AnalysisReview({
   const prunedCount = rows.filter(
     (row) => draft.treatments[row.id]?.disposition === "prune"
   ).length;
-  const prepStatus = examPrepStatus(refined, saved, list, stored.analyzedDiagnoses);
+  const prepStatus = examPrepStatus(
+    refined,
+    saved,
+    list,
+    stored.analyzedDiagnoses
+  );
   const prepCurrent =
     prepStatus.kind === "current" && !dirty && !examPrepMutation.isPending;
   const missingRationale = Object.values(draft.treatments).some(
@@ -613,9 +595,8 @@ function AnalysisReview({
               <span className="flex-1">
                 <b>{notAnalyzed.map(lookups.dxLabel).join(", ")}</b>{" "}
                 {notAnalyzed.length === 1 ? "isn't" : "aren't"} in this analysis
-                yet. Analyzing adds{" "}
-                {notAnalyzed.length === 1 ? "it" : "them"} to every treatment
-                and keeps your review.
+                yet. Analyzing adds {notAnalyzed.length === 1 ? "it" : "them"}{" "}
+                to every treatment and keeps your review.
                 {analyzeMutation.isError ? (
                   <span className="ml-2 font-semibold text-red-700">
                     {apiErrorMessage(analyzeMutation.error)}
@@ -791,7 +772,9 @@ function AnalysisReview({
             {readiness.map((item) => (
               <span
                 key={item.label}
-                className={item.ok ? "text-slate-500" : "font-semibold text-amber-700"}
+                className={
+                  item.ok ? "text-slate-500" : "font-semibold text-amber-700"
+                }
               >
                 {item.ok ? "✓" : "○"} {item.label}
               </span>
@@ -808,23 +791,23 @@ function AnalysisReview({
           </span>
         ) : (
           <>
-          <div className="h-1.5 w-44 overflow-hidden rounded bg-slate-200">
-            <div
-              className="h-full bg-blue-600 transition-all"
-              style={{
-                width: `${rows.length ? (reviewedCount / rows.length) * 100 : 0}%`,
-              }}
-            />
-          </div>
-          <span className="text-[11px] text-slate-500">
-            <b className="text-slate-900">
-              {reviewedCount} of {rows.length}
-            </b>{" "}
-            treatments reviewed
-            {rows.length - reviewedCount
-              ? ` · ${rows.length - reviewedCount} unreviewed`
-              : ""}
-          </span>
+            <div className="h-1.5 w-44 overflow-hidden rounded bg-slate-200">
+              <div
+                className="h-full bg-blue-600 transition-all"
+                style={{
+                  width: `${rows.length ? (reviewedCount / rows.length) * 100 : 0}%`,
+                }}
+              />
+            </div>
+            <span className="text-[11px] text-slate-500">
+              <b className="text-slate-900">
+                {reviewedCount} of {rows.length}
+              </b>{" "}
+              treatments reviewed
+              {rows.length - reviewedCount
+                ? ` · ${rows.length - reviewedCount} unreviewed`
+                : ""}
+            </span>
           </>
         )}
         <span className="flex-1" />
@@ -870,12 +853,13 @@ function AnalysisReview({
           disabled={!dirty || busy || missingRationale}
           onClick={() => saveMutation.mutate()}
         >
-          Save steering
+          Save review
         </Btn>
-        {/* Before the visit, review is optional; the prep sheet is the useful next thing. */}
-        {visit ? null : (
+        {/* Before the visit, review is optional; the prep sheet is the useful next thing.
+            After it, the button stays only while no sheet exists, so one can still be created. */}
+        {visit && refined?.analysis ? null : (
           <Btn
-            variant="primary"
+            variant={visit ? "default" : "primary"}
             disabled={busy || prepCurrent || missingRationale}
             onClick={() => examPrepMutation.mutate()}
           >
@@ -956,13 +940,9 @@ function SetupStrip({
   lookups,
   list,
   addable,
-  analyzedCount,
-  hasSnapshot,
   hasCurrent,
   needsAnalysis,
-  snapshotPending,
   analysisPending,
-  onSnapshot,
   onRun,
 }: {
   caseId: string;
@@ -972,29 +952,14 @@ function SetupStrip({
   lookups: Lookups;
   list: RegionDiagnosesResponse;
   addable: CanonicalDiagnosis[];
-  analyzedCount: number;
-  hasSnapshot: boolean;
   hasCurrent: boolean;
   needsAnalysis: string[];
-  snapshotPending: boolean;
   analysisPending: boolean;
-  onSnapshot: () => void;
   onRun: () => void;
 }) {
-  const busy = snapshotPending || analysisPending;
-  const outdated = hasSnapshot && needsAnalysis.length > 0;
-  // The stored row's updatedAt is bumped by both snapshot and analysis.
   // With a run, uncovered diagnoses are analyzed into it (bar above the treatments);
-  // a new snapshot is the full redo. Without one, the snapshot must include them.
-  const snapshotStatus = outdated
-    ? stored?.analysis
-      ? `Not covered: ${needsAnalysis.map(lookups.dxLabel).join(", ")} — analyze below, or take a new snapshot to redo everything`
-      : `Not covered: ${needsAnalysis.map(lookups.dxLabel).join(", ")} — take a new snapshot`
-    : !hasSnapshot
-      ? "No snapshot yet"
-      : stored?.analysis
-        ? `${analyzedCount} dx`
-        : `${stored ? formatTime(stored.updatedAt) : "Taken"} · ${analyzedCount} dx`;
+  // a re-run is the full redo. Without a run, running covers every listed diagnosis.
+  const outdated = Boolean(stored?.analysis) && needsAnalysis.length > 0;
 
   return (
     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 rounded-b-xl border border-t-0 border-slate-200 bg-white px-4 py-3.5">
@@ -1002,8 +967,8 @@ function SetupStrip({
         <div className="mb-2 flex items-center">
           <b>Diagnoses</b>
           <span className="ml-2 text-[11px] text-slate-500">
-            from records, or add one · working and supported ones are in scope
-            · set a conclusion any time, before or after the exam
+            from records, or add one · working and supported ones are in scope ·
+            set a conclusion any time, before or after the exam
           </span>
         </div>
         <DiagnosisList
@@ -1019,44 +984,18 @@ function SetupStrip({
       </div>
 
       <div className="w-[340px] border-l border-slate-200 pl-4">
-        <div className="mb-2 text-[11px] font-semibold text-slate-500">
-          Treatment analysis
-        </div>
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-start gap-2.5">
           <div className="flex-1">
-            <b>Snapshot</b>
-            <div
-              className={cn(
-                "mt-1 text-[11px]",
-                outdated ? "font-semibold text-amber-700" : "text-slate-500"
-              )}
-            >
-              {snapshotStatus}
-            </div>
-          </div>
-          <Btn
-            onClick={onSnapshot}
-            disabled={!hasCurrent || busy}
-            className={cn(
-              outdated && !stored?.analysis && "border-amber-400 bg-amber-50"
-            )}
-          >
-            {snapshotPending ? "Taking…" : "Take snapshot"}
-          </Btn>
-        </div>
-        <div className="mt-2.5 flex items-center gap-2.5">
-          <div className="flex-1">
-            <b>Analysis</b>
-            <div className="mt-1 text-[11px] text-slate-500">
-              {stored?.analysis
-                ? `Ran ${formatTime(stored.updatedAt)} · ${stored.analysis.treatmentAnalysis.length} treatments`
-                : "Not run"}
-            </div>
+            <b>Treatment analysis</b>
+            <p className="mt-0.5 text-[11px] leading-snug text-slate-500">
+              Treatments documented in the records, plus suggestions from care
+              standards, for the diagnoses in scope.
+            </p>
           </div>
           <Btn
             variant={stored?.analysis ? "default" : "primary"}
             onClick={onRun}
-            disabled={!stored?.hasInputSnapshot || outdated || busy}
+            disabled={!hasCurrent || analysisPending}
           >
             {analysisPending
               ? "Running…"
@@ -1064,6 +1003,18 @@ function SetupStrip({
                 ? "Re-run analysis"
                 : "Run analysis"}
           </Btn>
+        </div>
+        <div
+          className={cn(
+            "mt-1.5 text-[11px]",
+            outdated ? "font-semibold text-amber-700" : "text-slate-500"
+          )}
+        >
+          {outdated
+            ? `Not covered: ${needsAnalysis.map(lookups.dxLabel).join(", ")}. Analyze below, or re-run to redo everything.`
+            : stored?.analysis
+              ? `Ran ${formatTime(stored.updatedAt)} · ${stored.analysis.treatmentAnalysis.length} treatments`
+              : "Not run yet"}
         </div>
       </div>
     </div>
@@ -1096,7 +1047,11 @@ const agreeAll = (
     assessments: Object.fromEntries(
       row.assessments.map(({ canonicalDx }) => [
         canonicalDx,
-        { applicability: keep(steering.assessments?.[canonicalDx]?.applicability) },
+        {
+          applicability: keep(
+            steering.assessments?.[canonicalDx]?.applicability
+          ),
+        },
       ])
     ),
     exhaustion: keep(steering.exhaustion),
@@ -1158,9 +1113,17 @@ function TreatmentRowView({
   ) =>
     onChange((r) => {
       const filled = agreeAll(row, r, true);
-      return { ...r, ...filled, disposition: r.disposition ?? "keep", ...fn(filled) };
+      return {
+        ...r,
+        ...filled,
+        disposition: r.disposition ?? "keep",
+        ...fn(filled),
+      };
     });
-  const setApplicability = (dx: string, review: AssessmentSteering["applicability"]) =>
+  const setApplicability = (
+    dx: string,
+    review: AssessmentSteering["applicability"]
+  ) =>
     edit((filled) => ({
       assessments: { ...filled.assessments, [dx]: { applicability: review } },
     }));
@@ -1374,12 +1337,20 @@ function AddedTreatmentRow({
   ) =>
     onChange((t) => ({
       ...t,
-      assessments: { ...t.assessments, [dx]: { ...t.assessments[dx], ...patch } },
+      assessments: {
+        ...t.assessments,
+        [dx]: { ...t.assessments[dx], ...patch },
+      },
     }));
   const select =
     "rounded-md border border-slate-300 bg-white px-1 py-0.5 text-[11px]";
   return (
-    <div className={cn(gridCols, "items-start border-b border-slate-200 px-4 py-3")}>
+    <div
+      className={cn(
+        gridCols,
+        "items-start border-b border-slate-200 px-4 py-3"
+      )}
+    >
       <span />
       <div>
         <span className="text-[13px] font-semibold">{treatment.treatment}</span>
@@ -1408,7 +1379,9 @@ function AddedTreatmentRow({
             <select
               value={a.applicability}
               onChange={(e) =>
-                setAssessment(dx, { applicability: e.target.value as Applicability })
+                setAssessment(dx, {
+                  applicability: e.target.value as Applicability,
+                })
               }
               className={select}
             >
@@ -1432,7 +1405,10 @@ function AddedTreatmentRow({
         <select
           value={treatment.exhaustion}
           onChange={(e) =>
-            onChange((t) => ({ ...t, exhaustion: e.target.value as Exhaustion }))
+            onChange((t) => ({
+              ...t,
+              exhaustion: e.target.value as Exhaustion,
+            }))
           }
           className={select}
         >
@@ -1489,10 +1465,7 @@ function AddTreatmentForm({
       treatment: match?.treatment ?? name.trim(),
       category: match?.category ?? category,
       assessments: Object.fromEntries(
-        dxs.map((dx) => [
-          dx,
-          { applicability: "applicable", rationale: "" },
-        ])
+        dxs.map((dx) => [dx, { applicability: "applicable", rationale: "" }])
       ),
       exhaustion: "not_exhausted",
       exhaustionRationale: "",
@@ -1672,7 +1645,9 @@ function ReviewEditor<T extends string>({
         {override ? (
           <textarea
             value={override.rationale}
-            onChange={(e) => onChange({ ...override, rationale: e.target.value })}
+            onChange={(e) =>
+              onChange({ ...override, rationale: e.target.value })
+            }
             placeholder="Why do you disagree? (required)"
             className="mt-1.5 h-14 w-full resize-none rounded-md border-[1.5px] border-violet-300 bg-white px-2 py-1.5 outline-none focus:border-violet-500"
           />

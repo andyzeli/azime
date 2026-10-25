@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { caseQueryOptions, updateReferralQuestions } from "../../../queries";
+import AmaModeSelect from "./AmaModeSelect";
 import { CockpitSection } from "./CockpitLayout";
 
 // "1.", "1)", "(1)", "a.", "b)", "Q1:", "Question 2 -", bullets.
@@ -56,9 +57,10 @@ export default function ReferralQuestionsPanel({ caseId }: { caseId: string }) {
   return (
     <CockpitSection
       id="referral-questions"
-      title="Referral Questions"
-      description="Paste the questions from the referral. The final report answers each one."
+      title="Referral"
+      description="What the referral asks for. The final report answers each question."
     >
+      <AmaModeSelect caseId={caseId} />
       {questions.length ? (
         <ol className="mb-4 space-y-2">
           {questions.map((question, index) => (

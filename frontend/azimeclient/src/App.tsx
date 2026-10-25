@@ -1,6 +1,4 @@
 import { Link, Outlet, useLocation } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { fetchMessage } from "./routes/cases/queries";
 
 export function RootComponent() {
   const location = useLocation();
@@ -28,7 +26,7 @@ export function RootComponent() {
                 className: "font-bold",
               }}
             >
-              Patient Cases
+              Case Intake
             </Link>{" "}
             <Link
               to="/billing"
@@ -47,29 +45,12 @@ export function RootComponent() {
               Contacts
             </Link>{" "}
             <Link
-              to="/mockups"
-              activeProps={{
-                className: "font-bold",
-              }}
-            >
-              Mockups
-            </Link>{" "}
-            <Link
-              // @ts-expect-error
-              to="/this-route-does-not-exist"
-              activeProps={{
-                className: "font-bold",
-              }}
-            >
-              This Route Does Not Exist
-            </Link>
-            <Link
               to="/p_cases"
               activeProps={{
                 className: "font-bold",
               }}
             >
-              Provider Cases
+              Physician Workspace
             </Link>{" "}
           </div>
           <hr />
@@ -79,22 +60,6 @@ export function RootComponent() {
       {/* <ReactQueryDevtools buttonPosition="top-right" />
       <TanStackRouterDevtools position="bottom-right" /> */}
     </>
-  );
-}
-
-export function IndexRouteComponent() {
-  const mq = useQuery({
-    queryKey: ["foo"],
-    queryFn: () => fetchMessage(),
-  });
-  const m = mq.data;
-  console.log(m);
-  if (!m) return <>loading</>;
-  return (
-    <div className="p-2">
-      <h3>Welcome Home! {m.message} </h3>
-      <Outlet />
-    </div>
   );
 }
 

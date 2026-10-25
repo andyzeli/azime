@@ -1,0 +1,341 @@
+.prep-priorities {
+  counter-reset: prep-priority;
+}
+
+.prep-priority {
+  counter-increment: prep-priority;
+}
+
+.prep-priority-number::before {
+  content: counter(prep-priority);
+}
+
+/* The same document works in the isolated print frame and with browser Print. */
+@media print {
+  body:has([data-prep-document]) {
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  [data-prep-sheet] {
+    position: static !important;
+    display: block !important;
+    height: auto !important;
+    max-height: none !important;
+    transform: none !important;
+    border-radius: 0 !important;
+  }
+
+  [data-prep-document] {
+    display: block;
+    width: 100%;
+    color: #17212b;
+    background: white;
+    font: 9pt / 1.35 Arial, Helvetica, sans-serif;
+    counter-reset: prep-section;
+  }
+
+  [data-prep-document] * {
+    color: inherit;
+    background: transparent !important;
+    font-size: inherit;
+    line-height: inherit;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  [data-prep-document] p {
+    orphans: 3;
+    widows: 3;
+  }
+
+  [data-prep-document] .prep-print-header {
+    margin-bottom: 5mm;
+    padding-bottom: 3mm;
+    border-bottom: 1.5pt solid #17212b;
+    break-inside: avoid;
+  }
+
+  .prep-print-header > p {
+    margin: 0 0 1mm;
+    font-size: 7.5pt;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .prep-print-header > h1 {
+    margin: 0 0 1mm;
+    font-size: 21pt;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+
+  .prep-print-header > div {
+    font-size: 8pt;
+    color: #4b5563;
+  }
+
+  [data-prep-document] > section {
+    margin-top: 4mm;
+    counter-increment: prep-section;
+  }
+
+  [data-prep-document] .prep-section-heading {
+    display: block;
+    margin-bottom: 2mm;
+    padding-bottom: 1mm;
+    border-bottom: 0.5pt solid #9ca3af;
+    break-after: avoid;
+  }
+
+  .prep-section-heading > h2 {
+    font-size: 9pt;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .prep-section-heading > h2::before {
+    content: counter(prep-section, decimal-leading-zero) "  /  ";
+    color: #6b7280;
+  }
+
+  .prep-section-heading > span {
+    display: none;
+  }
+
+  [data-prep-document] .prep-trajectory {
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+  }
+
+  [data-prep-document] .prep-trajectory-head,
+  [data-prep-document] .prep-trajectory-row {
+    grid-template-columns: 24mm repeat(3, minmax(0, 1fr));
+    break-inside: avoid;
+  }
+
+  .prep-trajectory-head > span,
+  .prep-trajectory-row > div {
+    padding: 2mm;
+  }
+
+  .prep-trajectory-head > span {
+    font-size: 7pt;
+    letter-spacing: 0.03em;
+  }
+
+  .prep-trajectory-head > span > span {
+    display: block;
+    font-weight: 400;
+    text-transform: none;
+  }
+
+  .prep-trajectory-row > div:first-child {
+    padding-left: 0;
+  }
+
+  .prep-trajectory-cell > div {
+    gap: 1mm 2mm;
+  }
+
+  [data-prep-document] .prep-direction {
+    padding: 0;
+    font-weight: 700;
+  }
+
+  .prep-direction > svg,
+  .prep-evidence-bars {
+    display: none;
+  }
+
+  [data-prep-document] .prep-evidence {
+    font-size: 7pt;
+    color: #4b5563;
+  }
+
+  .prep-evidence::after {
+    content: " evidence";
+  }
+
+  .prep-trajectory-cell > p {
+    margin-top: 1mm;
+    font-size: 8pt;
+  }
+
+  [data-prep-document] .prep-priorities {
+    display: block;
+  }
+
+  [data-prep-document] .prep-priority {
+    gap: 2mm;
+    padding: 2mm 0;
+    border: 0;
+    border-bottom: 0.5pt solid #d1d5db;
+    border-radius: 0;
+    break-inside: avoid;
+  }
+
+  [data-prep-document] .prep-priority-number {
+    width: 4mm;
+    height: auto;
+    display: block;
+    border-radius: 0;
+  }
+
+  [data-prep-document] .prep-approach {
+    margin-top: 1mm;
+    padding: 0 0 0 2mm;
+    border-left: 1pt solid #9ca3af;
+    border-radius: 0;
+    font-size: 8pt;
+  }
+
+  .prep-approach > svg {
+    display: none;
+  }
+
+  [data-prep-document] .prep-ama-regions {
+    display: block;
+  }
+
+  [data-prep-document] .prep-ama-region {
+    margin-top: 3mm;
+    border: 0;
+    border-radius: 0;
+  }
+
+  [data-prep-document] .prep-region-heading {
+    padding: 0 0 1mm;
+    font-size: 10pt;
+    break-after: avoid;
+  }
+
+  [data-prep-document] .prep-diagnoses {
+    padding: 1mm 0 2mm;
+    gap: 1mm;
+    break-after: avoid;
+    break-inside: avoid;
+  }
+
+  .prep-diagnoses > span:not(.print\:hidden) {
+    padding: 0;
+    font-size: 7.5pt;
+    font-weight: 400;
+  }
+
+  .prep-diagnoses > span + span::before {
+    content: "· ";
+  }
+
+  [data-prep-document] .prep-task-groups {
+    display: block;
+    padding: 2mm 0 0;
+  }
+
+  .prep-task-groups > div {
+    margin-bottom: 3mm;
+  }
+
+  [data-prep-document] .prep-task-heading {
+    display: block;
+    margin-bottom: 1.5mm;
+    break-after: avoid;
+    break-inside: avoid;
+  }
+
+  .prep-task-heading > h3 {
+    font-size: 7.5pt;
+    font-weight: 700;
+  }
+
+  .prep-task-heading > span:not(.print\:hidden) {
+    display: block;
+    font-size: 7pt;
+    color: #4b5563;
+  }
+
+  .prep-task-groups ul,
+  .prep-rating-tables > ul {
+    display: block;
+  }
+
+  .prep-task-groups .prep-exam-items {
+    columns: 2;
+    column-gap: 6mm;
+    column-rule: 0.5pt solid #d1d5db;
+  }
+
+  [data-prep-document] .prep-task {
+    gap: 1.5mm;
+    margin-bottom: 2mm;
+    break-inside: avoid;
+  }
+
+  [data-prep-document] .prep-checkbox {
+    width: 2.5mm;
+    height: 2.5mm;
+    margin-top: 0.5mm;
+    border: 0.5pt solid #6b7280;
+    border-radius: 0;
+  }
+
+  [data-prep-document] .prep-sources {
+    max-width: 30%;
+    gap: 0 1mm;
+  }
+
+  [data-prep-document] .prep-source {
+    padding: 0;
+    font-size: 7pt;
+    font-weight: 400;
+    color: #4b5563;
+  }
+
+  [data-prep-document] details {
+    margin-top: 1mm;
+  }
+
+  /* Also reveal native details for browser Print, outside the isolated print action. */
+  [data-prep-document] details::details-content {
+    content-visibility: visible;
+  }
+
+  [data-prep-document] details > summary {
+    display: none;
+  }
+
+  [data-prep-document] details > :not(summary) {
+    margin-top: 0;
+    font-size: 8pt;
+    color: #4b5563;
+  }
+
+  [data-prep-document] .prep-rating-tables {
+    padding: 2mm 0;
+  }
+
+  .prep-rating-table {
+    margin-bottom: 3mm;
+  }
+
+  [data-prep-document] .prep-rating-note {
+    margin: 2mm 0;
+    font-size: 8pt;
+    color: #4b5563;
+    break-inside: avoid;
+  }
+
+  .prep-rating-table p {
+    break-inside: avoid;
+  }
+
+  [data-prep-document] .prep-provenance {
+    margin-top: 4mm;
+    padding-top: 2mm;
+    font-size: 7pt;
+    color: #4b5563;
+    break-inside: avoid;
+  }
+}

@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import {
-  effectiveAmaMode,
   type AmaNotRatedReason,
   type AmaZeroReason,
   type AmaRegionRating,
@@ -46,14 +45,11 @@ export function AmaImpairment({ caseId, region }: { caseId: string; region: Regi
   const { data: patientCase } = useQuery(caseQueryOptions(caseId));
   const rating = useQuery({
     ...amaRatingQueryOptions(caseId, region),
-    enabled:
-      !!patientCase &&
-      effectiveAmaMode(patientCase.caseType, patientCase.amaMode) === "rating",
+    enabled: patientCase?.amaMode === "rating",
   });
   const { data: labels } = useQuery(canonicalDiagnosesQueryOptions(region));
   const dxLabel = (dx: string) => labels?.find((d) => d.canonicalDx === dx)?.label ?? dx;
-  if (!patientCase || effectiveAmaMode(patientCase.caseType, patientCase.amaMode) !== "rating")
-    return null;
+  if (patientCase?.amaMode !== "rating") return null;
 
   return (
     <div className="border-t border-slate-200 pt-2.5">

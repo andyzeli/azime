@@ -11,7 +11,7 @@ import {
 
 const upload = JSON.parse(
   await readFile(
-    new URL("../../docs/ama-spine.upload.json", import.meta.url),
+    new URL("../reference-data/ama-rows/spine.json", import.meta.url),
     "utf8",
   ),
 );
@@ -29,7 +29,7 @@ test("enriched upload preserves JSON and validates its counts, roots and task co
   assert.deepEqual(summarizeAmaReferenceData(rows), {
     rows: 30,
     entries: 108,
-    questions: 178,
+    questions: 177,
     examinationTasks: 87,
   });
   assert.deepEqual(

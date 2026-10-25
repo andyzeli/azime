@@ -12,7 +12,7 @@ import {
 // keeps its answers until the physician links or discards it.
 export function amaAssessmentProblems(
   assessments: AmaAssessment[],
-  rows: Map<string, AmaDiagnosticRow>,
+  rows: Map<string, AmaDiagnosticRow>
 ): string[] {
   const problems: string[] = [];
   const seen = new Set<string>();
@@ -48,19 +48,35 @@ export function amaAssessmentProblems(
         problems.push(`Invalid answer for ${id}: ${label}`);
     }
 
-    const strengthTasks = new Set(row.examination_tasks.filter(isAmaMuscleStrengthTask).map((t) => t.id));
+    const strengthTasks = new Set(
+      row.examination_tasks.filter(isAmaMuscleStrengthTask).map((t) => t.id)
+    );
     for (const taskId of Object.keys(a.motorGrades))
-      if (!strengthTasks.has(taskId)) problems.push(`Unknown muscle ${taskId}: ${label}`);
+      if (!strengthTasks.has(taskId))
+        problems.push(`Unknown muscle ${taskId}: ${label}`);
     // Motor criteria are derived from the muscle grades, never answered directly.
-    for (const [id, expected] of Object.entries(amaMotorAnswers(row, a.motorGrades)))
-      if ((a.answers[id] ?? null) !== expected) problems.push(`Motor answer ${id} does not match muscle grades: ${label}`);
+    for (const [id, expected] of Object.entries(
+      amaMotorAnswers(row, a.motorGrades)
+    ))
+      if ((a.answers[id] ?? null) !== expected)
+        problems.push(
+          `Motor answer ${id} does not match muscle grades: ${label}`
+        );
 
-    const sites = new Set(row.examination_tasks.filter(isAmaCircumferenceTask).map((t) => t.id));
+    const sites = new Set(
+      row.examination_tasks.filter(isAmaCircumferenceTask).map((t) => t.id)
+    );
     for (const taskId of Object.keys(a.atrophyCm))
-      if (!sites.has(taskId)) problems.push(`Unknown measurement site ${taskId}: ${label}`);
+      if (!sites.has(taskId))
+        problems.push(`Unknown measurement site ${taskId}: ${label}`);
     // Atrophy criteria are derived from the measurements, never answered directly.
-    for (const [id, expected] of Object.entries(amaAtrophyAnswers(row, a.atrophyCm)))
-      if ((a.answers[id] ?? null) !== expected) problems.push(`Atrophy answer ${id} does not match measurements: ${label}`);
+    for (const [id, expected] of Object.entries(
+      amaAtrophyAnswers(row, a.atrophyCm)
+    ))
+      if ((a.answers[id] ?? null) !== expected)
+        problems.push(
+          `Atrophy answer ${id} does not match measurements: ${label}`
+        );
   }
   return problems;
 }

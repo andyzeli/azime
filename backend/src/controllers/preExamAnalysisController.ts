@@ -1,17 +1,22 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import {
+  analyzeAddedDiagnosisRequestSchema,
   preExamSnapshotRequestSchema,
   supportedRegions,
   type Region,
 } from "@azime/contracts";
 import { makePreExamAnalysis } from "../ai/makePreExamAnalysis.js";
+import { makePreExamDelta } from "../ai/makePreExamDelta.js";
+import { MissingPrerequisiteError } from "../errors/missingPrerequisiteError.js";
 import { NotImplementedError } from "../errors/notImplementedError.js";
 import {
   caseExists,
   getDocumentExtractionArtifacts,
 } from "../queries/caseArtifactQueries.js";
 
+import { getLadderEntries } from "../queries/ladderEntries.js";
 import {
+  applyPreExamDelta,
   getPreExamSnapshot,
   getStoredPreExamSnapshot,
   getStoredPreExamAnalysis,
@@ -122,6 +127,61 @@ export const preExamAnalysisController = {
       return reply
         .code(500)
         .send({ error: "Failed to generate pre-exam analysis" });
+    }
+  },
+
+  // Treatment analysis for one listed diagnosis the run doesn't cover, merged into the
+  // existing rows so steering survives. A new snapshot + run stays the full redo.
+  analyzeAddedDiagnosisHandler: async (
+    request: FastifyRequest<{
+      Params: { caseId: string; region: string };
+      Body: unknown;
+    }>,
+    reply: FastifyReply,
+  ) => {
+    const caseId = parseCaseId(request.params.caseId);
+    const region = parseRegion(request.params.region);
+    const body = analyzeAddedDiagnosisRequestSchema.safeParse(request.body);
+    if (!caseId) return reply.code(400).send({ error: "Invalid case id" });
+    if (!region) return reply.code(400).send({ error: "Invalid region" });
+    if (!body.success) return reply.code(400).send({ error: "Invalid request" });
+    const { canonicalDx } = body.data;
+
+    try {
+      const stored = await getStoredPreExamAnalysis(caseId, region);
+      if (!stored?.analysis || !stored.inputSnapshot)
+        return reply
+          .code(409)
+          .send({ error: "Run the treatment analysis before adding diagnoses to it" });
+      const list = await getRegionDiagnosisList(caseId, region);
+      if (!list.diagnoses.some((d) => d.canonicalDx === canonicalDx))
+        return reply.code(400).send({ error: "Diagnosis is not on the region's list" });
+      if (stored.inputSnapshot.scope.diagnoses.includes(canonicalDx))
+        return reply.code(409).send({ error: "Diagnosis is already analyzed" });
+
+      const merged = await makePreExamDelta(
+        stored.inputSnapshot,
+        stored.analysis,
+        region,
+        canonicalDx,
+        await getLadderEntries(region, [canonicalDx]),
+      );
+      const preExamAnalysisId = await applyPreExamDelta(
+        caseId,
+        region,
+        stored.updatedAt,
+        merged.analysis,
+        merged.snapshot,
+        merged.reassessed,
+      );
+      return reply.send({ caseId, region, storage: { preExamAnalysisId } });
+    } catch (error) {
+      if (error instanceof MissingPrerequisiteError)
+        return reply.code(409).send({ error: error.message });
+      console.error(error);
+      return reply
+        .code(500)
+        .send({ error: "Failed to analyze the added diagnosis" });
     }
   },
 

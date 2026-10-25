@@ -2,10 +2,9 @@ import { z } from "zod";
 import { regionSchema } from "./regions.js";
 import { treatmentAnalysisItemSchema } from "./preExamAnalysis.js";
 
-const aiAssessmentSchema =
-  treatmentAnalysisItemSchema.shape.assessments.element;
-const applicabilitySchema = aiAssessmentSchema.shape.aiApplicability;
-const adequacySchema = aiAssessmentSchema.shape.aiAdequacy;
+const applicabilitySchema =
+  treatmentAnalysisItemSchema.shape.assessments.element.shape.aiApplicability;
+const exhaustionSchema = treatmentAnalysisItemSchema.shape.aiExhaustion;
 
 const categorySchema = z.enum([
   "conservative",
@@ -32,17 +31,17 @@ const findingDispositionSchema = z.object({
 
 const treatmentAssessmentSteeringSchema = z.object({
   applicability: assessmentReviewSchema(applicabilitySchema).optional(),
-  adequacy: assessmentReviewSchema(adequacySchema).optional(),
 });
 
 const treatmentRowSteeringSchema = z.object({
   disposition: z.enum(["keep", "prune"]).optional(),
 
-  // A treatment can be applicable/adequate for one diagnosis
-  // and inapplicable/inadequate for another.
+  // A treatment can be applicable for one diagnosis and not for another.
   assessments: z
     .record(z.string(), treatmentAssessmentSteeringSchema)
     .optional(),
+  // Exhaustion is judged once per treatment, across its applicable diagnoses.
+  exhaustion: assessmentReviewSchema(exhaustionSchema).optional(),
 
   note: z.string().optional(),
 });
@@ -52,17 +51,15 @@ const physicianAddedTreatmentSchema = z.object({
   treatmentId: z.string().nullable(), // Taxonomy ID if applicable
   treatment: z.string().trim().min(1),
   category: categorySchema,
-  // Optional association with existing documented treatment.
-  // Empty for a newly proposed treatment without record evidence.
-  episodeIds: z.array(z.string()),
   assessments: z.record(
     z.string(),
     z.object({
       applicability: applicabilitySchema,
-      adequacy: adequacySchema,
-      rationale: z.string().trim().min(1),
+      rationale: z.string().trim(), // optional (may be ""); the report infers it
     }),
   ),
+  exhaustion: exhaustionSchema,
+  exhaustionRationale: z.string().trim(), // optional (may be "")
   note: z.string().optional(),
 });
 

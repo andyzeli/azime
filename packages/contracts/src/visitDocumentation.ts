@@ -2,15 +2,6 @@ import { z } from "zod";
 import { amaMotorGradeSchema, amaNerveRootSchema } from "./amaReference.js";
 import { regionSchema } from "./regions.js";
 
-// Priority IDs are positional within one exam prep run, so responses are matched
-// by region + focus text and survive regeneration only if the priority does.
-export const visitPriorityResponseSchema = z.object({
-  region: regionSchema,
-  focus: z.string(),
-  status: z.enum(["couldnt_assess", "declined", "not_relevant", "response"]),
-  note: z.string().nullable(),
-});
-
 // AMA history prerequisite, asked at the visit: residual symptoms and a mechanism
 // consistent with the diagnosis. Missing = not asked; false stops rating the diagnosis
 // but keeps its findings. Diagnosis conclusions live in the region's diagnosis list.
@@ -41,30 +32,41 @@ export const amaAssessmentSchema = z.object({
   atrophyCm: z.record(z.string(), z.number().nonnegative()).default({}),
 });
 
+// One class/modifier rating table answered at the visit (v1: myelopathy), linked to
+// diagnoses like assessments. Present = the area applies; null answers are unresolved.
+export const amaTableSelectionSchema = z.object({
+  region: regionSchema,
+  tableId: z.string(),
+  canonicalDxIds: z.array(z.string()),
+  classValue: z.number().int().nullable(),
+  modOptionId: z.string().nullable(),
+});
+
 // One visit per case. The note may contain optional [REGION] section labels;
-// unlabeled text applies to every region.
+// unlabeled text applies to every region. Exam prep priorities are read-only
+// suggestions; anything they prompt goes in the note.
 export const visitDocumentationSchema = z.object({
   note: z.string(),
   // Exactly one PDQ feeds the post-exam analysis; null until chosen.
   pdqId: z.number().int().positive().nullable(),
   includedQuestionnaireIds: z.array(z.number().int().positive()),
-  priorityResponses: z.array(visitPriorityResponseSchema),
   amaHistory: z.array(visitAmaHistorySchema).default([]),
   amaAssessments: z.array(amaAssessmentSchema).default([]),
+  amaTableSelections: z.array(amaTableSelectionSchema).default([]),
 });
 export type VisitDocumentation = z.infer<typeof visitDocumentationSchema>;
-export type VisitPriorityResponse = z.infer<typeof visitPriorityResponseSchema>;
 export type VisitAmaHistory = z.infer<typeof visitAmaHistorySchema>;
 export type AmaAssessment = z.infer<typeof amaAssessmentSchema>;
+export type AmaTableSelection = z.infer<typeof amaTableSelectionSchema>;
 
 export function initializeVisitDocumentation(): VisitDocumentation {
   return {
     note: "",
     pdqId: null,
     includedQuestionnaireIds: [],
-    priorityResponses: [],
     amaHistory: [],
     amaAssessments: [],
+    amaTableSelections: [],
   };
 }
 

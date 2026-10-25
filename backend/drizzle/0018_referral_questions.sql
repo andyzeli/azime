@@ -1,0 +1,1 @@
+ALTER TABLE "patientcase" ADD COLUMN "referral_questions" text[] DEFAULT '{}' NOT NULL;

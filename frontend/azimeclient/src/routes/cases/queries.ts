@@ -63,7 +63,7 @@ type Provider = {
   name: string;
   type: string;
 };
-type DbPatientCase = {
+export type DbPatientCase = {
   id: number;
   patientName: string | null;
   patientLastName: string | null;
@@ -71,7 +71,7 @@ type DbPatientCase = {
   caseContact: Partial<CaseContacts>;
   caseType: string | null;
   status: string | null;
-  amaMode: AmaMode | null;
+  amaMode: AmaMode;
   referralQuestions: string[];
 } & CaseInjuryDetails;
 
@@ -151,9 +151,10 @@ export const casesQueryOptions = queryOptions({
   queryFn: () => fetchCases(),
 });
 
-export const createCase = async (newcase: NewPatientCase) => {
-  return axios.post(`${API_BASE_URL}/cases`, newcase);
-};
+export const createCase = async (newcase: NewPatientCase) =>
+  axios
+    .post<{ id: number }>(`${API_BASE_URL}/cases`, newcase)
+    .then((response) => response.data);
 
 export const updateCaseInjuryDetails = async (
   caseId: string,
@@ -163,9 +164,9 @@ export const updateCaseInjuryDetails = async (
     .put<unknown>(`${API_BASE_URL}/cases/${caseId}`, input)
     .then((response) => caseInjuryDetailsSchema.parse(response.data));
 
-export const updateAmaMode = async (caseId: string, amaMode: AmaMode | null) =>
+export const updateAmaMode = async (caseId: string, amaMode: AmaMode) =>
   axios
-    .put<{ amaMode: AmaMode | null }>(`${API_BASE_URL}/cases/${caseId}/ama-mode`, { amaMode })
+    .put<{ amaMode: AmaMode }>(`${API_BASE_URL}/cases/${caseId}/ama-mode`, { amaMode })
     .then((response) => response.data);
 
 export const updateReferralQuestions = async (
@@ -675,7 +676,7 @@ export const caseReportQueryOptions = (caseId: string) =>
         .then((response) => caseReportResponseSchema.nullable().parse(response.data)),
   });
 
-// TEMP: what Generate would send the model, without calling it or saving.
+// What Generate would send the model, without calling it or saving.
 export const generateCaseReportDryRun = (caseId: string) =>
   axios
     .post<{ input: unknown; variant: string; systemPrompt: string; userPrompt: string }>(

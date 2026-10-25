@@ -3,7 +3,7 @@ import { useSuspenseQuery, useMutation } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight, ExternalLink, X } from "lucide-react";
 import { Btn, EventDot } from "./shared";
 import { fetchRecordDownloadUrl, recordsQueryOptions } from "@/routes/cases/queries";
-import RecordSummaryView from "@/routes/cases/case/components/RecordSummaryView";
+import { RecordExtraction } from "./records/RecordExtraction";
 import { toTimeline, type TimelineEvent } from "../recordPresentation";
 
 const cockpitRoute = getRouteApi("/p_cases/$caseId");
@@ -36,7 +36,7 @@ export function RecordDetail({
   const next = events[index + 1];
 
   return (
-    <div>
+    <div className="max-w-3xl">
       <div className="flex items-start gap-3">
         <EventDot kind={event.kind} />
         <div className="flex-1">
@@ -58,9 +58,9 @@ export function RecordDetail({
         ) : null}
       </div>
 
-      <div className="mt-4">
-        {event.summary ? (
-          <RecordSummaryView summary={event.summary} />
+      <div className="mt-5">
+        {event.extraction ? (
+          <RecordExtraction extraction={event.extraction} />
         ) : (
           <p className="text-slate-500">{event.summaryMessage}</p>
         )}

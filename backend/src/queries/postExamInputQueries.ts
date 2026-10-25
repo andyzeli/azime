@@ -1,15 +1,12 @@
 import { and, eq, inArray } from "drizzle-orm";
 import {
-  effectiveAmaMode,
   postExamPDQSchema,
-  refinedAnalysisResponseSchema,
   type Region,
 } from "@azime/contracts";
 import { db } from "../db/index.js";
 import {
   AmaDiagnosticRows,
   CasePostExamAnalysis,
-  CaseRefinedPreExamAnalysis,
   CaseVisitDocumentation,
   PatientCase,
   PatientQuestionnaireInstance,
@@ -19,6 +16,11 @@ import { buildPostExamInputSnapshot } from "../ai/postExamInputSnapshot.js";
 import { MissingPrerequisiteError } from "../errors/missingPrerequisiteError.js";
 import { getQuestionnaireDefinition } from "../questionnaires/definitions.js";
 import { toVisitDocumentationResponse } from "./visitDocumentationQueries.js";
+import { getCanonicalDiagnoses } from "./canonicalDiagnosesQueries.js";
+import { getStoredCaseSummary } from "./caseSummaryQueries.js";
+import { getPhysicianSteering } from "./physicianSteeringQueries.js";
+import { getStoredPreExamAnalysis } from "./preExamAnalysisQueries.js";
+import { getRegionDiagnosisList } from "./regionDiagnosesQueries.js";
 
 import { toPostExamAnalysisResponse } from "./postExamAnalysisQueries.js";
 
@@ -50,6 +52,22 @@ export async function createPostExamInputSnapshot(
   caseId: number,
   region: Region,
 ) {
+  const [caseSummary, preExam, steering, diagnoses, canonical] =
+    await Promise.all([
+      getStoredCaseSummary(caseId),
+      getStoredPreExamAnalysis(caseId, region),
+      getPhysicianSteering(caseId, region),
+      getRegionDiagnosisList(caseId, region),
+      getCanonicalDiagnoses(region),
+    ]);
+  if (!caseSummary)
+    throw new MissingPrerequisiteError("Generate the case summary first");
+  if (!preExam?.analysis || !preExam.inputSnapshot || !steering)
+    throw new MissingPrerequisiteError(
+      "Run the treatment analysis for this region first",
+    );
+  const { analysis, inputSnapshot } = preExam;
+
   // Capture a coherent version of independently editable visit/PDQ artifacts.
   return db.transaction(
     async (tx) => {
@@ -60,17 +78,6 @@ export async function createPostExamInputSnapshot(
         throw new MissingPrerequisiteError(
           "Save the visit before taking a post-exam snapshot",
         );
-      const refined = await tx.query.CaseRefinedPreExamAnalysis.findFirst({
-        where: and(
-          eq(CaseRefinedPreExamAnalysis.caseId, caseId),
-          eq(CaseRefinedPreExamAnalysis.region, region),
-        ),
-      });
-      if (!refined)
-        throw new MissingPrerequisiteError(
-          "Generate exam prep for this region before the post-exam analysis",
-        );
-
       const { pdqId, includedQuestionnaireIds } = visit.documentation;
       const ids = [...(pdqId === null ? [] : [pdqId]), ...includedQuestionnaireIds];
       const rows = ids.length
@@ -120,23 +127,38 @@ export async function createPostExamInputSnapshot(
             .where(inArray(AmaDiagnosticRows.rowId, rowIds))
         : [];
 
-      const inputSnapshot = buildPostExamInputSnapshot({
+      if (!patientCase)
+        throw new MissingPrerequisiteError("Case not found");
+      const snapshot = buildPostExamInputSnapshot({
+        caseContext: {
+          caseType: patientCase.caseType,
+          injuryType: patientCase.injuryType,
+          dateOfInjury: patientCase.dateOfInjury,
+        },
+        region,
+        caseSummary,
+        preExam: {
+          id: preExam.id,
+          updatedAt: preExam.updatedAt.toISOString(),
+          analysis,
+          analyzedDiagnoses: inputSnapshot.scope.diagnoses,
+          ladder: inputSnapshot.ladder,
+        },
+        steering,
+        diagnoses,
+        dxLabel: (dx) =>
+          canonical.find((d) => d.canonicalDx === dx)?.label ?? dx,
         visit: toVisitDocumentationResponse(visit),
-        refined: refinedAnalysisResponseSchema.parse({
-          ...refined,
-          createdAt: refined.createdAt.toISOString(),
-          updatedAt: refined.updatedAt.toISOString(),
-        }),
         pdq,
         questionnaires,
-        amaMode: effectiveAmaMode(patientCase?.caseType, patientCase?.amaMode),
+        amaMode: patientCase.amaMode,
         amaRows: new Map(
           amaRows.map((row) => [row.rowId, toAmaDiagnosticRow(row)]),
         ),
       });
       const [saved] = await tx
         .insert(CasePostExamAnalysis)
-        .values({ caseId, region, inputSnapshot })
+        .values({ caseId, region, inputSnapshot: snapshot })
         .returning();
       return toPostExamAnalysisResponse(saved!);
     },

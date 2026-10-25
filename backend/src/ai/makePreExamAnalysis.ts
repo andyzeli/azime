@@ -37,7 +37,8 @@ const getPreExamAnalysisProvider = (): PreExamAnalysisProvider => {
 
 const generateWithGemini = async (
   prompt: string,
-  systemPrompt: string
+  systemPrompt: string,
+  schema: z.ZodType
 ): Promise<GeneratedResponse> => {
   const model =
     process.env.PRE_EXAM_ANALYSIS_GEMINI_MODEL ?? getGeminiModelName();
@@ -47,7 +48,7 @@ const generateWithGemini = async (
     config: {
       systemInstruction: systemPrompt,
       responseMimeType: "application/json",
-      responseJsonSchema: toResponseJsonSchema(preExamAnalysisSchema),
+      responseJsonSchema: toResponseJsonSchema(schema),
       temperature: 0.1,
     },
   });
@@ -61,7 +62,9 @@ const generateWithGemini = async (
 
 const generateWithOpenAI = async (
   prompt: string,
-  systemPrompt: string
+  systemPrompt: string,
+  schema: z.ZodType,
+  name: string
 ): Promise<GeneratedResponse> => {
   const model = process.env.PRE_EXAM_ANALYSIS_OPENAI_MODEL;
   const apiKey = process.env.OPENAI_API_KEY;
@@ -86,9 +89,9 @@ const generateWithOpenAI = async (
     text: {
       format: {
         type: "json_schema",
-        name: "pre_exam_analysis",
+        name,
         strict: true,
-        schema: toResponseJsonSchema(preExamAnalysisSchema),
+        schema: toResponseJsonSchema(schema),
       },
     },
   });
@@ -98,6 +101,26 @@ const generateWithOpenAI = async (
   }
 
   return { model, text: response.output_text };
+};
+
+// Shared with the added-diagnosis run (makePreExamDelta.ts): same provider and model settings.
+export const generatePreExamJson = async (
+  prompt: string,
+  systemPrompt: string,
+  schema: z.ZodType,
+  name: string
+) => {
+  const provider = getPreExamAnalysisProvider();
+  const response =
+    provider === "openai"
+      ? await generateWithOpenAI(prompt, systemPrompt, schema, name)
+      : await generateWithGemini(prompt, systemPrompt, schema);
+
+  try {
+    return { provider, response, parsedJson: JSON.parse(response.text) as unknown };
+  } catch {
+    throw new Error(`${provider} returned invalid ${name} JSON`);
+  }
 };
 
 export const makePreExamAnalysis = async (
@@ -115,23 +138,12 @@ export const makePreExamAnalysis = async (
   // Note for prompt. "if you see out-of-scope episode, choose unresolved"
 
   ///
-  const provider = getPreExamAnalysisProvider();
-  //
-  const prompt = buildPreExamAnalysisUserPrompt(input, region);
-
-  const systemPrompt = buildPEASystemPrompt(region);
-  const response =
-    provider === "openai"
-      ? await generateWithOpenAI(prompt, systemPrompt)
-      : await generateWithGemini(prompt, systemPrompt);
-
-  let parsedJson: unknown;
-
-  try {
-    parsedJson = JSON.parse(response.text);
-  } catch {
-    throw new Error(`${provider} returned invalid pre-exam analysis JSON`);
-  }
+  const { provider, response, parsedJson } = await generatePreExamJson(
+    buildPreExamAnalysisUserPrompt(input, region),
+    buildPEASystemPrompt(region),
+    preExamAnalysisSchema,
+    "pre_exam_analysis"
+  );
 
   try {
     const payload = preExamAnalysisSchema.parse(parsedJson);

@@ -15,18 +15,27 @@ import {
 } from "@azime/contracts";
 import { MissingPrerequisiteError } from "../errors/missingPrerequisiteError.js";
 
-function isOpenTreatmentIssue(
-  applicability: string,
-  adequacy: string
-): boolean {
+// A 3B issue: unclear applicability, or an applicable treatment not shown to be exhausted.
+function isOpenTreatmentIssue(applicability: string, exhaustion: string) {
   return (
     applicability === "unclear" ||
-    (applicability === "applicable" && adequacy !== "adequately_trialed")
+    (applicability === "applicable" && exhaustion !== "exhausted")
   );
 }
 
+type TreatmentCategory =
+  ReviewedPreExamAnalysis["treatmentIssues"][number]["category"];
+
+// Taxonomy category per treatmentId, from the frozen 3A input's ladder.
+export function ladderCategories(
+  ladder: { treatmentId: string; category: TreatmentCategory }[]
+) {
+  return new Map(ladder.map((e) => [e.treatmentId, e.category]));
+}
+
 export function projectFullReviewedAnalysis(
-  review: ReturnType<typeof resolvePreExamReview>
+  review: ReturnType<typeof resolvePreExamReview>,
+  categories: Map<string, TreatmentCategory>
 ) {
   const treatments = [
     ...review.treatmentAnalysis
@@ -36,15 +45,17 @@ export function projectFullReviewedAnalysis(
         treatmentId: row.treatmentId,
         treatment: row.treatment,
         source: row.source,
-        category: null,
+        category: row.treatmentId
+          ? (categories.get(row.treatmentId) ?? null)
+          : null,
         recordStatus: row.recordStatus,
         recordDetail: row.recordDetail,
         episodeIds: row.episodeIds,
         assessments: row.assessments.map((assessment) => ({
           canonicalDx: assessment.canonicalDx,
           applicability: assessment.applicability,
-          adequacy: assessment.adequacy,
         })),
+        exhaustion: row.exhaustion,
         dispositionReviewed: row.dispositionReviewed,
         physicianNote: row.physicianNote,
       })),
@@ -56,7 +67,7 @@ export function projectFullReviewedAnalysis(
       category: row.category,
       recordStatus: null,
       recordDetail: null,
-      episodeIds: row.episodeIds,
+      episodeIds: [], // physician additions aren't linked to records
       assessments: Object.entries(row.assessments).map(
         ([canonicalDx, assessment]) => ({
           canonicalDx,
@@ -67,15 +78,15 @@ export function projectFullReviewedAnalysis(
             reviewStatus: "provided",
             note: null,
           },
-          adequacy: {
-            value: assessment.adequacy,
-            rationale: assessment.rationale,
-            source: "physician",
-            reviewStatus: "provided",
-            note: null,
-          },
         })
       ),
+      exhaustion: {
+        value: row.exhaustion,
+        rationale: row.exhaustionRationale,
+        source: "physician",
+        reviewStatus: "provided",
+        note: null,
+      },
       dispositionReviewed: true,
       physicianNote: row.note ?? null,
     })),
@@ -105,37 +116,45 @@ export function projectFullReviewedAnalysis(
 }
 
 export function projectReviewedAnalysis(
-  review: ReturnType<typeof resolvePreExamReview>
+  review: ReturnType<typeof resolvePreExamReview>,
+  categories: Map<string, TreatmentCategory>
 ) {
-  const { treatments, ...findings } = projectFullReviewedAnalysis(review);
+  const { treatments, ...findings } = projectFullReviewedAnalysis(
+    review,
+    categories
+  );
   const treatmentIssues = [];
   const treatmentContext: ReviewedPreExamAnalysis["treatmentContext"] = [];
   const treatmentNotes: ReviewedPreExamAnalysis["treatmentNotes"] = [];
 
   for (const row of treatments) {
     // Split shared treatment rows per diagnosis, using the effective judgments.
-    const assessments = row.assessments.filter((assessment) =>
-      isOpenTreatmentIssue(
-        assessment.applicability.value,
-        assessment.adequacy.value
-      )
-    );
+    const open = (assessment: (typeof row.assessments)[number]) =>
+      isOpenTreatmentIssue(assessment.applicability.value, row.exhaustion.value);
+    const assessments = row.assessments.filter(open);
     if (assessments.length > 0) {
       treatmentIssues.push({ ...row, assessments });
-    } else if (row.physicianNote?.trim()) {
-      treatmentNotes.push({
-        id: row.id,
-        treatment: row.treatment,
-        canonicalDx: null,
-        field: "treatment",
-        note: row.physicianNote,
-      });
+    } else {
+      for (const [field, note] of [
+        ["treatment", row.physicianNote],
+        ["exhaustion", row.exhaustion.note],
+      ] as const) {
+        if (note?.trim()) {
+          treatmentNotes.push({
+            id: row.id,
+            treatment: row.treatment,
+            canonicalDx: null,
+            field,
+            note,
+          });
+        }
+      }
     }
 
     for (const assessment of row.assessments) {
       if (
         assessment.applicability.value === "applicable" &&
-        assessment.adequacy.value === "adequately_trialed"
+        row.exhaustion.value === "exhausted"
       ) {
         treatmentContext.push({
           id: row.id,
@@ -144,24 +163,15 @@ export function projectReviewedAnalysis(
           recordDetail: row.recordDetail,
         });
       }
-      if (
-        isOpenTreatmentIssue(
-          assessment.applicability.value,
-          assessment.adequacy.value
-        )
-      )
-        continue;
-      for (const field of ["applicability", "adequacy"] as const) {
-        const note = assessment[field].note;
-        if (note?.trim()) {
-          treatmentNotes.push({
-            id: row.id,
-            treatment: row.treatment,
-            canonicalDx: assessment.canonicalDx,
-            field,
-            note,
-          });
-        }
+      const note = assessment.applicability.note;
+      if (!open(assessment) && note?.trim()) {
+        treatmentNotes.push({
+          id: row.id,
+          treatment: row.treatment,
+          canonicalDx: assessment.canonicalDx,
+          field: "applicability",
+          note,
+        });
       }
     }
   }
@@ -175,7 +185,7 @@ export function projectReviewedAnalysis(
 }
 
 // Leaves out assessments for diagnoses no longer in scope, and rows left with none.
-function scopeReview(
+export function scopeReview(
   review: ReturnType<typeof resolvePreExamReview>,
   diagnoses: string[]
 ): ReturnType<typeof resolvePreExamReview> {
@@ -212,7 +222,12 @@ export function buildRefinedAnalysisInputSnapshot({
   scope: RefinedAnalysisInput["scope"];
   diagnoses: RegionDiagnosesResponse;
   caseSummary: CaseSummaryResponse;
-  preExam: { id: number; updatedAt: string; analysis: StoredPreExamAnalysis };
+  preExam: {
+    id: number;
+    updatedAt: string;
+    analysis: StoredPreExamAnalysis;
+    ladder: { treatmentId: string; category: TreatmentCategory }[];
+  };
   steering: PhysicianSteeringResponse;
 }): RefinedAnalysisInputSnapshot {
   const current = currentDiagnoses(diagnoses.diagnoses);
@@ -227,7 +242,7 @@ export function buildRefinedAnalysisInputSnapshot({
   }
   if (steering.id === null) {
     throw new MissingPrerequisiteError(
-      "Save physician steering before taking a refined analysis snapshot"
+      "Save the treatment review before creating the prep sheet"
     );
   }
   if (
@@ -242,15 +257,16 @@ export function buildRefinedAnalysisInputSnapshot({
     resolvePreExamReview(preExam.analysis, steering.steering),
     scope.diagnoses
   );
+  const categories = ladderCategories(preExam.ladder);
 
   return refinedAnalysisInputSnapshotSchema.parse({
     input: {
       caseContext,
       scope,
       caseSummary: caseSummary.summary,
-      reviewedAnalysis: projectReviewedAnalysis(review),
+      reviewedAnalysis: projectReviewedAnalysis(review, categories),
     },
-    fullReviewedAnalysis: projectFullReviewedAnalysis(review),
+    fullReviewedAnalysis: projectFullReviewedAnalysis(review, categories),
     physicianSteering: steering.steering,
     basedOn: {
       caseSummaryId: caseSummary.id,

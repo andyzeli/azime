@@ -52,6 +52,7 @@ const examples = [
     documentType: "encounter",
     payload: {
       visitType: "follow_up",
+      regions: ["lumbar_spine"],
       chiefComplaint: "Low back pain",
       historyOfPresentIllness: "",
       reviewOfSystems: "",

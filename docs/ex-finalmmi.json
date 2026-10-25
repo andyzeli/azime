@@ -1,0 +1,410 @@
+{
+  "intro": {
+    "injuryType": "specific",
+    "dateOfInjury": "2024-12-18",
+    "caseType": "work_injury",
+    "examinationDate": "2026-10-16",
+    "impairmentRequested": true
+  },
+  "background": {
+    "recordedMedications": [
+      {
+        "medication": "Naproxen",
+        "doses": ["500 mg"],
+        "firstDate": "2025-01-08",
+        "lastDate": "2025-01-08",
+        "lastAction": "Ordered"
+      }
+    ],
+    "psychosocialFactors": null
+  },
+  "historyOfPresentIllness": {
+    "incidentNarrative": "The patient reports persistent low back pain after lifting a heavy box at work on 12/18/2024.",
+    "caseWideSummary": "The patient sustained a low back injury on 12/18/2024 after lifting a heavy box at work, resulting in low back pain radiating into the right leg. An initial orthopedic evaluation by Dr. Maya Chen on 01/08/2025 diagnosed a lumbar disc herniation with right-sided radicular symptoms, prescribing Naproxen, ordering an MRI, and referring for physical therapy. An MRI of the lumbar spine on 01/20/2025 confirmed a right paracentral L4-5 disc extrusion contacting the traversing right L5 nerve root. The patient began physical therapy at Northside Physical Therapy, with a progress note on 02/14/2025 indicating pain improvement from 7/10 to 4/10, though prolonged sitting and lifting remain difficult. Objective findings showed improved lumbar flexion but a persistent positive right straight-leg raise. The patient continues with physical therapy and is on modified duty with restrictions, as documented in a work status report on 03/10/2025."
+  },
+  "imaging": [
+    {
+      "date": "2025-01-20",
+      "modality": "MRI",
+      "bodySite": "Lumbar spine",
+      "impression": [
+        "Right paracentral L4-5 disc extrusion contacting the traversing right L5 nerve root.",
+        "No acute osseous abnormality."
+      ]
+    }
+  ],
+  "workStatus": [
+    {
+      "documentedOn": "2025-01-08",
+      "status": "modified_duty",
+      "restrictions": [
+        "No lifting over 15 pounds",
+        "Alternate sitting and standing"
+      ]
+    },
+    {
+      "documentedOn": "2025-03-10",
+      "status": "modified_duty",
+      "restrictions": [
+        "No lifting over 20 pounds",
+        "No repetitive bending or twisting",
+        "May change position every 30 minutes"
+      ]
+    }
+  ],
+  "diagnoses": [
+    {
+      "region": "lumbar_spine",
+      "diagnoses": [
+        {
+          "label": "Lumbar / lumbosacral radiculopathy",
+          "status": "supported",
+          "reason": null
+        },
+        {
+          "label": "Lumbar disc herniation / displacement",
+          "status": "supported",
+          "reason": null
+        }
+      ]
+    }
+  ],
+  "examination": {
+    "date": "2026-10-16",
+    "note": "Chief complaint:\n\nHPI:\n\nPMH:\nno previous spine issues\nSubjective:\nverified by observation: PDQ\nObjective:\n",
+    "questionnaires_completed": [
+      {
+        "name": "Pain and disability questionnaire",
+        "question_description": "For each area, choose how much pain limits you today. 0 means no limitation and 10 means the most severe limitation.",
+        "total_score": "41.3%",
+        "completed_on": "2026-09-30",
+        "answers": [
+          {
+            "question": "Work inside and outside the home",
+            "score": "3 / 10"
+          },
+          {
+            "question": "Lift overhead, grasp objects, or reach above shoulder level",
+            "score": "3 / 10"
+          },
+          {
+            "question": "Lifting from below waist level, bending, or stooping",
+            "score": "4 / 10"
+          },
+          {
+            "question": "Personal care (washing, dressing, etc.)",
+            "score": "5 / 10"
+          },
+          {
+            "question": "Affect ability to sit or stand",
+            "score": "4 / 10"
+          },
+          {
+            "question": "Interfere with travel by car, bus, train, or airplane",
+            "score": "4 / 10"
+          },
+          {
+            "question": "Limits Walking or running",
+            "score": "5 / 10"
+          },
+          {
+            "question": "Interfere with Income or ability to earn",
+            "score": "4 / 10"
+          },
+          {
+            "question": "Need for medication (10 being the highest need)",
+            "score": "4 / 10"
+          },
+          {
+            "question": "Need to see a doctor more often",
+            "score": "5 / 10"
+          },
+          {
+            "question": "Interfere with ability to see friends or family",
+            "score": "4 / 10"
+          },
+          {
+            "question": "Interfere with Recreation and hobbies important to you",
+            "score": "4 / 10"
+          },
+          {
+            "question": "Need help with daily activities",
+            "score": "5 / 10"
+          },
+          {
+            "question": "Feel more depressed, tense, or anxious than usual",
+            "score": "4 / 10"
+          },
+          {
+            "question": "Emotional problems caused by your pain that interfere with family, social, or work activities",
+            "score": "4 / 10"
+          }
+        ]
+      }
+    ],
+    "lumbar_spine_findings": [
+      {
+        "nerveRoot": "L4",
+        "side": "left",
+        "tests": [
+          {
+            "test": "Assess L4 symptoms, pinprick sensation, and sharp/dull discrimination",
+            "result": "Loss of sharp/dull discrimination"
+          },
+          {
+            "test": "Assess femoral nerve stretch reproducibility and L4 radicular symptoms",
+            "result": "positive"
+          },
+          {
+            "test": "Assess ankle dorsiflexion strength",
+            "result": "5/5"
+          },
+          {
+            "test": "Assess knee extensor strength",
+            "result": "5/5"
+          },
+          {
+            "test": "Measure the thigh circumference difference",
+            "result": "0 cm"
+          },
+          {
+            "test": "Measure the calf circumference difference",
+            "result": "0 cm"
+          },
+          {
+            "test": "Compare knee reflexes between sides",
+            "result": "No asymmetric diminished reflex finding; No asymmetric absent reflex finding"
+          },
+          {
+            "test": "Nerve root confirmed by imaging, electrodiagnosis or surgery",
+            "result": "yes"
+          }
+        ]
+      },
+      {
+        "nerveRoot": "L2",
+        "side": "left",
+        "tests": [
+          {
+            "test": "Assess L2 symptoms, pinprick sensation, and sharp/dull discrimination",
+            "result": "No listed sensory finding selected"
+          },
+          {
+            "test": "Assess femoral nerve stretch reproducibility and L2 radicular symptoms",
+            "result": "negative"
+          },
+          {
+            "test": "Assess hip flexion strength",
+            "result": "5/5"
+          },
+          {
+            "test": "Nerve root confirmed by imaging, electrodiagnosis or surgery",
+            "result": "no"
+          }
+        ]
+      }
+    ]
+  },
+  "discussion": {
+    "regions": [
+      {
+        "region": "lumbar_spine",
+        "care_marked_inappropriate": [
+          {
+            "treatment": "Transforaminal epidural steroid injection / selective nerve root block",
+            "category": "injection",
+            "documentedHistory": {
+              "status": "Not Documented",
+              "detail": null
+            },
+            "diagnoses_considered": [
+              "Lumbar / lumbosacral radiculopathy",
+              "Lumbar disc herniation / displacement"
+            ],
+            "decision_basis": "contraindicated",
+            "inappropriateness_rationale": "test data run: \"patient allergic to steroid\""
+          }
+        ],
+        "care_marked_exhausted": [
+          {
+            "treatment": "NSAIDs (oral non-steroidal anti-inflammatory drugs)",
+            "category": "medication",
+            "documentedHistory": {
+              "status": "Ongoing",
+              "detail": "Naproxen 500 mg twice daily was ordered on 2025-01-08. Patient reports pain improved from 7/10 to 4/10 in the PT note on 2025-02-14, suggesting ongoing use and benefit."
+            },
+            "diagnoses_addressed": [
+              "Lumbar / lumbosacral radiculopathy",
+              "Lumbar disc herniation / displacement"
+            ],
+            "exhaustion_rationale": "pretend data for testing: \"naproxen only done once\""
+          }
+        ],
+        "remaining_maintenance_care": [
+          {
+            "treatment": "Activity modification / advice to stay active and education",
+            "category": "conservative",
+            "documentedHistory": {
+              "status": "Ongoing",
+              "detail": "Modified duty with lifting and sitting restrictions (no lifting over 15 lbs, alternate sitting/standing) initiated 2025-01-08, updated 2025-03-10 (no lifting over 20 lbs, no repetitive bending/twisting, change position every 30 min)."
+            },
+            "applicability_rationales": [
+              {
+                "diagnosis": "Lumbar / lumbosacral radiculopathy",
+                "rationale": "Applicable as general advice for all patients with radiculopathy, encouraging activity while managing symptoms."
+              },
+              {
+                "diagnosis": "Lumbar disc herniation / displacement",
+                "rationale": "Applicable as general advice for all patients with disc herniation, encouraging activity while managing symptoms."
+              }
+            ],
+            "exhaustion_status": "not_exhausted",
+            "exhaustion_rationale": "Activity modification is ongoing and has been adjusted. It is a supportive measure rather than a treatment to be 'exhausted' in the traditional sense, but the patient is adhering to restrictions for all applicable diagnoses."
+          },
+          {
+            "treatment": "Home exercise program",
+            "category": "conservative",
+            "documentedHistory": {
+              "status": "Unclear",
+              "detail": "Not explicitly documented as a standalone program, but physical therapy included active exercises (core stabilization, bridges, prone press-ups) which are often taught for home practice."
+            },
+            "applicability_rationales": [
+              {
+                "diagnosis": "Lumbar / lumbosacral radiculopathy",
+                "rationale": "Applicable as a foundational component of conservative care for radiculopathy, promoting self-management and strengthening."
+              },
+              {
+                "diagnosis": "Lumbar disc herniation / displacement",
+                "rationale": "Applicable as a foundational component of conservative care for disc herniation, promoting self-management and strengthening."
+              }
+            ],
+            "exhaustion_status": "not_exhausted",
+            "exhaustion_rationale": "While exercises were performed in PT, explicit documentation of a formal home exercise program being taught and patient adherence is unclear. Therefore, this avenue is not exhausted for any applicable diagnosis."
+          },
+          {
+            "treatment": "Physical therapy / supervised exercise therapy",
+            "category": "conservative",
+            "documentedHistory": {
+              "status": "Ongoing",
+              "detail": "Physical therapy initiated with a progress note on 2025-02-14. Patient is making gradual progress, with lumbar flexion improving from 45 to 60 degrees and pain decreasing from 7/10 to 4/10. Plan to continue twice weekly for three additional weeks."
+            },
+            "applicability_rationales": [
+              {
+                "diagnosis": "Lumbar / lumbosacral radiculopathy",
+                "rationale": "Applicable for active exercise-based therapy to address radicular symptoms and improve function."
+              },
+              {
+                "diagnosis": "Lumbar disc herniation / displacement",
+                "rationale": "Applicable for active exercise-based therapy to address back pain and improve function related to disc herniation."
+              }
+            ],
+            "exhaustion_status": "not_exhausted",
+            "exhaustion_rationale": "Physical therapy is ongoing and showing objective functional progress and pain reduction. The patient is still actively engaged in treatment, indicating this avenue is not exhausted for any applicable diagnosis."
+          },
+          {
+            "treatment": "NSAIDs (oral non-steroidal anti-inflammatory drugs)",
+            "category": "medication",
+            "documentedHistory": {
+              "status": "Ongoing",
+              "detail": "Naproxen 500 mg twice daily was ordered on 2025-01-08. Patient reports pain improved from 7/10 to 4/10 in the PT note on 2025-02-14, suggesting ongoing use and benefit."
+            },
+            "applicability_rationales": [
+              {
+                "diagnosis": "Lumbar / lumbosacral radiculopathy",
+                "rationale": "Applicable as a first-line analgesic for radicular pain."
+              },
+              {
+                "diagnosis": "Lumbar disc herniation / displacement",
+                "rationale": "Applicable as a first-line analgesic for pain associated with disc herniation."
+              }
+            ],
+            "exhaustion_status": "exhausted",
+            "exhaustion_rationale": "pretend data for testing: \"naproxen only done once\""
+          },
+          {
+            "treatment": "Lumbar discectomy / microdiscectomy",
+            "category": "surgical",
+            "documentedHistory": {
+              "status": "Not Documented",
+              "detail": null
+            },
+            "applicability_rationales": [
+              {
+                "diagnosis": "Lumbar / lumbosacral radiculopathy",
+                "rationale": "Applicable for radiculopathy from concordant disc herniation with disabling symptoms after 6 weeks or more of conservative care. Patient is currently undergoing conservative care."
+              },
+              {
+                "diagnosis": "Lumbar disc herniation / displacement",
+                "rationale": "Applicable only with concordant radiculopathy, which is present. This is a surgical option typically considered after failed conservative care."
+              }
+            ],
+            "exhaustion_status": "not_exhausted",
+            "exhaustion_rationale": "This surgical treatment is not yet indicated as the patient is still undergoing and responding to conservative care. Therefore, it is not exhausted."
+          }
+        ],
+        "physicianDecisions": {
+          "causation": [
+            {
+              "relationship": "caused",
+              "aggravation": null,
+              "note": "",
+              "diagnosis": "Lumbar / lumbosacral radiculopathy"
+            },
+            {
+              "relationship": "caused",
+              "aggravation": null,
+              "note": "",
+              "diagnosis": "Lumbar disc herniation / displacement"
+            }
+          ],
+          "mmi": {
+            "status": "at_mmi",
+            "date": "2026-10-16",
+            "note": "",
+            "supporting_analysis": [
+              "Significant time elapsed since last documented improvement (February 2025) and today's examination (October 2026), suggesting a period of stability.",
+              "NSAIDs considered exhausted by physician (treatment-5, source: physician).",
+              "Patient remains on modified duty with restrictions (as of 2025-03-10) and reports persistent moderate functional limitations via PDQ today (2026-10-16), indicating a stable level of functional capacity."
+            ]
+          },
+          "impairment": {
+            "wpi": 5
+          }
+        },
+        "patient_subjective_trajectory": {
+          "direction": "Insufficient Data",
+          "evidenceQuality": "Sparse",
+          "interpretation": "Patient-reported pain improved from 7/10 to 4/10 by 2025-02-14. However, there is no subjective pain report for today's examination (2026-10-16), leaving the current subjective status and long-term trajectory uncertain."
+        },
+        "patient_objective_trajectory": {
+          "direction": "Fluctuating",
+          "evidenceQuality": "Conflicting",
+          "interpretation": "Lumbar flexion improved from 45 degrees (2025-01-08) to 60 degrees (2025-02-14), and right straight-leg raise improved from 50 to 60 degrees. However, today's examination (2026-10-16) presents new objective findings of left L4 radiculopathy (loss of sharp/dull discrimination, positive femoral nerve stretch), which is discordant with the initial right-sided symptoms and MRI findings of right L5 nerve root involvement. No current lumbar ROM or straight-leg raise findings are provided for comparison."
+        },
+        "patient_functional_trajectory": {
+          "direction": "Stable",
+          "evidenceQuality": "Moderate",
+          "interpretation": "Initial functional improvements included increased sitting tolerance from 30 to 45 minutes (by 2025-02-14) and increased lifting capacity from 15 to 20 lbs (by 2025-03-10), though new restrictions were also added. Today's PDQ (2026-10-16) indicates persistent moderate functional limitations across various activities (e.g., lifting low 4/10, sit/stand 4/10, walk/run 5/10), suggesting a stable level of functional impairment after initial changes."
+        }
+      }
+    ],
+    "recommended_work_status": {
+      "status": "modified_duty",
+      "restrictions": [
+        "No lifting over 20 pounds",
+        "No repetitive bending or twisting",
+        "May change position every 30 minutes"
+      ],
+      "duration": "temporary"
+    },
+    "whole_person_impairment": {
+      "scope": "all_regions",
+      "included_regions": ["lumbar_spine"],
+      "excluded_regions": [],
+      "percentage": 5
+    }
+  },
+  "schemaVersion": "report-v5",
+  "referralQuestions": [],
+  "variant": "mmi_rating"
+}

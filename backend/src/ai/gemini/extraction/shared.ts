@@ -77,7 +77,7 @@ export const imagingSummarySchema = z
     modality: strfield.describe(
       "The imaging modality used (e.g., MRI, CT, EMG, X-ray)."
     ),
-    date: strfield.describe("The date of the imaging study, if stated"),
+    date: strfield.describe("The date of the imaging study, if stated, as YYYY-MM-DD"),
     bodyPart: strfield.describe(
       "The body part or region imaged (e.g., 'right shoulder', 'lumbar spine')."
     ),

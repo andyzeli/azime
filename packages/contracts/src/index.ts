@@ -12,3 +12,7 @@ export * from "./postExamAnalysis.js";
 export * from "./amaReference.js";
 export * from "./amaRatingTables.js";
 export * from "./regionDiagnoses.js";
+export * from "./opinions.js";
+export * from "./amaRating.js";
+export * from "./amaConsistency.js";
+export * from "./report.js";

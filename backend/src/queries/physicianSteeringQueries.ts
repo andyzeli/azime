@@ -81,7 +81,7 @@ export const upsertPhysicianSteering = async (
 
     if (!analysis?.analysis || !analysis.inputSnapshot) {
       throw new PhysicianSteeringError(
-        "Generate the regional pre-exam analysis before saving steering",
+        "Run the treatment analysis before saving the review",
         409,
       );
     }
@@ -91,7 +91,7 @@ export const upsertPhysicianSteering = async (
     };
     if (!steeringMatchesAnalysis(steering, identity)) {
       throw new PhysicianSteeringError(
-        "The pre-exam analysis changed. Reload steering before saving",
+        "The treatment analysis changed. Reload before saving the review",
         409,
       );
     }
@@ -111,7 +111,7 @@ export const upsertPhysicianSteering = async (
         : 0;
     if (expectedRevision !== currentRevision) {
       throw new PhysicianSteeringError(
-        "Physician steering changed. Reload before saving",
+        "The review was changed elsewhere. Reload before saving",
         409,
       );
     }

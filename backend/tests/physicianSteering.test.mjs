@@ -34,9 +34,9 @@ const analysis = storedPreExamAnalysisSchema.parse({
         canonicalDx,
         aiApplicability: "applicable",
         aiApplicabilityRationale: "Addresses this diagnosis",
-        aiAdequacy: "adequately_trialed",
-        aiAdequacyRationale: "Original AI reasoning",
       })),
+      aiExhaustion: "exhausted",
+      aiExhaustionRationale: "Original AI reasoning",
     },
   ],
   evidenceGaps: [
@@ -56,14 +56,14 @@ const addedTreatment = {
   treatmentId: null,
   treatment: "Physician-suggested treatment",
   category: "conservative",
-  episodeIds: [],
   assessments: {
     strain: {
       applicability: "applicable",
-      adequacy: "not_tried",
       rationale: "Physician judgment",
     },
   },
+  exhaustion: "not_exhausted",
+  exhaustionRationale: "",
 };
 const draft = () => initializePhysicianSteering(identity);
 
@@ -77,7 +77,7 @@ test("initialization returns independent sparse drafts without recording agreeme
   const review = resolvePreExamReview(analysis, second);
   assert.equal(review.treatmentAnalysis[0].dispositionReviewed, false);
   assert.equal(
-    review.treatmentAnalysis[0].assessments[0].adequacy.reviewStatus,
+    review.treatmentAnalysis[0].exhaustion.reviewStatus,
     "unreviewed",
   );
   assert.equal(review.evidenceGaps[0].reviewed, false);
@@ -99,32 +99,43 @@ test("resuming steering clones decisions; a replaced 3A with the same ID starts 
   }
 });
 
-test("agreement and override apply independently per diagnosis without changing 3A", () => {
+test("applicability resolves per diagnosis and exhaustion per treatment without changing 3A", () => {
   const steering = draft();
   steering.treatments[rowId] = {
     disposition: "keep",
     assessments: {
-      strain: {
-        applicability: { action: "agree", note: "Reviewed" },
-        adequacy: {
+      strain: { applicability: { action: "agree", note: "Reviewed" } },
+      disc_herniation: {
+        applicability: {
           action: "override",
-          value: "inadequately_trialed",
-          rationale: "Only two visits",
+          value: "not_applicable",
+          rationale: "No radicular signs",
         },
       },
+    },
+    exhaustion: {
+      action: "override",
+      value: "not_exhausted",
+      rationale: "Only two visits",
     },
   };
   const before = structuredClone({ analysis, steering });
   validatePhysicianSteeringReferences(steering, analysis, snapshot);
   const review = resolvePreExamReview(analysis, steering);
-  const [strain, disc] = review.treatmentAnalysis[0].assessments;
+  const [row] = review.treatmentAnalysis;
+  const [strain, disc] = row.assessments;
   assert.equal(strain.applicability.reviewStatus, "agree");
   assert.equal(strain.applicability.note, "Reviewed");
-  assert.equal(strain.adequacy.value, "inadequately_trialed");
-  assert.equal(strain.adequacy.source, "physician");
-  assert.equal(strain.aiAdequacy, "adequately_trialed");
-  assert.equal(disc.adequacy.value, "adequately_trialed");
-  assert.equal(disc.adequacy.reviewStatus, "unreviewed");
+  assert.equal(strain.applicability.value, "applicable");
+  assert.equal(disc.applicability.value, "not_applicable");
+  assert.equal(disc.applicability.source, "physician");
+  assert.equal(row.exhaustion.value, "not_exhausted");
+  assert.equal(row.exhaustion.source, "physician");
+  assert.equal(row.aiExhaustion, "exhausted");
+  assert.equal(
+    resolvePreExamReview(analysis, draft()).treatmentAnalysis[0].exhaustion.reviewStatus,
+    "unreviewed",
+  );
   assert.deepEqual({ analysis, steering }, before);
   review.treatmentAnalysis[0].episodeIds.push("preview-only");
   assert.deepEqual(analysis.treatmentAnalysis[0].episodeIds, ["episode-1"]);
@@ -157,7 +168,6 @@ test("physician-added treatments retain their origin and do not invent record hi
   validatePhysicianSteeringReferences(steering, analysis, snapshot);
   const review = resolvePreExamReview(analysis, steering);
   assert.equal(review.addedTreatments[0].source, "physician");
-  assert.deepEqual(review.addedTreatments[0].episodeIds, []);
   review.addedTreatments[0].assessments.strain.rationale = "Changed in preview";
   assert.equal(
     steering.addedTreatments[0].assessments.strain.rationale,
@@ -167,14 +177,12 @@ test("physician-added treatments retain their origin and do not invent record hi
 
 test("saves require valid judgment values and a nonblank override rationale", () => {
   for (const override of [
-    { action: "override", value: "inadequately_trialed", rationale: " " },
+    { action: "override", value: "not_exhausted", rationale: " " },
     { action: "override", value: "made_up", rationale: "Reason" },
     { action: "disagree" },
   ]) {
     const steering = draft();
-    steering.treatments[rowId] = {
-      assessments: { strain: { adequacy: override } },
-    };
+    steering.treatments[rowId] = { exhaustion: override };
     assert.equal(physicianSteeringSchema.safeParse(steering).success, false);
   }
   assert.equal(
@@ -196,7 +204,7 @@ test("review references must belong to the supplied regional analysis", () => {
     {
       treatments: {
         [rowId]: {
-          assessments: { unrelated_dx: { adequacy: { action: "agree" } } },
+          assessments: { unrelated_dx: { applicability: { action: "agree" } } },
         },
       },
     },
@@ -215,7 +223,7 @@ test("review references must belong to the supplied regional analysis", () => {
   }
 });
 
-test("added treatments validate IDs, scoped diagnoses, taxonomy and episode references", () => {
+test("added treatments validate IDs, scoped diagnoses and taxonomy", () => {
   const invalidTreatments = [
     [{ ...addedTreatment, id: rowId }],
     [addedTreatment, addedTreatment],
@@ -226,7 +234,6 @@ test("added treatments validate IDs, scoped diagnoses, taxonomy and episode refe
         assessments: { outside_scope: addedTreatment.assessments.strain },
       },
     ],
-    [{ ...addedTreatment, episodeIds: ["unknown-episode"] }],
     [{ ...addedTreatment, treatmentId: "unknown-taxonomy-id" }],
   ];
   for (const addedTreatments of invalidTreatments) {

@@ -126,7 +126,7 @@ const parseResponses = (responses: unknown) => {
     normalized.map((response) => [
       response!.itemId,
       response as PainDisabilityQuestionnaireResponse,
-    ]),
+    ])
   );
 
   if (responsesByItem.size !== validItemIds.size) {
@@ -139,10 +139,10 @@ const parseResponses = (responses: unknown) => {
 const scoreResponses = (responses: PainDisabilityQuestionnaireResponse[]) => {
   const score = responses.reduce(
     (total, response) => total + (response?.score ?? 0),
-    0,
+    0
   );
   const denominator = responses.filter(
-    (response) => response?.score !== undefined,
+    (response) => response?.score !== undefined
   ).length;
 
   return {
@@ -154,7 +154,7 @@ const scoreResponses = (responses: PainDisabilityQuestionnaireResponse[]) => {
 export const painDisabilityQuestionnaireController = {
   listByCaseHandler: async (
     request: FastifyRequest<{ Params: { caseId: string } }>,
-    reply: FastifyReply,
+    reply: FastifyReply
   ) => {
     const caseId = Number(request.params.caseId);
 
@@ -183,7 +183,7 @@ export const painDisabilityQuestionnaireController = {
       Params: { caseId: string };
       Body: { appointmentId?: number | string | null };
     }>,
-    reply: FastifyReply,
+    reply: FastifyReply
   ) => {
     const caseId = Number(request.params.caseId);
 
@@ -220,14 +220,14 @@ export const painDisabilityQuestionnaireController = {
 
   getByAccessTokenHandler: async (
     request: FastifyRequest<{ Params: { accessToken: string } }>,
-    reply: FastifyReply,
+    reply: FastifyReply
   ) => {
     try {
       const questionnaire =
         await db.query.PainDisabilityQuestionnaire.findFirst({
           where: eq(
             PainDisabilityQuestionnaire.accessToken,
-            request.params.accessToken,
+            request.params.accessToken
           ),
         });
 
@@ -261,7 +261,7 @@ export const painDisabilityQuestionnaireController = {
       Params: { accessToken: string };
       Body: { responses?: unknown };
     }>,
-    reply: FastifyReply,
+    reply: FastifyReply
   ) => {
     const responses = parseResponses(request.body?.responses);
 
@@ -276,7 +276,7 @@ export const painDisabilityQuestionnaireController = {
         await db.query.PainDisabilityQuestionnaire.findFirst({
           where: eq(
             PainDisabilityQuestionnaire.accessToken,
-            request.params.accessToken,
+            request.params.accessToken
           ),
         });
 
@@ -297,8 +297,8 @@ export const painDisabilityQuestionnaireController = {
         .where(
           eq(
             PainDisabilityQuestionnaire.accessToken,
-            request.params.accessToken,
-          ),
+            request.params.accessToken
+          )
         )
         .returning();
 
@@ -313,7 +313,7 @@ export const painDisabilityQuestionnaireController = {
 
   deleteHandler: async (
     request: FastifyRequest<{ Params: { questionnaireId: string } }>,
-    reply: FastifyReply,
+    reply: FastifyReply
   ) => {
     const questionnaireId = Number(request.params.questionnaireId);
 

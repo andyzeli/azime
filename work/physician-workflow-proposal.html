@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physician workflow proposal</title>
+<style>
+body{margin:0;background:transparent;color:var(--foreground);font-family:var(--font-sans,system-ui);font-size:14px;line-height:1.5}
+*{box-sizing:border-box}
+ol{list-style:none;padding:0;margin:0}
+li{display:grid;grid-template-columns:140px minmax(0,1fr);gap:20px;padding:16px 0;border-bottom:1px solid var(--border)}
+li:first-child{padding-top:0}li:last-child{border-bottom:0;padding-bottom:0}
+.stage{font-weight:500}.detail{margin-top:4px;color:var(--muted-foreground)}
+.sequence{display:flex;flex-wrap:wrap;gap:6px 10px;margin-top:8px;align-items:baseline}
+.sequence strong{font-weight:500}.arrow{color:var(--muted-foreground)}
+.action{margin-top:8px;font-weight:500}
+small{font-size:12px;color:var(--muted-foreground)}
+@media(max-width:440px){li{grid-template-columns:1fr;gap:6px;padding:14px 0}.detail{margin-top:0}}
+</style>
+</head>
+<body>
+<ol aria-label="Proposed physician workflow">
+<li><div class="stage">1 · Review &amp; prep</div><div><div>Pre-exam analysis · pass 3A</div><div class="detail">Optional pruning and adjudication. Save physician review to enable the prep sheet.</div><div class="action">Continue to visit →</div></div></li>
+<li><div class="stage">2 · Visit</div><div><div>Document the examination and select the PDQ.</div><div class="detail">Saving a draft keeps you here. Continue when ready for the assessment.</div><div class="action">Save &amp; continue to assessment →</div></div></li>
+<li><div class="stage">3 · Assessment</div><div><div>Finish the post-visit work in one place.</div><div class="sequence"><strong>Review diagnoses &amp; treatments</strong><span class="arrow" aria-hidden="true">→</span><strong>Run post-exam analysis</strong><span class="arrow" aria-hidden="true">→</span><strong>Physician opinions &amp; MMI</strong></div><div class="detail">Existing reviews carry forward. Readiness checks and corrections stay beside the action. Pass 4 results appear here.</div><div class="action">Continue to report →</div></div></li>
+<li><div class="stage">4 · Report</div><div><div>Show what remains, then enable report generation.</div><div class="detail">Each missing item links directly to its field. AI analysis remains separate from the physician’s final decisions.</div><div class="action">Generate report draft</div></div></li>
+</ol>
+</body>
+</html>

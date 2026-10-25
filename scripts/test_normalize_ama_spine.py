@@ -53,7 +53,7 @@ class UploadDraftTests(unittest.TestCase):
 
     def test_complete_identity_value_and_deterministic_export(self):
         source_rows = [row for region in normalizer.REGIONS for row in json.loads(
-            (normalizer.ROOT / f"docs/ama-rows-{region}.parsed.json").read_text())["rows"]]
+            (normalizer.ROOT / f"docs/rowparse/ama-rows-{region}.parsed.json").read_text())["rows"]]
         expected = {(row["row_id"], entry["entry_id"]): entry["impairment"]
                     for row in source_rows for entry in row["entries"]}
         actual = {(row["row_id"], entry["entry_id"]): entry["impairment"]
@@ -193,20 +193,20 @@ class UploadDraftTests(unittest.TestCase):
 
     def test_full_source_preparation_and_parsing_match_generated_files(self):
         for region in normalizer.REGIONS:
-            source = (normalizer.ROOT / f"docs/ama-rows-{region}.source.md").read_text()
+            source = (normalizer.ROOT / f"docs/rowparse/ama-rows-{region}.source.md").read_text()
             working = builder.prepare_source(region, source)
-            self.assertEqual(working, (normalizer.ROOT / f"docs/ama-rows-{region}.md").read_text())
+            self.assertEqual(working, (normalizer.ROOT / f"docs/rowparse/ama-rows-{region}.md").read_text())
             parsed, warnings, notes = row_parser.parse_rows(working)
             self.assertEqual(json.dumps(parsed, ensure_ascii=False, indent=2) + "\n",
-                             (normalizer.ROOT / f"docs/ama-rows-{region}.parsed.json").read_text())
+                             (normalizer.ROOT / f"docs/rowparse/ama-rows-{region}.parsed.json").read_text())
             self.assertTrue(all(warning["code"] == "inline_text_and_list" for warning in warnings))
 
     def test_approved_dermatome_corrections_and_complete_rules(self):
         self.assertTrue(all(entry["criteria"] is not None for row in self.rows for entry in row["entries"]))
         self.assertIn("C5 dermatome (ie, lateral forearm and hand, thumb)",
-                      (normalizer.ROOT / "docs/ama-rows-cervical.source.md").read_text())
+                      (normalizer.ROOT / "docs/rowparse/ama-rows-cervical.source.md").read_text())
         self.assertIn("L2 dermatome (ie, lower back or upper lumbar region",
-                      (normalizer.ROOT / "docs/ama-rows-lumbar.source.md").read_text())
+                      (normalizer.ROOT / "docs/rowparse/ama-rows-lumbar.source.md").read_text())
         for row_id, option, root, value in [("17-19-08", "sharp_dull_loss", "C6", 5),
                                            ("17-21-03", "symptoms_without_objective_loss", "L1", 2)]:
             question = next(q for q in self.by_id[row_id]["questions"] if q["id"] == "sensory_status")
@@ -217,20 +217,16 @@ class UploadDraftTests(unittest.TestCase):
                                      {"cs_confirmed": True, "sensory_status": option}))
             self.assertEqual(self.entry(row_id, entry_id)["impairment"]["value"], value)
 
-    def test_paresthesias_wording_is_preserved_as_a_full_confirmation(self):
-        source = json.loads((normalizer.ROOT / "docs/ama-rows-lumbar.parsed.json").read_text())
-        row = next(row for row in source["rows"] if row["row_id"] == "17-21-04")
-        original = next(entry for entry in row["entries"] if entry["entry_id"] == "2B")["sections"]["PE"]["items"][0]["text"]
-        question = next(q for q in self.by_id["17-21-04"]["questions"] if q["id"] == "sensory_criterion_2b")
-        self.assertEqual(question["help"], original)
-        self.assertIn("and/or paresthesias)", question["help"])
+    def test_l2_2b_uses_sharp_dull_loss_like_l3_and_l4(self):
+        # The Guides' L2 2B cell ends "...L2 dermatome and/or paresthesias)", copied
+        # from the femoral stretch cell; symptoms alone do not meet 2B.
+        self.assertNotIn("sensory_criterion_2b",
+                         [q["id"] for q in self.by_id["17-21-04"]["questions"]])
         rule = self.entry("17-21-04", "2B")["criteria"]
         answers = {"cs_confirmed": True, "neural_tension": True, "motor_3": True,
                    "sensory_status": "sharp_dull_loss"}
-        self.assertIsNone(evaluate(rule, answers))
-        answers["sensory_criterion_2b"] = True
         self.assertTrue(evaluate(rule, answers))
-        answers["sensory_criterion_2b"] = False
+        answers["sensory_status"] = "symptoms_without_objective_loss"
         self.assertFalse(evaluate(rule, answers))
 
     def test_deduplicates_l5_neural_tension_and_keeps_full_compound_findings(self):

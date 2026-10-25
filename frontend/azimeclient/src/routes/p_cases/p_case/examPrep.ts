@@ -86,7 +86,7 @@ export function examPrepStatus(
       ? !sameSteering(physicianSteering, steering.steering)
       : basedOn.physicianSteeringRevision !== steering.revision
   )
-    reasons.push("steering changed");
+    reasons.push("review changed");
   // Same scope rule as the 3B builder: analyzed diagnoses that are still current.
   const current = currentDiagnoses(diagnoses?.diagnoses ?? []);
   if (diagnoses && !sameSet(input.scope.diagnoses, analyzedDiagnoses.filter((dx) => current.includes(dx))))
@@ -128,14 +128,16 @@ export function useExamPrep(caseId: string, regions: Region[]) {
       const analyzed = preExam[i].data?.analysis?.treatmentAnalysis;
       const listed = (diagnoses[i].data?.diagnoses ?? []).map((d) => d.canonicalDx);
       const rows = analyzed && scopedRows(analyzed, listed);
-      // After the visit the sheet is a record of what was prepared, so later edits
-      // (most review happens then) don't mark it out of date.
+      // After the visit the sheet is a record of what was prepared, so later steering edits
+      // (most review happens then) don't mark it out of date. A 3A re-run or a diagnosis
+      // change still does.
       const status = examPrepStatus(refined[i].data, saved, diagnoses[i].data, preExam[i].data?.analyzedDiagnoses ?? []);
+      const steeringOnly = status.kind === "stale" && status.reasons.every((r) => r === "review changed");
       return {
         region,
         refined: refined[i].data ?? null,
         diagnoses: diagnoses[i].data ?? null,
-        status: visit.data && status.kind === "stale" ? { kind: "current" as const } : status,
+        status: visit.data && steeringOnly ? { kind: "current" as const } : status,
         analysisRun: Boolean(rows),
         // Listed diagnoses the treatment analysis doesn't cover yet.
         needsAnalysis: listed.filter(
@@ -153,7 +155,8 @@ export function useExamPrep(caseId: string, regions: Region[]) {
 
 export type RegionWorkflow = ReturnType<typeof useExamPrep>["regions"][number];
 
-export type NextStep = { message: string; region: Region };
+// optional: the step can be skipped (the prep sheet before the visit).
+export type NextStep = { message: string; region: Region; optional?: boolean };
 
 const regionLabel = (region: Region) =>
   supportedRegions.find(({ value }) => value === region)?.label ?? region;
@@ -171,7 +174,7 @@ export function nextStep(regions: RegionWorkflow[], visitSaved: boolean): NextSt
           [(r) => r.unreviewed > 0, (r) => ({ message: `${plural(r.unreviewed, "treatment", "treatments")} still unreviewed (${regionLabel(r.region)}) before the post-exam analysis.`, region: r.region })],
         ] as typeof rules)
       : ([
-          [(r) => !r.refined, (r) => ({ message: `Optional: create the prep sheet (${regionLabel(r.region)}), or go to Visit.`, region: r.region })],
+          [(r) => !r.refined, (r) => ({ message: `Optional: create the prep sheet (${regionLabel(r.region)}), or go to Visit.`, region: r.region, optional: true })],
         ] as typeof rules)),
   ];
   for (const [applies, step] of rules) {

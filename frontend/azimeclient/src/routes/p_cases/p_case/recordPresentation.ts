@@ -24,7 +24,7 @@ export type TimelineEvent = {
   name: string;
   detail: string;
   provider: string;
-  summary: unknown | null;
+  extraction: ParsedRecord | null;
   summaryMessage: string | null;
 };
 
@@ -56,7 +56,7 @@ const workStatus = {
 
 // The query validates against documentType; this restores that relationship
 // for TypeScript (its current query type exposes an uncorrelated summary union).
-type ParsedRecord = {
+export type ParsedRecord = {
   [T in DocumentType]: { documentType: T; parsedSummary: StoredExtraction<T> };
 }[DocumentType];
 
@@ -144,7 +144,12 @@ export function toTimelineEvent(
   record: RecordWithParsedSummary
 ): TimelineEvent {
   const type = documentTypes[record.documentType];
-  const detail = record.parsedSummary ? extractionLine(record) : "";
+  // Extracted strings may contain Markdown; the timeline shows a plain one-line preview.
+  const detail = record.parsedSummary
+    ? extractionLine(record)
+        .replace(/\*\*|__|`/g, "")
+        .replace(/^\s*(#+|[-*]|\d+\.)\s+/gm, "")
+    : "";
   const title = getTitle(
     record.documentType,
     record.provider?.discipline,
@@ -174,7 +179,7 @@ export function toTimelineEvent(
     name: title || type.label,
     detail: detail || summaryMessage || "No summary text documented.",
     provider: record.provider?.name ?? "",
-    summary: record.parsedSummary,
+    extraction: record.parsedSummary ? (record as ParsedRecord) : null,
     summaryMessage,
   };
 }

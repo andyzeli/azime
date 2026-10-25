@@ -35,15 +35,16 @@
 <table>
   <tr><th>Phase</th><th>What</th><th>Status</th></tr>
   <tr><td>1</td><td>Per-region diagnosis list replaces the Visit confirm/reject step and the "redo Analysis" loop. Exam prep becomes a modal.</td><td><span class="done">done, checked in the browser</span></td></tr>
-  <tr><td>2</td><td>Pass 4 builds its input directly instead of from exam prep. Trajectory moves into pass 4.</td><td><span class="todo">planned, not built</span></td></tr>
-  <tr><td>3</td><td>Adding a diagnosis runs 3A for that diagnosis only, without resetting steering</td><td><span class="todo">pending</span></td></tr>
+  <tr><td>2</td><td>Pass 4 builds its input directly instead of from exam prep. Trajectory moves into pass 4.</td><td><span class="done">done, checked with a real run</span></td></tr>
+  <tr><td>3</td><td>Adding a diagnosis runs 3A for that diagnosis only, without resetting steering</td><td><span class="done">done, checked with a real run</span></td></tr>
   <tr><td>4</td><td>Assessment tab: Analysis and Post Visit merged (<code>docs/assessment-mockup.html</code>), plus printout polish</td><td><span class="todo">pending</span></td></tr>
   <tr><td>5</td><td>Opinions tab: pass 4 results, trajectory, remaining care, necessity questions, MMI choice and branches</td><td><span class="todo">pending</span></td></tr>
   <tr><td>6</td><td>Report tab: frozen Opinions snapshot + draft, with "draft out of date"</td><td><span class="todo">pending</span></td></tr>
 </table>
-<p><b>Agreed order:</b> backend restart + require reason/basis → <b>3</b> → <b>2</b> → <b>4</b> → <b>5</b> → <b>6</b>. Phase 3 moved ahead because diagnoses mostly change after the visit, and today that wipes the review.</p>
+<p><b>Agreed order:</b> <b>3</b> ✓ → <b>2</b> ✓ → <b>5</b> → <b>6</b> → <b>4</b> (UI detail last). In phase 4, keep the diagnoses <i>above</i> the treatment analysis (as on the current Analysis page), not the mockup’s left/right split.</p>
 <p>Tabs after 4–6: <code>Records · Summary · Assessment · Visit · Opinions · Report</code></p>
-<p class="todo">Waiting on a backend restart for the latest build. Until then, new snapshots still default to only the Working and Supported diagnoses, and exam prep doesn't store the steering it used.</p>
+<p><b>MMI scope (decided 2026-10-18):</b> one MMI opinion per region, covering all of that region’s supported diagnoses. Whole-person MMI is derived: an AND across the regions, dated by the latest regional MMI date, and pending while any region is pending. There are no per-diagnosis MMI opinions; this replaces the per-diagnosis proposal in <code>exam-to-report-design-v3.html</code>, because adjusters want one clean answer. Differences between diagnoses go in the regional rationale. Pass 4 stays regional, with no output change.</p>
+
 
 <h2>Diagnosis list</h2>
 <p>One list per case and region, in table <code>case_region_diagnoses</code> (migration 0014), read and saved through <code>GET/PUT /cases/:id/diagnoses/:region</code>. It's kept separate from steering, because steering belongs to a single 3A run.</p>
@@ -59,9 +60,9 @@
   <tr><td>3A treatment analysis</td><td>✓</td><td>✓ (treatment given for it still needs a necessity opinion)</td></tr>
   <tr><td>Treatment table</td><td>✓</td><td>✓, greyed and tagged "dx not supported"</td></tr>
   <tr><td>Exam prep, AMA tasks, Visit root pickers</td><td>✓</td><td>✗</td></tr>
-  <tr><td>Pass 4 (phase 2)</td><td>✓</td><td>✓, with its status</td></tr>
+  <tr><td>Pass 4 (phase 2)</td><td>✓</td><td>✗ (necessity questions are a query in Opinions)</td></tr>
 </table>
-<p>A diagnosis added after 3A shows "Not covered" until a new snapshot and 3A run. That run currently resets steering, which phase 3 fixes.</p>
+<p>A diagnosis added after 3A shows an <b>Analyze diagnosis</b> bar above the treatments. It runs 3A for that diagnosis only and merges the result in: existing rows gain an assessment, uncovered ladder entries and AI suggestions become new rows, and a record-only row is upgraded when a ladder entry shares its episodes. Row ids and saved steering are kept. A row counts as reviewed only when every shown assessment has a decision, so rows that gained one reopen with a "new · unreviewed" tag. A new snapshot and run is still the full redo.</p>
 
 <h2>Prep sheet</h2>
 <ul>
@@ -85,31 +86,36 @@
   </li>
 </ul>
 
-<h2>Phase 2 plan (pass 4 input)</h2>
-<pre>input = { caseContext, region, caseSummary,
-          diagnoses,                  // every listed diagnosis, with status + reason
-          reviewedTreatmentAnalysis,  // 3A + steering; not-supported diagnoses included and labelled
-          visit: { note, pdq, questionnaires, amaFindings, priorityResponses? } }
-output += trajectoryAnalysis           // moved from exam prep
+<h2>Fixed: 3A never got the taxonomy</h2>
+<p><code>queries/ladderEntries.ts</code> matched <code>canonical_diagnoses.label</code> against canonical IDs, so 3A and the added-diagnosis run always received an empty ladder and every row came back as an AI suggestion. It now matches on <code>canonical_diagnoses.id</code>. Analyses run before the fix have no taxonomy rows; take a new snapshot and re-run 3A to get them (this resets steering).</p>
+
+<h2>Visit priorities: read-only</h2>
+<p>3B's visit priorities are suggestions only: at most three, each grounded in a specific conflict, kept gap or unclear finding, and often none. Nothing is recorded against them; the physician covers what matters in the note, which pass 4 reads. (Priority responses and pass 4 "clarifications" were removed.)</p>
+
+<h2>Phase 2 (pass 4) — built</h2>
+<p>Built directly from 3A + steering + the diagnosis list + the visit. No exam prep (3B) needed. Scope is the <b>current</b> diagnoses only, as in 3B: pass 4 never gives necessity opinions.</p>
+<pre>input = { caseContext, region,
+          caseSummary,                                // incidentNarrative, statusTimeline, caseWideSummary, psychosocialFactors
+          diagnoses: [{ canonicalDx, label }],        // supported only (none may be left Working)
+          reviewedTreatmentAnalysis,                  // 3A + steering, current diagnoses; kept gaps/inconsistencies
+          visit: { examinationDate,                   // visit creation date for now; later the office visit date
+                   note,                              // one free-text field; pass 4 reconciles it with PDQ + AMA
+                   pdq, questionnaires, amaFindings } }
+output = { trajectory: { subjective, functional, objective },     // 3B's shape, computed here
+           plateauEvidence: { supporting: string[], opposing: string[] },
+           mmiPosture: { direction, rationale },
+           unresolvedQuestions: [{ question, whyItMatters, wouldResolve }] }
 basedOn = { caseSummaryId, 3A id/updatedAt, steering rev, diagnoses rev,
             visit rev, pdq id/updatedAt, questionnaire ids }</pre>
 <ul>
-  <li><b>A current diagnosis with no 3A coverage</b> is allowed, but flagged as "no treatment analysis" rather than "no issues".</li>
-  <li><b>AMA findings are kept</b> even when no linked diagnosis remains, or the diagnosis is not supported.</li>
-  <li><b>Assessment footer</b> (not Visit) gets the readiness checklist and "Run post-exam analysis": visit documented, every diagnosis decided, every row reviewed, every current diagnosis analyzed. The Visit footer just drops "needs exam prep".</li>
-  <li><b>Remaining care isn't a pass 4 output.</b> It's computed from steering after the visit (applicable and not adequately trialed, for current diagnoses), and the physician confirms it in Opinions. Design pass 4's output around what Opinions shows.</li>
-</ul>
-<p><b>Gaps phase 2 must close for "not medically necessary":</b></p>
-<ul>
-  <li>Today <code>postExamInputSnapshot.ts</code> reuses exam prep's <code>fullReviewedAnalysis</code>. <code>scopeReview</code> has already cut that down to current diagnoses, so verdicts for not-supported diagnoses are lost.</li>
-  <li>The diagnosis list (status + reason) isn't in the snapshot at all.</li>
-  <li><b>Necessity (corrected):</b> Not supported does <i>not</i> automatically mean "not medically necessary". A diagnosis that has since resolved may have justified the earlier treatment. Add <code>basis: "never" | "resolved"</code> to Not supported entries. Pass 4 raises treatments whose linked diagnoses are all Not supported as necessity questions, and the physician answers them in Opinions. Applicability stays a separate judgement of how well the treatment fits the diagnosis.</li>
-  <li>Pass 4 refuses unreviewed rows. Prep's "update anyway" is fine for the printout only.</li>
-  <li>Small, do first: require a reason (and basis) for Not supported.</li>
-  <li>Prune removes the row, so use it only when the treatment didn't happen, never for treatment given for a rejected diagnosis.</li>
+  <li><b>Not pass 4 outputs</b> (plain queries, shown in Opinions): remaining care (applicable and not exhausted or exhaustion unclear, unclear applicability, or exhausted but ongoing) and necessity questions (treatments whose linked diagnoses are all Not supported).</li>
+  <li><b>Necessity:</b> Not supported doesn't automatically mean "not medically necessary", because a diagnosis that has since resolved may have justified the earlier care. The physician answers necessity questions in Opinions. The reason stays optional (inferred if blank), and there's no <code>basis</code> field.</li>
+  <li><b>Assessment footer</b> gets the readiness checklist and "Run post-exam analysis": 3A run, steering saved with every row reviewed, visit documented, current diagnoses all analyzed, and <b>no diagnosis left Working</b> (decided).</li>
+  <li><b>AMA findings are kept</b> even when no linked diagnosis remains.</li>
+  <li>Prune removes the row, so use it only when the treatment didn't happen.</li>
 </ul>
 
-<h2>Phase 3 plan (add a diagnosis without resetting steering)</h2>
+<h2>Phase 3 design (built)</h2>
 <p>Adding a diagnosis runs 3A for that diagnosis only. The model gets the existing rows as input, so it assesses them and doesn't suggest them again.</p>
 <pre>type PreExamDelta = {
   canonicalDx: string;                       // the added diagnosis
@@ -190,12 +196,11 @@ basedOn = { caseSummaryId, 3A id/updatedAt, steering rev, diagnoses rev,
 <h2>Roadmap after the redesign</h2>
 <ol>
   <li>Save rating-table answers (class and modifier per table).</li>
-  <li>Imaging review card: per study, agree or disagree with the radiologist and record the physician's own findings.</li>
   <li>Function and work capacity card, structured. Decide the data model first.</li>
-  <li>Deterministic AMA evaluator, plus imaging and function data in the post-exam snapshot.</li>
+  <li>Deterministic AMA evaluator, plus function data in the post-exam snapshot.</li>
   <li>MMI &amp; Report tab: opinions, answers to the standard questions, and any custom questions, drafted by AI and edited by the physician.</li>
 </ol>
-<p class="muted">Not planned: a SOAP-structured note, or merging priorities into the AMA findings.</p>
+<p class="muted">Not planned: a SOAP-structured note, merging priorities into the AMA findings, or an imaging review card. The physician's own image review goes in the note: imaging the note discusses means the physician viewed the images, and the records' imaging list is report-only (decided 2026-10-21).</p>
 <p class="muted">Per-case referral questions were removed on 2026-10-17, because the standard question set covers them. Questions outside that set become custom questions in MMI &amp; Report. Still waiting on a decision: the patient_declined prompt line.</p>
 
 <h2>Dev environment</h2>
@@ -207,6 +212,107 @@ basedOn = { caseSummaryId, 3A id/updatedAt, steering rev, diagnoses rev,
   <li><b>Database:</b> there's no <code>psql</code>. Query with node <code>pg</code> at <code>postgres://localhost/azime</code>.</li>
   <li><b>Test case:</b> case 1, lumbar, at <code>localhost:5173/p_cases/1/...</code>.</li>
 </ul>
+
+<h2>Comments</h2>
+<p class="muted">Pass 4 input/output design notes — 2026-10-17. Proposed shapes and prompt behavior; not implemented.</p>
+
+<p><b>Scope:</b> Pass 4 analyzes recovery and MMI posture for current diagnoses only. Remaining care and historical treatment-necessity questions are separate queries shown in Opinions.</p>
+
+<h3>Input assembly</h3>
+<pre>// Pseudocode: helper names describe the required order.
+const input = {
+  caseContext,
+  region,
+  examinationDate, // actual encounter date, not documentation date
+  diagnoses: currentDiagnoses, // Working / Supported, with source and status
+  caseSummary,
+  reviewedTreatmentAnalysis:
+    projectFullReviewedAnalysis(
+      scopeToCurrentDiagnoses(
+        resolvePreExamReview(analysis3A, savedSteering)
+      )
+    ),
+  visit: {
+    note,
+    clarifications,
+    pdq,
+    questionnaires,
+    amaFindings,
+  },
+};</pre>
+<p>Resolve current saved steering, retain current diagnosis assessments, then project the <b>full</b> review. Include exhausted treatments, retained gaps, and inconsistencies — not just open treatment issues. No dependency on the prep snapshot or its trajectory interpretation.</p>
+
+<h3>Clarifications: question + response</h3>
+<pre>{
+  question: "Did the improvement during therapy persist afterward?",
+  status: "response",
+  note: "Patient reports that it lasted two weeks."
+}</pre>
+<ul>
+  <li>Copy the saved priority response's <code>focus</code> into <code>question</code>; include its status and note.</li>
+  <li>Omit <code>not_relevant</code> entries and 3B's <code>whyItMatters</code>.</li>
+  <li>Allow an empty array. Pass 4 needs no knowledge of pass 3, and prep remains optional.</li>
+</ul>
+<pre>// Prompt behavior
+Check clarifications, the note, and findings before raising a question.
+An answer may resolve an issue fully, partly, or not at all.
+"Couldn't assess" and "declined" preserve uncertainty.
+A question's wording does not establish its premise as fact.</pre>
+
+<h3>Trajectory: computed in pass 4</h3>
+<pre>Dated historical observations
+  + PDQ / other questionnaires
+  + today's findings and note
+  → subjective, functional, objective trajectories
+
+type Trajectory = {
+  direction: "Improving" | "Stable" | "Worsening"
+    | "Fluctuating" | "Insufficient Data";
+  evidenceQuality: "Strong" | "Moderate" | "Sparse"
+    | "Conflicting" | "Absent";
+  interpretation: string;
+};</pre>
+<p>Reuse the existing trajectory descriptions. Assess the three dimensions independently; distinguish change over time from disagreement between sources. A single observation or missing follow-up cannot establish stability.</p>
+
+<h3>Reconcile evidence without losing its origin</h3>
+<p>The visit note stays one free-text field. Pass 4 combines its information with structured evidence under these rules:</p>
+<pre>Patient-reported symptoms/function ≠ observed examination findings.
+The same finding repeated in the note and AMA form counts once.
+Conflicting entries remain a conflict unless the physician resolves them.
+Missing answers do not mean normal findings.</pre>
+<p>Preserve AMA findings even when their diagnosis link disappears. They remain encounter evidence; their presence does not reinstate an excluded diagnosis.</p>
+
+<h3>Output: four groups</h3>
+<pre>type Pass4Output = {
+  trajectory: {
+    subjective: Trajectory;
+    functional: Trajectory;
+    objective: Trajectory;
+  };
+  plateauEvidence: {
+    supporting: string[];
+    opposing: string[];
+  };
+  mmiPosture: {
+    direction:
+      | "Leans Toward MMI"
+      | "Leans Against MMI"
+      | "Indeterminate";
+    rationale: string;
+  };
+  unresolvedQuestions: {
+    question: string;
+    whyItMatters: string;
+    wouldResolve: string;
+  }[];
+};</pre>
+<ul>
+  <li><code>wouldResolve</code> names the specific missing information that would answer the question. It is not a requirement to perform another test.</li>
+  <li>Limit unresolved questions to material uncertainties affecting trajectory, plateau, or MMI interpretation. Return <code>[]</code> when none remain.</li>
+  <li>Plateau evidence statements should explain specific findings, dates, or treatment responses and their significance. Structured source references are not required; the frozen input snapshot preserves what the model received.</li>
+  <li>Finalize the prompt and output descriptions together.</li>
+</ul>
+<p><b>Boundary:</b> Pass 4 synthesizes the current clinical course, explains supporting and opposing evidence, and exposes remaining uncertainty. It does not prescribe remaining care, decide historical necessity, calculate impairment, or make the physician's final MMI determination.</p>
 
 </body>
 </html>

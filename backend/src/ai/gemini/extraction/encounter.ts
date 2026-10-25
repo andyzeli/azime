@@ -82,7 +82,7 @@ export const encounterSchema = z.object({
     .describe("Narrative of ROS if one was documented. "),
   reportedDateOfInjury: z
     .string()
-    .describe("date of injury if recorded in note, in format dd/mm/yyyy"),
+    .describe("date of injury if recorded in note, as YYYY-MM-DD"),
 
   pastMedicalHistory: z
     .string()

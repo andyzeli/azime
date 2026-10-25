@@ -111,3 +111,15 @@ export const caseSummaryCardResponseSchema = z.object({
 export type CaseSummaryCardResponse = z.infer<
   typeof caseSummaryCardResponseSchema
 >;
+
+// GET /cases/:caseId/past-medical-history: what the records document, one entry per
+// distinct statement, oldest first.
+export const pastMedicalHistorySchema = z.array(
+  z.object({
+    recordId: z.number().int().positive(),
+    date: z.string().nullable(),
+    providerName: z.string().nullable(),
+    history: z.string(),
+  })
+);
+export type PastMedicalHistory = z.infer<typeof pastMedicalHistorySchema>;

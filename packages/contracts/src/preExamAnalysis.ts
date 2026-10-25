@@ -16,20 +16,6 @@ const assessmentItemSchema = z.object({
     "contraIndicated",
     "unclear",
   ]),
-  aiAdequacyRationale: z
-    .string()
-    .describe(
-      "Brief description of your clinical inference about whether this treatment avenue appears sufficiently explored such that additional use of the same treatment strategy is unlikely to provide meaningful further improvement. Assess adequacy independently from whether treatment was merely completed. Refer to treatment response, current trajectory, and relevant clinical context."
-    ),
-  aiAdequacy: z
-    .enum([
-      "adequately_trialed",
-      "inadequately_trialed",
-      "not_tried",
-      "patient_declined",
-      "unclear",
-    ])
-    .describe("Your conclusion on adequacy. "),
 });
 export const treatmentAnalysisItemSchema = z.object({
   suggestionReasoning: z
@@ -90,7 +76,17 @@ export const treatmentAnalysisItemSchema = z.object({
   assessments: z
     .array(assessmentItemSchema)
     .describe(
-      "For each diagnosis, an assessment of this treatment's applicability and adequacy"
+      "For each diagnosis, an assessment of this treatment's applicability"
+    ),
+  aiExhaustionRationale: z
+    .string()
+    .describe(
+      "Brief clinical reasoning on whether this treatment avenue is exhausted, judged once across the diagnoses it is applicable to. Use the careStandards trialBenchmark as the rubric for the documented trial, then refer to treatment response, current trajectory and relevant clinical context. Explain meaningful differences between diagnoses here."
+    ),
+  aiExhaustion: z
+    .enum(["exhausted", "not_exhausted", "unclear"])
+    .describe(
+      "exhausted = further use is unlikely to provide meaningful additional improvement. not_exhausted = a relevant, feasible opportunity remains insufficiently explored. unclear = the evidence cannot establish either. An incomplete or undocumented trial does not by itself mean not_exhausted, and a treatment that is not applicable is not thereby exhausted. If the treatment is applicable to none of the diagnoses, use unclear and say so."
     ),
   //later - if things are commonly marked 'unclear' for region - add excludedEpisodes: {episodeId, reason}[] here
 });
@@ -141,6 +137,49 @@ export const preExamAnalysisSchema = z.object({
   inconsistencies: z.array(inconsistencyItemSchema),
 });
 
+// 3A for one diagnosis added after the run. Merged into the existing rows so their ids,
+// applicability assessments and steering survive (backend/src/ai/preExamDelta.ts).
+const newDiagnosisAssessmentSchema = assessmentItemSchema.omit({
+  canonicalDx: true,
+});
+const exhaustionShape = treatmentAnalysisItemSchema.pick({
+  aiExhaustionRationale: true,
+  aiExhaustion: true,
+}).shape;
+
+export const preExamDeltaSchema = z.object({
+  existingRowAssessments: z
+    .array(
+      z.object({
+        rowId: z.string().describe("The id of the existing treatment row"),
+        ...newDiagnosisAssessmentSchema.shape,
+        ...exhaustionShape,
+      })
+    )
+    .describe(
+      "For every existing treatment row: its applicability to the new diagnosis, and its exhaustion judgment revised to cover the new diagnosis too. If the treatment is not applicable to the new diagnosis, repeat the row's current exhaustion judgment."
+    ),
+  newRows: z
+    .array(
+      treatmentAnalysisItemSchema.omit({ assessments: true }).extend({
+        source: z
+          .enum(["taxonomy", "ai"])
+          .describe(
+            "'taxonomy' = a careStandards entry for the new diagnosis, 'ai' = your suggestion"
+          ),
+        assessment: newDiagnosisAssessmentSchema,
+      })
+    )
+    .describe(
+      "Treatments the new diagnosis brings that no existing row covers: every careStandards entry whose treatmentId is not already on an existing row, plus any suggestion of yours. Never repeat an existing row."
+    ),
+});
+export type PreExamDelta = z.infer<typeof preExamDeltaSchema>;
+
+export const analyzeAddedDiagnosisRequestSchema = z.object({
+  canonicalDx: z.string().min(1),
+});
+
 export const storedPreExamAnalysisSchema = preExamAnalysisSchema.extend({
   treatmentAnalysis: z.array(storedTreatmentAnalysisItemSchema),
   evidenceGaps: z.array(storedEvidenceGapItemSchema),
@@ -152,6 +191,17 @@ export const storedPreExamAnalysisSchema = preExamAnalysisSchema.extend({
     model: z.string().min(1),
     // caseSummaryId: z.number().int(),
   }),
+  // Diagnoses merged in after the run; sourceMetadata covers the original run only.
+  addedDiagnoses: z
+    .array(
+      z.object({
+        canonicalDx: z.string(),
+        provider: preExamAnalysisProviderSchema,
+        model: z.string().min(1),
+        createdAt: z.string(),
+      })
+    )
+    .default([]),
 });
 
 // Omitted = the region's current diagnoses (see regionDiagnoses.ts). Only the old cockpit sends a list.
@@ -176,7 +226,8 @@ export const preExamAnalysisResponseSchema = z.object({
   caseId: z.number().int(),
   region: regionSchema,
   hasInputSnapshot: z.boolean(),
-  // The snapshot's scope: diagnoses the treatment analysis covers (or will, once run).
+  // The snapshot's scope: diagnoses the treatment analysis covers (or will, once run),
+  // including ones merged in after the run.
   analyzedDiagnoses: z.array(z.string()).default([]),
   analysis: storedPreExamAnalysisSchema.nullable(),
   createdAt: z.string(),
@@ -186,21 +237,3 @@ export const preExamAnalysisResponseSchema = z.object({
 export type PreExamAnalysisResponse = z.infer<
   typeof preExamAnalysisResponseSchema
 >;
-
-// Pass 3A output
-//
-// Inputs: chronological Pass 1 extractions + metadata, Pass 2 output, query-built treatment episode skeletons, deduped diagnosis mentions, taxonomy for the selected diagnosis.
-//
-// diagnosis — the working diagnosis 3A reasoned under, plus how it reconciled similar/variant diagnosis mentions in the record (the one place semantic grouping happens).
-// treatmentAnalysis[] — union of taxonomy, AI-suggested, and record-only treatments, deduped. Per row:
-// category, treatment, source (Taxonomy / AI Suggested / Record Only)
-// recordStatus — widened to cover what moved here: Planned / Ongoing / Completed / Recommended / AwaitingAuthorization / Declined / Unclear / Not Documented
-// recordDetail — quantity, documented response, end reason, one line (absorbed from Pass 2's old episode judgments)
-// episodeIds[] — join back to the query skeletons
-// aiAdequacyAssessment — Adequately Trialed / Not Adequately Trialed / Unclear (renamed from "exhaustion"; runway judgment is post-visit)
-// aiAdequacyRationale
-// physicianAdequacyAssessment, physicianAdequacyRationale (null until steered)
-// inconsistencies[] — clinically meaningful conflicts, found directly from the documents (Pass 2 no longer supplies factual conflicts).
-// evidenceGaps[] — { gap, whyItMatters }, only where it limits interpretation.
-//
-// Removed from 3A: trajectoryAnalysis (→ 3B), activeCareBlockers (→ recordStatus values on treatment rows), any direction or posture language.

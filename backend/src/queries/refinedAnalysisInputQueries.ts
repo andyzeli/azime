@@ -44,7 +44,7 @@ export async function getRefinedAnalysisInput(
   }
   if (!steering) {
     throw new MissingPrerequisiteError(
-      "Save physician steering before taking a refined analysis snapshot"
+      "Save the treatment review before creating the prep sheet"
     );
   }
 
@@ -61,6 +61,7 @@ export async function getRefinedAnalysisInput(
       id: preExam.id,
       updatedAt: preExam.updatedAt.toISOString(),
       analysis: preExam.analysis,
+      ladder: preExam.inputSnapshot.ladder,
     },
     steering,
   });

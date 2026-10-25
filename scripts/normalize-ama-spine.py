@@ -113,10 +113,6 @@ class RowBuilder:
 
 def sensory_value(text):
     text = clean(text)
-    # User elected to retain this complete condition as written. It is a
-    # distinct physician confirmation, not the ordinary sharp/dull choice.
-    if "dermatome and/or paresthesias)" in text:
-        return None
     if text.startswith("confirms residual radicular symptoms"):
         return "symptoms_without_objective_loss"
     if "dullness to pinprick" in text and "sharp vs dull perception remains intact" in text:
@@ -153,9 +149,6 @@ def make_sensory_question(builder):
 
 
 def pe_item(builder, text):
-    if builder.row["row_id"] == "17-21-04" and "dermatome and/or paresthesias)" in text:
-        return builder.boolean("PE", "sensory_criterion_2b",
-                               "Is the following L2 sensory criterion met?", text)
     value = sensory_value(text)
     if value:
         return leaf("sensory_status", value)
@@ -211,7 +204,7 @@ def normalize_radiculopathy(builder):
     help_text = flatten_help(cs)
     # Include the supplied EMG qualification passage as reference help rather
     # than inventing a machine-readable interpretation of its nested prose.
-    emg_source = (ROOT / "docs/ama-electrodiagnostic-source.md").read_text()
+    emg_source = (ROOT / "docs/med_ref_material/ama-electrodiagnostic-source.md").read_text()
     start = emg_source.index("Electromyographic evidence is useful")
     end = emg_source.index("The following has been published", start)
     help_text += "\n\nElectrodiagnostic requirements and limitations:\n" + emg_source[start:end].strip()
@@ -325,7 +318,7 @@ def normalize_claudication(builder):
 def normalize_rows():
     result = []
     for region in REGIONS:
-        source_rows = json.loads((ROOT / f"docs/ama-rows-{region}.parsed.json").read_text())["rows"]
+        source_rows = json.loads((ROOT / f"docs/rowparse/ama-rows-{region}.parsed.json").read_text())["rows"]
         for source in source_rows:
             builder = RowBuilder(source, region)
             name = source["description"]

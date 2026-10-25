@@ -34,8 +34,8 @@ export const workStatusReportSchema = z.object({
     .describe("category of work status most applicable"),
   effectiveFrom: strfield
     .optional()
-    .describe("Start date of accomodation: dd/mm/yyyy"),
+    .describe("Start date of accomodation, as YYYY-MM-DD"),
   effectiveThrough: strfield
     .optional()
-    .describe("End date of accomodation: dd/mm/yyyy"),
+    .describe("End date of accomodation, as YYYY-MM-DD"),
 });

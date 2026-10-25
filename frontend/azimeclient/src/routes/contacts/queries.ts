@@ -1,15 +1,12 @@
 import axios from "redaxios";
 import { queryOptions } from "@tanstack/react-query";
-import { Contact } from "./ContactForm";
 import { CaseContacts } from "../../../../../backend/src/db/schema";
-export class NotFoundError extends Error {}
 
 const API_BASE_URL = "http://localhost:4000";
 
-// export type DbContact = Contact & {
-//   id: number;
-// };
 export type DbContact = CaseContacts;
+export type NewContact = Omit<CaseContacts, "id">;
+
 export const fetchContacts = async () => {
   return axios
     .get<Array<DbContact>>(`${API_BASE_URL}/contacts`)
@@ -20,6 +17,7 @@ export const contactQueryOptions = queryOptions({
   queryFn: () => fetchContacts(),
 });
 
-export const createContact = async (contact: Contact) => {
-  return axios.post(`${API_BASE_URL}/contacts`, contact);
-};
+export const createContact = async (contact: NewContact) =>
+  axios
+    .post<{ id: number }>(`${API_BASE_URL}/contacts`, contact)
+    .then((r) => r.data);

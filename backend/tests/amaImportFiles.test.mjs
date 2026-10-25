@@ -36,7 +36,7 @@ test("empty folders, malformed JSON and non-array uploads fail with the source p
 
 test("duplicate IDs in separate upload files are rejected by combined validation", async t => {
   const directory = await temporaryDirectory(t);
-  const [row] = JSON.parse(await readFile(new URL("../../docs/ama-spine.upload.json", import.meta.url), "utf8"));
+  const [row] = JSON.parse(await readFile(new URL("../reference-data/ama-rows/spine.json", import.meta.url), "utf8"));
   await writeFile(path.join(directory, "first.json"), JSON.stringify([row]));
   await writeFile(path.join(directory, "duplicate.json"), JSON.stringify([row]));
   assert.equal(amaReferenceDataSchema.safeParse(await readAmaImportFiles(directory)).success, false);

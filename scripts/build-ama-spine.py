@@ -77,12 +77,12 @@ def run(*args):
 
 def main():
     # Prepare every input successfully before replacing any working copy.
-    prepared = {region: prepare_source(region, (ROOT / f"docs/ama-rows-{region}.source.md").read_text())
+    prepared = {region: prepare_source(region, (ROOT / f"docs/rowparse/ama-rows-{region}.source.md").read_text())
                 for region in REGIONS}
     for region, text in prepared.items():
-        working = f"docs/ama-rows-{region}.md"
+        working = f"docs/rowparse/ama-rows-{region}.md"
         (ROOT / working).write_text(text)
-        run("scripts/parse-ama-rows.py", working, f"docs/ama-rows-{region}.parsed.json")
+        run("scripts/parse-ama-rows.py", working, f"docs/rowparse/ama-rows-{region}.parsed.json")
     run("scripts/normalize-ama-spine.py")
     run("scripts/normalize-ama-spine.py", "--validate-only", "docs/ama-spine.upload.json")
     run("-m", "unittest", "discover", "-s", "scripts", "-p", "test_normalize_ama_spine.py", "-v")

@@ -2,17 +2,24 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import { db } from "../db/index.js";
 import { NewPatientCase, PatientCase } from "../db/schema.js";
 import { eq } from "drizzle-orm";
-import { caseInjuryDetailsSchema, updateAmaModeRequestSchema } from "@azime/contracts";
+import {
+  caseInjuryDetailsSchema,
+  updateAmaModeRequestSchema,
+  updateReferralQuestionsRequestSchema,
+} from "@azime/contracts";
 
 export const caseController = {
   newHandler: async (request: FastifyRequest, reply: FastifyReply) => {
     const data = request.body as NewPatientCase;
     try {
-      const contact = await db.insert(PatientCase).values(data);
-      reply.send({ success: true, data: contact });
+      const [created] = await db
+        .insert(PatientCase)
+        .values(data)
+        .returning({ id: PatientCase.id });
+      return reply.send(created);
     } catch (error) {
       console.error(error);
-      reply.send({ success: false, error: error });
+      return reply.code(500).send({ error: "Failed to create case" });
     }
   },
 
@@ -74,6 +81,28 @@ export const caseController = {
     } catch (error) {
       console.error(error);
       return reply.code(500).send({ error: "Failed to update AMA mode" });
+    }
+  },
+  updateReferralQuestionsHandler: async (
+    request: FastifyRequest<{ Params: { id: string } }>,
+    reply: FastifyReply,
+  ) => {
+    const id = Number(request.params.id);
+    const input = updateReferralQuestionsRequestSchema.safeParse(request.body);
+    if (!Number.isInteger(id) || id <= 0 || !input.success) {
+      return reply.code(400).send({ error: "Invalid referral questions request" });
+    }
+    try {
+      const [updated] = await db
+        .update(PatientCase)
+        .set({ referralQuestions: input.data.referralQuestions })
+        .where(eq(PatientCase.id, id))
+        .returning({ referralQuestions: PatientCase.referralQuestions });
+      if (!updated) return reply.code(404).send({ error: "Case not found" });
+      return reply.send(updated);
+    } catch (error) {
+      console.error(error);
+      return reply.code(500).send({ error: "Failed to update referral questions" });
     }
   },
   getByIdHandler: async (

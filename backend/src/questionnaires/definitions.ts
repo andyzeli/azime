@@ -1,9 +1,7 @@
 import type { PatientQuestionnaireResponse } from "../db/schema.js";
 
 export type QuestionnaireType =
-  | "pain_disability"
-  | "lower_back_regional"
-  | "neck_regional";
+  "pain_disability" | "lower_back_regional" | "neck_regional";
 
 export type QuestionnaireOption = {
   value: number;
@@ -31,7 +29,7 @@ export type QuestionnaireDefinition = {
   instructions: string;
   questions: QuestionnaireQuestion[];
   scoreResponses: (
-    responses: PatientQuestionnaireResponse[],
+    responses: PatientQuestionnaireResponse[]
   ) => QuestionnaireScores;
 };
 
@@ -54,19 +52,19 @@ const scoreByAnsweredItems =
   (questions: QuestionnaireQuestion[]) =>
   (responses: PatientQuestionnaireResponse[]): QuestionnaireScores => {
     const questionById = new Map(
-      questions.map((question) => [question.id, question]),
+      questions.map((question) => [question.id, question])
     );
     const scoredResponses = responses.filter((response) =>
-      questionById.has(response.itemId),
+      questionById.has(response.itemId)
     );
     const totalScore = scoredResponses.reduce(
       (total, response) => total + response.score,
-      0,
+      0
     );
     const maxScore = scoredResponses.reduce((total, response) => {
       const question = questionById.get(response.itemId);
       const questionMax = Math.max(
-        ...((question?.options ?? []).map((option) => option.value)),
+        ...(question?.options ?? []).map((option) => option.value)
       );
 
       return total + questionMax;
@@ -85,55 +83,55 @@ const pdqQuestions: QuestionnaireQuestion[] = [
   {
     id: "work_usual_activity",
     group: "Function",
-    prompt: "Work or usual daily activity",
+    prompt: "Work inside and outside the home",
     options: numericScale(10),
   },
   {
     id: "lifting_high",
     group: "Function",
-    prompt: "Lifting from waist level or higher",
+    prompt: "Lift overhead, grasp objects, or reach above shoulder level",
     options: numericScale(10),
   },
   {
     id: "lifting_low",
     group: "Function",
-    prompt: "Lifting from below waist level",
+    prompt: "Lifting from below waist level, bending, or stooping",
     options: numericScale(10),
   },
   {
     id: "personal_care",
     group: "Function",
-    prompt: "Personal care",
+    prompt: "Personal care (washing, dressing, etc.)",
     options: numericScale(10),
   },
   {
     id: "sit_stand",
     group: "Function",
-    prompt: "Sitting or standing",
+    prompt: "Affect ability to sit or stand",
     options: numericScale(10),
   },
   {
     id: "travel",
     group: "Function",
-    prompt: "Travel",
+    prompt: "Interfere with travel by car, bus, train, or airplane",
     options: numericScale(10),
   },
   {
     id: "walk_run",
     group: "Function",
-    prompt: "Walking or running",
+    prompt: "Limits Walking or running",
     options: numericScale(10),
   },
   {
     id: "income",
     group: "Function",
-    prompt: "Income or ability to earn",
+    prompt: "Interfere with Income or ability to earn",
     options: numericScale(10),
   },
   {
     id: "meds",
     group: "Care",
-    prompt: "Need for medication",
+    prompt: "Need for medication (10 being the highest need)",
     options: numericScale(10),
   },
   {
@@ -145,13 +143,13 @@ const pdqQuestions: QuestionnaireQuestion[] = [
   {
     id: "seeing_friend_family",
     group: "Social",
-    prompt: "Seeing friends or family",
+    prompt: "Interfere with ability to see friends or family",
     options: numericScale(10),
   },
   {
     id: "recreation",
     group: "Social",
-    prompt: "Recreation",
+    prompt: "Interfere with Recreation and hobbies important to you",
     options: numericScale(10),
   },
   {
@@ -163,13 +161,14 @@ const pdqQuestions: QuestionnaireQuestion[] = [
   {
     id: "mood",
     group: "Well-being",
-    prompt: "Mood",
+    prompt: "Feel more depressed, tense, or anxious than usual",
     options: numericScale(10),
   },
   {
     id: "emotions",
     group: "Well-being",
-    prompt: "Emotions",
+    prompt:
+      "Emotional problems caused by your pain that interfere with family, social, or work activities",
     options: numericScale(10),
   },
 ];
@@ -331,7 +330,7 @@ export const questionnaireDefinitions = {
 } satisfies Record<QuestionnaireType, QuestionnaireDefinition>;
 
 export const questionnaireTypes = Object.keys(
-  questionnaireDefinitions,
+  questionnaireDefinitions
 ) as QuestionnaireType[];
 
 export const getQuestionnaireDefinition = (type: string) => {

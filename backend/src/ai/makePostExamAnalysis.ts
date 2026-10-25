@@ -1,6 +1,5 @@
 import OpenAI from "openai";
 import { ZodError, z } from "zod";
-import { NotImplementedError } from "../errors/notImplementedError.js";
 import { getGeminiClient, getGeminiModelName } from "./gemini/client.js";
 import {
   buildPostExamAnalysisUserPrompt,
@@ -22,12 +21,6 @@ type GeneratedResponse = {
 
 const toResponseJsonSchema = (schema: z.ZodType) =>
   z.toJSONSchema(schema, { target: "draft-7" });
-
-const assertPostExamAnalysisReady = () => {
-  throw new NotImplementedError(
-    "Post-exam analysis generation is scaffolded but awaits its final prompt and output schema",
-  );
-};
 
 const getPostExamAnalysisProvider = (): PostExamAnalysisProvider => {
   const provider = process.env.POST_EXAM_ANALYSIS_PROVIDER ?? "gemini";
@@ -100,8 +93,6 @@ const generateWithOpenAI = async (
 export const makePostExamAnalysis = async (
   input: PostExamInput,
 ): Promise<StoredPostExamAnalysis> => {
-  assertPostExamAnalysisReady();
-
   const provider = getPostExamAnalysisProvider();
   const prompt = buildPostExamAnalysisUserPrompt(input);
   const response =
@@ -122,7 +113,7 @@ export const makePostExamAnalysis = async (
 
     return storedPostExamAnalysisSchema.parse({
       ...payload,
-      schemaVersion: "draft-v1",
+      schemaVersion: "draft-v2",
       sourceMetadata: {
         provider,
         model: response.model,

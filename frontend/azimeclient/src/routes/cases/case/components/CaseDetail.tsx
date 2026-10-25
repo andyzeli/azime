@@ -1,21 +1,18 @@
 import { useParams } from "@tanstack/react-router";
 import CaseHeader from "./cockpit/CaseHeader";
-import CaseSummaryPanel from "./cockpit/CaseSummaryPanel";
+
 import {
   CockpitLayout,
   type CockpitSectionLink,
 } from "./cockpit/CockpitLayout";
 import ExamPanel from "./cockpit/ExamPanel";
-import MMIDecisionPanel from "./cockpit/MMIDecisionPanel";
-import PreExamCockpit from "./cockpit/PreExamCockpit";
+
 import RecordsPanel from "./cockpit/RecordsPanel";
 import ReferralQuestionsPanel from "./cockpit/ReferralQuestionsPanel";
-import RefinedAnalysisPanel from "./cockpit/RefinedAnalysisPanel";
-import ReportPanel from "./cockpit/ReportPanel";
 
 const cockpitSections: CockpitSectionLink[] = [
   { id: "records", label: "Records" },
-  { id: "referral-questions", label: "Referral Questions" },
+  { id: "referral-questions", label: "Referral" },
   { id: "case-summary", label: "Case Summary" },
   { id: "pre-exam", label: "Pre-Exam" },
   { id: "refined-analysis", label: "Refined Analysis" },

@@ -17,6 +17,7 @@ import {
 import { InferSelectModel, InferInsertModel } from "drizzle-orm";
 import type {
   DiagnosisState,
+  CaseOpinions,
   ProviderDiscipline,
   ProviderKind,
   Region,
@@ -32,6 +33,8 @@ import type {
   AmaQuestion,
   AmaEntry,
   AmaExaminationTask,
+  CaseReportResponse,
+  ReportInput,
 } from "@azime/contracts";
 import type { PreExamInputSnapshot } from "../ai/preExamInputSnapshot.js";
 import type {
@@ -81,8 +84,9 @@ export const PatientCase = pgTable("patientcase", {
     .default("specific"),
   dateOfInjury: date("date_of_injury"),
   regions: text("regions").array().$type<Region[]>().notNull().default([]),
-  // null = default from case type (see effectiveAmaMode).
-  amaMode: varchar("ama_mode", { length: 20 }).$type<AmaMode>(),
+  amaMode: varchar("ama_mode", { length: 20 }).$type<AmaMode>().notNull(),
+  // Verbatim from the referral; the final report answers each one.
+  referralQuestions: text("referral_questions").array().notNull().default([]),
 });
 export type PatientCase = InferSelectModel<typeof PatientCase>;
 export type NewPatientCase = InferInsertModel<typeof PatientCase>;
@@ -206,6 +210,24 @@ export const CaseRegionDiagnoses = pgTable(
   })
 );
 export type CaseRegionDiagnoses = InferSelectModel<typeof CaseRegionDiagnoses>;
+
+export const CaseOpinionsDocument = pgTable(
+  "case_opinions",
+  {
+    id: serial("id").primaryKey(),
+    caseId: integer("case_id")
+      .notNull()
+      .references(() => PatientCase.id),
+    opinions: jsonb("opinions").$type<CaseOpinions>().notNull(),
+    revision: integer("revision").notNull().default(1),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => ({
+    caseUnique: uniqueIndex("case_opinions_case_unique").on(table.caseId),
+  })
+);
+export type CaseOpinionsDocument = InferSelectModel<typeof CaseOpinionsDocument>;
 
 export const CaseRefinedAnalysis = pgTable(
   "case_refined_analysis",
@@ -541,12 +563,25 @@ export const StandardizedReportQs = pgTable("standardqs", {
   type: varchar("type"), //
 });
 
-export const GenReport = pgTable("gen_report", {
-  id: integer("id").primaryKey(),
-  caseId: integer("case_id").references(() => PatientCase.id),
-  type: varchar("type", { length: 255 }),
-  report: text("report"),
-});
+// Every report generation: the frozen drafter input, then the drafted report.
+export const CaseReport = pgTable(
+  "case_report",
+  {
+    id: serial("id").primaryKey(),
+    caseId: integer("case_id")
+      .notNull()
+      .references(() => PatientCase.id),
+    input: jsonb("input").$type<ReportInput>().notNull(),
+    report: text("report"),
+    source: jsonb("source").$type<NonNullable<CaseReportResponse["source"]>>(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => ({
+    caseIdx: index("case_report_case_idx").on(table.caseId, table.id),
+  })
+);
+export type CaseReport = InferSelectModel<typeof CaseReport>;
 
 export const AmaRatingTables = pgTable("ama_rating_tables", {
   tableId: text("table_id").primaryKey(),

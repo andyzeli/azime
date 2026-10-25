@@ -64,7 +64,7 @@ export const testRecordFixtures: TestRecordFixture[] = [
       historyOfPresentIllness:
         "The patient reports persistent low back pain after lifting a heavy box at work on 12/18/2024. Pain is worse with prolonged sitting and bending.",
       reviewOfSystems: "Positive for intermittent right leg tingling.",
-      reportedDateOfInjury: "18/12/2024",
+      reportedDateOfInjury: "2024-12-18",
       pastMedicalHistory: "No prior lumbar surgery.",
       objective:
         "Lumbar flexion limited to 45 degrees with pain. Positive right straight-leg raise at 50 degrees. Strength 5/5 bilaterally.",
@@ -232,8 +232,8 @@ export const testRecordFixtures: TestRecordFixture[] = [
         "May change position every 30 minutes",
       ],
       status: "modified_duty",
-      effectiveFrom: "10/03/2025",
-      effectiveThrough: "31/03/2025",
+      effectiveFrom: "2025-03-10",
+      effectiveThrough: "2025-03-31",
     },
   },
 ];

@@ -49,8 +49,11 @@ export const reviewedPreExamAnalysisSchema = z.object({
           applicability: reviewedAssessment(
             originalAssessment.shape.aiApplicability
           ),
-          adequacy: reviewedAssessment(originalAssessment.shape.aiAdequacy),
         })
+      ),
+      // One effective judgment per treatment, across its applicable diagnoses.
+      exhaustion: reviewedAssessment(
+        treatmentAnalysisItemSchema.shape.aiExhaustion
       ),
       dispositionReviewed: z.boolean(),
       physicianNote: z.string().nullable(),
@@ -70,7 +73,7 @@ export const reviewedPreExamAnalysisSchema = z.object({
       id: storedTreatmentAnalysisItemSchema.shape.id,
       treatment: z.string(),
       canonicalDx: z.string().nullable(),
-      field: z.enum(["treatment", "applicability", "adequacy"]),
+      field: z.enum(["treatment", "applicability", "exhaustion"]),
       note: z.string(),
     })
   ),
@@ -135,7 +138,7 @@ export type RefinedAnalysisInputSnapshot = z.infer<
 >;
 
 
-const trajectorySchema = z.object({
+export const trajectorySchema = z.object({
   direction: z.enum([
     "Improving",
     "Stable",
@@ -256,10 +259,18 @@ export const refinedAnalysisSchema = z.object({
   every input item into a question. An untried treatment does not automatically
   need to be performed; identify what needs clarification rather than prescribing care.
 
+  Return at most three. Each must rest on something specific in the supplied
+  case: a named conflict between records, an evidence gap or inconsistency
+  the physician kept, or a particular finding whose meaning is unclear. Name
+  that basis in whyItMatters. Elements of every independent medical exam,
+  such as current pain, functional limitations, range of motion, or progress
+  in a treatment in general, are not priorities unless a specific conflict
+  makes them one. Fewer, sharper priorities are better than complete coverage.
+
   Be realistic about what an encounter can establish. Some issues may
   be partly clarified through history or examination and still require
   additional records. Return an empty array when no meaningful priorities
-  are supported.
+  are supported; this is a common, correct result.
 
   Examples illustrate specificity and style; their clinical details
   should not be copied unless supported by the supplied case.

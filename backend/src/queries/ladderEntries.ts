@@ -31,9 +31,9 @@ export type LadderContextEntry = {
 
 export const getLadderEntries = async (
   region: string,
-  canonicalDxLabels: string[],
+  canonicalDxIds: string[],
 ): Promise<LadderContextEntry[]> => {
-  if (canonicalDxLabels.length === 0) {
+  if (canonicalDxIds.length === 0) {
     return [];
   }
 
@@ -41,7 +41,7 @@ export const getLadderEntries = async (
     .select({
       id: LadderEntries.id,
       region: LadderEntries.regionId,
-      canonicalDx: CanonicalDiagnoses.label,
+      canonicalDx: CanonicalDiagnoses.id,
       treatmentId: Treatments.id,
       treatment: Treatments.label,
       category: Treatments.category,
@@ -87,11 +87,11 @@ export const getLadderEntries = async (
       and(
         eq(LadderEntries.regionId, region),
         eq(CanonicalDiagnoses.regionId, region),
-        inArray(CanonicalDiagnoses.label, canonicalDxLabels),
+        inArray(CanonicalDiagnoses.id, canonicalDxIds),
       ),
     )
     .orderBy(
-      asc(CanonicalDiagnoses.label),
+      asc(CanonicalDiagnoses.id),
       asc(Treatments.category),
       asc(Treatments.label),
     );

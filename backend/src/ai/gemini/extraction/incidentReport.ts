@@ -20,7 +20,7 @@ Operational guardrails:
 export const incidentReportSchema = z.object({
   dateOfIncident: z
     .string()
-    .describe("Date the alleged injury or accident occurred."),
+    .describe("Date the alleged injury or accident occurred, as YYYY-MM-DD."),
 
   mechanismOfInjury: z
     .string()

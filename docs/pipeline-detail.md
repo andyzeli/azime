@@ -2,7 +2,7 @@ THIS FILE MAY BE OUT-OF-DATE: if reading this part of this file for context, ask
 
 # Pipeline details
 
-Types below summarize the shared contracts in `packages/contracts/src/`. Visit documentation and post-exam input snapshots are implemented; pass 4 generation is scaffolded and gated pending final prompt/output definitions. Persistence metadata is omitted unless relevant.
+Types below summarize the shared contracts in `packages/contracts/src/`. Visit documentation and pass 4 (post-exam analysis) are implemented. Persistence metadata is omitted unless relevant.
 
 ## Pass 1 and Pass 2 — Record facts
 
@@ -12,7 +12,7 @@ Types below summarize the shared contracts in `packages/contracts/src/`. Visit d
 
 ## Pass 3A — Pre-exam analysis
 
-Compare diagnosis-specific treatment taxonomy entries with documented care, including additional AI suggestions and record-only treatments. Assess applicability and adequacy separately for each diagnosis. Completion alone does not establish treatment exhaustion; 3A does not determine MMI.
+Compare diagnosis-specific treatment taxonomy entries with documented care, including additional AI suggestions and record-only treatments. Assess applicability separately for each diagnosis, and exhaustion once per treatment across its applicable diagnoses. The taxonomy's adequacy criteria stay as the rubric for judging the documented trial (sent to the model as `trialBenchmark`); they inform exhaustion but don't decide it. Completion alone does not establish exhaustion, an incomplete or undocumented trial does not automatically mean not exhausted, and inapplicability does not mean exhausted. 3A does not determine MMI.
 
 Diagnosis selection belongs upstream in the server input snapshot: effective diagnoses determine the taxonomy ladder before 3A runs. It is not part of physician steering. Scope comes from the region's diagnosis list (below); the snapshot request `{ selectedDiagnoses?: string[] }` is only sent by the old cockpit, and omitted means the list's current diagnoses.
 
@@ -27,13 +27,14 @@ type DiagnosisState = {
   status: "working" | "supported" | "not_supported"; // every listed diagnosis gets a verdict
   reason: string | null;
 };
-// every listed diagnosis: 3A scope, treatment review (not_supported greyed), pass 4
+// every listed diagnosis: 3A scope, treatment review (not_supported greyed)
 // current = working | supported: AMA exam tasks and 3B
+// pass 4: supported only (it runs once none is left working)
 ```
 
 - `GET /cases/:caseId/diagnoses/:region` returns the saved list, or (revision 0) one derived from the 3A scope. Record diagnoses missing from the list are always appended as working.
 - `PUT` with `{ diagnoses, expectedRevision }`. Entries are record diagnoses or any `canonical_diagnoses` entry for the region. There is no "leave out of scope": a wrong diagnosis is not supported with a reason; only added entries can be removed.
-- Marking a diagnosis not supported needs no AI. Its treatment assessments stay in the review (greyed), because the report must still give a necessity opinion on treatment given for it, but it leaves 3B and AMA tasks. Adding a diagnosis needs 3A for it; until a new snapshot and run, Analysis shows it as not covered. (Planned: a 3A run for the added diagnosis only, merged without resetting steering.)
+- Marking a diagnosis not supported needs no AI. Its treatment assessments stay in the review (greyed), because the report must still give a necessity opinion on treatment given for it, but it leaves 3B and AMA tasks. Adding a diagnosis needs 3A for it: "Analyze diagnosis" runs 3A for that diagnosis only against the frozen snapshot (`POST /cases/:id/pre-exam-analysis/:region/diagnoses {canonicalDx}`) and merges it into the existing rows. Each existing row gains an applicability assessment for it, ladder entries no row covers become new rows (or upgrade a record-only row whose episodes they share), and AI suggestions become new rows. Where the new diagnosis is applicable or unclear, the row's exhaustion is re-judged and the physician's exhaustion review is cleared (not carried forward); where it is not applicable, exhaustion and its review stand. Row ids and the rest of saved steering are kept; rows that gained an assessment or lost their exhaustion review show as unreviewed again. A new snapshot and run remains the full redo, which resets steering.
 
 ```typescript
 type Applicability =
@@ -41,12 +42,11 @@ type Applicability =
   | "not_applicable"
   | "contraIndicated"
   | "unclear";
-type Adequacy =
-  | "adequately_trialed"
-  | "inadequately_trialed"
-  | "not_tried"
-  | "patient_declined" // Offered and declined; the rationale records the basis of the decline
-  | "unclear";
+// Once per treatment, across its applicable diagnoses.
+type Exhaustion =
+  | "exhausted" // further use is unlikely to provide meaningful additional improvement
+  | "not_exhausted" // a relevant, feasible opportunity remains insufficiently explored
+  | "unclear"; // the evidence cannot establish either
 type RecordStatus =
   | "To Be Started"
   | "Ongoing"
@@ -58,8 +58,6 @@ type TreatmentAssessment = {
   canonicalDx: string;
   aiApplicability: Applicability;
   aiApplicabilityRationale: string;
-  aiAdequacy: Adequacy;
-  aiAdequacyRationale: string;
 };
 
 type TreatmentRow = {
@@ -78,6 +76,8 @@ type TreatmentRow = {
   recordDetail: string | null;
   episodeIds: string[];
   assessments: TreatmentAssessment[];
+  aiExhaustion: Exhaustion;
+  aiExhaustionRationale: string; // one rationale; explains diagnosis-specific differences
 };
 
 type PreExamAnalysis = {
@@ -117,9 +117,9 @@ type PhysicianSteering = {
         {
           // canonicalDx
           applicability?: AssessmentReview<Applicability>;
-          adequacy?: AssessmentReview<Adequacy>;
         }
       >;
+      exhaustion?: AssessmentReview<Exhaustion>;
       note?: string;
     }
   >;
@@ -130,7 +130,9 @@ type PhysicianSteering = {
 };
 ```
 
-`PhysicianAddedTreatment` contains `id`, nullable `treatmentId`, `treatment`, `category`, `episodeIds`, optional `note`, and assessments keyed by diagnosis with `applicability`, `adequacy`, and `rationale`. Category is `conservative | medication | injection | surgical | multimodal`.
+`PhysicianAddedTreatment` contains `id`, nullable `treatmentId`, `treatment`, `category`, optional `note`, assessments keyed by diagnosis with `applicability` and `rationale`, and one `exhaustion` with `exhaustionRationale`. Category is `conservative | medication | injection | surgical | multimodal`.
+
+The Analysis tab's "+ Add treatment" creates one. The physician picks a ladder treatment that no row covers yet, which sets `treatmentId` and category, or types free text (`treatmentId: null`) and picks a category. Assessments default to applicable for each analyzed diagnosis that isn't not supported, and exhaustion to not exhausted. Rationales are optional (`""` allowed); the report infers it. Added rows count as reviewed, edit in place, and flow into 3B and pass 4 as `source: "physician"`. Add them before pass 4: an untried applicable treatment is evidence against a plateau. Added treatments aren't linked to record episodes: records are uploaded individually, so the analysis rarely misses documented care.
 
 GET by case/region returns matching saved steering or an initialized, unsaved draft (`id: null`, `revision: 0`); no 3A means no draft. Initialization copies the 3A ID/timestamp, sets maps to `{}`, additions to `[]`, and notes to `null`. Missing decisions mean unreviewed, not agreement. Save explicitly with `{ steering, expectedRevision }`.
 
@@ -179,8 +181,8 @@ type ReviewedPreExamAnalysis = {
     assessments: {
       canonicalDx: string;
       applicability: EffectiveAssessment<Applicability>;
-      adequacy: EffectiveAssessment<Adequacy>;
     }[];
+    exhaustion: EffectiveAssessment<Exhaustion>; // one per treatment
     dispositionReviewed: boolean;
     physicianNote: string | null;
   }[];
@@ -194,7 +196,7 @@ type ReviewedPreExamAnalysis = {
     id: string;
     treatment: string;
     canonicalDx: string | null;
-    field: "treatment" | "applicability" | "adequacy";
+    field: "treatment" | "applicability" | "exhaustion";
     note: string;
   }[];
   inconsistencies: (PreExamAnalysis["inconsistencies"][number] & {
@@ -209,10 +211,10 @@ type ReviewedPreExamAnalysis = {
 };
 ```
 
-Projection uses effective judgments for each treatment/diagnosis pair:
+Projection uses the effective applicability for each treatment/diagnosis pair and the treatment's effective exhaustion:
 
-- **Issues:** unclear applicability, or applicable with adequacy other than `adequately_trialed`.
-- **Context:** applicable and adequately trialed, in compact form.
+- **Issues:** unclear applicability, or applicable with exhaustion `not_exhausted` or `unclear`.
+- **Context:** applicable and exhausted, in compact form.
 - **Omit:** pruned treatments and inapplicable/contraindicated assessments; preserve explicit physician notes from omitted assessments on retained treatments.
 - Include retained inconsistencies and gaps. A treatment can appear in both issues and context for different diagnoses.
 
@@ -248,16 +250,9 @@ The prompt explains the task and input domain; Zod `.describe()` fields explain 
 
 ## Visit documentation and pass 4
 
-Capture new evidence, rather than adding another analysis-steering flow. There is one visit per case, covering every region; each region continues into its own pass 4. Stored 3B priorities get positional IDs (`priority-0`, …) that are reused when 3B is regenerated, so priority responses are matched by region + `focus` text instead. Keep the original priorities and optionally record responses.
+Capture new evidence, rather than adding another analysis-steering flow. There is one visit per case, covering every region; each region continues into its own pass 4. 3B visit priorities are read-only suggestions (at most three, each grounded in a specific conflict, gap or finding; often none). Nothing is recorded against them: whatever they prompt goes in the note, which pass 4 reads.
 
 ```typescript
-type VisitPriorityResponse = {
-  region: Region;
-  focus: string; // The priority's text at the time of the response
-  status: "couldnt_assess" | "declined" | "not_relevant" | "response";
-  note: string | null;
-};
-
 // AMA history prerequisite per diagnosis. Missing = not asked; false stops rating, findings are kept.
 type VisitAmaHistory = { region: Region; canonicalDx: string; confirmed: boolean };
 
@@ -265,39 +260,39 @@ type VisitDocumentation = {
   note: string; // Optional [LUMBAR SPINE]-style section labels; unlabeled text applies to every region
   pdqId: number | null; // The one PDQ pass 4 uses
   includedQuestionnaireIds: number[]; // Other completed questionnaires, e.g. regional
-  priorityResponses: VisitPriorityResponse[];
   amaHistory: VisitAmaHistory[];
   amaAssessments: AmaAssessment[]; // Findings per AMA row + root + side
 };
 
+// Built from 3A + saved steering + the diagnosis list + the visit; no dependency on 3B.
 type PostExamInput = {
   caseContext: RefinedAnalysisInput["caseContext"];
-  scope: RefinedAnalysisInput["scope"];
+  region: Region;
+  diagnoses: { canonicalDx: string; label: string }[]; // supported only
   caseSummary: RefinedAnalysisInput["caseSummary"];
-  reviewedTreatmentAnalysis: FullReviewedPreExamAnalysis; // Retained treatments with all effective assessments
-  refinedAnalysis: {
-    trajectoryAnalysis: RefinedAnalysisOutput["trajectoryAnalysis"];
-    visitPriority: (VisitPriority & { id: string })[];
-  };
+  reviewedTreatmentAnalysis: FullReviewedPreExamAnalysis; // scoped to the supported diagnoses
   visit: {
-    note: string;
-    priorityResponses: VisitPriorityResponse[]; // This region's only
-    pdq: PostExamPDQ | null; // Instrument version, questions/options, answers, scores, completion time
-    questionnaires: (PostExamPDQ & { type: string; title: string })[]; // Other included questionnaires, frozen the same way
+    examinationDate: string; // visit document creation date for now; later the office visit date
+    note: string; // one free-text field; pass 4 reconciles it with the PDQ and AMA findings
+    pdq: PostExamPDQ | null;
+    questionnaires: (PostExamPDQ & { type: string; title: string })[];
+    amaFindings: PostExamAmaFindings[]; // includes findings whose diagnosis links are gone
   };
 };
 
 type Pass4Output = {
-  // Provisional schema; generation remains gated
+  trajectory: { subjective: Trajectory; functional: Trajectory; objective: Trajectory }; // 3B's trajectorySchema
   plateauEvidence: { supporting: string[]; opposing: string[] };
-  mmiPosture: {
-    direction: "Leans Toward MMI" | "Leans Against MMI" | "Indeterminate";
-    rationale: string;
-  };
+  mmiPosture: { direction: "Leans Toward MMI" | "Leans Against MMI" | "Indeterminate"; rationale: string };
+  unresolvedQuestions: { question: string; whyItMatters: string; wouldResolve: string }[];
 };
+// Not pass 4 outputs (plain queries, shown in Opinions): remaining care, and necessity
+// questions for treatments whose linked diagnoses are all not supported.
 ```
 
-Visit GET returns the saved document or null. `initializeVisitDocumentation()` creates an empty local draft; PUT saves `{ documentation, expectedRevision }`. Responses start as `[]`; omission means unaddressed, not resolved. Responses whose priority no longer exists after 3B is regenerated are kept, never deleted; the visit is not redone. Answers may already be documented in the exam or note, so duplicate entry is unnecessary. Pass 4 considers both, preserves unresolved uncertainty, and treats questions as questions rather than evidence. The physician makes the final MMI decision separately.
+Remaining-care candidates (`remainingCareCandidates` in contracts `opinions.ts`) come from the frozen pass 4 input, per treatment and diagnosis: unclear applicability, an applicable treatment whose exhaustion is not exhausted or unclear, or an applicable, exhausted treatment that is still ongoing (a maintenance question). The physician gives each candidate a disposition; exhaustion never decides care or MMI by itself.
+
+Visit GET returns the saved document or null. `initializeVisitDocumentation()` creates an empty local draft; PUT saves `{ documentation, expectedRevision }`. "Clear visit" saves a blank document. The physician makes the final MMI decision separately.
 
 Diagnosis conclusions are not part of the visit; they live in the diagnosis list. AMA findings can be recorded for any current diagnosis without a confirm step or a history answer.
 
@@ -305,7 +300,7 @@ Diagnosis conclusions are not part of the visit; they live in the diagnosis list
 
 `case_refined_pre_exam_analysis` holds one current 3B per case/region, with its frozen `inputSnapshot` and `analysis`. The snapshot contains model `input`, server-only `fullReviewedAnalysis`, and `basedOn`: case summary ID, 3A ID/timestamp, steering ID/revision, and diagnosis list revision. Its scope is the 3A scope narrowed to the current diagnoses. `POST /cases/:caseId/refined-analysis/:region` (no body) builds the input from saved steering, runs 3B, and replaces the row only if the run succeeds, so a failed run keeps the previous result. Staleness compares `basedOn` with the current 3A, steering and diagnosis list; it is informational and blocks nothing.
 
-`case_visit_documentation` stores one revisioned document per case. `case_post_exam_analysis` stores a frozen `inputSnapshot` and nullable `analysis` for each run, with creation/update timestamps. Inputs are assembled from the region's current 3B, the saved visit, and the PDQ and questionnaires the visit selects. Its `basedOn` records the 3B ID and `updatedAt` (the row is overwritten on regeneration, so the ID alone is not a version), visit ID/revision, and PDQ ID/update time. It never reconstructs prior treatment judgments from current mutable 3A/steering rows.
+`case_visit_documentation` stores one revisioned document per case. `case_post_exam_analysis` stores a frozen `inputSnapshot` and nullable `analysis` for each run, with creation/update timestamps. Inputs are assembled from the region's 3A and saved steering, the diagnosis list, the case summary, the saved visit, and the PDQ and questionnaires the visit selects. Its `basedOn` records the case summary ID, 3A ID/`updatedAt`, steering ID/revision, diagnosis list revision, visit ID/revision, and PDQ ID/update time. The snapshot is refused (409) until the assessment is finished: no diagnosis left working, at least one supported, every listed diagnosis analyzed, steering saved for the current 3A, and every treatment row reviewed (`isRowReviewed`, across all listed diagnoses). The Analysis footer shows the same checklist once the visit is saved, with "Run post-exam analysis" (snapshot, then generate).
 
 - `GET /cases/:caseId/refined-analysis/:region` (null if none) and `POST` (no body)
 - `GET/PUT /cases/:caseId/visit`
@@ -313,6 +308,6 @@ Diagnosis conclusions are not part of the visit; they live in the diagnosis list
 - `POST /cases/:caseId/post-exam-analysis/:region` with `{ snapshotId }` to generate and save output
 - `GET /cases/:caseId/post-exam-analysis/:region`, optionally `?snapshotId=...`, to recall input and output
 
-PDQ collection keeps its separate endpoints. The old cockpit's Refined Analysis and Visit panels remain as raw-JSON debug views. `makePostExamAnalysis` has Gemini/OpenAI calls and validates output before persistence, but returns 501 until its prompt and output descriptions are finalized. Completed pass 4 outputs cannot be overwritten; take a new snapshot to run again.
+PDQ collection keeps its separate endpoints. The old cockpit's Refined Analysis and Visit panels remain as raw-JSON debug views. `makePostExamAnalysis` (Gemini/OpenAI, `POST_EXAM_ANALYSIS_PROVIDER`) validates output before persistence. Completed pass 4 outputs cannot be overwritten; each run takes a new snapshot. The MMI & Report tab shows the latest output per region (it becomes Opinions in phase 5).
 
-Report drafting should retrieve these frozen artifacts and the physician's separate MMI decision, including 3B trajectory interpretations and pass 4 supporting/opposing plateau evidence.
+Report drafting should retrieve these frozen artifacts and the physician's separate MMI decision, including the pass 4 trajectory and supporting/opposing plateau evidence.

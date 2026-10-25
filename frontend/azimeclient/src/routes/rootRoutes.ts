@@ -1,6 +1,10 @@
-import { createRootRouteWithContext, createRoute } from "@tanstack/react-router";
+import {
+  createRootRouteWithContext,
+  createRoute,
+  redirect,
+} from "@tanstack/react-router";
 import type { QueryClient } from "@tanstack/react-query";
-import { RootComponent, IndexRouteComponent, NotFoundComponent } from "../App";
+import { RootComponent, NotFoundComponent } from "../App";
 
 export const rootRoute = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -12,5 +16,7 @@ export const rootRoute = createRootRouteWithContext<{
 export const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/",
-  component: IndexRouteComponent,
+  beforeLoad: () => {
+    throw redirect({ to: "/cal", replace: true });
+  },
 });

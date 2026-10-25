@@ -6,11 +6,14 @@ export const contactController = {
   newHandler: async (request: FastifyRequest, reply: FastifyReply) => {
     const data = request.body as Omit<CaseContacts, "id">;
     try {
-      const contact = await db.insert(CaseContacts).values(data);
-      reply.send({ success: true, data: contact });
+      const [created] = await db
+        .insert(CaseContacts)
+        .values(data)
+        .returning({ id: CaseContacts.id });
+      return reply.send(created);
     } catch (error) {
       console.error(error);
-      reply.send({ success: false, error: error });
+      return reply.code(500).send({ error: "Failed to create contact" });
     }
   },
 

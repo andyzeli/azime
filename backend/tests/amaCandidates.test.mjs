@@ -5,7 +5,7 @@ import { normalizeAmaRegion } from "@azime/contracts";
 import { selectAmaCandidates } from "../dist/ama/candidates.js";
 
 const rows = JSON.parse(
-  await readFile(new URL("../../docs/ama-spine.upload.json", import.meta.url), "utf8"),
+  await readFile(new URL("../reference-data/ama-rows/spine.json", import.meta.url), "utf8"),
 ).map((row) => ({ ...row, region_id: normalizeAmaRegion(row.region_id) }));
 const lumbarRootRows = ["17-21-03", "17-21-04", "17-21-05", "17-21-06", "17-21-07", "17-21-08"];
 const select = (region, diagnoses, mappings) =>

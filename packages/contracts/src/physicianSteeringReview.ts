@@ -70,22 +70,19 @@ export function resolvePreExamReview(
         dispositionReviewed: review?.disposition !== undefined,
         active: review?.disposition !== "prune",
         physicianNote: review?.note ?? null,
-        assessments: row.assessments.map((assessment) => {
-          const override = review?.assessments?.[assessment.canonicalDx];
-          return {
-            ...assessment,
-            applicability: resolveAssessment(
-              assessment.aiApplicability,
-              assessment.aiApplicabilityRationale,
-              override?.applicability,
-            ),
-            adequacy: resolveAssessment(
-              assessment.aiAdequacy,
-              assessment.aiAdequacyRationale,
-              override?.adequacy,
-            ),
-          };
-        }),
+        assessments: row.assessments.map((assessment) => ({
+          ...assessment,
+          applicability: resolveAssessment(
+            assessment.aiApplicability,
+            assessment.aiApplicabilityRationale,
+            review?.assessments?.[assessment.canonicalDx]?.applicability,
+          ),
+        })),
+        exhaustion: resolveAssessment(
+          row.aiExhaustion,
+          row.aiExhaustionRationale,
+          review?.exhaustion,
+        ),
       };
     }),
     addedTreatments: structuredClone(steering.addedTreatments).map((row) => ({
@@ -107,3 +104,32 @@ export function resolvePreExamReview(
     physicianNotes: steering.notes,
   };
 }
+
+// Treatment rows narrowed to the given diagnoses: assessments for other diagnoses are
+// hidden (their steering is kept), and rows left with none are dropped.
+export const scopedRows = <T extends { assessments: { canonicalDx: string }[] }>(
+  rows: T[],
+  diagnoses: string[],
+) =>
+  rows.flatMap((row) => {
+    const assessments = row.assessments.filter((a) =>
+      diagnoses.includes(a.canonicalDx),
+    );
+    return row.assessments.length && !assessments.length
+      ? []
+      : [{ ...row, assessments }];
+  });
+
+// Reviewed = pruned, or kept with an exhaustion decision and an applicability decision on
+// every assessment shown. An added diagnosis adds an assessment and may clear the exhaustion
+// decision (see applyPreExamDelta), which reopens the row.
+export const isRowReviewed = (
+  row: { assessments: { canonicalDx: string }[] },
+  steering: PhysicianSteering["treatments"][string] | undefined,
+) =>
+  steering?.disposition === "prune" ||
+  (steering?.disposition === "keep" &&
+    Boolean(steering.exhaustion) &&
+    row.assessments.every(
+      (a) => steering.assessments?.[a.canonicalDx]?.applicability,
+    ));

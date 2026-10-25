@@ -1,5 +1,7 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import {
+  physicianSteeringSchema,
+  steeringMatchesAnalysis,
   storedPreExamAnalysisSchema,
   type Region,
   type StoredPreExamAnalysis,
@@ -9,7 +11,8 @@ import type {
   PreExamInputSnapshot,
 } from "../ai/preExamInputSnapshot.js";
 import { db } from "../db/index.js";
-import { CasePreExamAnalysis } from "../db/schema.js";
+import { CasePhysicianSteering, CasePreExamAnalysis } from "../db/schema.js";
+import { MissingPrerequisiteError } from "../errors/missingPrerequisiteError.js";
 
 export const upsertPreExamAnalysis = async (
   caseId: number,
@@ -125,3 +128,74 @@ export const getStoredPreExamAnalysis = async (
         : storedPreExamAnalysisSchema.parse(storedAnalysis.analysis),
   };
 };
+
+// Saves an added-diagnosis merge. Steering for the run being extended moves to the updated
+// run unchanged (its revision bumps so open drafts reload); new assessments start unreviewed.
+export const applyPreExamDelta = async (
+  caseId: number,
+  region: Region,
+  expectedUpdatedAt: Date,
+  analysis: StoredPreExamAnalysis,
+  inputSnapshot: PreExamInputSnapshot,
+  // Rows whose exhaustion was reassessed: the physician's exhaustion review is cleared.
+  reassessed: string[],
+) =>
+  db.transaction(async (tx) => {
+    const [current] = await tx
+      .select()
+      .from(CasePreExamAnalysis)
+      .where(
+        and(
+          eq(CasePreExamAnalysis.caseId, caseId),
+          eq(CasePreExamAnalysis.region, region),
+        ),
+      )
+      .for("update");
+    if (current?.updatedAt.getTime() !== expectedUpdatedAt.getTime())
+      throw new MissingPrerequisiteError(
+        "The analysis changed while this diagnosis was being analyzed. Try again",
+      );
+
+    const [updated] = await tx
+      .update(CasePreExamAnalysis)
+      .set({ analysis, inputSnapshot, updatedAt: new Date() })
+      .where(eq(CasePreExamAnalysis.id, current.id))
+      .returning();
+
+    const steeringRow = await tx.query.CasePhysicianSteering.findFirst({
+      where: and(
+        eq(CasePhysicianSteering.caseId, caseId),
+        eq(CasePhysicianSteering.region, region),
+      ),
+    });
+    const steering = physicianSteeringSchema.safeParse(steeringRow?.steering);
+    if (
+      steeringRow &&
+      steering.success &&
+      steeringMatchesAnalysis(steering.data, {
+        id: current.id,
+        updatedAt: current.updatedAt.toISOString(),
+      })
+    )
+      await tx
+        .update(CasePhysicianSteering)
+        .set({
+          steering: {
+            ...steering.data,
+            preExamAnalysisUpdatedAt: updated!.updatedAt.toISOString(),
+            treatments: Object.fromEntries(
+              Object.entries(steering.data.treatments).map(([id, review]) => [
+                id,
+                reassessed.includes(id)
+                  ? { ...review, exhaustion: undefined }
+                  : review,
+              ]),
+            ),
+          },
+          revision: sql`${CasePhysicianSteering.revision} + 1`,
+          updatedAt: new Date(),
+        })
+        .where(eq(CasePhysicianSteering.id, steeringRow.id));
+
+    return updated!.id;
+  });
