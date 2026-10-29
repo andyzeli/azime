@@ -44,3 +44,4 @@ Status as of 2026-10-23. The pipeline is done end to end (Records â†’ Summary â†
 - [ ] Visit dictation (TODO stub in `visit.lazy.tsx`).
 - [ ] Old intake cockpit panels (`cases/case/components/cockpit/*Panel.tsx`) and `mockups/`: kept as debug views; decide what stays.
 - [ ] Keep `docs/pipeline-detail.md` in sync.
+- [ ] Dark mode toggle (later): plan and decisions in `docs/dark-mode-plan.md`. Not started.

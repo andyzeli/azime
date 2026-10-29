@@ -2,7 +2,7 @@ import axios from "redaxios";
 import { queryOptions } from "@tanstack/react-query";
 import { CaseContacts } from "../../../../../backend/src/db/schema";
 
-const API_BASE_URL = "http://localhost:4000";
+const API_BASE_URL = "/api";
 
 export type DbContact = CaseContacts;
 export type NewContact = Omit<CaseContacts, "id">;

@@ -123,23 +123,14 @@ export const caseOpinionsResponseSchema = z.object({
 });
 export type CaseOpinionsResponse = z.infer<typeof caseOpinionsResponseSchema>;
 
-// Why a treatment is a remaining-care candidate for one diagnosis.
-export type RemainingCareReason =
-  | "not_exhausted"
-  | "exhaustion_unclear"
-  | "applicability_unclear"
-  | "ongoing";
+// Why an applicable treatment is a remaining-care candidate. Exhaustion is judged once
+// per treatment, across the diagnoses it applies to.
+export type RemainingCareReason = "not_exhausted" | "exhaustion_unclear" | "ongoing";
 
 type ReviewedTreatment =
   PostExamInput["reviewedTreatmentAnalysis"]["treatments"][number];
 
-function remainingCareReason(
-  treatment: ReviewedTreatment,
-  assessment: ReviewedTreatment["assessments"][number],
-): RemainingCareReason | null {
-  const applicability = assessment.applicability.value;
-  if (applicability === "unclear") return "applicability_unclear";
-  if (applicability !== "applicable") return null;
+function remainingCareReason(treatment: ReviewedTreatment): RemainingCareReason | null {
   const exhaustion = treatment.exhaustion.value;
   if (exhaustion === "not_exhausted") return "not_exhausted";
   if (exhaustion === "unclear") return "exhaustion_unclear";
@@ -153,26 +144,23 @@ function remainingCareReason(
 // still ongoing, and unclear applicability that needs the physician's call. Not-applicable
 // and contraindicated assessments never make a row a candidate. The physician decides the
 // disposition; exhaustion never decides care or MMI by itself.
+//   reason      → the treatment's exhaustion reason, when it applies to any diagnosis
+//   applicable  → the diagnoses it applies to
+//   unclear     → diagnoses whose applicability is unclear, each with its own rationale
 export function remainingCareCandidates(
   reviewed: PostExamInput["reviewedTreatmentAnalysis"],
 ) {
   return reviewed.treatments.flatMap((treatment) => {
-    const reasons = treatment.assessments.flatMap((assessment) => {
-      const reason = remainingCareReason(treatment, assessment);
-      return reason
-        ? [
-            {
-              canonicalDx: assessment.canonicalDx,
-              reason,
-              rationale:
-                reason === "applicability_unclear"
-                  ? assessment.applicability.rationale
-                  : treatment.exhaustion.rationale,
-            },
-          ]
-        : [];
-    });
-    return reasons.length ? [{ treatment, reasons }] : [];
+    const applicable = treatment.assessments
+      .filter((a) => a.applicability.value === "applicable")
+      .map((a) => a.canonicalDx);
+    const unclear = treatment.assessments
+      .filter((a) => a.applicability.value === "unclear")
+      .map((a) => ({ canonicalDx: a.canonicalDx, rationale: a.applicability.rationale }));
+    const reason = applicable.length ? remainingCareReason(treatment) : null;
+    return reason || unclear.length
+      ? [{ treatment, reason, rationale: treatment.exhaustion.rationale, applicable, unclear }]
+      : [];
   });
 }
 export type RemainingCareCandidate = ReturnType<

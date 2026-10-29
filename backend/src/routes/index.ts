@@ -23,7 +23,7 @@ import { reportController } from "../controllers/reportController.js";
 import { regionDiagnosesController } from "../controllers/regionDiagnosesController.js";
 
 export const registerRoutes = (app: FastifyInstance) => {
-  app.get("/", async () => ({ message: "Server is running!" }));
+  app.get("/health", async () => ({ ok: true }));
 
   app.post("/contacts", contactController.newHandler);
   app.get("/contacts", contactController.getHandler);

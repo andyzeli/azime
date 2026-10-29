@@ -1,3 +1,4 @@
+import { getGeminiThinkingConfig, getOpenAIReasoning } from "./reasoningConfig.js";
 import OpenAI from "openai";
 import {
   reportProviderSchema,
@@ -14,7 +15,11 @@ const generateWithGemini = async (prompt: string, systemPrompt: string) => {
   const response = await getGeminiClient().models.generateContent({
     model,
     contents: [prompt],
-    config: { systemInstruction: systemPrompt, temperature: 0.2 },
+    config: {
+      systemInstruction: systemPrompt,
+      temperature: 0.2,
+      thinkingConfig: getGeminiThinkingConfig("REPORT_DRAFT_GEMINI"),
+    },
   });
   return { model, text: response.text };
 };
@@ -35,6 +40,7 @@ const generateWithOpenAI = async (prompt: string, systemPrompt: string) => {
     instructions: systemPrompt,
     input: prompt,
     store: false,
+    reasoning: getOpenAIReasoning("REPORT_DRAFT"),
   });
   return { model, text: response.output_text };
 };

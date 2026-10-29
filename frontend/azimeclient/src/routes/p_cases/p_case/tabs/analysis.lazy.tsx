@@ -53,6 +53,7 @@ import {
   visitBlocker,
   type ExamPrepStatus,
 } from "../examPrep";
+import { usePostExamChanges } from "../postExam";
 import { toTimeline, type TimelineEvent } from "../recordPresentation";
 
 type TreatmentRow = StoredPreExamAnalysis["treatmentAnalysis"][number];
@@ -493,6 +494,14 @@ function AnalysisReview({
   const { data: visit } = useQuery(visitQueryOptions(caseId));
   const postExamOptions = postExamAnalysisQueryOptions(caseId, region);
   const { data: lastPostExam } = useQuery(postExamOptions);
+  // The run button stays disabled while the last run matches what is saved.
+  const postExamChanges = [
+    ...usePostExamChanges(caseId, region, lastPostExam?.inputSnapshot.basedOn).map(
+      (what) => `${what} changed`
+    ),
+    ...(dirty ? ["unsaved changes"] : []),
+  ];
+  const postExamCurrent = !!lastPostExam?.analysis && !postExamChanges.length;
   const undecided = list.diagnoses.filter((d) => d.status === "working").length;
   const visitMissing = visitBlocker(visit?.documentation);
   const readiness = [
@@ -779,14 +788,25 @@ function AnalysisReview({
                 {item.ok ? "✓" : "○"} {item.label}
               </span>
             ))}
-            {lastPostExam?.analysis ? (
-              <Link
-                to="/p_cases/$caseId/mmi"
-                params={{ caseId }}
-                className="border-l border-slate-200 pl-3 text-blue-700 hover:underline"
-              >
-                Post-exam analysis {formatTime(lastPostExam.updatedAt)} →
-              </Link>
+            {lastPostExam?.analysis && !postExamMutation.isPending ? (
+              <span className="border-l border-slate-200 pl-3">
+                {postExamCurrent ? (
+                  <span className="font-semibold text-green-700">
+                    ✓ Post-exam analysis current
+                  </span>
+                ) : (
+                  <span className="font-semibold text-amber-700">
+                    Post-exam analysis out of date: {postExamChanges.join(", ")}
+                  </span>
+                )}{" "}
+                <Link
+                  to="/p_cases/$caseId/mmi"
+                  params={{ caseId }}
+                  className="text-blue-700 hover:underline"
+                >
+                  ran {formatTime(lastPostExam.updatedAt)} →
+                </Link>
+              </span>
             ) : null}
           </span>
         ) : (
@@ -876,6 +896,7 @@ function AnalysisReview({
             disabled={
               busy ||
               postExamMutation.isPending ||
+              postExamCurrent ||
               missingRationale ||
               !readiness.every((item) => item.ok)
             }
@@ -883,7 +904,9 @@ function AnalysisReview({
           >
             {postExamMutation.isPending
               ? "Running post-exam analysis…"
-              : "Run post-exam analysis"}
+              : lastPostExam?.analysis
+                ? "Re-run post-exam analysis"
+                : "Run post-exam analysis"}
           </Btn>
         ) : null}
       </footer>

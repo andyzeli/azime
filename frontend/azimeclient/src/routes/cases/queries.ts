@@ -104,6 +104,7 @@ export type RecordWithParsedSummary = RecordWithProvider & {
 };
 
 export type CaseSummaryWithParsedAggregate = {
+  id: number | null;
   parsedAggregateSummary: CaseSummaryResponse["summary"] | null;
   aggregateSummaryParseError: string | null;
 };
@@ -114,7 +115,7 @@ const fetchCases = async () => {
   const response = await axios.get<Array<CaseType>>(`${API_BASE_URL}/cases`);
   return response.data;
 };
-const API_BASE_URL = "http://localhost:4000";
+const API_BASE_URL = "/api";
 
 export const fetchMessage = async () => {
   await new Promise((r) => setTimeout(r, 500));
@@ -191,6 +192,7 @@ export const fetchCaseSummary = async (caseId: string) => {
       const parsedAggregate = caseSummaryResponseSchema.safeParse(r.data);
 
       return {
+        id: parsedAggregate.success ? parsedAggregate.data.id : null,
         parsedAggregateSummary: parsedAggregate.success
           ? parsedAggregate.data.summary
           : null,

@@ -1,3 +1,4 @@
+import { getGeminiThinkingConfig, getOpenAIReasoning } from "./reasoningConfig.js";
 import OpenAI from "openai";
 import { ZodError, z } from "zod";
 import { NotImplementedError } from "../errors/notImplementedError.js";
@@ -47,6 +48,7 @@ const generateWithGemini = async (
       responseMimeType: "application/json",
       responseJsonSchema: toResponseJsonSchema(refinedAnalysisSchema),
       temperature: 0.1,
+      thinkingConfig: getGeminiThinkingConfig("REFINED_ANALYSIS_GEMINI"),
     },
   });
 
@@ -80,6 +82,7 @@ const generateWithOpenAI = async (
     instructions: refinedAnalysisSystemPrompt,
     input: prompt,
     store: false,
+    reasoning: getOpenAIReasoning("REFINED_ANALYSIS"),
     text: {
       format: {
         type: "json_schema",

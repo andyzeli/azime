@@ -18,7 +18,7 @@ export const billingIndexRoute = createRoute({
 
 function BillingComponent() {
   return (
-    <main className="min-h-[calc(100vh-45px)] bg-slate-50 px-4 py-8 text-slate-900 sm:px-8 sm:py-10">
+    <main className="min-h-[calc(100vh-56px)] bg-slate-50 px-4 py-8 text-slate-900 sm:px-8 sm:py-10">
       <div className="mx-auto max-w-5xl">
         <header className="mb-8">
           <div className="mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.12em] text-slate-500">

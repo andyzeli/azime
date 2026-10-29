@@ -28,7 +28,6 @@ const dispositionOptions: {
 const reasonLabel: Record<RemainingCareReason, string> = {
   not_exhausted: "Not exhausted",
   exhaustion_unclear: "Exhaustion unclear",
-  applicability_unclear: "Applicability unclear",
   ongoing: "Exhausted, continuing",
 };
 
@@ -118,7 +117,7 @@ export function RemainingCare({
 }
 
 function CandidateRow({
-  candidate: { treatment, reasons },
+  candidate: { treatment, reason, rationale, applicable, unclear },
   decision,
   onDecide,
   dxLabel,
@@ -178,16 +177,33 @@ function CandidateRow({
           {treatment.recordDetail ? (
             <div className="text-[11.5px] text-slate-500">{treatment.recordDetail}</div>
           ) : null}
-          <ul className="mt-1 grid gap-0.5">
-            {reasons.map((r) => (
-              <li key={r.canonicalDx} className="text-[11.5px] text-slate-600">
-                <b className="font-semibold text-slate-700">
-                  {dxLabel(r.canonicalDx)} · {reasonLabel[r.reason]}
-                </b>
-                {r.rationale ? ` — ${r.rationale}` : null}
-              </li>
+          {/* Exhaustion is one judgment per treatment; applicability is per diagnosis. */}
+          {reason ? (
+            <div className="mt-1 text-[11.5px] text-slate-600">
+              <b className="font-semibold text-slate-700">{reasonLabel[reason]}</b>
+              {rationale ? ` — ${rationale}` : null}
+            </div>
+          ) : null}
+          <div className="mt-1 flex flex-wrap gap-1">
+            {applicable.map((dx) => (
+              <Badge key={dx} className="bg-green-50 text-green-700">
+                ✓ {dxLabel(dx)}
+              </Badge>
             ))}
-          </ul>
+            {unclear.map(({ canonicalDx }) => (
+              <Badge key={canonicalDx} className="bg-amber-50 text-amber-700">
+                ? {dxLabel(canonicalDx)}
+              </Badge>
+            ))}
+          </div>
+          {unclear.map(({ canonicalDx, rationale }) => (
+            <div key={canonicalDx} className="mt-0.5 text-[11.5px] text-slate-600">
+              <b className="font-semibold text-slate-700">
+                Applicability unclear for {dxLabel(canonicalDx)}
+              </b>
+              {rationale ? ` — ${rationale}` : null}
+            </div>
+          ))}
         </div>
         <div className="shrink-0">
           <Segmented value={disposition} onChange={choose} options={dispositionOptions} />

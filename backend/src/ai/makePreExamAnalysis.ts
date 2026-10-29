@@ -1,3 +1,4 @@
+import { getGeminiThinkingConfig, getOpenAIReasoning } from "./reasoningConfig.js";
 import OpenAI from "openai";
 import { ZodError, z } from "zod";
 import { NotImplementedError } from "../errors/notImplementedError.js";
@@ -50,6 +51,7 @@ const generateWithGemini = async (
       responseMimeType: "application/json",
       responseJsonSchema: toResponseJsonSchema(schema),
       temperature: 0.1,
+      thinkingConfig: getGeminiThinkingConfig("PRE_EXAM_ANALYSIS_GEMINI"),
     },
   });
 
@@ -86,6 +88,7 @@ const generateWithOpenAI = async (
     instructions: systemPrompt,
     input: prompt,
     store: false,
+    reasoning: getOpenAIReasoning("PRE_EXAM_ANALYSIS"),
     text: {
       format: {
         type: "json_schema",
@@ -158,6 +161,14 @@ export const makePreExamAnalysis = async (
     if (unknownTreatmentIds.length > 0) {
       throw new Error(
         `${provider} pre-exam analysis referenced treatmentIds not in the ladder: ${unknownTreatmentIds.join(", ")}`
+      );
+    }
+
+    const taxonomyIds = payload.treatmentAnalysis.flatMap((t) => t.treatmentId ?? []);
+    const repeated = taxonomyIds.filter((id, i) => taxonomyIds.indexOf(id) !== i);
+    if (repeated.length > 0) {
+      throw new Error(
+        `${provider} pre-exam analysis repeated treatmentIds: ${[...new Set(repeated)].join(", ")}`
       );
     }
 

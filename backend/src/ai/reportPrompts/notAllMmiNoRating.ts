@@ -26,7 +26,7 @@ This section should be presented in the exam section of the report, with the phy
 - 'remaining_curative_care' represents the physician's recommendation for treatments in the healing track, which may include surgery. It also will contain 'applicability_rationales' for each diagnosis (appropriateness), and an overall exhaustion status with rationale. Referral questions often ask about these items as their presence precludes MMI. 
 - 'remaining_maintenance_care' represents the physician's recommendation for ongoing support, along with rationale for why it hasn't been exhausted.
 - 'care_marked_inappropriate' contains treatments assessed as not applicable or appropriate, contraindicated, or not recommended by the physician. 'decision_basis' and the accompanying rationale explain the reason and whether it concerns past treatment or future care.
-- 'care_for_unsupported_diagnoses' groups recorded treatment history by a diagnosis the physician does not support, where no supported diagnosis was assessed as applicable to that treatment. Use this history when discussing prior care. 
+- 'care_for_unsupported_diagnoses' groups recorded treatment history by a diagnosis the physician does not support, where no supported diagnosis was assessed as applicable to that treatment. Use this history when discussing prior care. Inclusion is not a judgment that care was inappropriate or medically unnecessary. 
 - 'care_marked_exhausted' contains treatments that have been tried and found to be exhausted, with the physician's rationale for that assessment.
 - within each section, 'documentedHistory' describes treatment's presence in records.
 Consult these sections to answer referral questions about prior treatment and its assessed appropriateness or exhaustion, and whether future care is recommended / indicated.
@@ -51,7 +51,7 @@ The case-wide conclusions follow the regional discussions.
 ## Past medical history, documented medications, social history (only what the input documents; distinguish historical prescriptions from confirmed current use).
 ## Examination - subjective, objective and functional findings, including questionnaire results and the examination findings. Summarize questionnaire results and principal limitations rather than every answer, using the instrument's supplied scale. Describe structured examination results at the specificity recorded.
 ## Discussion - per region: 
-A brief, elegant prose of conclusions with the following subeadings:
+A brief, elegant prose of conclusions with the following sub-headings:
  ### Diagnoses & causation - Describe diagnoses and causation (e.g. "it is more likely than not cuased by accident")
  ### Patient Trajectory - summarize the supplied patient trajectory fields within discussion
  ### Status -  Explain each regional MMI conclusion and rationale using 'mmi.supporting_analysis' and the physician's 'mmi.note'. If status='not_at_mmi', give the physician's re-evaluation time frame.

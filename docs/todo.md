@@ -1,0 +1,1 @@
+- hipaa complaiant customer facing doc upload? then dont need email
