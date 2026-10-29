@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { z } from "zod";
+import { safeParseStoredExtraction } from "@azime/contracts";
 import {
   createStoredSchema,
   extractionRegistry,
   getExtractionConfig,
-  safeParseStoredExtraction,
 } from "../dist/ai/gemini/registry.js";
 import { buildExtractionPrompt } from "../dist/ai/gemini/buildExtraction.js";
 import { buildDiagnosisMentions } from "../dist/records/diagnosisMentions.js";

@@ -29,9 +29,10 @@ export BUCKET=${PROJECT_ID}-records
 export SQL_INSTANCE=azime-db
 export SA=azime-run@${PROJECT_ID}.iam.gserviceaccount.com
 
+gcloud config configurations create azime-prod   # keeps business separate from personal
 gcloud auth login                      # business account
-gcloud auth application-default login  # used by cloud-sql-proxy later
 gcloud config set project $PROJECT_ID
+# back to personal dev later: gcloud config configurations activate default
 export PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format='value(projectNumber)')
 
 gcloud services enable \
@@ -51,7 +52,11 @@ gcloud sql instances create $SQL_INSTANCE \
 
 gcloud sql databases create azime --instance=$SQL_INSTANCE
 
-export DB_PASS=$(openssl rand -hex 24)
+# Password lives outside the repo; later steps `source` it
+mkdir -p ~/.config/azime && chmod 700 ~/.config/azime
+printf 'DB_PASS=%s\n' "$(openssl rand -hex 24)" > ~/.config/azime/prod.env
+chmod 600 ~/.config/azime/prod.env
+source ~/.config/azime/prod.env
 gcloud sql users create azime --instance=$SQL_INSTANCE --password=$DB_PASS
 
 # Cloud Run reaches Cloud SQL over a unix socket
@@ -92,10 +97,10 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 In a second terminal, open a tunnel to the database:
 
 ```sh
-cloud-sql-proxy ${PROJECT_ID}:${REGION}:${SQL_INSTANCE} --port 5433
+cloud-sql-proxy --gcloud-auth ${PROJECT_ID}:${REGION}:${SQL_INSTANCE} --port 5433
 ```
 
-Back in the first terminal (from the repo root). Order matters: the general
+Back in the first terminal (from the repo root, after `source ~/.config/azime/prod.env`). Order matters: the general
 reference import validates its AMA row references.
 
 ```sh

@@ -1,5 +1,3 @@
-import type { PatientQuestionnaireResponse } from "../db/schema.js";
-
 export type QuestionnaireType =
   "pain_disability" | "lower_back_regional" | "neck_regional";
 
@@ -13,6 +11,11 @@ export type QuestionnaireQuestion = {
   group: string;
   prompt: string;
   options: QuestionnaireOption[];
+};
+
+export type PatientQuestionnaireResponse = {
+  itemId: string;
+  score: number;
 };
 
 export type QuestionnaireScores = {
@@ -339,4 +342,21 @@ export const getQuestionnaireDefinition = (type: string) => {
   }
 
   return null;
+};
+
+// A patient_questionnaire_instance row as returned by the API, before the
+// definition is attached.
+export type PatientQuestionnaireInstanceDto = {
+  id: number;
+  caseId: number;
+  appointmentId: number | null;
+  type: string;
+  accessToken: string;
+  status: string;
+  responses: PatientQuestionnaireResponse[];
+  scores: QuestionnaireScores | null;
+  instrumentVersion: string;
+  completedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
 };

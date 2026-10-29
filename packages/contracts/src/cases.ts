@@ -11,6 +11,19 @@ export const caseInjuryDetailsSchema = z
 
 export type CaseInjuryDetails = z.infer<typeof caseInjuryDetailsSchema>;
 
+// A patientcase row as returned by GET /cases.
+export type PatientCaseDto = {
+  id: number;
+  patientName: string | null;
+  patientLastName: string | null;
+  providerAssigned: string | null;
+  caseContact: number | null;
+  caseType: string | null;
+  caseStatus: string | null;
+  amaMode: AmaMode;
+  referralQuestions: string[];
+} & CaseInjuryDetails;
+
 // Whether the referral asks for an AMA rating. "guidance" keeps the AMA exam rows
 // (tasks, roots, answers for the report) without rating tables or a rating.
 // Set by staff from the referral when the case is created.

@@ -1,5 +1,5 @@
 import { CalendarRange, ShieldAlert } from "lucide-react";
-import type { StoredExtraction } from "../../../../../../../../backend/src/ai/gemini/registry";
+import type { StoredExtraction } from "@azime/contracts";
 import { Bullets, Callout, has, Section, workStatusStyle } from "./parts";
 
 type WorkStatus = StoredExtraction<"workstatus">;

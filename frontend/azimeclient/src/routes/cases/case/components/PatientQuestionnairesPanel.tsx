@@ -5,7 +5,7 @@ import {
   questionnaireDefinitions,
   questionnaireTypes,
   type QuestionnaireType,
-} from "../../../../../../../backend/src/questionnaires/definitions";
+} from "@azime/contracts";
 import {
   createPatientQuestionnaire,
   deletePatientQuestionnaire,

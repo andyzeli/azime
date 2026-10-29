@@ -1,6 +1,6 @@
 import { and, asc, eq, isNotNull } from "drizzle-orm";
 import type { PastMedicalHistory } from "@azime/contracts";
-import { safeParseStoredExtraction } from "../ai/gemini/registry.js";
+import { safeParseStoredExtraction } from "@azime/contracts";
 import { db } from "../db/index.js";
 import { CaseProviders, Records } from "../db/schema.js";
 

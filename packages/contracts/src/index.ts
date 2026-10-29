@@ -16,3 +16,7 @@ export * from "./opinions.js";
 export * from "./amaRating.js";
 export * from "./amaConsistency.js";
 export * from "./report.js";
+export * from "./records.js";
+export * from "./recordExtractions.js";
+export * from "./questionnaires.js";
+export * from "./contacts.js";

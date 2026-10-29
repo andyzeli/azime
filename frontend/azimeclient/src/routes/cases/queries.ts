@@ -1,12 +1,6 @@
 import axios from "redaxios";
 import { queryOptions } from "@tanstack/react-query";
 import {
-  CaseContacts,
-  PatientQuestionnaireInstance,
-  PatientCase,
-  Records,
-} from "../../../../../backend/src/db/schema";
-import {
   caseProviderListSchema,
   caseProviderSchema,
   caseInjuryDetailsSchema,
@@ -44,20 +38,20 @@ import {
   caseReportResponseSchema,
   saveCaseOpinionsRequestSchema,
   type SaveCaseOpinionsRequest,
-} from "@azime/contracts";
-import type {
-  QuestionnaireDefinition,
-  QuestionnaireType,
-} from "../../../../../backend/src/questionnaires/definitions";
-import type { CompleteRecordUploadInput } from "../../../../../backend/src/records/documentMetadata";
-import {
+  type CaseContactDto,
+  type PatientCaseDto,
+  type CaseRecordDto,
+  type PatientQuestionnaireInstanceDto,
+  type QuestionnaireDefinition,
+  type QuestionnaireType,
+  type CompleteRecordUploadInput,
   safeParseStoredExtraction,
   type AnyStoredExtraction,
-} from "../../../../../backend/src/ai/gemini/registry";
+} from "@azime/contracts";
 import { NewPatientCase } from "./case/components/NewCaseForm";
 export class NotFoundError extends Error {}
 
-type CaseType = PatientCase;
+type CaseType = PatientCaseDto;
 type Provider = {
   id: string;
   name: string;
@@ -68,7 +62,7 @@ export type DbPatientCase = {
   patientName: string | null;
   patientLastName: string | null;
   providerName: Provider;
-  caseContact: Partial<CaseContacts>;
+  caseContact: Partial<CaseContactDto>;
   caseType: string | null;
   status: string | null;
   amaMode: AmaMode;
@@ -81,7 +75,7 @@ export type PatientQuestionnaireDefinition = Omit<
 >;
 
 export type PatientQuestionnaireWithDefinition =
-  PatientQuestionnaireInstance & {
+  PatientQuestionnaireInstanceDto & {
     definition: PatientQuestionnaireDefinition | null;
   };
 
@@ -94,7 +88,7 @@ export type PatientQuestionnaireWithCase =
     } | null;
   };
 
-export type RecordWithProvider = Records & {
+export type RecordWithProvider = CaseRecordDto & {
   provider: CaseProviderDto | null;
 };
 

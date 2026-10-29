@@ -7,7 +7,7 @@ import {
   deleteObject,
 } from "../storage/googleCloudStorage.js";
 import { summarizeRecord } from "../ai/gemini/summarizeRecord.js";
-import { DocumentType } from "../records/documentMetadata.js";
+import type { CaseRecordDto, DocumentType } from "@azime/contracts";
 import { buildDiagnosisMentions } from "../records/diagnosisMentions.js";
 
 export const recordsController = {
@@ -31,7 +31,7 @@ export const recordsController = {
         .leftJoin(CaseProviders, eq(Records.providerId, CaseProviders.id))
         .where(eq(Records.caseId, caseId));
 
-      const response = records.map(({ record, provider }) => ({
+      const response: CaseRecordDto[] = records.map(({ record, provider }) => ({
         ...record,
         provider,
       }));

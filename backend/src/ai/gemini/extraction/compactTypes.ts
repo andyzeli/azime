@@ -1,5 +1,5 @@
 /**
- * Stored extractions also carry schemaVersion: "v1" (added by registry.ts).
+ * Stored extractions also carry schemaVersion: "v1" (withStoredFields in @azime/contracts).
  * Document date, provider, and other record metadata live outside these payloads.
  */
 export type CompactTypes = {

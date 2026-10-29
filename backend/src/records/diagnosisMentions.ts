@@ -2,7 +2,7 @@ import type { NewDiagnosisMention, Records } from "../db/schema.js";
 import {
   safeParseStoredExtraction,
   type StoredExtraction,
-} from "../ai/gemini/registry.js";
+} from "@azime/contracts";
 
 export function buildDiagnosisMentions(
   record: Pick<Records, "id" | "caseId" | "documentType" | "eventDate">,

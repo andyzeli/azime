@@ -1,28 +1,23 @@
 import { z } from "zod";
-import type { DocumentType } from "../../records/documentMetadata.js";
+import {
+  extractionSchemas,
+  withStoredFields,
+  type DocumentType,
+} from "@azime/contracts";
 import {
   buildEncounterSchema,
   buildSurgerySchema,
-  encounterSchema,
   encounterSystemPrompt,
-  genericSummarySchema,
   genericDocumentSystemPrompt,
-  imagingSchema,
   imagingSystemPrompt,
-  incidentReportSchema,
   incidentReportSystemPrompt,
-  jobDescriptionSchema,
   jobDescriptionSystemPrompt,
-  surgerySchema,
   surgerySystemPrompt,
   buildInterventionSchema,
   interventionSystemPrompt,
-  therapySchema,
   therapySystemPrompt,
-  workStatusReportSchema,
   workStatusSystemPrompt,
   buildTherapySchema,
-  interventionSchema,
 } from "./extraction/index.js";
 
 type ExtractionConfig = {
@@ -41,13 +36,6 @@ export type DiagnosisExtractionContext = {
     icdPrefixes: string[];
   }>;
 };
-
-const withStoredFields = <T extends z.ZodRawShape>(
-  extractionSchema: z.ZodObject<T>,
-) =>
-  extractionSchema.extend({
-    schemaVersion: z.literal("v1"),
-  });
 
 type PrefixedDiagnosis = z.output<
   ReturnType<typeof buildEncounterSchema>
@@ -134,43 +122,43 @@ export function createStoredSchema<T extends z.ZodRawShape>(
 
 export const extractionRegistry = {
   encounter: {
-    schema: encounterSchema,
+    schema: extractionSchemas.encounter,
     systemPrompt: encounterSystemPrompt,
   },
   generic: {
-    schema: genericSummarySchema,
+    schema: extractionSchemas.generic,
     systemPrompt: genericDocumentSystemPrompt,
   },
   imaging_report: {
-    schema: imagingSchema,
+    schema: extractionSchemas.imaging_report,
     systemPrompt: imagingSystemPrompt,
   },
   incident_report: {
-    schema: incidentReportSchema,
+    schema: extractionSchemas.incident_report,
     systemPrompt: incidentReportSystemPrompt,
   },
   job_description: {
-    schema: jobDescriptionSchema,
+    schema: extractionSchemas.job_description,
     systemPrompt: jobDescriptionSystemPrompt,
   },
   surgery_report: {
-    schema: surgerySchema,
+    schema: extractionSchemas.surgery_report,
     systemPrompt: surgerySystemPrompt,
   },
   intervention_report: {
-    schema: interventionSchema,
+    schema: extractionSchemas.intervention_report,
     systemPrompt: interventionSystemPrompt,
   },
   therapy_note: {
-    schema: therapySchema,
+    schema: extractionSchemas.therapy_note,
     systemPrompt: therapySystemPrompt,
   },
   workstatus: {
-    schema: workStatusReportSchema,
+    schema: extractionSchemas.workstatus,
     systemPrompt: workStatusSystemPrompt,
   },
   legal_summary: {
-    schema: genericSummarySchema,
+    schema: extractionSchemas.legal_summary,
     systemPrompt: genericDocumentSystemPrompt,
   },
 } satisfies Record<DocumentType, ExtractionConfig>;
@@ -224,30 +212,3 @@ export const getExtractionConfig = (
 
   return extractionRegistry[documentType];
 };
-type ExtractionRegistry = typeof extractionRegistry;
-
-type StoredFields = {
-  schemaVersion: "v1";
-};
-
-export type StoredExtraction<T extends DocumentType> = z.output<
-  ExtractionRegistry[T]["schema"]
-> &
-  StoredFields;
-
-export type AnyStoredExtraction = {
-  [T in DocumentType]: StoredExtraction<T>;
-}[DocumentType];
-
-export function safeParseStoredExtraction<T extends DocumentType>(
-  documentType: T,
-  data: unknown,
-): z.ZodSafeParseResult<StoredExtraction<T>> {
-  // Stored artifacts are parsed without today's mutable case-region context.
-  const config: ExtractionConfig = extractionRegistry[documentType];
-  const storedSchema = withStoredFields(config.schema);
-
-  return storedSchema.safeParse(data) as z.ZodSafeParseResult<
-    StoredExtraction<T>
-  >;
-}

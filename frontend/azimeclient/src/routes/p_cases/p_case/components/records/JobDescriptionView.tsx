@@ -1,5 +1,5 @@
 import { HardHat } from "lucide-react";
-import type { StoredExtraction } from "../../../../../../../../backend/src/ai/gemini/registry";
+import type { StoredExtraction } from "@azime/contracts";
 import { Bullets, Callout, Chip, has, Section, type Tone } from "./parts";
 
 type JobDescription = StoredExtraction<"job_description">;

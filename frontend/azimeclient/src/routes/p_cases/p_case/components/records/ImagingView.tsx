@@ -1,5 +1,5 @@
 import { FileSearch } from "lucide-react";
-import type { StoredExtraction } from "../../../../../../../../backend/src/ai/gemini/registry";
+import type { StoredExtraction } from "@azime/contracts";
 import { Callout, Chip, has, humanize, Prose, Section, TextField } from "./parts";
 
 type Imaging = StoredExtraction<"imaging_report">;

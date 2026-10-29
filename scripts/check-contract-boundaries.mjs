@@ -66,6 +66,20 @@ for (const applicationRoot of applicationRoots) {
   }
 }
 
+// The client shares code with the backend only through @azime/contracts.
+const backendImportPattern =
+  /from\s+["'][^"']*backend\/|import\s*\(?\s*["'][^"']*backend\//;
+
+for (const file of await collectSourceFiles(
+  path.join(projectRoot, "frontend/azimeclient/src"),
+)) {
+  const source = await readFile(file, "utf8");
+
+  if (backendImportPattern.test(source)) {
+    violations.push(`${path.relative(projectRoot, file)} imports backend code`);
+  }
+}
+
 if (violations.length > 0) {
   console.error(violations.join("\n"));
   process.exitCode = 1;

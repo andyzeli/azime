@@ -1,4 +1,4 @@
-import type { DocumentType } from "../../records/documentMetadata.js";
+import type { DocumentType } from "@azime/contracts";
 import type { DiagnosisExtractionContext } from "./registry.js";
 
 type ExtractionMetadata = {

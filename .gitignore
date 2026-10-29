@@ -41,3 +41,6 @@ lerna-debug.log*
 *.njsproj
 *.sln
 *.sw?
+# Claude Code local files
+.claude/settings.local.json
+.claude/worktrees/

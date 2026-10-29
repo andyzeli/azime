@@ -1,5 +1,5 @@
 import { TriangleAlert } from "lucide-react";
-import type { StoredExtraction } from "../../../../../../../../backend/src/ai/gemini/registry";
+import type { StoredExtraction } from "@azime/contracts";
 import { Bullets, Callout, Chip, has, Prose, Section } from "./parts";
 
 type Incident = StoredExtraction<"incident_report">;
