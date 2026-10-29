@@ -17,6 +17,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
+      - run: node scripts/check-contract-boundaries.mjs
       - run: node --test tests/*.test.mjs
         working-directory: backend
       - run: node --test tests/*.test.mjs

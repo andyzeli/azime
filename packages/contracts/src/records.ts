@@ -134,3 +134,17 @@ export type RecordDocumentMetadata =
 export type CompleteRecordUploadInput = z.infer<
   typeof completeRecordUploadSchema
 >;
+
+// A record row as returned by GET /records.
+export type CaseRecordDto = {
+  id: number;
+  caseId: number | null;
+  url: string | null;
+  summary: unknown;
+  summaryStatus: string;
+  name: string | null;
+  providerId: string | null;
+  documentType: DocumentType;
+  eventDate: string | null;
+  metadata: RecordDocumentMetadata | null;
+};

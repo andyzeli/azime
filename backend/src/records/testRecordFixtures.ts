@@ -1,9 +1,9 @@
 import type { ProviderDiscipline, ProviderKind } from "@azime/contracts";
-import type { AnyStoredExtraction } from "../ai/gemini/registry.js";
+import type { AnyStoredExtraction } from "@azime/contracts";
 import type {
   DocumentType,
   RecordDocumentMetadata,
-} from "./documentMetadata.js";
+} from "@azime/contracts";
 
 export type TestRecordFixture = {
   id: string;

@@ -1,5 +1,5 @@
 import { Quote } from "lucide-react";
-import type { StoredExtraction } from "../../../../../../../../backend/src/ai/gemini/registry";
+import type { StoredExtraction } from "@azime/contracts";
 import { has, Prose, Section } from "./parts";
 
 // Generic documents and legal summaries share one extraction schema.

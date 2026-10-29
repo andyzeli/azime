@@ -1,18 +1,5 @@
-import { z } from "zod";
-import { buildRegionsSchema, treatmentPerformedSchema } from "./shared.js";
-
-export const interventionSchema = treatmentPerformedSchema.extend({
-  indication: z
-    .string()
-    .describe(
-      "The documented clinical indication or condition for which the procedure was performed.",
-    ),
-  followUpPlan: z
-    .string()
-    .describe(
-      "The documented follow-up plan after the procedure, including timing or next steps when provided.",
-    ),
-});
+import { interventionSchema } from "@azime/contracts";
+import { buildRegionsSchema } from "./shared.js";
 
 export const buildInterventionSchema = (regions: string[]) =>
   interventionSchema.extend({

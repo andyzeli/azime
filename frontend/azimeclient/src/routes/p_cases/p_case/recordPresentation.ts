@@ -1,9 +1,9 @@
 import type { RecordWithParsedSummary } from "../../cases/queries";
-import type { DocumentType } from "../../../../../../backend/src/records/documentMetadata";
-import type { StoredExtraction } from "../../../../../../backend/src/ai/gemini/registry";
 import {
   getProviderDisciplineLabel,
+  type DocumentType,
   type ProviderDiscipline,
+  type StoredExtraction,
 } from "@azime/contracts";
 export type EventKind =
   | "incident"

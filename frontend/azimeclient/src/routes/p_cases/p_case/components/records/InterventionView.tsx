@@ -1,5 +1,5 @@
 import { ListChecks, Syringe } from "lucide-react";
-import type { StoredExtraction } from "../../../../../../../../backend/src/ai/gemini/registry";
+import type { StoredExtraction } from "@azime/contracts";
 import {
   Callout,
   Chip,

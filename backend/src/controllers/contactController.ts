@@ -1,6 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { db } from "../db/index.js";
 import { CaseContacts } from "../db/schema.js";
+import type { CaseContactDto } from "@azime/contracts";
 
 export const contactController = {
   newHandler: async (request: FastifyRequest, reply: FastifyReply) => {
@@ -17,7 +18,10 @@ export const contactController = {
     }
   },
 
-  getHandler: async (request: FastifyRequest, reply: FastifyReply) => {
+  getHandler: async (
+    request: FastifyRequest,
+    reply: FastifyReply,
+  ): Promise<CaseContactDto[]> => {
     return db.query.CaseContacts.findMany();
   },
 };

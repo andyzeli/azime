@@ -8,7 +8,7 @@ import {
   createSignedUploadUrl,
   objectExists,
 } from "../storage/googleCloudStorage.js";
-import { completeRecordUploadSchema } from "../records/documentMetadata.js";
+import { completeRecordUploadSchema } from "@azime/contracts";
 
 const signUploadSchema = z.object({
   caseId: z.number().int().positive(),

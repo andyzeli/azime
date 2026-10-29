@@ -6,6 +6,7 @@ import {
   caseInjuryDetailsSchema,
   updateAmaModeRequestSchema,
   updateReferralQuestionsRequestSchema,
+  type PatientCaseDto,
 } from "@azime/contracts";
 
 export const caseController = {
@@ -23,7 +24,10 @@ export const caseController = {
     }
   },
 
-  getHandler: async (request: FastifyRequest, reply: FastifyReply) => {
+  getHandler: async (
+    request: FastifyRequest,
+    reply: FastifyReply,
+  ): Promise<PatientCaseDto[]> => {
     return db.query.PatientCase.findMany();
   },
   updateHandler: async (

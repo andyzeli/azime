@@ -35,12 +35,12 @@ import type {
   AmaExaminationTask,
   CaseReportResponse,
   ReportInput,
-} from "@azime/contracts";
-import type { PreExamInputSnapshot } from "../ai/preExamInputSnapshot.js";
-import type {
+  PatientQuestionnaireResponse,
+  QuestionnaireScores,
   RecordDocumentMetadata,
   DocumentType,
-} from "../records/documentMetadata.js";
+} from "@azime/contracts";
+import type { PreExamInputSnapshot } from "../ai/preExamInputSnapshot.js";
 import type { StoredRefinedAnalysis } from "../ai/refinedAnalysisSchema.js";
 
 //supported regions
@@ -434,18 +434,6 @@ export type PainDisabilityQuestionnaireResponse = {
   score: number;
 };
 
-export type PatientQuestionnaireResponse = {
-  itemId: string;
-  score: number;
-};
-
-export type PatientQuestionnaireScores = {
-  totalScore: number;
-  denominator: number;
-  maxScore: number;
-  percentage: number | null;
-};
-
 export const PainDisabilityQuestionnaire = pgTable(
   "pain_disability_questionnaire",
   {
@@ -512,7 +500,7 @@ export const PatientQuestionnaireInstance = pgTable(
       .$type<PatientQuestionnaireResponse[]>()
       .notNull()
       .default([]),
-    scores: jsonb("scores").$type<PatientQuestionnaireScores>(),
+    scores: jsonb("scores").$type<QuestionnaireScores>(),
     instrumentVersion: varchar("instrument_version", { length: 64 }).notNull(),
     completedAt: timestamp("completed_at"),
     createdAt: timestamp("created_at").notNull().defaultNow(),

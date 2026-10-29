@@ -4,13 +4,12 @@ import { db } from "../../db/index.js";
 import { asc, eq, inArray } from "drizzle-orm";
 import { getGcsFileUri } from "../../storage/googleCloudStorage.js";
 import { getGeminiClient, getGeminiModelName } from "./client.js";
-import type { DocumentType } from "../../records/documentMetadata.js";
+import type { DocumentType, StoredExtraction } from "@azime/contracts";
 import { buildExtractionPrompt } from "./buildExtraction.js";
 import {
   createStoredSchema,
   getExtractionConfig,
   type DiagnosisExtractionContext,
-  type StoredExtraction,
 } from "./registry.js";
 //import { StoredRecordSummary } from "./types.js";
 import { ZodError, z } from "zod";

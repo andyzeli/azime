@@ -2,7 +2,7 @@ import { and, asc, eq, inArray, isNotNull } from "drizzle-orm";
 import {
   safeParseStoredExtraction,
   type StoredExtraction,
-} from "../ai/gemini/registry.js";
+} from "@azime/contracts";
 import { db } from "../db/index.js";
 import { Records } from "../db/schema.js";
 

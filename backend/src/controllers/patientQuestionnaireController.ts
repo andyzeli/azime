@@ -6,14 +6,12 @@ import {
   PatientCase,
   PatientQuestionnaireInstance,
 } from "../db/schema.js";
-import type { PatientQuestionnaireResponse } from "../db/schema.js";
 import {
   getQuestionnaireDefinition,
-} from "../questionnaires/definitions.js";
-import type {
-  QuestionnaireDefinition,
-  QuestionnaireType,
-} from "../questionnaires/definitions.js";
+  type PatientQuestionnaireResponse,
+  type QuestionnaireDefinition,
+  type QuestionnaireType,
+} from "@azime/contracts";
 
 const normalizeAppointmentId = (appointmentId: unknown) => {
   if (

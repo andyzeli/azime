@@ -1,7 +1,7 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
-import { safeParseStoredExtraction } from "../ai/gemini/registry.js";
+import { safeParseStoredExtraction } from "@azime/contracts";
 import { db } from "../db/index.js";
 import {
   CaseProviders,

@@ -2,8 +2,8 @@ import type { Region } from "@azime/contracts";
 import {
   safeParseStoredExtraction,
   type StoredExtraction,
-} from "../ai/gemini/registry.js";
-import type { DocumentType } from "../records/documentMetadata.js";
+} from "@azime/contracts";
+import type { DocumentType } from "@azime/contracts";
 import {
   getDocumentExtractionArtifacts,
   type CaseArtifactProvider,

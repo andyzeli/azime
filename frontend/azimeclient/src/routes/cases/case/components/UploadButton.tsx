@@ -4,10 +4,10 @@ import {
   getProviderDisciplineLabel,
   providerDisciplineOptions,
   type CaseProviderDto,
+  type CompleteRecordUploadInput,
   type CreateCaseProviderInput,
   type ProviderDiscipline,
 } from "@azime/contracts";
-import type { CompleteRecordUploadInput } from "../../../../../../../backend/src/records/documentMetadata";
 import {
   caseProvidersQueryOptions,
   completeRecordUpload,

@@ -1,8 +1,9 @@
 # Shared Contracts Migration
 
-This migration is intentionally split into small, deployable slices. The current
-slice establishes the package boundary and moves the provider contract and
-discipline catalog out of the backend.
+Status: complete. The client imports nothing from `backend/src`; everything it
+shares with the backend comes from `@azime/contracts`, and
+`node scripts/check-contract-boundaries.mjs` (run in CI after `pnpm build`)
+enforces both directions of the boundary.
 
 ## Priority 0: Workspace and package boundary
 
@@ -14,7 +15,8 @@ discipline catalog out of the backend.
 - [x] Add a boundary check that prevents contracts from importing application or
       framework code.
 - [x] Add a transitional check preventing the retired provider-module import.
-- [ ] Remove every remaining frontend import from `backend/src` in later slices.
+- [x] Remove every remaining frontend import from `backend/src`.
+- [x] Fail the boundary check if the client imports from `backend/`.
 
 The root `pnpm-lock.yaml` is now the authoritative workspace lockfile. Existing
 nested lockfiles can be removed separately after deployment and CI have switched
@@ -51,22 +53,22 @@ Provider discipline keys are stored in PostgreSQL. Human-readable labels are
 derived at presentation boundaries, including the UI and AI inputs. This keeps
 stored values stable while ensuring downstream summaries receive clear language.
 
-## Remaining slices
+## Priority 1B: Records, questionnaires, cases and contacts
 
-Implement and verify these independently:
+- [x] Document types, per-type metadata and the upload-completion schema:
+      `records.ts`.
+- [x] Stored record-extraction schemas (`extraction/`), the per-document-type
+      schema map, `StoredExtraction` types and `safeParseStoredExtraction`:
+      `recordExtractions.ts`. System prompts, the model-facing schema builders
+      (case-region and canonical-diagnosis enums) and the extraction registry
+      stay in `backend/src/ai/gemini`.
+- [x] Questionnaire definitions and their pure scoring functions:
+      `questionnaires.ts`.
+- [x] Plain API row types replace client imports of Drizzle table types:
+      `PatientCaseDto`, `CaseContactDto`, `CaseRecordDto`,
+      `PatientQuestionnaireInstanceDto`. The Drizzle tables stay in the backend;
+      the cases, contacts and records list handlers are typed against these
+      DTOs so drift fails the backend build.
 
-1. Document metadata and upload contracts.
-2. Record and extraction schemas, while keeping prompts and AI orchestration in
-   the backend.
-3. Case and contact API contracts.
-4. Questionnaire definitions and versioned pure scoring functions that can run
-   in both the client and backend.
-5. Case-summary and analysis contracts.
-6. Deployment configuration, CI, and removal of legacy nested lockfiles.
-
-The frontend/backend separation is complete when this command returns no source
-imports:
-
-```sh
-rg "backend/src" frontend/azimeclient/src
-```
+The client tests may still load backend test fixtures; only
+`frontend/azimeclient/src` is checked.

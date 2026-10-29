@@ -7,7 +7,7 @@ import {
 import {
   safeParseStoredExtraction,
   type AnyStoredExtraction,
-} from "../ai/gemini/registry.js";
+} from "@azime/contracts";
 import { db } from "../db/index.js";
 import { CaseProviders, PatientCase, Records } from "../db/schema.js";
 import { getStoredCaseSummary } from "./caseSummaryQueries.js";

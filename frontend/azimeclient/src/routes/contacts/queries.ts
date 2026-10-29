@@ -1,11 +1,11 @@
 import axios from "redaxios";
 import { queryOptions } from "@tanstack/react-query";
-import { CaseContacts } from "../../../../../backend/src/db/schema";
+import type { CaseContactDto } from "@azime/contracts";
 
 const API_BASE_URL = "/api";
 
-export type DbContact = CaseContacts;
-export type NewContact = Omit<CaseContacts, "id">;
+export type DbContact = CaseContactDto;
+export type NewContact = Omit<CaseContactDto, "id">;
 
 export const fetchContacts = async () => {
   return axios

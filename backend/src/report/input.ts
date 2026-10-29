@@ -8,7 +8,7 @@ import {
   type ReportBaseQuestionnaire,
   type ReportTreatment,
 } from "@azime/contracts";
-import { questionnaireDefinitions } from "../questionnaires/definitions.js";
+import { questionnaireDefinitions } from "@azime/contracts";
 import type { WorkStatusHistoryEntry } from "../queries/workStatusHistory.js";
 import { compactAmaFindings } from "./history.js";
 
