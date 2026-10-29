@@ -59,7 +59,7 @@ function WorkflowTab({
     <Link
       to={to}
       params={{ caseId }}
-      className="-mb-px flex items-center gap-2 border-b-[2.5px] border-transparent px-3.5 pb-3 pt-2.5 text-[13px] font-semibold text-slate-600 hover:text-slate-900"
+      className="-mb-px flex shrink-0 items-center gap-2 whitespace-nowrap border-b-[2.5px] border-transparent px-3.5 pb-3 pt-2.5 text-[13px] font-semibold text-slate-600 hover:text-slate-900"
       activeProps={{ className: "!border-blue-600 !text-blue-700" }}
     >
       <TabIcon n={n} status={status} />
@@ -217,9 +217,9 @@ export default function CockpitShell() {
     step?.to === "visit" || Boolean(visitMissing && analysisStep?.optional);
 
   return (
-    <div className="flex h-[calc(100vh-49px)] flex-col bg-slate-100 text-[13px] text-slate-900">
-      <header className="flex h-14 shrink-0 items-center gap-4 border-b border-slate-200 bg-white px-5">
-        <div className="flex flex-col leading-tight">
+    <div className="flex h-[calc(100vh-56px)] flex-col bg-slate-100 text-[13px] text-slate-900">
+      <header className="flex shrink-0 items-center gap-4 bg-white px-5 pb-3 pt-3.5">
+        <div className="flex shrink-0 flex-col whitespace-nowrap leading-tight">
           <span className="text-[15px] font-semibold">{patientName}</span>
           {patientCase.caseType ? (
             <span className="text-[11.5px] text-slate-500">
@@ -239,7 +239,7 @@ export default function CockpitShell() {
           params={{ caseId }}
           title={visitMissing ?? undefined}
           className={cn(
-            "flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[12px] font-semibold",
+            "flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md border px-2.5 py-1 text-[12px] font-semibold",
             visitNext
               ? "border-blue-600 text-blue-700 ring-2 ring-blue-200"
               : "border-slate-300 text-slate-600 hover:border-slate-400 hover:text-slate-900"
@@ -278,7 +278,7 @@ export default function CockpitShell() {
               ? undefined
               : "Save the treatment review in Analysis first"
           }
-          className="flex items-center gap-1.5 rounded-md border border-slate-300 px-2.5 py-1 text-[12px] font-semibold text-slate-600 hover:border-slate-400 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md border border-slate-300 px-2.5 py-1 text-[12px] font-semibold text-slate-600 hover:border-slate-400 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <Printer className="size-3.5" /> Prep sheet
           {examPrep.stale ? (
@@ -291,7 +291,7 @@ export default function CockpitShell() {
 
       <nav
         aria-label="Case workflow"
-        className="flex shrink-0 items-center border-b border-slate-200 bg-white px-3.5 pt-1"
+        className="flex shrink-0 items-center border-b border-slate-200 bg-white px-3.5"
       >
         <WorkflowTab
           to="/p_cases/$caseId/records"
@@ -335,39 +335,35 @@ export default function CockpitShell() {
           label="Report"
           meta={status.report === "current" ? "ready" : undefined}
         />
-      </nav>
 
-      {step && step.message !== dismissedHint ? (
-        <div className="flex shrink-0 items-center gap-2.5 border-b border-blue-200 bg-blue-50 px-5 py-2 text-[12.5px] text-blue-950">
-          <b>Next:</b> {step.message}
-          {step.to === "analysis" ? (
-            <Link
-              to="/p_cases/$caseId/analysis"
-              params={{ caseId }}
-              search={{ region: step.region }}
-              className="rounded-md bg-blue-600 px-2.5 py-0.5 text-xs font-semibold text-white hover:bg-blue-700"
-            >
-              Go to Analysis →
-            </Link>
-          ) : (
+        {step && step.message !== dismissedHint ? (
+          <div className="ml-auto flex min-w-0 items-center gap-2 pl-6 text-[12px]">
+            <span className="shrink-0 rounded bg-blue-600 px-1.5 py-px text-[10px] font-bold uppercase tracking-wide text-white">
+              Next
+            </span>
+            <span className="truncate text-slate-700" title={step.message}>
+              {step.message}
+            </span>
             <Link
               to={`/p_cases/$caseId/${step.to}`}
               params={{ caseId }}
-              className="rounded-md bg-blue-600 px-2.5 py-0.5 text-xs font-semibold text-white hover:bg-blue-700"
+              search={step.to === "analysis" ? { region: step.region } : undefined}
+              className="shrink-0 whitespace-nowrap font-semibold text-blue-700 hover:text-blue-900"
             >
               Go to {stepLabel[step.to]} →
             </Link>
-          )}
-          <span className="flex-1" />
-          <button
-            type="button"
-            onClick={() => setDismissedHint(step.message)}
-            className="flex items-center gap-1 text-slate-500 hover:text-slate-800"
-          >
-            dismiss <X className="size-3.5" />
-          </button>
-        </div>
-      ) : null}
+            <button
+              type="button"
+              onClick={() => setDismissedHint(step.message)}
+              title="Dismiss"
+              aria-label="Dismiss next step"
+              className="shrink-0 rounded p-0.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+            >
+              <X className="size-3.5" />
+            </button>
+          </div>
+        ) : null}
+      </nav>
 
       <div className="flex min-h-0 flex-1">
         <Outlet />

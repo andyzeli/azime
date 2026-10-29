@@ -104,6 +104,7 @@ export type RecordWithParsedSummary = RecordWithProvider & {
 };
 
 export type CaseSummaryWithParsedAggregate = {
+  id: number | null;
   parsedAggregateSummary: CaseSummaryResponse["summary"] | null;
   aggregateSummaryParseError: string | null;
 };
@@ -191,6 +192,7 @@ export const fetchCaseSummary = async (caseId: string) => {
       const parsedAggregate = caseSummaryResponseSchema.safeParse(r.data);
 
       return {
+        id: parsedAggregate.success ? parsedAggregate.data.id : null,
         parsedAggregateSummary: parsedAggregate.success
           ? parsedAggregate.data.summary
           : null,

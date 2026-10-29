@@ -201,17 +201,6 @@ function SummaryTab() {
                   </p>
                 )}
               </section>
-              <section className="rounded-xl border border-slate-200 bg-white px-5 py-4">
-                <div className="flex items-baseline gap-2.5">
-                  <h2 className="text-[13.5px] font-semibold">
-                    Status timeline
-                  </h2>
-                  <span className="text-[11px] text-slate-500">
-                    Subjective · objective · functional
-                  </span>
-                </div>
-                <StatusTimeline entries={summary?.statusTimeline ?? []} />
-              </section>
             </div>
             <section className="self-start rounded-xl border border-slate-200 bg-white px-4 py-3.5">
               <h2 className="mb-1.5 text-[13.5px] font-semibold">
@@ -304,6 +293,17 @@ function SummaryTab() {
             </section>
           </div>
         )}
+        {view !== "providers" ? (
+          <section className="mt-3.5 rounded-xl border border-slate-200 bg-white px-5 py-4">
+            <div className="flex items-baseline gap-2.5">
+              <h2 className="text-[13.5px] font-semibold">Status timeline</h2>
+              <span className="text-[11px] text-slate-500">
+                Subjective · objective · functional
+              </span>
+            </div>
+            <StatusTimeline entries={summary?.statusTimeline ?? []} />
+          </section>
+        ) : null}
       </main>
       <RecordDrawer recordId={record} />
     </>
@@ -334,7 +334,13 @@ function StatusTimeline({
     );
   return (
     <div className="mt-2 overflow-x-auto rounded-md border border-slate-200 bg-white">
-      <table className="w-full text-left text-sm">
+      <table className="w-full table-fixed text-left text-sm">
+        <colgroup>
+          <col className="w-44" />
+          <col />
+          <col />
+          <col />
+        </colgroup>
         <thead className="border-b border-slate-200 bg-slate-100 text-xs uppercase tracking-wide text-slate-600">
           <tr>
             {["Visit", "Subjective", "Objective", "Functional"].map((label) => (
@@ -347,7 +353,7 @@ function StatusTimeline({
         <tbody className="divide-y divide-slate-100 align-top text-slate-800">
           {entries.map((entry) => (
             <tr key={entry.recordId}>
-              <td className="whitespace-nowrap px-3 py-2">
+              <td className="px-3 py-2">
                 <Cite recordId={entry.recordId}>
                   <span className="font-medium">{entry.date ?? "Undated"}</span>
                 </Cite>

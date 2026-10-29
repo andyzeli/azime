@@ -1,3 +1,4 @@
+import { getGeminiThinkingConfig } from "../reasoningConfig.js";
 import { CanonicalDiagnoses, PatientCase, Records } from "../../db/schema.js";
 import { db } from "../../db/index.js";
 import { asc, eq, inArray } from "drizzle-orm";
@@ -75,6 +76,7 @@ export const summarizeRecord = async <T extends DocumentType>(
       responseMimeType: "application/json",
       responseSchema: respJsonSchema,
       temperature: 0.1,
+      thinkingConfig: getGeminiThinkingConfig("GEMINI"),
     },
   });
 

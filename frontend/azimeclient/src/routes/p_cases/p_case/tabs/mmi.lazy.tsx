@@ -4,7 +4,6 @@ import {
   supportedRegions,
   type CaseOpinionsResponse,
   type PostExamAnalysisResponse,
-  type PostExamInputSnapshot,
   type Region,
   type StoredPostExamAnalysis,
 } from "@azime/contracts";
@@ -12,19 +11,18 @@ import { cn } from "@/lib/utils";
 import {
   caseOpinionsQueryOptions,
   caseQueryOptions,
-  physicianSteeringQueryOptions,
   postExamAnalysisQueryOptions,
   preExamSnapshotQueryOptions,
   recordsQueryOptions,
-  regionDiagnosesQueryOptions,
-  visitQueryOptions,
 } from "../../../cases/queries";
 import { Causation } from "../components/Causation";
 import { MmiDecision } from "../components/MmiDecision";
 import { RemainingCare } from "../components/RemainingCare";
 import { Badge } from "../components/shared";
 import { TimelineStrip } from "../components/TimelineStrip";
+import { TrajectoryBadges } from "../components/Trajectory";
 import { WorkStatus } from "../components/WorkStatus";
+import { usePostExamChanges } from "../postExam";
 
 // Read-only view of the latest post-exam analysis (pass 4) per region. Becomes the
 // Opinions tab in phase 5, where the physician works from these results.
@@ -81,26 +79,6 @@ function Tab() {
   );
 }
 
-// What the physician changed since pass 4 froze its inputs. Remaining care and MMI
-// below still follow the old run until it is re-run.
-function useChangedSince(
-  caseId: string,
-  region: Region,
-  basedOn: PostExamInputSnapshot["basedOn"] | undefined
-) {
-  const { data: diagnoses } = useQuery(regionDiagnosesQueryOptions(caseId, region));
-  const { data: visit } = useQuery(visitQueryOptions(caseId));
-  const { data: steering } = useQuery(
-    physicianSteeringQueryOptions(caseId, region, basedOn?.preExamAnalysisUpdatedAt)
-  );
-  if (!basedOn) return [];
-  return [
-    diagnoses && diagnoses.revision !== basedOn.diagnosesRevision && "diagnoses",
-    steering && steering.revision !== basedOn.physicianSteeringRevision && "treatment review",
-    visit && visit.revision !== basedOn.visitDocumentationRevision && "visit",
-  ].filter((x): x is string => !!x);
-}
-
 function RegionResult({
   caseId,
   region,
@@ -122,7 +100,7 @@ function RegionResult({
   );
   // Injury and exam dates come from the frozen pass 4 input, so the strip matches it.
   const input = stored?.inputSnapshot.input;
-  const changed = useChangedSince(caseId, region, stored?.inputSnapshot.basedOn);
+  const changed = usePostExamChanges(caseId, region, stored?.inputSnapshot.basedOn);
   return (
     <section className="rounded-xl border border-slate-200 bg-white">
       <div className="flex items-center gap-2.5 border-b border-slate-200 px-4 py-3">
@@ -202,18 +180,13 @@ function RegionResult({
             ).map(([label, t]) => (
               <div
                 key={label}
-                className="rounded-lg border border-slate-200 bg-slate-50 p-3"
+                className="rounded-lg border border-slate-200 bg-white p-3"
               >
-                <div className="text-[10.5px] font-bold tracking-[.05em] text-slate-500">
+                <div className="mb-2 text-[10.5px] font-bold tracking-[.05em] text-slate-500">
                   {label.toUpperCase()} TRAJECTORY
                 </div>
-                <div className="mt-1 text-[13px] font-semibold">
-                  {t.direction}{" "}
-                  <span className="text-[11px] font-medium text-slate-500">
-                    · {t.evidenceQuality} evidence
-                  </span>
-                </div>
-                <p className="mt-1 text-[12px] text-slate-600">
+                <TrajectoryBadges t={t} />
+                <p className="mt-2 text-[12px] leading-relaxed text-slate-600">
                   {t.interpretation}
                 </p>
               </div>

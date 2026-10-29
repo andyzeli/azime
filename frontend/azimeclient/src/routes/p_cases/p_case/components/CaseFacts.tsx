@@ -1,5 +1,11 @@
 import { useState, type ReactNode } from "react";
-import { Building2, CalendarDays, ChevronDown, MapPin, MessageCircleQuestion } from "lucide-react";
+import {
+  Building2,
+  CalendarDays,
+  ChevronDown,
+  MapPin,
+  MessageCircleQuestion,
+} from "lucide-react";
 import { supportedRegions } from "@azime/contracts";
 import { cn } from "@/lib/utils";
 import type { DbPatientCase } from "../../../cases/queries";
@@ -16,17 +22,33 @@ const formatDate = (date: string) =>
 function sinceInjury(date: string) {
   const injury = new Date(`${date}T00:00:00`);
   const now = new Date();
-  let months = (now.getFullYear() - injury.getFullYear()) * 12 + now.getMonth() - injury.getMonth();
+  let months =
+    (now.getFullYear() - injury.getFullYear()) * 12 +
+    now.getMonth() -
+    injury.getMonth();
   if (now.getDate() < injury.getDate()) months -= 1;
   if (months < 1) return "< 1 mo";
   const years = Math.floor(months / 12);
   const rest = months % 12;
-  return [years ? `${years} yr` : "", rest ? `${rest} mo` : ""].filter(Boolean).join(" ");
+  return [years ? `${years} yr` : "", rest ? `${rest} mo` : ""]
+    .filter(Boolean)
+    .join(" ");
 }
 
-function Fact({ icon, title, children }: { icon: ReactNode; title: string; children: ReactNode }) {
+function Fact({
+  icon,
+  title,
+  children,
+}: {
+  icon: ReactNode;
+  title: string;
+  children: ReactNode;
+}) {
   return (
-    <span className="flex items-center gap-1.5 whitespace-nowrap text-[12px] text-slate-700" title={title}>
+    <span
+      className="flex items-center gap-1.5 whitespace-nowrap text-[12px] text-slate-700"
+      title={title}
+    >
       <span className="text-slate-400">{icon}</span>
       {children}
     </span>
@@ -40,12 +62,16 @@ export function CaseFacts({ patientCase }: { patientCase: DbPatientCase }) {
   const contact = patientCase.caseContact;
 
   return (
-    <div className="flex min-w-0 items-center gap-4 border-l border-slate-200 pl-4">
+    <div className="flex min-w-0 items-center gap-4 overflow-hidden border-l border-slate-200 pl-4">
       <Fact icon={<CalendarDays className="size-3.5" />} title="Date of injury">
         {patientCase.dateOfInjury ? (
           <>
-            <span className="font-medium">{formatDate(patientCase.dateOfInjury)}</span>
-            <span className="text-slate-400">· {sinceInjury(patientCase.dateOfInjury)}</span>
+            <span className="font-medium">
+              {formatDate(patientCase.dateOfInjury)}
+            </span>
+            <span className="text-slate-400">
+              · {sinceInjury(patientCase.dateOfInjury)}
+            </span>
           </>
         ) : (
           <span className="text-slate-400">DOI not set</span>
@@ -53,20 +79,31 @@ export function CaseFacts({ patientCase }: { patientCase: DbPatientCase }) {
       </Fact>
 
       {patientCase.regions.length ? (
-        <Fact icon={<MapPin className="size-3.5" />} title="Body regions">
-          {patientCase.regions
-            .map((region) => supportedRegions.find(({ value }) => value === region)?.label ?? region)
-            .join(", ")}
-        </Fact>
+        <span className="hidden min-[1200px]:inline-flex">
+          <Fact icon={<MapPin className="size-3.5" />} title="Body regions">
+            {patientCase.regions
+              .map(
+                (region) =>
+                  supportedRegions.find(({ value }) => value === region)
+                    ?.label ?? region,
+              )
+              .join(", ")}
+          </Fact>
+        </span>
       ) : null}
 
       <AmaModeBadge mode={patientCase.amaMode} />
 
       {contact?.name ? (
         <span className="hidden xl:inline-flex">
-          <Fact icon={<Building2 className="size-3.5" />} title="Referral source">
+          <Fact
+            icon={<Building2 className="size-3.5" />}
+            title="Referral source"
+          >
             {contact.name}
-            {contact.type ? <span className="text-slate-400">· {contact.type}</span> : null}
+            {contact.type ? (
+              <span className="text-slate-400">· {contact.type}</span>
+            ) : null}
           </Fact>
         </span>
       ) : null}
@@ -78,12 +115,20 @@ export function CaseFacts({ patientCase }: { patientCase: DbPatientCase }) {
             onClick={() => setQuestionsOpen(!questionsOpen)}
             className={cn(
               "flex items-center gap-1.5 whitespace-nowrap rounded-md px-1.5 py-0.5 text-[12px] font-medium",
-              questionsOpen ? "bg-slate-100 text-slate-900" : "text-slate-700 hover:bg-slate-100"
+              questionsOpen
+                ? "bg-slate-100 text-slate-900"
+                : "text-slate-700 hover:bg-slate-100",
             )}
           >
             <MessageCircleQuestion className="size-3.5 text-slate-400" />
-            {questions.length} referral question{questions.length === 1 ? "" : "s"}
-            <ChevronDown className={cn("size-3 text-slate-400 transition-transform", questionsOpen && "rotate-180")} />
+            {questions.length} referral question
+            {questions.length === 1 ? "" : "s"}
+            <ChevronDown
+              className={cn(
+                "size-3 text-slate-400 transition-transform",
+                questionsOpen && "rotate-180",
+              )}
+            />
           </button>
           {questionsOpen ? (
             <>
@@ -99,8 +144,13 @@ export function CaseFacts({ patientCase }: { patientCase: DbPatientCase }) {
                 </div>
                 <ol className="space-y-1.5">
                   {questions.map((question, i) => (
-                    <li key={i} className="flex gap-2 text-[12.5px] leading-relaxed text-slate-800">
-                      <span className="w-4 shrink-0 text-right font-semibold text-slate-400">{i + 1}.</span>
+                    <li
+                      key={i}
+                      className="flex gap-2 text-[12.5px] leading-relaxed text-slate-800"
+                    >
+                      <span className="w-4 shrink-0 text-right font-semibold text-slate-400">
+                        {i + 1}.
+                      </span>
                       {question}
                     </li>
                   ))}
@@ -113,7 +163,10 @@ export function CaseFacts({ patientCase }: { patientCase: DbPatientCase }) {
           ) : null}
         </span>
       ) : (
-        <Fact icon={<MessageCircleQuestion className="size-3.5" />} title="Entered on the Case Intake page">
+        <Fact
+          icon={<MessageCircleQuestion className="size-3.5" />}
+          title="Entered on the Case Intake page"
+        >
           <span className="text-slate-400">No referral questions</span>
         </Fact>
       )}

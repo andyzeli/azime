@@ -1,3 +1,4 @@
+import { getGeminiThinkingConfig, getOpenAIReasoning } from "./reasoningConfig.js";
 import OpenAI from "openai";
 import { ZodError, z } from "zod";
 import {
@@ -49,6 +50,7 @@ const generateWithGemini = async (
       responseMimeType: "application/json",
       responseJsonSchema,
       temperature: 0.1,
+      thinkingConfig: getGeminiThinkingConfig("CASE_SUMMARY_GEMINI"),
     },
   });
 
@@ -83,6 +85,7 @@ const generateWithOpenAI = async (
     instructions: caseSummarySystemPrompt,
     input: prompt,
     store: false,
+    reasoning: getOpenAIReasoning("CASE_SUMMARY"),
     text: {
       format: {
         type: "json_schema",

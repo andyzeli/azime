@@ -3,13 +3,21 @@
 @tailwind utilities;
 @layer base {
   :root {
-    --radius: 0.5rem
+    --radius: 0.5rem;
+    /* Warm white for cards and panels (RGB channels, used by bg-white). */
+    --surface: 255 253 249;
+  }
+  body {
+    background-color: rgb(var(--surface));
   }
 }
 
 
 /* Printing with the exam prep sheet open prints only the sheet (ExamPrepModal). */
 @media print {
+  /* Paper stays white. */
+  :root { --surface: 255 255 255; }
+
   /* Radix portals the dialog into <body>; hide everything else, at any depth. */
   body:has([data-prep-sheet]) > :not([data-prep-sheet]):not(:has([data-prep-sheet])) { display: none !important; }
   :has(> [data-prep-sheet]) > :not([data-prep-sheet]) { display: none !important; }
