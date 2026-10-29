@@ -114,7 +114,7 @@ const fetchCases = async () => {
   const response = await axios.get<Array<CaseType>>(`${API_BASE_URL}/cases`);
   return response.data;
 };
-const API_BASE_URL = "http://localhost:4000";
+const API_BASE_URL = "/api";
 
 export const fetchMessage = async () => {
   await new Promise((r) => setTimeout(r, 500));

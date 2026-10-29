@@ -5,7 +5,7 @@ export default defineConfig({
   out: "./drizzle",
   dialect: "postgresql",
   dbCredentials: {
-    url: "postgres://localhost/azime",
+    url: process.env.DATABASE_URL ?? "postgres://localhost/azime",
   },
   //tablesFilter: ["t3test_*"],
 });

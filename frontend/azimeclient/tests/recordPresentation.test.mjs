@@ -43,7 +43,7 @@ test("real extraction fixtures map without losing the complete summary or record
     assert.equal(event.recordId, 7);
     assert.ok(event.name.length > 0);
     assert.equal(event.provider, fixture.provider?.name ?? "");
-    assert.equal(event.summary, fixture.summary);
+    assert.equal(event.extraction?.parsedSummary, fixture.summary);
     assert.equal(event.summaryMessage, null);
     assert.ok(event.detail.length > 0);
     assert.notEqual(event.detail, "No summary text documented.");
@@ -100,7 +100,7 @@ test("unavailable or invalid extractions remain selectable with an explanation",
     summary: { invalid: true }, summaryParseError: "Missing required fields",
   }));
   assert.match(invalid.summaryMessage, /does not match the current schema/);
-  assert.equal(invalid.summary, null);
+  assert.equal(invalid.extraction, null);
 });
 
 test("chronological ordering is shared by selection and prev/next; undated records go last", () => {
