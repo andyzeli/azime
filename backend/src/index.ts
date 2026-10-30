@@ -4,11 +4,18 @@ import dotenv from "dotenv";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { registerRoutes } from "./routes/index.js";
+import { isTablet, isTabletAllowed } from "./tablet.js";
 
 dotenv.config({ path: ".env.local" });
 dotenv.config();
 
 const app = Fastify({ logger: false });
+
+app.addHook("onRequest", async (request, reply) => {
+  if (isTablet(request) && !isTabletAllowed(request.method, request.url)) {
+    return reply.code(403).send({ error: "Not available on the tablet" });
+  }
+});
 
 app.register(async (api) => registerRoutes(api), { prefix: "/api" });
 
