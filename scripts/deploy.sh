@@ -7,7 +7,6 @@ cd "$(dirname "$0")/.."
 PROJECT_ID=${PROJECT_ID:-azime-prod}
 REGION=${REGION:-us-central1}
 SERVICE=${SERVICE:-azime}
-BUCKET=${BUCKET:-${PROJECT_ID}-records}
 SQL_INSTANCE=${SQL_INSTANCE:-azime-db}
 SA=azime-run@${PROJECT_ID}.iam.gserviceaccount.com
 
@@ -25,7 +24,7 @@ gcloud beta run deploy "$SERVICE" --source . --project="$PROJECT_ID" --region="$
   --service-account="$SA" \
   --add-cloudsql-instances="${PROJECT_ID}:${REGION}:${SQL_INSTANCE}" \
   --set-secrets=DATABASE_URL=database-url:latest \
-  --set-env-vars="GCP_PROJECT_ID=${PROJECT_ID},GCP_BUCKET_NAME=${BUCKET},GCP_LOCATION=global" \
+  --env-vars-file=deploy/env.prod.yaml \
   --update-labels="commit=${COMMIT}" \
   --timeout=3600 --memory=1Gi --max-instances=2 \
   --no-allow-unauthenticated --iap
