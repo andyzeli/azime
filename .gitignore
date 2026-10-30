@@ -44,3 +44,4 @@ lerna-debug.log*
 # Claude Code local files
 .claude/settings.local.json
 .claude/worktrees/
+*.tsbuildinfo
