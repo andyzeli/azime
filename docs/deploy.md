@@ -39,7 +39,8 @@ gcloud services enable \
   run.googleapis.com sqladmin.googleapis.com cloudbuild.googleapis.com \
   artifactregistry.googleapis.com secretmanager.googleapis.com \
   aiplatform.googleapis.com iap.googleapis.com storage.googleapis.com \
-  iamcredentials.googleapis.com
+  iamcredentials.googleapis.com cloudresourcemanager.googleapis.com \
+  billingbudgets.googleapis.com
 ```
 
 ## 2. Database (Cloud SQL Postgres 16)
@@ -148,14 +149,16 @@ gcloud beta run deploy $SERVICE --source . --region=$REGION \
   --service-account=$SA \
   --add-cloudsql-instances=${PROJECT_ID}:${REGION}:${SQL_INSTANCE} \
   --set-secrets=DATABASE_URL=database-url:latest \
-  --set-env-vars=GCP_PROJECT_ID=$PROJECT_ID,GCP_BUCKET_NAME=$BUCKET,GCP_LOCATION=global \
+  --env-vars-file=deploy/env.prod.yaml \
   --timeout=3600 --memory=1Gi --max-instances=2 \
   --no-allow-unauthenticated --iap
 ```
 
-AI model/provider settings use the code defaults (Gemini via Vertex). To override one,
-add it to `--set-env-vars` (names in `backend/.env.example`). Keep every workflow on
-Gemini unless OpenAI is also under a BAA.
+Non-secret env vars live in `deploy/env.prod.yaml` (committed; every deploy replaces the
+whole set with that file). AI model/provider settings use the code defaults (Gemini via
+Vertex); to override one, add it there (names in `backend/.env.example`). Keep every
+workflow on Gemini unless OpenAI is also under a BAA. Secrets go in Secret Manager +
+`--set-secrets`, never in the YAML.
 
 ## 8. One-time after the first deploy
 
@@ -179,7 +182,7 @@ EOF
 gcloud storage buckets update gs://$BUCKET --cors-file=/tmp/cors.json
 ```
 
-Budget alert (find the ID with `gcloud billing accounts list`):
+Budget alert (find the ID with `gcloud billing accounts list`; emails billing admins):
 
 ```sh
 gcloud billing budgets create --billing-account=BILLING_ACCOUNT_ID \
