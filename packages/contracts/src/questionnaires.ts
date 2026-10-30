@@ -360,3 +360,18 @@ export type PatientQuestionnaireInstanceDto = {
   createdAt: string;
   updatedAt: string;
 };
+
+// GET /api/tablet/questionnaires: open questionnaires shown on the office iPad.
+// Patients see this list, so it carries first name + last initial only.
+export type TabletQuestionnaireDto = {
+  accessToken: string;
+  title: string;
+  patientLabel: string;
+  createdAt: string;
+};
+
+// GET /api/me
+export type MeDto = {
+  email: string | null;
+  isTablet: boolean;
+};

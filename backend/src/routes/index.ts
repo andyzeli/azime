@@ -21,9 +21,14 @@ import { amaCandidatesController } from "../controllers/amaCandidatesController.
 import { amaRatingController } from "../controllers/amaRatingController.js";
 import { reportController } from "../controllers/reportController.js";
 import { regionDiagnosesController } from "../controllers/regionDiagnosesController.js";
+import { getUserEmail, isTablet } from "../tablet.js";
 
 export const registerRoutes = (app: FastifyInstance) => {
   app.get("/health", async () => ({ ok: true }));
+  app.get("/me", async (request) => ({
+    email: getUserEmail(request),
+    isTablet: isTablet(request),
+  }));
 
   app.post("/contacts", contactController.newHandler);
   app.get("/contacts", contactController.getHandler);
@@ -48,6 +53,10 @@ export const registerRoutes = (app: FastifyInstance) => {
   app.post(
     "/cases/:caseId/questionnaires",
     patientQuestionnaireController.createHandler
+  );
+  app.get(
+    "/tablet/questionnaires",
+    patientQuestionnaireController.listOpenHandler
   );
   app.get(
     "/questionnaires/:accessToken",

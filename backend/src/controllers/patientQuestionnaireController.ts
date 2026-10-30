@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
 import { FastifyReply, FastifyRequest } from "fastify";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, ne } from "drizzle-orm";
 import { db } from "../db/index.js";
 import {
   PatientCase,
@@ -11,6 +11,7 @@ import {
   type PatientQuestionnaireResponse,
   type QuestionnaireDefinition,
   type QuestionnaireType,
+  type TabletQuestionnaireDto,
 } from "@azime/contracts";
 
 const normalizeAppointmentId = (appointmentId: unknown) => {
@@ -117,6 +118,36 @@ export const patientQuestionnaireController = {
       return reply
         .code(500)
         .send({ error: "Failed to fetch patient questionnaires" });
+    }
+  },
+
+  listOpenHandler: async (_request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const questionnaires =
+        await db.query.PatientQuestionnaireInstance.findMany({
+          where: ne(PatientQuestionnaireInstance.status, "completed"),
+          orderBy: [desc(PatientQuestionnaireInstance.createdAt)],
+          limit: 50,
+          with: {
+            case: { columns: { patientName: true, patientLastName: true } },
+          },
+        });
+
+      const result: TabletQuestionnaireDto[] = questionnaires.map((q) => ({
+        accessToken: q.accessToken,
+        title: getQuestionnaireDefinition(q.type)?.title ?? q.type,
+        patientLabel: [q.case.patientName, q.case.patientLastName?.charAt(0)]
+          .filter(Boolean)
+          .join(" "),
+        createdAt: q.createdAt.toISOString(),
+      }));
+
+      return reply.send(result);
+    } catch (error) {
+      console.error(error);
+      return reply
+        .code(500)
+        .send({ error: "Failed to fetch open questionnaires" });
     }
   },
 

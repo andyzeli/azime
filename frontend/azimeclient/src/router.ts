@@ -23,11 +23,18 @@ import {
 import { aptRoute, calistRoute, calRoute, listRoute } from "./routes/apts";
 import { contactsRoute } from "./routes/contacts";
 import PatientQuestionnairePatientPage from "./routes/patient/PatientQuestionnairePatientPage";
+import TabletHome from "./routes/tablet/TabletHome";
 
 const patientQuestionnaireRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "patient/questionnaires/$accessToken",
   component: PatientQuestionnairePatientPage,
+});
+
+const tabletRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "tablet",
+  component: TabletHome,
 });
 
 const routeTree = rootRoute.addChildren([
@@ -47,6 +54,7 @@ const routeTree = rootRoute.addChildren([
   billingRoute.addChildren([billingIndexRoute, layoutARoute, layoutBRoute]),
   contactsRoute,
   patientQuestionnaireRoute,
+  tabletRoute,
   indexRoute,
   aptRoute.addChildren([calistRoute.addChildren([calRoute, listRoute])]),
 ]);

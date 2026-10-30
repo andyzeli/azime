@@ -5,6 +5,7 @@ import {
   patientQuestionnaireByTokenQueryOptions,
   submitPatientQuestionnaire,
 } from "../cases/queries";
+import { meQueryOptions } from "../tablet/queries";
 
 type Answers = Record<string, number | null>;
 
@@ -19,6 +20,7 @@ export default function PatientQuestionnairePatientPage() {
     from: "/patient/questionnaires/$accessToken",
   });
   const query = useQuery(patientQuestionnaireByTokenQueryOptions(accessToken));
+  const me = useQuery(meQueryOptions);
   const displayedQuestionnaire = query.data;
   const definition = displayedQuestionnaire?.definition;
   const questionIds = useMemo(
@@ -153,13 +155,22 @@ export default function PatientQuestionnairePatientPage() {
               </p>
             </div>
           ) : null}
-          <Link
-            to="/cases/$caseId"
-            params={{ caseId: String(displayedQuestionnaire.caseId) }}
-            className="mt-8 inline-flex items-center justify-center rounded-md border border-slate-300 px-4 py-2 text-slate-700"
-          >
-            Return to case
-          </Link>
+          {me.data?.isTablet ? (
+            <Link
+              to="/tablet"
+              className="mt-8 inline-flex items-center justify-center rounded-md border border-slate-300 px-4 py-2 text-slate-700"
+            >
+              Done
+            </Link>
+          ) : (
+            <Link
+              to="/cases/$caseId"
+              params={{ caseId: String(displayedQuestionnaire.caseId) }}
+              className="mt-8 inline-flex items-center justify-center rounded-md border border-slate-300 px-4 py-2 text-slate-700"
+            >
+              Return to case
+            </Link>
+          )}
         </div>
       </div>
     );

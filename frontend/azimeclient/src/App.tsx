@@ -6,9 +6,9 @@ const LOGO_SRC: string | null = "/logo.svg";
 
 export function RootComponent() {
   const location = useLocation();
-  const isPatientQuestionnaire = location.pathname.startsWith(
-    "/patient/questionnaires/"
-  );
+  const isPatientQuestionnaire =
+    location.pathname === "/tablet" ||
+    location.pathname.startsWith("/patient/questionnaires/");
 
   return (
     <>

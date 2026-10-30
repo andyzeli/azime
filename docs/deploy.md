@@ -197,15 +197,24 @@ gcloud billing budgets create --billing-account=BILLING_ACCOUNT_ID \
 - [ ] One de-identified case end to end: upload → extraction → summary → analysis →
       visit (incl. questionnaire on the iPad) → MMI → report.
 - [ ] Watch the longest AI step finish without a timeout.
+- [ ] iPad: sign in as `tablet@evalitas.com`; it lands on `/tablet` (open questionnaires)
+      and any other page redirects back. Turn on Guided Access (Settings → Accessibility)
+      so a patient can't leave Safari.
 - [ ] Logs: `gcloud run services logs read $SERVICE --region=$REGION --limit=100`.
 
 ## Still to do in code
 
-- [ ] iPad account restriction: `onRequest` hook reading `x-goog-authenticated-user-email`
-      (allow only `/api/questionnaires/*` + an open-questionnaires list), verify the
-      `x-goog-iap-jwt-assertion` token, and a small iPad landing page.
 - [ ] Disable/hide debug panels in production. (Test-data routes are already off unless
       `ENABLE_TEST_DATA=true`.)
+
+## The iPad account
+
+`backend/src/tablet.ts` restricts `tablet@evalitas.com` to client pages, `/api/me`,
+`/api/tablet/questionnaires` and the questionnaire fill/submit endpoints; everything else
+is 403. It trusts IAP's `x-goog-authenticated-user-email` header without verifying the
+signed `x-goog-iap-jwt-assertion`: only IAP has `run.invoker` (plus project owners,
+who already have full access), so nobody else can reach the service to forge it. If
+that ever changes (e.g. `--allow-unauthenticated`, a load balancer), add JWT verification.
 
 ## Recovery
 
