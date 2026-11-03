@@ -1,5 +1,6 @@
 import { getGeminiThinkingConfig, getOpenAIReasoning } from "./reasoningConfig.js";
 import OpenAI from "openai";
+import { generateWithClaude } from "./claude/client.js";
 import { ZodError, z } from "zod";
 import {
   buildSynthesisUserPrompt,
@@ -30,7 +31,7 @@ const getCaseSummaryProvider = (): CaseSummaryProvider => {
 
   if (!parsedProvider.success) {
     throw new Error(
-      `CASE_SUMMARY_PROVIDER must be "gemini" or "openai"; received "${provider}"`,
+      `CASE_SUMMARY_PROVIDER must be "gemini", "openai", or "claude"; received "${provider}"`,
     );
   }
 
@@ -111,9 +112,17 @@ export const makeCaseSummary = async (
   const prompt = buildSynthesisUserPrompt(aggregateInput, caseBaseData);
 
   const response =
-    provider === "openai"
-      ? await generateWithOpenAI(prompt)
-      : await generateWithGemini(prompt);
+    provider === "claude"
+      ? await generateWithClaude({
+          envPrefix: "CASE_SUMMARY",
+          model: process.env.CASE_SUMMARY_CLAUDE_MODEL,
+          systemPrompt: caseSummarySystemPrompt,
+          prompt,
+          schema: caseClinicalSummarySchema,
+        })
+      : provider === "openai"
+        ? await generateWithOpenAI(prompt)
+        : await generateWithGemini(prompt);
 
   let parsedJson: unknown;
 

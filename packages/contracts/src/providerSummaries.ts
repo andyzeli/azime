@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const providerSummaryProviderSchema = z.enum(["gemini", "openai"]);
+export const providerSummaryProviderSchema = z.enum(["gemini", "openai", "claude"]);
 
 export const providerSummaryResponseSchema = z.object({
   // specialty: z

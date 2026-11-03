@@ -1,6 +1,8 @@
 import { ThinkingLevel, type ThinkingConfig } from "@google/genai";
 import type { Reasoning } from "openai/resources/shared.js";
 
+const claudeEfforts = ["low", "medium", "high", "xhigh", "max"] as const;
+
 const openAIEfforts = [
   "none", "minimal", "low", "medium", "high", "xhigh", "max",
 ] as const;
@@ -16,6 +18,19 @@ export function getOpenAIReasoning(prefix: string): Reasoning | undefined {
     throw new Error(`${key} must be one of: ${openAIEfforts.join(", ")}`);
   }
   return { effort };
+}
+
+export function getClaudeEffort(
+  prefix: string,
+): (typeof claudeEfforts)[number] | undefined {
+  const key = `${prefix}_CLAUDE_EFFORT`;
+  const value = process.env[key]?.trim().toLowerCase();
+  if (!value) return undefined;
+  const effort = claudeEfforts.find((candidate) => candidate === value);
+  if (!effort) {
+    throw new Error(`${key} must be one of: ${claudeEfforts.join(", ")}`);
+  }
+  return effort;
 }
 
 export function getGeminiThinkingConfig(prefix: string): ThinkingConfig | undefined {

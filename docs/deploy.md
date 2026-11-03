@@ -157,7 +157,7 @@ gcloud beta run deploy $SERVICE --source . --region=$REGION \
 Non-secret env vars live in `deploy/env.prod.yaml` (committed; every deploy replaces the
 whole set with that file). AI model/provider settings use the code defaults (Gemini via
 Vertex); to override one, add it there (names in `backend/.env.example`). Keep every
-workflow on Gemini unless OpenAI is also under a BAA. Secrets go in Secret Manager +
+workflow on Gemini unless OpenAI/Anthropic is also under a BAA. Secrets go in Secret Manager +
 `--set-secrets`, never in the YAML.
 
 ## 8. One-time after the first deploy

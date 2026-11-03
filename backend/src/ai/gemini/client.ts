@@ -5,7 +5,7 @@ const getProjectId = () => process.env.GCP_PROJECT_ID;
 const getLocation = () => process.env.GCP_LOCATION ?? "global";
 
 export const getGeminiModelName = () =>
-  process.env.GEMINI_MODEL ?? "gemini-2.5-flash";
+  process.env.GEMINI_MODEL ?? "gemini-3.8-flash";
 
 export const getGeminiClient = () => {
   const project = getProjectId();

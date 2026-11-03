@@ -154,7 +154,7 @@ export const postExamAnalysisSchema = z.object({
       ),
   }),
 });
-export const postExamAnalysisProviderSchema = z.enum(["gemini", "openai"]);
+export const postExamAnalysisProviderSchema = z.enum(["gemini", "openai", "claude"]);
 export const storedPostExamAnalysisSchema = postExamAnalysisSchema.extend({
   schemaVersion: z.literal("draft-v2"),
   sourceMetadata: z.object({

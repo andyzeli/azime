@@ -1,5 +1,6 @@
 import { getGeminiThinkingConfig, getOpenAIReasoning } from "./reasoningConfig.js";
 import OpenAI from "openai";
+import { generateWithClaude } from "./claude/client.js";
 import {
   reportProviderSchema,
   type CaseReportResponse,
@@ -55,9 +56,16 @@ export const makeReportDraft = async (
   );
   const { userPrompt, systemPrompt } = buildReportDraftRequest(input);
   const { model, text } =
-    provider === "openai"
-      ? await generateWithOpenAI(userPrompt, systemPrompt)
-      : await generateWithGemini(userPrompt, systemPrompt);
+    provider === "claude"
+      ? await generateWithClaude({
+          envPrefix: "REPORT_DRAFT",
+          model: process.env.REPORT_DRAFT_CLAUDE_MODEL,
+          systemPrompt,
+          prompt: userPrompt,
+        })
+      : provider === "openai"
+        ? await generateWithOpenAI(userPrompt, systemPrompt)
+        : await generateWithGemini(userPrompt, systemPrompt);
   // Models sometimes wrap the whole answer in a code fence.
   const report = (text ?? "")
     .trim()

@@ -675,7 +675,7 @@ export type LegacyReportInputResponse = z.infer<
 >;
 export type ReportInputResponse = z.infer<typeof reportInputResponseSchema>;
 
-export const reportProviderSchema = z.enum(["gemini", "openai"]);
+export const reportProviderSchema = z.enum(["gemini", "openai", "claude"]);
 
 // GET /cases/:caseId/report (latest, or null) and POST (generate). Every generation is
 // a new row: the frozen input, then the drafted report once the model returns.

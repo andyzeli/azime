@@ -1,5 +1,6 @@
 import { getGeminiThinkingConfig, getOpenAIReasoning } from "./reasoningConfig.js";
 import OpenAI from "openai";
+import { generateWithClaude } from "./claude/client.js";
 import { ZodError, z } from "zod";
 import { getGeminiClient, getGeminiModelName } from "./gemini/client.js";
 import {
@@ -105,9 +106,19 @@ export const makeProviderSummary = async (
   const provider = getProviderSummaryProvider();
   const prompt = buildProviderSummaryUserPrompt(input);
   const response =
-    provider === "openai"
-      ? await generateWithOpenAI(prompt)
-      : await generateWithGemini(prompt);
+    provider === "claude"
+      ? await generateWithClaude({
+          envPrefix: "PROVIDER_SUMMARY",
+          model:
+            process.env.PROVIDER_SUMMARY_CLAUDE_MODEL ??
+            process.env.CASE_SUMMARY_CLAUDE_MODEL,
+          systemPrompt: providerSummarySystemPrompt,
+          prompt,
+          schema: providerSummaryResponseSchema,
+        })
+      : provider === "openai"
+        ? await generateWithOpenAI(prompt)
+        : await generateWithGemini(prompt);
 
   let parsedJson: unknown;
 

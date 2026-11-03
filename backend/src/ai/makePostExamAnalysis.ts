@@ -1,5 +1,6 @@
 import { getGeminiThinkingConfig, getOpenAIReasoning } from "./reasoningConfig.js";
 import OpenAI from "openai";
+import { generateWithClaude } from "./claude/client.js";
 import { ZodError, z } from "zod";
 import { getGeminiClient, getGeminiModelName } from "./gemini/client.js";
 import {
@@ -99,9 +100,17 @@ export const makePostExamAnalysis = async (
   const provider = getPostExamAnalysisProvider();
   const prompt = buildPostExamAnalysisUserPrompt(input);
   const response =
-    provider === "openai"
-      ? await generateWithOpenAI(prompt)
-      : await generateWithGemini(prompt);
+    provider === "claude"
+      ? await generateWithClaude({
+          envPrefix: "POST_EXAM_ANALYSIS",
+          model: process.env.POST_EXAM_ANALYSIS_CLAUDE_MODEL,
+          systemPrompt: postExamAnalysisSystemPrompt,
+          prompt,
+          schema: postExamAnalysisSchema,
+        })
+      : provider === "openai"
+        ? await generateWithOpenAI(prompt)
+        : await generateWithGemini(prompt);
 
   let parsedJson: unknown;
 

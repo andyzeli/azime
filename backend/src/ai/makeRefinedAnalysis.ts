@@ -1,5 +1,6 @@
 import { getGeminiThinkingConfig, getOpenAIReasoning } from "./reasoningConfig.js";
 import OpenAI from "openai";
+import { generateWithClaude } from "./claude/client.js";
 import { ZodError, z } from "zod";
 import { NotImplementedError } from "../errors/notImplementedError.js";
 import { getGeminiClient, getGeminiModelName } from "./gemini/client.js";
@@ -108,9 +109,17 @@ export const makeRefinedAnalysis = async (
   const provider = getRefinedAnalysisProvider();
   const prompt = buildRefinedAnalysisUserPrompt(input);
   const response =
-    provider === "openai"
-      ? await generateWithOpenAI(prompt)
-      : await generateWithGemini(prompt);
+    provider === "claude"
+      ? await generateWithClaude({
+          envPrefix: "REFINED_ANALYSIS",
+          model: process.env.REFINED_ANALYSIS_CLAUDE_MODEL,
+          systemPrompt: refinedAnalysisSystemPrompt,
+          prompt,
+          schema: refinedAnalysisSchema,
+        })
+      : provider === "openai"
+        ? await generateWithOpenAI(prompt)
+        : await generateWithGemini(prompt);
 
   let parsedJson: unknown;
 

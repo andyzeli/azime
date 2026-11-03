@@ -1,5 +1,6 @@
 import { getGeminiThinkingConfig, getOpenAIReasoning } from "./reasoningConfig.js";
 import OpenAI from "openai";
+import { generateWithClaude } from "./claude/client.js";
 import { ZodError, z } from "zod";
 import { NotImplementedError } from "../errors/notImplementedError.js";
 import { getGeminiClient, getGeminiModelName } from "./gemini/client.js";
@@ -115,9 +116,16 @@ export const generatePreExamJson = async (
 ) => {
   const provider = getPreExamAnalysisProvider();
   const response =
-    provider === "openai"
-      ? await generateWithOpenAI(prompt, systemPrompt, schema, name)
-      : await generateWithGemini(prompt, systemPrompt, schema);
+    provider === "claude"
+      ? await generateWithClaude({
+          envPrefix: "PRE_EXAM_ANALYSIS",
+          model: process.env.PRE_EXAM_ANALYSIS_CLAUDE_MODEL,
+          systemPrompt,
+          prompt,
+        })
+      : provider === "openai"
+        ? await generateWithOpenAI(prompt, systemPrompt, schema, name)
+        : await generateWithGemini(prompt, systemPrompt, schema);
 
   try {
     return { provider, response, parsedJson: JSON.parse(response.text) as unknown };

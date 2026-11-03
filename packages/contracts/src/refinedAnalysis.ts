@@ -277,7 +277,7 @@ export const refinedAnalysisSchema = z.object({
 `),
 });
 
-export const refinedAnalysisProviderSchema = z.enum(["gemini", "openai"]);
+export const refinedAnalysisProviderSchema = z.enum(["gemini", "openai", "claude"]);
 export const storedRefinedAnalysisSchema = refinedAnalysisSchema.extend({
   visitPriority: z.array(visitPrioritySchema.extend({ id: z.string() })),
   schemaVersion: z.literal("draft-v2"),

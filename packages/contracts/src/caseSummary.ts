@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const caseSummaryProviderSchema = z.enum(["gemini", "openai"]);
+export const caseSummaryProviderSchema = z.enum(["gemini", "openai", "claude"]);
 
 export const caseClinicalSummarySchema = z.object({
   incidentNarrative: z

@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { regionSchema } from "./regions.js";
 
-export const preExamAnalysisProviderSchema = z.enum(["gemini", "openai"]);
+export const preExamAnalysisProviderSchema = z.enum(["gemini", "openai", "claude"]);
 
 const assessmentItemSchema = z.object({
   canonicalDx: z.string().describe("A single diagnoses from the in-scope list"),
