@@ -52,6 +52,8 @@ export const pAnalysisRoute = createRoute({
 export const pVisitRoute = createRoute({
   getParentRoute: () => pCaseRoute,
   path: "visit",
+  // A fresh draft per case: the autosaving form must not carry one case's visit into another.
+  remountDeps: ({ params }) => params.caseId,
 }).lazy(() => import("./visit.lazy").then((d) => d.Route));
 
 // MMI: the latest post-exam analysis per region and the physician's opinions on it.
