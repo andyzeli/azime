@@ -25,6 +25,7 @@ import TimelineColumn from "../components/Timeline";
 import { RecordDrawer } from "../components/RecordDetail";
 import { Badge, Btn, Cite, Segmented } from "../components/shared";
 import { toTimeline } from "../recordPresentation";
+import { aiMutationKey } from "../aiRuns";
 
 const workStatusLabels = {
   full_duty: "Full duty",
@@ -54,6 +55,7 @@ function SummaryTab() {
     (item) => item.summaryStatus === "completed"
   ).length;
   const summaryMutation = useMutation({
+    mutationKey: aiMutationKey(caseId, "summary"),
     mutationFn: () => summarizeCase(Number(caseId)),
     onSuccess: () =>
       Promise.all([

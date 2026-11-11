@@ -55,6 +55,7 @@ import {
 } from "../examPrep";
 import { usePostExamChanges } from "../postExam";
 import { toTimeline, type TimelineEvent } from "../recordPresentation";
+import { aiMutationKey } from "../aiRuns";
 
 type TreatmentRow = StoredPreExamAnalysis["treatmentAnalysis"][number];
 type AiAssessment = TreatmentRow["assessments"][number];
@@ -293,6 +294,7 @@ function RegionAnalysis({
   // One action for the physician: freeze the current records and diagnoses (the input
   // snapshot), then run 3A on them. A re-run therefore always reads the latest records.
   const analysisMutation = useMutation({
+    mutationKey: aiMutationKey(caseId, "preExam", region),
     mutationFn: async () => {
       await takePreExamSnapshot(caseId, region);
       return generatePreExamAnalysis(caseId, region);
@@ -424,6 +426,7 @@ function AnalysisReview({
   // Saves steering first if needed, then regenerates this region's trajectory and
   // priorities (3B), which appear on the prep sheet and in the Visit priorities column.
   const examPrepMutation = useMutation({
+    mutationKey: aiMutationKey(caseId, "refined", region),
     mutationFn: async () => {
       if (dirty || !saved) await saveMutation.mutateAsync();
       return generateRefinedAnalysis(caseId, region);
@@ -438,6 +441,7 @@ function AnalysisReview({
     .map((d) => d.canonicalDx)
     .filter((dx) => !stored.analyzedDiagnoses.includes(dx));
   const analyzeMutation = useMutation({
+    mutationKey: aiMutationKey(caseId, "preExam", region),
     mutationFn: async () => {
       if (dirty) await saveMutation.mutateAsync();
       for (const dx of notAnalyzed)
@@ -526,6 +530,7 @@ function AnalysisReview({
     },
   ];
   const postExamMutation = useMutation({
+    mutationKey: aiMutationKey(caseId, "postExam", region),
     mutationFn: async () => {
       if (dirty || !saved) await saveMutation.mutateAsync();
       return runPostExamAnalysis(caseId, region);

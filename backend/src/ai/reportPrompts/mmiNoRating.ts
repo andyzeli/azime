@@ -15,9 +15,10 @@ Case context lives in 'intro'.
 
 
 'examination' contains the physician's visit note, completed questionnaires (by patient), and structured regional findings.
-The note also supplies history and background that may appear nowhere else. Its headings carry source meaning: Subjective identifies patient-reported information, and Objective identifies physician findings and observations.
-Imaging discussed under Objective represents the physician's personal (e.g.DICOM) review; top-level 'imaging' contains impressions from the medical records. Report must make clear whether physician reviewed imaging.
+The note also supplies history and background that may appear nowhere else. Its headings (descriptor with colon, e.g. "Objective:") carry source meaning: Subjective identifies patient-reported information, and Objective identifies physician findings and observations.
+Imaging discussed under 'Images personally reviewed' represents the physician's personal (e.g.DICOM) review; top-level 'imaging' contains impressions from the medical records. Report must make clear whether physician reviewed imaging.
 This section should be presented in the exam section of the report, with the physician's personal review of any images discussed in the visit note included in the Review of Imaging section. It should be consulted to answer any referral questions about objective findings. 
+'Additional Concerns:' is used for out-of-scope regions e.g. shoulder in a spine case. doctor recommendations here should be reflected in report.
 
 'discussion' contains info relevant to the report's Discussion section, oranized per body region in case multiple regions are involved.
 

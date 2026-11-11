@@ -30,6 +30,7 @@ import { TrajectoryBadges } from "./Trajectory";
 import { Badge, Btn, Segmented } from "./shared";
 import { useExamPrep, type ExamPrepStatus } from "../examPrep";
 import "./examPrepPrint.css";
+import { aiMutationKey } from "../aiRuns";
 
 type Trajectory =
   StoredRefinedAnalysis["trajectoryAnalysis"]["subjectiveTrajectory"];
@@ -159,15 +160,20 @@ function Sheet({ caseId, onClose }: { caseId: string; onClose: () => void }) {
   });
 
   const update = useMutation({
-    mutationFn: () =>
-      Promise.all(
+    mutationKey: aiMutationKey(caseId, "refined"),
+    // Waits for every region, so the "running" banner stays until all are done.
+    mutationFn: async () => {
+      const results = await Promise.allSettled(
         updatable.map(async ({ region }) =>
           queryClient.setQueryData(
             refinedAnalysisQueryOptions(caseId, region).queryKey,
             await generateRefinedAnalysis(caseId, region)
           )
         )
-      ),
+      );
+      const failed = results.find((r) => r.status === "rejected");
+      if (failed) throw failed.reason;
+    },
   });
 
   return (

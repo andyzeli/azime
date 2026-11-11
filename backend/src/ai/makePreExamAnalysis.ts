@@ -1,4 +1,7 @@
-import { getGeminiThinkingConfig, getOpenAIReasoning } from "./reasoningConfig.js";
+import {
+  getGeminiThinkingConfig,
+  getOpenAIReasoning,
+} from "./reasoningConfig.js";
 import OpenAI from "openai";
 import { generateWithClaude } from "./claude/client.js";
 import { ZodError, z } from "zod";
@@ -128,7 +131,11 @@ export const generatePreExamJson = async (
         : await generateWithGemini(prompt, systemPrompt, schema);
 
   try {
-    return { provider, response, parsedJson: JSON.parse(response.text) as unknown };
+    return {
+      provider,
+      response,
+      parsedJson: JSON.parse(response.text) as unknown,
+    };
   } catch {
     throw new Error(`${provider} returned invalid ${name} JSON`);
   }
@@ -172,8 +179,12 @@ export const makePreExamAnalysis = async (
       );
     }
 
-    const taxonomyIds = payload.treatmentAnalysis.flatMap((t) => t.treatmentId ?? []);
-    const repeated = taxonomyIds.filter((id, i) => taxonomyIds.indexOf(id) !== i);
+    const taxonomyIds = payload.treatmentAnalysis.flatMap(
+      (t) => t.treatmentId ?? []
+    );
+    const repeated = taxonomyIds.filter(
+      (id, i) => taxonomyIds.indexOf(id) !== i
+    );
     if (repeated.length > 0) {
       throw new Error(
         `${provider} pre-exam analysis repeated treatmentIds: ${[...new Set(repeated)].join(", ")}`

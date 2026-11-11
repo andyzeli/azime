@@ -22,7 +22,8 @@ import {
 } from "../../cases/queries";
 
 // New visits start with these headings; an untouched template counts as an empty note.
-export const NOTE_TEMPLATE = "Chief complaint:\n\nHPI:\n\nPMH:\n\nSubjective:\n\nObjective:\n\nImages personally reviewed:\n";
+export const NOTE_TEMPLATE =
+  "Chief complaint:\n\nHPI:\n\nPMH:\n\nSubjective:\n\nObjective:\n\nImages personally reviewed:\n\nAdditional Concerns:\n";
 
 // What the visit still needs before the post-exam analysis can use it.
 export const visitBlocker = (visit: VisitDocumentation | undefined) =>
@@ -43,8 +44,11 @@ export type ExamPrepStatus =
 // Saved steering only counts when it belongs to the current analysis run.
 export const savedSteeringFor = (
   stored: PreExamAnalysisResponse | null | undefined,
-  response: PhysicianSteeringResponse | null | undefined,
-) => (stored && response?.id && steeringMatchesAnalysis(response.steering, stored) ? response : null);
+  response: PhysicianSteeringResponse | null | undefined
+) =>
+  stored && response?.id && steeringMatchesAnalysis(response.steering, stored)
+    ? response
+    : null;
 
 export { isRowReviewed, scopedRows } from "@azime/contracts";
 
@@ -54,7 +58,16 @@ const normalize = (value: unknown): unknown => {
   if (!value || typeof value !== "object") return value;
   const entries = Object.entries(value)
     .map(([key, v]) => [key, normalize(v)] as const)
-    .filter(([, v]) => v !== undefined && !(v && typeof v === "object" && !Array.isArray(v) && !Object.keys(v).length))
+    .filter(
+      ([, v]) =>
+        v !== undefined &&
+        !(
+          v &&
+          typeof v === "object" &&
+          !Array.isArray(v) &&
+          !Object.keys(v).length
+        )
+    )
     .sort(([a], [b]) => a.localeCompare(b));
   return Object.fromEntries(entries);
 };
@@ -72,14 +85,20 @@ export function examPrepStatus(
   refined: RefinedAnalysisResponse | null | undefined,
   steering: PhysicianSteeringResponse | null | undefined,
   diagnoses: RegionDiagnosesResponse | null | undefined,
-  analyzedDiagnoses: string[],
+  analyzedDiagnoses: string[]
 ): ExamPrepStatus {
   if (!refined?.analysis)
-    return steering?.id ? { kind: "not-generated" } : { kind: "needs-steering" };
+    return steering?.id
+      ? { kind: "not-generated" }
+      : { kind: "needs-steering" };
   const { basedOn, physicianSteering, input } = refined.inputSnapshot;
   const reasons: string[] = [];
   // Saved steering only exists for the current 3A run, so none means 3A was re-run.
-  if (!steering?.id || basedOn.preExamAnalysisUpdatedAt !== steering.steering.preExamAnalysisUpdatedAt)
+  if (
+    !steering?.id ||
+    basedOn.preExamAnalysisUpdatedAt !==
+      steering.steering.preExamAnalysisUpdatedAt
+  )
     reasons.push("analysis re-run");
   else if (
     physicianSteering
@@ -89,7 +108,13 @@ export function examPrepStatus(
     reasons.push("review changed");
   // Same scope rule as the 3B builder: analyzed diagnoses that are still current.
   const current = currentDiagnoses(diagnoses?.diagnoses ?? []);
-  if (diagnoses && !sameSet(input.scope.diagnoses, analyzedDiagnoses.filter((dx) => current.includes(dx))))
+  if (
+    diagnoses &&
+    !sameSet(
+      input.scope.diagnoses,
+      analyzedDiagnoses.filter((dx) => current.includes(dx))
+    )
+  )
     reasons.push("diagnoses changed");
   return reasons.length ? { kind: "stale", reasons } : { kind: "current" };
 }
@@ -126,28 +151,43 @@ export function useExamPrep(caseId: string, regions: Region[]) {
     regions: regions.map((region, i) => {
       const saved = savedSteeringFor(preExam[i].data, steering[i].data);
       const analyzed = preExam[i].data?.analysis?.treatmentAnalysis;
-      const listed = (diagnoses[i].data?.diagnoses ?? []).map((d) => d.canonicalDx);
+      const listed = (diagnoses[i].data?.diagnoses ?? []).map(
+        (d) => d.canonicalDx
+      );
       const rows = analyzed && scopedRows(analyzed, listed);
       // After the visit the sheet is a record of what was prepared, so later steering edits
       // (most review happens then) don't mark it out of date. A 3A re-run or a diagnosis
       // change still does.
-      const status = examPrepStatus(refined[i].data, saved, diagnoses[i].data, preExam[i].data?.analyzedDiagnoses ?? []);
-      const steeringOnly = status.kind === "stale" && status.reasons.every((r) => r === "review changed");
+      const status = examPrepStatus(
+        refined[i].data,
+        saved,
+        diagnoses[i].data,
+        preExam[i].data?.analyzedDiagnoses ?? []
+      );
+      const steeringOnly =
+        status.kind === "stale" &&
+        status.reasons.every((r) => r === "review changed");
       return {
         region,
         refined: refined[i].data ?? null,
         diagnoses: diagnoses[i].data ?? null,
-        status: visit.data && steeringOnly ? { kind: "current" as const } : status,
+        status:
+          visit.data && steeringOnly ? { kind: "current" as const } : status,
         analysisRun: Boolean(rows),
         // Listed diagnoses the treatment analysis doesn't cover yet.
         needsAnalysis: listed.filter(
-          (dx) => !preExam[i].data?.analyzedDiagnoses.includes(dx),
+          (dx) => !preExam[i].data?.analyzedDiagnoses.includes(dx)
         ),
         // Update sheet needs saved steering for the current 3A run.
         steeringSaved: Boolean(saved),
-        undecided: (diagnoses[i].data?.diagnoses ?? []).filter((d) => d.status === "working").length,
+        undecided: (diagnoses[i].data?.diagnoses ?? []).filter(
+          (d) => d.status === "working"
+        ).length,
         // Same count as the Analysis region tab, from saved steering.
-        unreviewed: rows?.filter((row) => !isRowReviewed(row, saved?.steering.treatments[row.id])).length ?? 0,
+        unreviewed:
+          rows?.filter(
+            (row) => !isRowReviewed(row, saved?.steering.treatments[row.id])
+          ).length ?? 0,
       };
     }),
   };
@@ -163,18 +203,56 @@ const regionLabel = (region: Region) =>
 
 // First outstanding Analysis step across regions. Before the visit, review is optional and
 // the prep sheet is only suggested; after it, the assessment must be finished for pass 4.
-export function nextStep(regions: RegionWorkflow[], visitSaved: boolean): NextStep | null {
-  const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
-  const rules: [(r: RegionWorkflow) => boolean, (r: RegionWorkflow) => NextStep][] = [
-    [(r) => !r.analysisRun, (r) => ({ message: `Analysis not run yet (${regionLabel(r.region)}).`, region: r.region })],
-    [(r) => r.needsAnalysis.length > 0, (r) => ({ message: `Treatment analysis needed for ${plural(r.needsAnalysis.length, "added diagnosis", "added diagnoses")} (${regionLabel(r.region)}).`, region: r.region })],
+export function nextStep(
+  regions: RegionWorkflow[],
+  visitSaved: boolean
+): NextStep | null {
+  const plural = (n: number, one: string, many: string) =>
+    `${n} ${n === 1 ? one : many}`;
+  const rules: [
+    (r: RegionWorkflow) => boolean,
+    (r: RegionWorkflow) => NextStep,
+  ][] = [
+    [
+      (r) => !r.analysisRun,
+      (r) => ({
+        message: `Analysis not run yet (${regionLabel(r.region)}).`,
+        region: r.region,
+      }),
+    ],
+    [
+      (r) => r.needsAnalysis.length > 0,
+      (r) => ({
+        message: `Treatment analysis needed for ${plural(r.needsAnalysis.length, "added diagnosis", "added diagnoses")} (${regionLabel(r.region)}).`,
+        region: r.region,
+      }),
+    ],
     ...(visitSaved
       ? ([
-          [(r) => r.undecided > 0, (r) => ({ message: `Decide ${plural(r.undecided, "diagnosis", "diagnoses")} (${regionLabel(r.region)}) before the post-exam analysis.`, region: r.region })],
-          [(r) => r.unreviewed > 0, (r) => ({ message: `${plural(r.unreviewed, "treatment", "treatments")} still unreviewed (${regionLabel(r.region)}) before the post-exam analysis.`, region: r.region })],
+          [
+            (r) => r.undecided > 0,
+            (r) => ({
+              message: `Decide ${plural(r.undecided, "diagnosis", "diagnoses")} (${regionLabel(r.region)}) before the post-exam analysis.`,
+              region: r.region,
+            }),
+          ],
+          [
+            (r) => r.unreviewed > 0,
+            (r) => ({
+              message: `${plural(r.unreviewed, "treatment", "treatments")} still unreviewed (${regionLabel(r.region)}) before the post-exam analysis.`,
+              region: r.region,
+            }),
+          ],
         ] as typeof rules)
       : ([
-          [(r) => !r.refined, (r) => ({ message: `Optional: create the prep sheet (${regionLabel(r.region)}), or go to Visit.`, region: r.region, optional: true })],
+          [
+            (r) => !r.refined,
+            (r) => ({
+              message: `Optional: create the prep sheet (${regionLabel(r.region)}), or go to Visit.`,
+              region: r.region,
+              optional: true,
+            }),
+          ],
         ] as typeof rules)),
   ];
   for (const [applies, step] of rules) {
