@@ -185,8 +185,9 @@ export const getExtractionConfig = (
       );
     }
 
+    // Ids, not labels: mentions, region lists and AMA mappings all key on the id.
     const canonicalDxValues = context.canonicalDiagnoses.map(
-      ({ regionId, label }) => `${regionId}.${label}`,
+      ({ regionId, id }) => `${regionId}.${id}`,
     );
 
     return {

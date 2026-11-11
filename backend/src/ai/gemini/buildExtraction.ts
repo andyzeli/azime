@@ -19,7 +19,7 @@ export function buildExtractionPrompt(metadata: ExtractionMetadata): string {
         metadata.diagnosisContext.canonicalDiagnoses,
         null,
         2,
-      )}\n\nFor every explicitly documented diagnosis, preserve its stated name and ICD code, then select the single best canonicalDx label from the allowed schema values. Use \"unresolved\" when none of the supplied canonical diagnoses applies. Do not infer an unstated diagnosis or force an unrelated mapping.`
+      )}\n\nFor every explicitly documented diagnosis, preserve its stated name and ICD code, then select the single best canonicalDx from the allowed schema values: the taxonomy entry's regionId and id joined by a dot. Use the label and definition to choose; never return the label itself. Use \"unresolved\" when none of the supplied canonical diagnoses applies. Do not infer an unstated diagnosis or force an unrelated mapping.`
     : "";
 
   return `Attached is a document of type ${metadata.documentType}.\n\n

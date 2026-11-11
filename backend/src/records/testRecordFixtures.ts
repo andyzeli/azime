@@ -29,7 +29,7 @@ const diagnosis1 = {
   name: "L4-5 disc herniation",
   icd: "M51.26",
   region: "lumbar_spine",
-  canonicalDx: "disc_herniation",
+  canonicalDx: "lumbar_disc_herniation",
 };
 const diagnosis2 = {
   evidence: {
@@ -39,7 +39,7 @@ const diagnosis2 = {
   name: "Radiculopathy",
   icd: "M51.00",
   region: "lumbar_spine",
-  canonicalDx: "radiculopathy",
+  canonicalDx: "lumbar_radiculopathy",
 };
 
 export const testRecordFixtures: TestRecordFixture[] = [
