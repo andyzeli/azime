@@ -14,9 +14,9 @@ const caseRegions = ["lumbar_spine", "cervical_spine"];
 const context = {
   canonicalDiagnoses: [
     {
-      id: "opaque-diagnosis-id",
+      id: "lumbar_disc_herniation",
       regionId: "lumbar_spine",
-      label: "disc_herniation",
+      label: "Lumbar disc herniation / displacement",
       definition: "Lumbar disc herniation category",
       icdPrefixes: ["M51"],
     },
@@ -27,13 +27,13 @@ const diagnosis = {
   name: "Lumbar disc herniation",
   icd: null,
   region: "lumbar_spine",
-  canonicalDx: "disc_herniation",
+  canonicalDx: "lumbar_disc_herniation",
 };
 const liveDiagnosis = {
   evidence: diagnosis.evidence,
   name: diagnosis.name,
   icd: diagnosis.icd,
-  canonicalDx: "lumbar_spine.disc_herniation",
+  canonicalDx: "lumbar_spine.lumbar_disc_herniation",
 };
 const treatment = {
   name: "Epidural injection",
@@ -132,7 +132,7 @@ const expectedMention = {
   eventDate: record.eventDate,
 };
 
-test("stored encounter and surgery schemas split canonical diagnosis labels", () => {
+test("stored encounter and surgery schemas split canonical diagnosis ids", () => {
   for (const example of examples.filter(({ documentType }) =>
     ["encounter", "surgery_report"].includes(documentType),
   )) {
@@ -152,7 +152,7 @@ test("stored encounter and surgery schemas split canonical diagnosis labels", ()
 
     for (const storedDiagnosis of diagnoses) {
       assert.equal(storedDiagnosis.region, "lumbar_spine");
-      assert.equal(storedDiagnosis.canonicalDx, "disc_herniation");
+      assert.equal(storedDiagnosis.canonicalDx, "lumbar_disc_herniation");
     }
   }
 });
@@ -379,7 +379,7 @@ test("encounter and surgery require a diagnosis catalog and retain closed diagno
       assert.equal(
         item.safeParse({
           ...liveDiagnosis,
-          canonicalDx: "lumbar_spine.opaque-diagnosis-id",
+          canonicalDx: "lumbar_spine.Lumbar disc herniation / displacement",
         }).success,
         false,
       );

@@ -18,7 +18,7 @@ export const buildDiagnosisSchema = (canonicalDxValues: string[]) =>
       canonicalDx: z
         .enum(["unresolved", ...canonicalDxValues])
         .describe(
-          "The canonical diagnosis label with its region prefix (e.g. 'lumbar.stenosis') selected from the supplied taxonomy, or 'unresolved' when none applies."
+          "The canonical diagnosis id with its region prefix (e.g. 'lumbar_spine.lumbar_spinal_stenosis') selected from the supplied taxonomy, or 'unresolved' when none applies."
         ),
     })
     .describe(diagnosisDescription);

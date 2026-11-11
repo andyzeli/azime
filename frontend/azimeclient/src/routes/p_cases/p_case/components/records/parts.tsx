@@ -1,7 +1,10 @@
 import { useState, type ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import { Quote, type LucideIcon } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import type { Region } from "@azime/contracts";
 import { cn } from "@/lib/utils";
+import { canonicalDiagnosesQueryOptions } from "../../../../cases/queries";
 
 // Shared building blocks for the per-document-type extraction views.
 
@@ -276,15 +279,20 @@ export function DiagnosisItems({ diagnoses }: { diagnoses: Diagnosis[] }) {
             {dx.canonicalDx === "unresolved" ? (
               <Chip tone="amber">Unmapped</Chip>
             ) : (
-              <Chip tone="amber">
-                {humanize(dx.region)} · {humanize(dx.canonicalDx).toLowerCase()}
-              </Chip>
+              <CanonicalDxChip region={dx.region as Region} canonicalDx={dx.canonicalDx} />
             )}
           </div>
         </EvidenceItem>
       ))}
     </ItemList>
   );
+}
+
+// Stored extractions hold the canonical id; show the taxonomy's label.
+function CanonicalDxChip({ region, canonicalDx }: { region: Region; canonicalDx: string }) {
+  const { data } = useQuery(canonicalDiagnosesQueryOptions(region));
+  const label = data?.find((d) => d.canonicalDx === canonicalDx)?.label ?? humanize(canonicalDx);
+  return <Chip tone="amber">{label}</Chip>;
 }
 
 export function TreatmentChips({

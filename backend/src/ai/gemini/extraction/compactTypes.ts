@@ -20,7 +20,7 @@ export type Evidence = { page: number; quote: string }; // Integer page; direct 
 
 /**
  * Documented diagnosis plus taxonomy mapping. Stored region/canonicalDx are
- * separate strings (e.g. "lumbar" / "stenosis"); unresolved uses "unclear" /
+ * separate strings (e.g. "lumbar_spine" / "lumbar_spinal_stenosis"); unresolved uses "unclear" /
  * "unresolved". Dynamic model schemas omit region and emit "region.diagnosis"
  * in canonicalDx; registry.ts splits that value before storage.
  */
