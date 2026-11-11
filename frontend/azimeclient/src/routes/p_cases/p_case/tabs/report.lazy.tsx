@@ -21,6 +21,7 @@ import {
   reportInputQueryOptions,
 } from "../../../cases/queries";
 import { Badge, Btn } from "../components/shared";
+import { aiMutationKey } from "../aiRuns";
 
 // The report builder: the drafter's input, rendered section by section in report order
 // (docs/ime-report.md). What is shown here is exactly what Generate sends. The latest
@@ -88,6 +89,7 @@ function Tab() {
     onSuccess: (result) => copyInput(result.input),
   });
   const generate = useMutation({
+    mutationKey: aiMutationKey(caseId, "report"),
     mutationFn: () => generateCaseReport(caseId),
     onSuccess: (saved) =>
       queryClient.setQueryData(caseReportQueryOptions(caseId).queryKey, saved),

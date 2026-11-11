@@ -18,11 +18,19 @@ import {
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
-import { Check, ChevronRight, Printer, Stethoscope, X } from "lucide-react";
+import {
+  Check,
+  ChevronRight,
+  Loader2,
+  Printer,
+  Stethoscope,
+  X,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { nextStep, useExamPrep, visitBlocker } from "./examPrep";
 import { ExamPrepModal, useExamPrepModal } from "./components/ExamPrepModal";
 import { CaseFacts } from "./components/CaseFacts";
+import { useRunningAiPasses } from "./aiRuns";
 
 type TabStatus = "done" | "current" | "stale" | "todo";
 
@@ -126,6 +134,7 @@ export default function CockpitShell() {
   const readinessOptions = reportInputQueryOptions(caseId);
   const { data: readiness } = useQuery(readinessOptions);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const running = useRunningAiPasses(caseId);
   useEffect(() => {
     void queryClient.invalidateQueries({ queryKey: readinessOptions.queryKey });
   }, [pathname, queryClient, readinessOptions.queryKey]);
@@ -336,7 +345,8 @@ export default function CockpitShell() {
           meta={status.report === "current" ? "ready" : undefined}
         />
 
-        {step && step.message !== dismissedHint ? (
+        {/* While a pass runs, the banner below says what to do; the next step could contradict it. */}
+        {step && step.message !== dismissedHint && !running.length ? (
           <div className="ml-auto flex min-w-0 items-center gap-2 pl-6 text-[12px]">
             <span className="shrink-0 rounded bg-blue-600 px-1.5 py-px text-[10px] font-bold uppercase tracking-wide text-white">
               Next
@@ -364,6 +374,19 @@ export default function CockpitShell() {
           </div>
         ) : null}
       </nav>
+
+      {running.map((message) => (
+        <div
+          key={message}
+          role="status"
+          className="flex shrink-0 items-center gap-2 border-b border-amber-200 bg-amber-50 px-5 py-2 text-[12.5px] text-amber-900"
+        >
+          <Loader2 className="size-3.5 shrink-0 animate-spin text-amber-600" />
+          <span>
+            {message} This can take a few minutes.
+          </span>
+        </div>
+      ))}
 
       <div className="flex min-h-0 flex-1">
         <Outlet />
