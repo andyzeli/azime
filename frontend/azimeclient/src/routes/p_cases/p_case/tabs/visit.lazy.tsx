@@ -1,12 +1,10 @@
 import { AmaClassScaleSelector } from "../components/AmaClassScaleSelector";
 import { AmaFindingsCard } from "../components/AmaFindings";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { createLazyRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
-  useMutation,
   useQueries,
   useQuery,
-  useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import {
@@ -42,7 +40,6 @@ import {
   canonicalDiagnosesQueryOptions,
   caseQueryOptions,
   patientQuestionnairesQueryOptions,
-  saveVisit,
   visitQueryOptions,
   type PatientQuestionnaireWithDefinition,
 } from "../../../cases/queries";
@@ -61,6 +58,7 @@ import { useExamPrepModal } from "../components/ExamPrepModal";
 import { RecordDrawer } from "../components/RecordDetail";
 import { Badge, Btn, Segmented } from "../components/shared";
 import { NOTE_TEMPLATE, useExamPrep, visitBlocker } from "../examPrep";
+import { useVisitAutosave, type AutosaveStatus } from "../visitAutosave";
 
 type Priority = StoredRefinedAnalysis["visitPriority"][number] & {
   region: Region;
@@ -87,7 +85,6 @@ const apiErrorMessage = (error: unknown) =>
 function Tab() {
   const { caseId } = Route.useParams();
   const { record } = Route.useSearch();
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { data: patientCase } = useSuspenseQuery(caseQueryOptions(caseId));
   const { data: visit } = useSuspenseQuery(visitQueryOptions(caseId));
@@ -103,18 +100,11 @@ function Tab() {
     canonical.flatMap((q) => q.data ?? []).find((d) => d.canonicalDx === dx)
       ?.label ?? dx.replace(/_/g, " ");
 
-  const [draft, setDraft] = useState<VisitDocumentation>(
-    () =>
-      visit?.documentation ?? {
-        ...initializeVisitDocumentation(),
-        note: NOTE_TEMPLATE,
-      }
+  const { draft, edit, status, retry, dirty } = useVisitAutosave(
+    caseId,
+    visit,
+    blankVisit
   );
-  const [dirty, setDirty] = useState(false);
-  const edit = (fn: (d: VisitDocumentation) => VisitDocumentation) => {
-    setDraft(fn);
-    setDirty(true);
-  };
 
   const priorities: Priority[] = examPrep.regions.flatMap(
     ({ region, refined, status }) =>
@@ -124,38 +114,12 @@ function Tab() {
         stale: status.kind === "stale",
       }))
   );
-  const visitKey = visitQueryOptions(caseId).queryKey;
-  // Start over: saves a blank visit (a new revision; nothing else is touched).
-  const clear = useMutation({
-    mutationFn: () =>
-      saveVisit(caseId, {
-        documentation: { ...initializeVisitDocumentation(), note: NOTE_TEMPLATE },
-        expectedRevision: visit?.revision ?? 0,
-      }),
-    onSuccess: (saved) => {
-      queryClient.setQueryData(visitKey, saved);
-      setDraft(saved.documentation);
-      setDirty(false);
-    },
-  });
-  const save = useMutation({
-    mutationFn: () =>
-      saveVisit(caseId, {
-        documentation: draft,
-        expectedRevision: visit?.revision ?? 0,
-      }),
-    onSuccess: (saved) => {
-      queryClient.setQueryData(visitKey, saved);
-      setDirty(false);
-    },
-  });
 
   const diagnosisRegions = examPrep.regions.flatMap(({ region, diagnoses }) =>
     diagnoses ? [{ region, list: diagnoses }] : []
   );
   // Shown as a hint; the post-exam analysis itself runs from Analysis.
   const blocker = visitBlocker(draft);
-  const error = save.error ?? clear.error;
 
   return (
     <>
@@ -255,56 +219,61 @@ function Tab() {
             · then finish the review and run the post-exam analysis in Analysis
           </span>
           <span className="flex-1" />
-          {error ? (
-            <span className="text-[11px] font-semibold text-red-700">
-              {apiErrorMessage(error)}
-            </span>
-          ) : null}
-          <span className="text-[11px] text-slate-500">
-            {save.isPending
-              ? "Saving…"
-              : dirty
-                ? "Unsaved changes"
-                : visit
-                  ? "Saved"
-                  : "Not saved"}{" "}
-            · rev {visit?.revision ?? 0}
-          </span>
+          <SaveStatus status={status} onRetry={retry} />
+          {/* Start over: a blank visit, autosaved like any other edit. */}
           <Btn
-            disabled={save.isPending}
             onClick={() => {
               if (
                 window.confirm(
-                  "Clear the whole visit: note, PDQ choice and AMA findings? This saves immediately."
+                  "Clear the whole visit: note, PDQ choice and AMA findings?"
                 )
               )
-                clear.mutate();
+                edit(blankVisit);
             }}
           >
             Clear visit
           </Btn>
-          <Btn
-            disabled={!dirty || save.isPending}
-            onClick={() => save.mutate()}
-          >
-            Save visit
-          </Btn>
-          {/* Saves first and stays here if that fails; never runs the post-exam analysis. */}
+          {/* Leaving the tab saves first (see useVisitAutosave); never runs the post-exam analysis. */}
           <Btn
             variant="primary"
-            disabled={save.isPending}
-            onClick={() => {
-              const toAnalysis = () => navigate({ to: "/p_cases/$caseId/analysis", params: { caseId } });
-              if (dirty) save.mutate(undefined, { onSuccess: toAnalysis });
-              else void toAnalysis();
-            }}
+            onClick={() =>
+              void navigate({ to: "/p_cases/$caseId/analysis", params: { caseId } })
+            }
           >
-            {dirty ? "Save & continue to Analysis →" : "Continue to Analysis →"}
+            Continue to Analysis →
           </Btn>
         </footer>
       </main>
       <RecordDrawer recordId={record} />
     </>
+  );
+}
+
+const blankVisit = (): VisitDocumentation => ({
+  ...initializeVisitDocumentation(),
+  note: NOTE_TEMPLATE,
+});
+
+function SaveStatus({
+  status,
+  onRetry,
+}: {
+  status: AutosaveStatus;
+  onRetry: () => void;
+}) {
+  if (status.kind === "error")
+    return (
+      <span className="text-[11px] font-semibold text-red-700">
+        Couldn't save: {apiErrorMessage(status.error)} ·{" "}
+        <button type="button" onClick={onRetry} className="underline hover:text-red-900">
+          Retry
+        </button>
+      </span>
+    );
+  return (
+    <span className="text-[11px] text-slate-500">
+      {status.kind === "saving" ? "Saving…" : status.kind === "saved" ? "Saved" : "Not saved yet"}
+    </span>
   );
 }
 
