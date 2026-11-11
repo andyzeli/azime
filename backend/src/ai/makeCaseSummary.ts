@@ -50,7 +50,6 @@ const generateWithGemini = async (
       systemInstruction: caseSummarySystemPrompt,
       responseMimeType: "application/json",
       responseJsonSchema,
-      temperature: 0.1,
       thinkingConfig: getGeminiThinkingConfig("CASE_SUMMARY_GEMINI"),
     },
   });

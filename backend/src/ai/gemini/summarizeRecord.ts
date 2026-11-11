@@ -74,7 +74,6 @@ export const summarizeRecord = async <T extends DocumentType>(
       systemInstruction: config.systemPrompt,
       responseMimeType: "application/json",
       responseSchema: respJsonSchema,
-      temperature: 0.1,
       thinkingConfig: getGeminiThinkingConfig("GEMINI"),
     },
   });

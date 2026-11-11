@@ -48,7 +48,6 @@ const generateWithGemini = async (
       systemInstruction: refinedAnalysisSystemPrompt,
       responseMimeType: "application/json",
       responseJsonSchema: toResponseJsonSchema(refinedAnalysisSchema),
-      temperature: 0.1,
       thinkingConfig: getGeminiThinkingConfig("REFINED_ANALYSIS_GEMINI"),
     },
   });

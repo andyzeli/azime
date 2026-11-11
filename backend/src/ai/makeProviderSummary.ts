@@ -45,7 +45,6 @@ const generateWithGemini = async (
       systemInstruction: providerSummarySystemPrompt,
       responseMimeType: "application/json",
       responseJsonSchema: toResponseJsonSchema(providerSummaryResponseSchema),
-      temperature: 0.1,
       thinkingConfig: getGeminiThinkingConfig("PROVIDER_SUMMARY_GEMINI"),
     },
   });

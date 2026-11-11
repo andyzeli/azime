@@ -51,7 +51,6 @@ const generateWithGemini = async (
       systemInstruction: systemPrompt,
       responseMimeType: "application/json",
       responseJsonSchema: toResponseJsonSchema(schema),
-      temperature: 0.1,
       thinkingConfig: getGeminiThinkingConfig("PRE_EXAM_ANALYSIS_GEMINI"),
     },
   });
@@ -122,6 +121,7 @@ export const generatePreExamJson = async (
           model: process.env.PRE_EXAM_ANALYSIS_CLAUDE_MODEL,
           systemPrompt,
           prompt,
+          schema,
         })
       : provider === "openai"
         ? await generateWithOpenAI(prompt, systemPrompt, schema, name)

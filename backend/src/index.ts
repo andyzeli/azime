@@ -5,9 +5,17 @@ import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { registerRoutes } from "./routes/index.js";
 import { isTablet, isTabletAllowed } from "./tablet.js";
+import { Agent, setGlobalDispatcher } from "undici";
 
 dotenv.config({ path: ".env.local" });
 dotenv.config();
+
+// Node's fetch gives up after 300s waiting for response headers. Top-model AI
+// calls at high reasoning can think longer than that before replying, so allow
+// up to 20 minutes (Cloud Run's request timeout is 60).
+setGlobalDispatcher(
+  new Agent({ headersTimeout: 20 * 60_000, bodyTimeout: 20 * 60_000 }),
+);
 
 const app = Fastify({ logger: false });
 

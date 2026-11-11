@@ -18,7 +18,6 @@ const generateWithGemini = async (prompt: string, systemPrompt: string) => {
     contents: [prompt],
     config: {
       systemInstruction: systemPrompt,
-      temperature: 0.2,
       thinkingConfig: getGeminiThinkingConfig("REPORT_DRAFT_GEMINI"),
     },
   });

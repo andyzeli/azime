@@ -41,7 +41,6 @@ const generateWithGemini = async (
       systemInstruction: postExamAnalysisSystemPrompt,
       responseMimeType: "application/json",
       responseJsonSchema: toResponseJsonSchema(postExamAnalysisSchema),
-      temperature: 0.1,
       thinkingConfig: getGeminiThinkingConfig("POST_EXAM_ANALYSIS_GEMINI"),
     },
   });
