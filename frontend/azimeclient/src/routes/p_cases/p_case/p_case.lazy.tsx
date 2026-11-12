@@ -130,14 +130,21 @@ export default function CockpitShell() {
   const { data: visit } = useQuery(visitQueryOptions(caseId));
   const { data: report } = useQuery(caseReportQueryOptions(caseId));
   // Report readiness is the authority on what's outstanding; each blocker names its tab.
-  // It changes as the physician works, so re-check on every tab switch.
-  const readinessOptions = reportInputQueryOptions(caseId);
-  const { data: readiness } = useQuery(readinessOptions);
+  // It changes as the physician works, so re-check on every tab switch and after every
+  // save within a tab (an opinion filled in or cleared).
+  const { data: readiness } = useQuery(reportInputQueryOptions(caseId));
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const running = useRunningAiPasses(caseId);
   useEffect(() => {
-    void queryClient.invalidateQueries({ queryKey: readinessOptions.queryKey });
-  }, [pathname, queryClient, readinessOptions.queryKey]);
+    const recheck = () =>
+      void queryClient.invalidateQueries({
+        queryKey: reportInputQueryOptions(caseId).queryKey,
+      });
+    recheck();
+    return queryClient.getMutationCache().subscribe((event) => {
+      if (event.type === "updated" && event.action.type === "success") recheck();
+    });
+  }, [pathname, caseId, queryClient]);
   const workflow = useExamPrep(caseId, patientCase.regions);
   const statuses = workflow.regions.map((r) => r.status.kind);
   // Dismissing hides only this message; a different next step shows again.
