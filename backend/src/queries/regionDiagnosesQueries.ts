@@ -22,8 +22,16 @@ const entry = (
   status: DiagnosisState["status"]
 ): DiagnosisState => ({ canonicalDx, source, status, reason: null });
 
+// Record diagnoses plus any canonical one for the region (same rule as the 3A snapshot).
+const allowedDiagnoses = async (inRecords: string[], region: Region) =>
+  new Set([
+    ...inRecords,
+    ...(await getCanonicalDiagnoses(region)).map((d) => d.canonicalDx),
+  ]);
+
 // Before the first save the list is derived: the 3A scope if one was taken, else nothing;
 // every record diagnosis is then appended as working, including ones found after a save.
+// Entries that are no longer allowed (e.g. left behind after re-extraction) are dropped.
 export async function getRegionDiagnosisList(
   caseId: number,
   region: Region
@@ -38,12 +46,14 @@ export async function getRegionDiagnosisList(
     getRegionDiagnoses(caseId, region),
     getStoredPreExamAnalysis(caseId, region),
   ]);
+  const allowed = await allowedDiagnoses(inRecords, region);
   const scope = preExam?.inputSnapshot?.scope.diagnoses;
-  const saved =
+  const saved = (
     row?.diagnoses ??
     (scope ?? []).map((dx) =>
       entry(dx, inRecords.includes(dx) ? "records" : "added", "working")
-    );
+    )
+  ).filter((d) => allowed.has(d.canonicalDx));
   const diagnoses = [
     ...saved,
     ...inRecords
@@ -69,11 +79,10 @@ export async function saveRegionDiagnosisList(
   const ids = diagnoses.map((d) => d.canonicalDx);
   if (new Set(ids).size !== ids.length)
     throw new InvalidRegionDiagnosesError("A diagnosis is listed twice");
-  // Same rule as the 3A snapshot: record diagnoses or any canonical one for the region.
-  const allowed = new Set([
-    ...(await getRegionDiagnoses(caseId, region)),
-    ...(await getCanonicalDiagnoses(region)).map((d) => d.canonicalDx),
-  ]);
+  const allowed = await allowedDiagnoses(
+    await getRegionDiagnoses(caseId, region),
+    region
+  );
   const unknown = ids.filter((id) => !allowed.has(id));
   if (unknown.length)
     throw new InvalidRegionDiagnosesError(
