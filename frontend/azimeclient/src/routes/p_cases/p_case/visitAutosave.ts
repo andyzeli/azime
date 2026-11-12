@@ -5,7 +5,11 @@ import type {
   VisitDocumentation,
   VisitDocumentationResponse,
 } from "@azime/contracts";
-import { saveVisit, visitQueryOptions } from "../../cases/queries";
+import {
+  reportInputQueryOptions,
+  saveVisit,
+  visitQueryOptions,
+} from "../../cases/queries";
 
 const DEBOUNCE_MS = 800;
 const samePath = (a: string, b: string) => a.replace(/\/$/, "") === b.replace(/\/$/, "");
@@ -62,6 +66,10 @@ export function useVisitAutosave(
       }
     }
     setStatus({ kind: "saved" });
+    // A visit edit can make the post-exam analysis out of date: refresh the tab badges.
+    void queryClient.invalidateQueries({
+      queryKey: reportInputQueryOptions(caseId).queryKey,
+    });
     return true;
   }, [caseId, queryClient]);
 
