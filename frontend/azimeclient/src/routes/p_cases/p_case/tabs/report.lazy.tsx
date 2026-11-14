@@ -43,9 +43,9 @@ const stableJson = (value: unknown): string =>
       ? Object.fromEntries(
           Object.keys(v)
             .sort()
-            .map((k) => [k, v[k]]),
+            .map((k) => [k, v[k]])
         )
-      : v,
+      : v
   );
 
 const formatTime = (iso: string) =>
@@ -67,7 +67,7 @@ function Tab() {
   const { caseId } = Route.useParams();
   const queryClient = useQueryClient();
   const { data, isPending, isError } = useQuery(
-    reportInputQueryOptions(caseId),
+    reportInputQueryOptions(caseId)
   );
   const { data: latest } = useQuery(caseReportQueryOptions(caseId));
   const [copyStatus, setCopyStatus] = useState<
@@ -554,7 +554,7 @@ function Builder({ input }: { input: ReportInput }) {
                 <div key={region}>
                   {words(region)}: {words(status)}
                 </div>
-              ),
+              )
             )}
           </Sub>
         ) : null}
@@ -582,7 +582,7 @@ function Builder({ input }: { input: ReportInput }) {
         ) : null}
       </Section>
 
-      <details className="rounded-xl border border-dashed border-slate-300 bg-white">
+      {/* <details className="rounded-xl border border-dashed border-slate-300 bg-white">
         <summary className="cursor-pointer px-4 py-2.5 text-[12px] font-semibold text-slate-600">
           Drafter input (JSON) · {JSON.stringify(input).length.toLocaleString()}{" "}
           characters
@@ -590,7 +590,7 @@ function Builder({ input }: { input: ReportInput }) {
         <pre className="max-h-[600px] overflow-auto border-t border-slate-100 px-4 py-3 text-[11px] leading-snug text-slate-700">
           {JSON.stringify(input, null, 2)}
         </pre>
-      </details>
+      </details> */}
     </>
   );
 }
@@ -714,7 +714,7 @@ function DiscussionRegion({ r }: { r: ReportDiscussionRegion }) {
                 <span className="text-slate-500">None recommended.</span>
               )}
             </Sub>
-          ) : null,
+          ) : null
         )}
         <Sub title="Earlier trajectory analysis">
           <ul className="grid gap-0.5">
