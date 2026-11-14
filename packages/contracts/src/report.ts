@@ -692,10 +692,20 @@ export const caseReportResponseSchema = z.object({
   source: z
     .object({ provider: reportProviderSchema, model: z.string() })
     .nullable(),
+  revision: z.number().int().nonnegative(),
   createdAt: z.string(),
   updatedAt: z.string(),
 });
 export type CaseReportResponse = z.infer<typeof caseReportResponseSchema>;
+
+// PUT /cases/:caseId/report/:reportId: the physician's edit of the latest draft.
+export const saveCaseReportRequestSchema = z
+  .object({
+    report: z.string(),
+    expectedRevision: z.number().int().nonnegative(),
+  })
+  .strict();
+export type SaveCaseReportRequest = z.infer<typeof saveCaseReportRequestSchema>;
 
 const monthNames = [
   "January",

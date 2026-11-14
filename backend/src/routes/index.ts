@@ -163,6 +163,7 @@ export const registerRoutes = (app: FastifyInstance) => {
   app.get("/cases/:caseId/report-input", reportController.getInputHandler);
   app.get("/cases/:caseId/report", reportController.getLatestHandler);
   app.post("/cases/:caseId/report", reportController.generateHandler);
+  app.put("/cases/:caseId/report/:reportId", reportController.editHandler);
   app.get(
     "/cases/:caseId/past-medical-history",
     reportController.getPastMedicalHistoryHandler

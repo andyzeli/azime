@@ -58,7 +58,8 @@ import { useExamPrepModal } from "../components/ExamPrepModal";
 import { RecordDrawer } from "../components/RecordDetail";
 import { Badge, Btn, Segmented } from "../components/shared";
 import { NOTE_TEMPLATE, useExamPrep, visitBlocker } from "../examPrep";
-import { useVisitAutosave, type AutosaveStatus } from "../visitAutosave";
+import { SaveStatus } from "../components/SaveStatus";
+import { useVisitAutosave } from "../visitAutosave";
 
 type Priority = StoredRefinedAnalysis["visitPriority"][number] & {
   region: Region;
@@ -253,29 +254,6 @@ const blankVisit = (): VisitDocumentation => ({
   ...initializeVisitDocumentation(),
   note: NOTE_TEMPLATE,
 });
-
-function SaveStatus({
-  status,
-  onRetry,
-}: {
-  status: AutosaveStatus;
-  onRetry: () => void;
-}) {
-  if (status.kind === "error")
-    return (
-      <span className="text-[11px] font-semibold text-red-700">
-        Couldn't save: {apiErrorMessage(status.error)} ·{" "}
-        <button type="button" onClick={onRetry} className="underline hover:text-red-900">
-          Retry
-        </button>
-      </span>
-    );
-  return (
-    <span className="text-[11px] text-slate-500">
-      {status.kind === "saving" ? "Saving…" : status.kind === "saved" ? "Saved" : "Not saved yet"}
-    </span>
-  );
-}
 
 function NoteCard({
   note,
