@@ -1,5 +1,6 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
+import { saveCaseReportRequestSchema } from "@azime/contracts";
 import { MissingPrerequisiteError } from "../errors/missingPrerequisiteError.js";
 import { caseExists } from "../queries/caseArtifactQueries.js";
 import { makeReportDraft } from "../ai/makeReportDraft.js";
@@ -8,6 +9,7 @@ import {
   createCaseReport,
   getLatestCaseReport,
   saveCaseReportDraft,
+  saveCaseReportEdit,
 } from "../queries/caseReportQueries.js";
 import { getPastMedicalHistory } from "../queries/pastMedicalHistory.js";
 import { getReportInput } from "../queries/reportInputQueries.js";
@@ -49,6 +51,26 @@ export const reportController = {
     } catch (error) {
       console.error(error);
       return reply.code(500).send({ error: "Report request failed" });
+    }
+  },
+  editHandler: async (
+    request: FastifyRequest<{ Params: { caseId: string; reportId: string } }>,
+    reply: FastifyReply,
+  ) => {
+    const params = paramsSchema
+      .extend({ reportId: z.coerce.number().int().positive() })
+      .safeParse(request.params);
+    const body = saveCaseReportRequestSchema.safeParse(request.body);
+    if (!params.success || !body.success)
+      return reply.code(400).send({ error: "Invalid report request" });
+    try {
+      const { caseId, reportId } = params.data;
+      return reply.send(await saveCaseReportEdit(caseId, reportId, body.data));
+    } catch (error) {
+      if (error instanceof MissingPrerequisiteError)
+        return reply.code(409).send({ error: error.message });
+      console.error(error);
+      return reply.code(500).send({ error: "Saving the report failed" });
     }
   },
   // Assembles the input now, freezes it, then drafts. Refused while anything blocks.

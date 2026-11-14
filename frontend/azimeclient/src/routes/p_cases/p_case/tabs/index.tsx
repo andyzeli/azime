@@ -66,4 +66,8 @@ export const pMmiRoute = createRoute({
 export const pReportRoute = createRoute({
   getParentRoute: () => pCaseRoute,
   path: "report",
+  // Input (what the drafter is sent) or the draft; unset picks the draft once one exists.
+  validateSearch: (search: Record<string, unknown>): { view?: "input" | "draft" } => ({
+    view: search.view === "input" || search.view === "draft" ? search.view : undefined,
+  }),
 }).lazy(() => import("./report.lazy").then((d) => d.Route));

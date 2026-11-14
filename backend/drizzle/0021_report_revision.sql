@@ -1,0 +1,1 @@
+ALTER TABLE "case_report" ADD COLUMN "revision" integer DEFAULT 0 NOT NULL;

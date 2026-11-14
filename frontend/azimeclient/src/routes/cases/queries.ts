@@ -36,6 +36,8 @@ import {
   reportInputResponseSchema,
   pastMedicalHistorySchema,
   caseReportResponseSchema,
+  saveCaseReportRequestSchema,
+  type SaveCaseReportRequest,
   saveCaseOpinionsRequestSchema,
   type SaveCaseOpinionsRequest,
   type CaseContactDto,
@@ -671,6 +673,19 @@ export const caseReportQueryOptions = (caseId: string) =>
         .get<unknown>(`${API_BASE_URL}/cases/${caseId}/report`)
         .then((response) => caseReportResponseSchema.nullable().parse(response.data)),
   });
+
+// The physician's edit of the latest draft.
+export const saveCaseReport = (
+  caseId: string,
+  reportId: number,
+  input: SaveCaseReportRequest
+) =>
+  axios
+    .put<unknown>(
+      `${API_BASE_URL}/cases/${caseId}/report/${reportId}`,
+      saveCaseReportRequestSchema.parse(input)
+    )
+    .then((response) => caseReportResponseSchema.parse(response.data));
 
 // What Generate would send the model, without calling it or saving.
 export const generateCaseReportDryRun = (caseId: string) =>

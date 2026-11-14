@@ -1,7 +1,6 @@
 import { useState, type ReactNode } from "react";
-import { createLazyRoute, Link } from "@tanstack/react-router";
+import { createLazyRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import ReactMarkdown from "react-markdown";
 import {
   reportFactCheck,
   reportVariantLabels,
@@ -19,13 +18,18 @@ import {
   generateCaseReport,
   generateCaseReportDryRun,
   reportInputQueryOptions,
+  saveCaseReport,
 } from "../../../cases/queries";
+import { cn } from "@/lib/utils";
 import { Badge, Btn } from "../components/shared";
+import { ReportEditor } from "../components/ReportEditor";
 import { aiMutationKey } from "../aiRuns";
+import { useAutosave } from "../autosave";
+import { SaveStatus } from "../components/SaveStatus";
 
-// The report builder: the drafter's input, rendered section by section in report order
-// (docs/ime-report.md). What is shown here is exactly what Generate sends. The latest
-// draft renders below it.
+// Two views. Input: the drafter's input, rendered section by section in report order
+// (docs/ime-report.md); what is shown is exactly what Generate sends. Draft: the latest
+// draft, edited in place and autosaved.
 
 const regionLabel = (region: Region) =>
   supportedRegions.find(({ value }) => value === region)?.label ?? region;
@@ -65,6 +69,8 @@ const relationshipLabel = {
 
 function Tab() {
   const { caseId } = Route.useParams();
+  const { view: requested } = Route.useSearch();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data, isPending, isError } = useQuery(
     reportInputQueryOptions(caseId)
@@ -91,8 +97,10 @@ function Tab() {
   const generate = useMutation({
     mutationKey: aiMutationKey(caseId, "report"),
     mutationFn: () => generateCaseReport(caseId),
-    onSuccess: (saved) =>
-      queryClient.setQueryData(caseReportQueryOptions(caseId).queryKey, saved),
+    onSuccess: (saved) => {
+      queryClient.setQueryData(caseReportQueryOptions(caseId).queryKey, saved);
+      void navigate({ to: ".", search: { view: "draft" } });
+    },
     // A failed run still leaves its frozen row; show it.
     onError: () =>
       queryClient.invalidateQueries({
@@ -103,10 +111,40 @@ function Tab() {
   const outOfDate =
     !!latest &&
     (!data?.input || stableJson(latest.input) !== stableJson(data.input));
+  const view = requested ?? (latest ? "draft" : "input");
+  const regenerate = () => {
+    // Always asked once a draft exists: edits may not have saved yet, and none carry over.
+    if (
+      latest &&
+      !window.confirm(
+        "Regenerating writes a new draft to replace this one. Edits to this draft won't carry over. Continue?"
+      )
+    )
+      return;
+    generate.mutate();
+  };
 
   return (
     <main className="flex min-w-0 flex-1 flex-col overflow-y-auto">
-      <div className="flex flex-col gap-4 px-5 py-4">
+      <nav className="sticky top-0 z-20 flex items-center gap-1 border-b border-slate-200 bg-slate-100/95 px-5 pt-2 backdrop-blur">
+        <ViewTab to="input" active={view === "input"}>
+          Input
+          {data && !data.input ? (
+            <Badge className="bg-amber-100 text-amber-800">
+              {data.blockers.length} to resolve
+            </Badge>
+          ) : null}
+        </ViewTab>
+        <ViewTab to="draft" active={view === "draft"}>
+          Draft
+          {!latest ? (
+            <span className="text-[11px] font-normal text-slate-400">none yet</span>
+          ) : outOfDate ? (
+            <Badge className="bg-amber-100 text-amber-800">Out of date</Badge>
+          ) : null}
+        </ViewTab>
+      </nav>
+      <div className={cn("flex flex-col gap-4 px-5 py-4", view !== "input" && "hidden")}>
         {isPending ? (
           <p className="text-[12.5px] text-slate-500">
             Assembling the report input…
@@ -121,18 +159,28 @@ function Tab() {
           <Blockers caseId={caseId} blockers={data.blockers} />
         )}
         {dryRun.data ? <ReportInputInspection result={dryRun.data} /> : null}
+      </div>
+      <div className={cn("px-5 py-4", view !== "draft" && "hidden")}>
         {latest ? (
           <Review
+            key={latest.id}
+            caseId={caseId}
             report={latest}
             outOfDate={outOfDate}
             generating={generate.isPending}
           />
-        ) : null}
+        ) : (
+          <p className="rounded-xl border border-dashed border-slate-300 bg-white px-4 py-6 text-center text-[12.5px] text-slate-500">
+            {generate.isPending
+              ? "Drafting…"
+              : "No draft yet. Generate one once the input is ready."}
+          </p>
+        )}
       </div>
       <footer className="sticky bottom-0 mt-auto flex items-center gap-3 border-t border-slate-200 bg-white px-5 py-2.5 shadow-[0_-6px_16px_rgba(15,23,42,.05)]">
         <span className="text-[11px] text-slate-500">
           {data?.input
-            ? "Ready. The sections above are the drafter's full input."
+            ? "Ready. The Input view is the drafter's full input."
             : data
               ? `${data.blockers.length} item${data.blockers.length === 1 ? "" : "s"} to resolve before generating`
               : null}
@@ -171,7 +219,7 @@ function Tab() {
         <Btn
           variant="primary"
           disabled={!data?.input || generate.isPending || dryRun.isPending}
-          onClick={() => generate.mutate()}
+          onClick={regenerate}
         >
           {generate.isPending
             ? "Generating draft…"
@@ -218,26 +266,51 @@ function ReportInputInspection({
   );
 }
 
+function ViewTab({
+  to,
+  active,
+  children,
+}: {
+  to: "input" | "draft";
+  active: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <Link
+      to="."
+      search={{ view: to }}
+      className={cn(
+        "-mb-px flex items-center gap-2 rounded-t-lg border border-b-0 px-3.5 py-1.5 text-[12.5px] font-semibold",
+        active
+          ? "border-slate-200 bg-white text-slate-900"
+          : "border-transparent text-slate-500 hover:text-slate-800"
+      )}
+    >
+      {children}
+    </Link>
+  );
+}
+
 function Review({
+  caseId,
   report,
   outOfDate,
   generating,
 }: {
+  caseId: string;
   report: CaseReportResponse;
   outOfDate: boolean;
   generating: boolean;
 }) {
-  const missing = report.report
-    ? reportFactCheck(report.input, report.report)
-    : [];
   return (
     <section className="rounded-xl border-2 border-slate-300 bg-white">
       <div className="flex items-baseline gap-2.5 border-b border-slate-200 px-4 py-2.5">
         <h2 className="text-[13.5px] font-semibold">Report draft</h2>
         <span className="text-[11px] text-slate-500">
           {report.source
-            ? `drafted ${formatTime(report.updatedAt)} · ${report.source.model}`
+            ? `drafted ${formatTime(report.createdAt)} · ${report.source.model}`
             : `started ${formatTime(report.createdAt)}`}
+          {report.revision ? ` · edited ${formatTime(report.updatedAt)}` : ""}
         </span>
         <span className="flex-1" />
         {outOfDate ? (
@@ -246,10 +319,60 @@ function Review({
       </div>
       {outOfDate ? (
         <p className="border-b border-amber-200 bg-amber-50 px-4 py-2 text-[12px] text-amber-900">
-          The case changed since this draft. The builder above shows what a new
+          The case changed since this draft. The Input view shows what a new
           draft would use.
         </p>
       ) : null}
+      {report.report !== null ? (
+        <EditableDraft
+          caseId={caseId}
+          report={{ ...report, report: report.report }}
+          generating={generating}
+        />
+      ) : (
+        <p className="px-4 py-3 text-[12.5px] text-slate-500">
+          {generating
+            ? "Drafting…"
+            : "This draft didn't finish. Generate again."}
+        </p>
+      )}
+    </section>
+  );
+}
+
+// Edits save 800 ms after the last keystroke, against the draft's revision.
+function EditableDraft({
+  caseId,
+  report,
+  generating,
+}: {
+  caseId: string;
+  report: CaseReportResponse & { report: string };
+  generating: boolean;
+}) {
+  const queryClient = useQueryClient();
+  const { draft, edit, status, retry } = useAutosave({
+    initial: report.report,
+    revision: report.revision,
+    saved: true,
+    label: "the report draft",
+    save: async (markdown, expectedRevision) => {
+      const saved = await saveCaseReport(caseId, report.id, {
+        report: markdown,
+        expectedRevision,
+      });
+      // A save that lands after a regeneration must not bring this draft back.
+      queryClient.setQueryData(
+        caseReportQueryOptions(caseId).queryKey,
+        (current) => (current?.id === saved.id ? saved : current)
+      );
+      return saved.revision;
+    },
+  });
+  // Checked against the text as edited, so a deleted value shows up right away.
+  const missing = reportFactCheck(report.input, draft);
+  return (
+    <>
       {missing.length ? (
         <div className="border-b border-red-200 bg-red-50 px-4 py-2 text-[12px] text-red-900">
           <b>Check the draft: these decided values are not in the text.</b>
@@ -260,18 +383,16 @@ function Review({
           </ul>
         </div>
       ) : null}
-      {report.report ? (
-        <article className="space-y-2 px-5 py-4 text-[13px] leading-relaxed text-slate-800 [&_h1]:text-[16px] [&_h1]:font-semibold [&_h2]:mt-4 [&_h2]:text-[14px] [&_h2]:font-semibold [&_h3]:mt-2 [&_h3]:font-semibold [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5">
-          <ReactMarkdown>{report.report}</ReactMarkdown>
-        </article>
-      ) : (
-        <p className="px-4 py-3 text-[12.5px] text-slate-500">
-          {generating
-            ? "Drafting…"
-            : "This draft didn't finish. Generate again."}
-        </p>
-      )}
-    </section>
+      <div className="flex justify-end border-b border-slate-100 px-4 py-1">
+        <SaveStatus status={status} onRetry={retry} />
+      </div>
+      <ReportEditor
+        markdown={report.report}
+        onChange={(md) => edit(() => md)}
+        // Read-only while a new draft is written: edits here would be replaced.
+        editable={!generating}
+      />
+    </>
   );
 }
 

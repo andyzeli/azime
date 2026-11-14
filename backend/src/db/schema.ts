@@ -563,6 +563,8 @@ export const CaseReport = pgTable(
     input: jsonb("input").$type<ReportInput>().notNull(),
     report: text("report"),
     source: jsonb("source").$type<NonNullable<CaseReportResponse["source"]>>(),
+    // 0 as drafted; each saved physician edit adds one.
+    revision: integer("revision").notNull().default(0),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
