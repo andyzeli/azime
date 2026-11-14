@@ -141,6 +141,13 @@
       "when": 1792885430799,
       "tag": "0019_ama_mode_required",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1794677292193,
+      "tag": "0020_date_of_birth",
+      "breakpoints": true
     }
   ]
 }

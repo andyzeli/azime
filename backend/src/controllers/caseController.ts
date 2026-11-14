@@ -52,6 +52,7 @@ export const caseController = {
         .returning({
           injuryType: PatientCase.injuryType,
           dateOfInjury: PatientCase.dateOfInjury,
+          dateOfBirth: PatientCase.dateOfBirth,
           regions: PatientCase.regions,
         });
 

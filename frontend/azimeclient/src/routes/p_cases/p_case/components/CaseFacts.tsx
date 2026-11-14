@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from "react";
 import {
   Building2,
+  Cake,
   CalendarDays,
   ChevronDown,
   MapPin,
@@ -35,6 +36,16 @@ function sinceInjury(date: string) {
     .join(" ");
 }
 
+// Age in whole years today.
+function age(date: string) {
+  const birth = new Date(`${date}T00:00:00`);
+  const now = new Date();
+  const hadBirthday =
+    now.getMonth() > birth.getMonth() ||
+    (now.getMonth() === birth.getMonth() && now.getDate() >= birth.getDate());
+  return now.getFullYear() - birth.getFullYear() - (hadBirthday ? 0 : 1);
+}
+
 function Fact({
   icon,
   title,
@@ -64,6 +75,7 @@ export function CaseFacts({ patientCase }: { patientCase: DbPatientCase }) {
   return (
     <div className="flex min-w-0 items-center gap-4 overflow-hidden border-l border-slate-200 pl-4">
       <Fact icon={<CalendarDays className="size-3.5" />} title="Date of injury">
+        <span className="text-slate-500">DOI</span>
         {patientCase.dateOfInjury ? (
           <>
             <span className="font-medium">
@@ -74,7 +86,23 @@ export function CaseFacts({ patientCase }: { patientCase: DbPatientCase }) {
             </span>
           </>
         ) : (
-          <span className="text-slate-400">DOI not set</span>
+          <span className="text-slate-400">not set</span>
+        )}
+      </Fact>
+
+      <Fact icon={<Cake className="size-3.5" />} title="Date of birth">
+        <span className="text-slate-500">DOB</span>
+        {patientCase.dateOfBirth ? (
+          <>
+            <span className="font-medium">
+              {formatDate(patientCase.dateOfBirth)}
+            </span>
+            <span className="text-slate-400">
+              · {age(patientCase.dateOfBirth)} yo
+            </span>
+          </>
+        ) : (
+          <span className="text-slate-400">not set</span>
         )}
       </Fact>
 
@@ -109,7 +137,7 @@ export function CaseFacts({ patientCase }: { patientCase: DbPatientCase }) {
       ) : null}
 
       {questions.length ? (
-        <span className="relative">
+        <span>
           <button
             type="button"
             onClick={() => setQuestionsOpen(!questionsOpen)}
@@ -138,7 +166,9 @@ export function CaseFacts({ patientCase }: { patientCase: DbPatientCase }) {
                 className="fixed inset-0 z-20 cursor-default"
                 onClick={() => setQuestionsOpen(false)}
               />
-              <div className="absolute left-0 top-full z-30 mt-2 w-[420px] rounded-lg border border-slate-200 bg-white p-3 shadow-lg">
+              {/* Positioned against the case header (not this row, which clips overflow),
+                  so it spans nearly the full width below it. */}
+              <div className="absolute inset-x-4 top-full z-30 max-h-[calc(100vh-8rem)] overflow-y-auto rounded-lg border border-slate-200 bg-white p-4 shadow-lg">
                 <div className="mb-2 text-[11px] font-bold uppercase tracking-wider text-slate-500">
                   Referral questions
                 </div>

@@ -227,7 +227,7 @@ export default function CockpitShell() {
 
   return (
     <div className="flex h-[calc(100vh-56px)] flex-col bg-slate-100 text-[13px] text-slate-900">
-      <header className="flex shrink-0 items-center gap-4 bg-white px-5 pb-3 pt-3.5">
+      <header className="relative flex shrink-0 items-center gap-4 bg-white px-5 pb-3 pt-3.5">
         <div className="flex shrink-0 flex-col whitespace-nowrap leading-tight">
           <span className="text-[15px] font-semibold">{patientName}</span>
           {patientCase.caseType ? (
