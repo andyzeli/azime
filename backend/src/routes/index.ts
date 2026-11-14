@@ -164,6 +164,11 @@ export const registerRoutes = (app: FastifyInstance) => {
   app.get("/cases/:caseId/report", reportController.getLatestHandler);
   app.post("/cases/:caseId/report", reportController.generateHandler);
   app.put("/cases/:caseId/report/:reportId", reportController.editHandler);
+  app.post("/cases/:caseId/report/:reportId/sign", reportController.signHandler);
+  app.post("/cases/:caseId/report/:reportId/reopen", reportController.reopenHandler);
+  app.get("/cases/:caseId/report/:reportId/pdf", reportController.pdfHandler);
+  app.get("/practice-settings", reportController.getPracticeSettingsHandler);
+  app.put("/practice-settings", reportController.savePracticeSettingsHandler);
   app.get(
     "/cases/:caseId/past-medical-history",
     reportController.getPastMedicalHistoryHandler

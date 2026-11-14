@@ -117,6 +117,7 @@ export function useAutosave<T>({
     edit,
     status,
     retry: () => void flush(),
+    flush, // resolves true once everything is saved
     dirty: draft !== savedRef.current,
   };
 }

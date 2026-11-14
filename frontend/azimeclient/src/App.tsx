@@ -65,6 +65,13 @@ export function RootComponent() {
             >
               Billing
             </Link>
+            <Link
+              to="/settings"
+              className="rounded-md px-3 py-1.5 font-medium text-zinc-300 hover:bg-white/10 hover:text-white"
+              activeProps={{ className: "!bg-white/15 !text-white" }}
+            >
+              Settings
+            </Link>
           </nav>
         </>
       ) : null}

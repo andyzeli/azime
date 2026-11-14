@@ -13,6 +13,7 @@ import {
   primaryKey,
   uniqueIndex,
   index,
+  customType,
 } from "drizzle-orm/pg-core";
 import { InferSelectModel, InferInsertModel } from "drizzle-orm";
 import type {
@@ -34,6 +35,7 @@ import type {
   AmaEntry,
   AmaExaminationTask,
   CaseReportResponse,
+  PracticeSettings as PracticeSettingsDoc,
   ReportInput,
   PatientQuestionnaireResponse,
   QuestionnaireScores,
@@ -553,6 +555,8 @@ export const StandardizedReportQs = pgTable("standardqs", {
 });
 
 // Every report generation: the frozen drafter input, then the drafted report.
+const bytea = customType<{ data: Buffer }>({ dataType: () => "bytea" });
+
 export const CaseReport = pgTable(
   "case_report",
   {
@@ -565,6 +569,11 @@ export const CaseReport = pgTable(
     source: jsonb("source").$type<NonNullable<CaseReportResponse["source"]>>(),
     // 0 as drafted; each saved physician edit adds one.
     revision: integer("revision").notNull().default(0),
+    // Signing freezes the draft: the signature line name, who clicked, and the PDF.
+    signedAt: timestamp("signed_at"),
+    signedBy: text("signed_by"),
+    signedByEmail: text("signed_by_email"),
+    signedPdf: bytea("signed_pdf"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
@@ -704,3 +713,10 @@ export const LadderEntrySources = pgTable(
 );
 export type LadderEntrySource = InferSelectModel<typeof LadderEntrySources>;
 export type NewLadderEntrySource = InferInsertModel<typeof LadderEntrySources>;
+
+// One row (id 1): the letterhead and signer for report PDFs.
+export const PracticeSettings = pgTable("practice_settings", {
+  id: integer("id").primaryKey(),
+  settings: jsonb("settings").$type<PracticeSettingsDoc>().notNull(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});

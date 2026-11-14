@@ -16,9 +16,12 @@ import {
 import {
   caseReportQueryOptions,
   generateCaseReport,
+  caseReportPdfUrl,
   generateCaseReportDryRun,
+  reopenCaseReport,
   reportInputQueryOptions,
   saveCaseReport,
+  signCaseReport,
 } from "../../../cases/queries";
 import { cn } from "@/lib/utils";
 import { Badge, Btn } from "../components/shared";
@@ -51,6 +54,9 @@ const stableJson = (value: unknown): string =>
         )
       : v
   );
+
+const linkButton =
+  "rounded-md border border-slate-300 bg-white px-2.5 py-1 text-[12px] font-semibold text-slate-700 hover:border-slate-400 hover:text-slate-900 disabled:opacity-50";
 
 const formatTime = (iso: string) =>
   new Date(iso).toLocaleString(undefined, {
@@ -139,6 +145,8 @@ function Tab() {
           Draft
           {!latest ? (
             <span className="text-[11px] font-normal text-slate-400">none yet</span>
+          ) : latest.signedAt ? (
+            <Badge className="bg-green-100 text-green-800">Signed</Badge>
           ) : outOfDate ? (
             <Badge className="bg-amber-100 text-amber-800">Out of date</Badge>
           ) : null}
@@ -328,6 +336,7 @@ function Review({
           caseId={caseId}
           report={{ ...report, report: report.report }}
           generating={generating}
+          outOfDate={outOfDate}
         />
       ) : (
         <p className="px-4 py-3 text-[12.5px] text-slate-500">
@@ -345,13 +354,17 @@ function EditableDraft({
   caseId,
   report,
   generating,
+  outOfDate,
 }: {
   caseId: string;
   report: CaseReportResponse & { report: string };
   generating: boolean;
+  outOfDate: boolean;
 }) {
   const queryClient = useQueryClient();
-  const { draft, edit, status, retry } = useAutosave({
+  const setLatest = (saved: CaseReportResponse) =>
+    queryClient.setQueryData(caseReportQueryOptions(caseId).queryKey, saved);
+  const { draft, edit, status, retry, flush } = useAutosave({
     initial: report.report,
     revision: report.revision,
     saved: true,
@@ -371,6 +384,50 @@ function EditableDraft({
   });
   // Checked against the text as edited, so a deleted value shows up right away.
   const missing = reportFactCheck(report.input, draft);
+  const signed = report.signedAt !== null;
+  const pdfUrl = caseReportPdfUrl(caseId, report.id);
+  // Editing is frozen from the click until signing settles, so what is signed is
+  // exactly what is on screen.
+  const [signing, setSigning] = useState(false);
+  const sign = useMutation({
+    mutationFn: (revision: number) => signCaseReport(caseId, report.id, revision),
+    onSuccess: setLatest,
+    onSettled: () => setSigning(false),
+  });
+  const reopen = useMutation({
+    mutationFn: () => reopenCaseReport(caseId, report.id),
+    onSuccess: setLatest,
+  });
+  // The PDF is built from the saved text, so pending edits are saved first.
+  const preview = async () => {
+    const tab = window.open("", "_blank");
+    if (await flush()) tab?.location.assign(pdfUrl);
+    else tab?.close();
+  };
+  const signReport = async () => {
+    setSigning(true);
+    if (!(await flush())) return setSigning(false);
+    // The revision just saved here (the prop is from before the save).
+    const revision =
+      queryClient.getQueryData(caseReportQueryOptions(caseId).queryKey)?.revision ??
+      report.revision;
+    const warnings = [
+      outOfDate && "The case changed since this draft was written.",
+      missing.length && `${missing.length} decided value${missing.length === 1 ? " is" : "s are"} not in the text.`,
+    ].filter(Boolean);
+    if (
+      window.confirm(
+        [
+          ...warnings,
+          "Sign this report? It becomes final: the PDF is stored for staff to send, and further changes need Reopen.",
+        ].join("\n\n")
+      )
+    )
+      sign.mutate(revision);
+    else setSigning(false);
+  };
+  const actionError = sign.error ?? reopen.error;
+
   return (
     <>
       {missing.length ? (
@@ -383,14 +440,62 @@ function EditableDraft({
           </ul>
         </div>
       ) : null}
-      <div className="flex justify-end border-b border-slate-100 px-4 py-1">
-        <SaveStatus status={status} onRetry={retry} />
-      </div>
+      {signed ? (
+        <div className="flex items-center gap-3 border-b border-green-200 bg-green-50 px-4 py-2 text-[12.5px] text-green-900">
+          <span className="flex-1">
+            <b>Signed.</b> Electronically signed by {report.signedBy} on{" "}
+            {formatTime(report.signedAt!)}. This draft is final.
+          </span>
+          <a href={pdfUrl} download className={linkButton}>
+            Download PDF
+          </a>
+          <button
+            type="button"
+            disabled={reopen.isPending}
+            onClick={() =>
+              window.confirm(
+                "Reopen for edits? The signed PDF is kept; you'll continue on an unsigned copy that needs signing again."
+              ) && reopen.mutate()
+            }
+            className={linkButton}
+          >
+            {reopen.isPending ? "Reopening…" : "Reopen for edits"}
+          </button>
+        </div>
+      ) : (
+        <div className="flex items-center gap-3 border-b border-slate-100 px-4 py-1.5">
+          <SaveStatus status={status} onRetry={retry} />
+          <span className="flex-1" />
+          <button type="button" onClick={() => void preview()} className={linkButton}>
+            Preview PDF
+          </button>
+          <Btn
+            variant="primary"
+            disabled={generating || signing}
+            onClick={() => void signReport()}
+          >
+            {signing ? "Signing…" : "Sign report"}
+          </Btn>
+        </div>
+      )}
+      {actionError ? (
+        <p role="alert" className="border-b border-red-200 bg-red-50 px-4 py-2 text-[12px] text-red-800">
+          {apiErrorMessage(actionError)}
+          {apiErrorMessage(actionError).includes("Settings") ? (
+            <>
+              {" "}
+              <Link to="/settings" className="font-semibold underline">
+                Open Settings →
+              </Link>
+            </>
+          ) : null}
+        </p>
+      ) : null}
       <ReportEditor
         markdown={report.report}
         onChange={(md) => edit(() => md)}
-        // Read-only while a new draft is written: edits here would be replaced.
-        editable={!generating}
+        // Read-only once signed, and while a new draft is written (edits would be replaced).
+        editable={!generating && !signed && !signing}
       />
     </>
   );
