@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CalendarDays, Mail, MapPin, Pencil, Zap } from "lucide-react";
+import { Cake, CalendarDays, Mail, MapPin, Pencil, Zap } from "lucide-react";
 import { supportedRegions, type CaseInjuryDetails } from "@azime/contracts";
 import { cn } from "@/lib/utils";
 import { caseQueryOptions, updateCaseInjuryDetails } from "../../../queries";
@@ -105,7 +105,7 @@ export default function CaseHeader({ caseId }: { caseId: string }) {
       <div className="border-t border-slate-200 bg-slate-50/60 px-6 py-5">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Injury details
+            Patient & injury details
           </h2>
           {!draft ? (
             <button
@@ -116,6 +116,7 @@ export default function CaseHeader({ caseId }: { caseId: string }) {
                 setDraft({
                   injuryType: caseData.injuryType,
                   dateOfInjury: caseData.dateOfInjury,
+                  dateOfBirth: caseData.dateOfBirth,
                   regions: [...caseData.regions],
                 });
               }}
@@ -126,13 +127,20 @@ export default function CaseHeader({ caseId }: { caseId: string }) {
         </div>
 
         {!draft ? (
-          <dl className="grid gap-5 sm:grid-cols-3">
+          <dl className="grid gap-5 sm:grid-cols-4">
             <Detail icon={<Zap className="size-4" />} label="Injury type">
               {injuryTypes.find(({ value }) => value === caseData.injuryType)?.label}
             </Detail>
             <Detail icon={<CalendarDays className="size-4" />} label="Date of injury">
               {caseData.dateOfInjury ? (
                 formatDate(caseData.dateOfInjury)
+              ) : (
+                <span className="text-slate-400">Not specified</span>
+              )}
+            </Detail>
+            <Detail icon={<Cake className="size-4" />} label="Date of birth">
+              {caseData.dateOfBirth ? (
+                formatDate(caseData.dateOfBirth)
               ) : (
                 <span className="text-slate-400">Not specified</span>
               )}
@@ -161,7 +169,7 @@ export default function CaseHeader({ caseId }: { caseId: string }) {
               mutation.mutate(draft);
             }}
           >
-            <fieldset disabled={mutation.isPending} className="grid gap-5 sm:grid-cols-3">
+            <fieldset disabled={mutation.isPending} className="grid gap-5 sm:grid-cols-4">
               <label className="block">
                 <span className="text-sm font-medium text-slate-600">Injury type</span>
                 <select
@@ -189,6 +197,17 @@ export default function CaseHeader({ caseId }: { caseId: string }) {
                   value={draft.dateOfInjury ?? ""}
                   onChange={(event) =>
                     setDraft({ ...draft, dateOfInjury: event.target.value || null })
+                  }
+                />
+              </label>
+              <label className="block">
+                <span className="text-sm font-medium text-slate-600">Date of birth</span>
+                <input
+                  type="date"
+                  className="mt-1 block h-9 w-full rounded-md border border-slate-300 bg-white px-2 text-sm"
+                  value={draft.dateOfBirth ?? ""}
+                  onChange={(event) =>
+                    setDraft({ ...draft, dateOfBirth: event.target.value || null })
                   }
                 />
               </label>
@@ -241,7 +260,7 @@ export default function CaseHeader({ caseId }: { caseId: string }) {
               </button>
               {mutation.isError ? (
                 <p role="alert" className="text-sm text-red-700">
-                  Failed to save injury details. Please try again.
+                  Failed to save case details. Please try again.
                 </p>
               ) : null}
             </div>

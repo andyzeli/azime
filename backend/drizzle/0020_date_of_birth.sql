@@ -1,0 +1,1 @@
+ALTER TABLE "patientcase" ADD COLUMN "date_of_birth" date;

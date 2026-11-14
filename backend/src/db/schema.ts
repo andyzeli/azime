@@ -83,6 +83,7 @@ export const PatientCase = pgTable("patientcase", {
     .notNull()
     .default("specific"),
   dateOfInjury: date("date_of_injury"),
+  dateOfBirth: date("date_of_birth"),
   regions: text("regions").array().$type<Region[]>().notNull().default([]),
   amaMode: varchar("ama_mode", { length: 20 }).$type<AmaMode>().notNull(),
   // Verbatim from the referral; the final report answers each one.

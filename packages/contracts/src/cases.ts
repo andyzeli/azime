@@ -5,6 +5,7 @@ export const caseInjuryDetailsSchema = z
   .object({
     injuryType: z.enum(["specific", "cumulative", "undetermined"]),
     dateOfInjury: z.iso.date().nullable(),
+    dateOfBirth: z.iso.date().nullable(),
     regions: z.array(regionSchema),
   })
   .strict();
