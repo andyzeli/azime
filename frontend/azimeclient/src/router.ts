@@ -22,6 +22,7 @@ import {
 } from "./routes/billing";
 import { aptRoute, calistRoute, calRoute, listRoute } from "./routes/apts";
 import { contactsRoute } from "./routes/contacts";
+import { settingsRoute } from "./routes/settings";
 import PatientQuestionnairePatientPage from "./routes/patient/PatientQuestionnairePatientPage";
 import TabletHome from "./routes/tablet/TabletHome";
 
@@ -53,6 +54,7 @@ const routeTree = rootRoute.addChildren([
   ]),
   billingRoute.addChildren([billingIndexRoute, layoutARoute, layoutBRoute]),
   contactsRoute,
+  settingsRoute,
   patientQuestionnaireRoute,
   tabletRoute,
   indexRoute,

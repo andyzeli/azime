@@ -184,7 +184,8 @@ export default function CockpitShell() {
         : firstBlocker("mmi")
           ? "current"
           : "done",
-    report: !readiness?.input ? "todo" : report ? "done" : "current",
+    // Done once signed: the signed PDF is what goes out.
+    report: !readiness?.input ? "todo" : report?.signedAt ? "done" : "current",
   } satisfies Record<string, TabStatus>;
   const analysisMeta = !workflow.visitSaved
     ? workflow.regions.some((r) => r.analysisRun)
@@ -225,9 +226,11 @@ export default function CockpitShell() {
       : null) ??
     fromBlocker("analysis") ??
     fromBlocker("mmi") ??
-    (readiness?.input && !report
+    (readiness?.input && !report?.report
       ? { message: "Generate the report.", to: "report" }
-      : null);
+      : readiness?.input && !report?.signedAt
+        ? { message: "Review and sign the report.", to: "report" }
+        : null);
   // The optional prep step mentions Visit too, so the button is highlighted then as well.
   const visitNext =
     step?.to === "visit" || Boolean(visitMissing && analysisStep?.optional);
@@ -349,7 +352,9 @@ export default function CockpitShell() {
           n={5}
           status={status.report}
           label="Report"
-          meta={status.report === "current" ? "ready" : undefined}
+          meta={
+            status.report !== "current" ? undefined : report?.report ? "to sign" : "ready"
+          }
         />
 
         {/* While a pass runs, the banner below says what to do; the next step could contradict it. */}

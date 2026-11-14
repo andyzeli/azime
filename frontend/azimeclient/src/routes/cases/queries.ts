@@ -38,6 +38,8 @@ import {
   caseReportResponseSchema,
   saveCaseReportRequestSchema,
   type SaveCaseReportRequest,
+  practiceSettingsSchema,
+  type PracticeSettings,
   saveCaseOpinionsRequestSchema,
   type SaveCaseOpinionsRequest,
   type CaseContactDto,
@@ -686,6 +688,41 @@ export const saveCaseReport = (
       saveCaseReportRequestSchema.parse(input)
     )
     .then((response) => caseReportResponseSchema.parse(response.data));
+
+// Signing freezes the latest draft and stores its PDF; reopening continues on a copy.
+export const signCaseReport = (
+  caseId: string,
+  reportId: number,
+  expectedRevision: number
+) =>
+  axios
+    .post<unknown>(`${API_BASE_URL}/cases/${caseId}/report/${reportId}/sign`, {
+      expectedRevision,
+    })
+    .then((response) => caseReportResponseSchema.parse(response.data));
+
+export const reopenCaseReport = (caseId: string, reportId: number) =>
+  axios
+    .post<unknown>(`${API_BASE_URL}/cases/${caseId}/report/${reportId}/reopen`)
+    .then((response) => caseReportResponseSchema.parse(response.data));
+
+// The signed PDF (downloads), or a watermarked preview of an unsigned draft (opens).
+export const caseReportPdfUrl = (caseId: string, reportId: number) =>
+  `${API_BASE_URL}/cases/${caseId}/report/${reportId}/pdf`;
+
+// The letterhead and signer for report PDFs.
+export const practiceSettingsQueryOptions = queryOptions({
+  queryKey: ["practiceSettings"],
+  queryFn: () =>
+    axios
+      .get<unknown>(`${API_BASE_URL}/practice-settings`)
+      .then((response) => practiceSettingsSchema.parse(response.data)),
+});
+
+export const savePracticeSettings = (settings: PracticeSettings) =>
+  axios
+    .put<unknown>(`${API_BASE_URL}/practice-settings`, practiceSettingsSchema.parse(settings))
+    .then((response) => practiceSettingsSchema.parse(response.data));
 
 // What Generate would send the model, without calling it or saving.
 export const generateCaseReportDryRun = (caseId: string) =>

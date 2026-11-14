@@ -693,6 +693,9 @@ export const caseReportResponseSchema = z.object({
     .object({ provider: reportProviderSchema, model: z.string() })
     .nullable(),
   revision: z.number().int().nonnegative(),
+  // Set when the physician signs; a signed draft is final and has a stored PDF.
+  signedAt: z.string().nullable(),
+  signedBy: z.string().nullable(), // the signature line name, e.g. "Jane Doe, MD"
   createdAt: z.string(),
   updatedAt: z.string(),
 });
@@ -706,6 +709,11 @@ export const saveCaseReportRequestSchema = z
   })
   .strict();
 export type SaveCaseReportRequest = z.infer<typeof saveCaseReportRequestSchema>;
+
+// POST /cases/:caseId/report/:reportId/sign: the revision the physician reviewed.
+export const signCaseReportRequestSchema = z
+  .object({ expectedRevision: z.number().int().nonnegative() })
+  .strict();
 
 const monthNames = [
   "January",
