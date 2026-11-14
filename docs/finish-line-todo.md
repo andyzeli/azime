@@ -4,7 +4,7 @@ Status as of 2026-10-23. The pipeline is done end to end (Records â†’ Summary â†
 
 ## Done recently (for reference)
 
-- Report tab: builder, readiness, Generate (one Markdown call per variant prompt), review with out-of-date and fact check. "Inspect report input" shows the exact prompts without drafting.
+- Report tab: builder, readiness, Generate (one Markdown call per variant prompt), review with out-of-date and fact check. Input and Draft sub-tabs; the draft is edited in place (TipTap over Markdown, autosaved), signed, and downloaded as a PDF (letterhead from Settings).
 - Report readiness blocks when diagnoses, treatment review, visit or case summary changed since the post-exam analysis ran.
 - Referral questions: entered on the intake page (`/cases/$caseId`, below Records), stored on `patientcase.referral_questions`, sent to the drafter in the report input; each variant prompt ends with an addendum that restates and answers them.
 - Combining: CVC formula with per-region caps in `backend/src/ama/combineImpairment.ts`; no rounding (intermediate or final).

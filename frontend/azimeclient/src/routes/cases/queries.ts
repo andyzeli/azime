@@ -724,14 +724,6 @@ export const savePracticeSettings = (settings: PracticeSettings) =>
     .put<unknown>(`${API_BASE_URL}/practice-settings`, practiceSettingsSchema.parse(settings))
     .then((response) => practiceSettingsSchema.parse(response.data));
 
-// What Generate would send the model, without calling it or saving.
-export const generateCaseReportDryRun = (caseId: string) =>
-  axios
-    .post<{ input: unknown; variant: string; systemPrompt: string; userPrompt: string }>(
-      `${API_BASE_URL}/cases/${caseId}/report?dryRun=1`
-    )
-    .then((response) => response.data);
-
 export const generateCaseReport = (caseId: string) =>
   axios
     .post<unknown>(`${API_BASE_URL}/cases/${caseId}/report`)

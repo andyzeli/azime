@@ -8,7 +8,7 @@ Updated 2026-10-23. This records the decisions from the report-input simplificat
 - Preserve physician decisions and supplied rationales. Do not implement a large clinical contradiction rules engine for v1 or silently reconcile inconsistent testing data.
 - Keep applicability rationale paired with each diagnosis. Do not match functionally equivalent strings or deduplicate the new remaining-care rationale arrays.
 - Report should read as cohesive prose, loosely following `docs/ime-report.md`, rather than dumping input fields. Explicit referral questions are answered in the same drafting pass, in the Addendum.
-- Small, explicit changes. The user reviews JSON through Inspect report input, which copies pretty JSON to clipboard. Generate draft performs the actual model call.
+- Small, explicit changes. The Input sub-tab shows what the drafter is sent. Generate draft performs the actual model call.
 
 ## Current flow and files
 
@@ -17,7 +17,7 @@ Updated 2026-10-23. This records the decisions from the report-input simplificat
 - `backend/src/report/inputs/`: four variant projections plus examination, treatment and MMI summary helpers.
 - `packages/contracts/src/report.ts`: input validation/types, saved-report compatibility, report fact checks. Active input currently uses `report-v5`; multiple iterative changes have occurred under that version. Do not assume an arbitrary saved v5 snapshot has today's shape.
 - `backend/src/ai/reportPrompts/`: four self-contained system prompts.
-- `backend/src/ai/reportDraftPrompt.ts`: selects prompt and serializes input for dry run and generation.
+- `backend/src/ai/reportDraftPrompt.ts`: selects prompt and serializes input for generation.
 - `backend/src/ai/makeReportDraft.ts`, report controller and report queries: actual draft generation/persistence.
 - `frontend/azimeclient/src/routes/p_cases/p_case/tabs/report.lazy.tsx`: builder preview, input inspection, generation, and draft display.
 - `docs/ex-input.json`, `ex-4.json`, and other examples are manually updated snapshots, not stable test fixtures or necessarily today's schema.
@@ -56,7 +56,6 @@ Updated 2026-10-23. This records the decisions from the report-input simplificat
 - Questions are entered elsewhere and stored in patientcase.referral_questions (text[] in the schema).
 - `referralQuestions` reaches the frozen input and the actual model call: `buildReportDraftUserPrompt` now validates and serializes the full input with compact JSON.
 - User chose same-pass answers. Current prompts request an Addendum restating and answering the supplied questions.
-- Inspect report input shows system prompt, compact user prompt, and readable JSON with character counts; clipboard JSON remains formatted.
 - Verify actual question coverage and unsupported-question handling during real draft testing.
 
 ### Visit-note headings carry source meaning — IMPLEMENTED in prompts
@@ -94,7 +93,7 @@ Updated 2026-10-23. This records the decisions from the report-input simplificat
 
 ## Generation and inspection actions (2026-10-23)
 
-The Report tab now offers Generate draft (Regenerate draft when a prior draft exists) and a separate Inspect report input action. Inspection retains formatted JSON clipboard copying and prompt character counts and no longer hides the latest draft. Both paths use the shared prompt/input builder. Generation errors are displayed in the footer.
+The Report tab offers Generate draft (Regenerate draft when a prior draft exists); generation errors are displayed in the footer. The earlier Inspect report input (dry run) action was removed.
 
 ## Start here in a new chat
 

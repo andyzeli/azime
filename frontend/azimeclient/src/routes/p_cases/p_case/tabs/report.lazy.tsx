@@ -4,7 +4,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   reportFactCheck,
   reportVariantLabels,
-  type ReportVariant,
   supportedRegions,
   type CaseReportResponse,
   type ReportBlocker,
@@ -17,7 +16,6 @@ import {
   caseReportQueryOptions,
   generateCaseReport,
   caseReportPdfUrl,
-  generateCaseReportDryRun,
   reopenCaseReport,
   reportInputQueryOptions,
   saveCaseReport,
@@ -82,24 +80,6 @@ function Tab() {
     reportInputQueryOptions(caseId)
   );
   const { data: latest } = useQuery(caseReportQueryOptions(caseId));
-  const [copyStatus, setCopyStatus] = useState<
-    "idle" | "copying" | "copied" | "failed"
-  >("idle");
-  const copyInput = async (input: unknown) => {
-    setCopyStatus("copying");
-    try {
-      await navigator.clipboard.writeText(JSON.stringify(input, null, 2));
-      setCopyStatus("copied");
-    } catch {
-      setCopyStatus("failed");
-    }
-  };
-  // Inspection uses the same input and prompts as generation.
-  const dryRun = useMutation({
-    mutationFn: () => generateCaseReportDryRun(caseId),
-    onMutate: () => setCopyStatus("idle"),
-    onSuccess: (result) => copyInput(result.input),
-  });
   const generate = useMutation({
     mutationKey: aiMutationKey(caseId, "report"),
     mutationFn: () => generateCaseReport(caseId),
@@ -166,7 +146,6 @@ function Tab() {
         ) : (
           <Blockers caseId={caseId} blockers={data.blockers} />
         )}
-        {dryRun.data ? <ReportInputInspection result={dryRun.data} /> : null}
       </div>
       <div className={cn("px-5 py-4", view !== "draft" && "hidden")}>
         {latest ? (
@@ -194,39 +173,14 @@ function Tab() {
               : null}
         </span>
         <span className="flex-1" />
-        {dryRun.isError ? (
-          <span className="text-[11px] font-semibold text-red-700">
-            {apiErrorMessage(dryRun.error)}
-          </span>
-        ) : null}
-        <span role="status" className="text-[11px] text-slate-600">
-          {copyStatus === "copied" ? "Input JSON copied to clipboard." : null}
-          {copyStatus === "failed"
-            ? "Clipboard blocked. Retry or copy from Input (JSON) below."
-            : null}
-        </span>
-        {copyStatus === "failed" && dryRun.data ? (
-          <Btn onClick={() => void copyInput(dryRun.data.input)}>Copy JSON</Btn>
-        ) : null}
         {generate.isError ? (
           <span role="alert" className="text-[11px] font-semibold text-red-700">
             {apiErrorMessage(generate.error)}
           </span>
         ) : null}
         <Btn
-          disabled={
-            !data?.input ||
-            dryRun.isPending ||
-            generate.isPending ||
-            copyStatus === "copying"
-          }
-          onClick={() => dryRun.mutate()}
-        >
-          {dryRun.isPending ? "Assembling…" : "Generate draft (dry run)"}
-        </Btn>
-        <Btn
           variant="primary"
-          disabled={!data?.input || generate.isPending || dryRun.isPending}
+          disabled={!data?.input || generate.isPending}
           onClick={regenerate}
         >
           {generate.isPending
@@ -237,40 +191,6 @@ function Tab() {
         </Btn>
       </footer>
     </main>
-  );
-}
-
-// Inspect the exact prompts while retaining the report below.
-function ReportInputInspection({
-  result,
-}: {
-  result: {
-    input: unknown;
-    variant: string;
-    systemPrompt: string;
-    userPrompt: string;
-  };
-}) {
-  const block = (title: string, text: string) => (
-    <details className="border-t border-slate-200 first:border-t-0">
-      <summary className="cursor-pointer px-4 py-2.5 text-[12px] font-semibold text-slate-600">
-        {title} · {text.length.toLocaleString()} characters
-      </summary>
-      <pre className="max-h-[600px] overflow-auto whitespace-pre-wrap border-t border-slate-100 px-4 py-3 text-[11px] leading-snug text-slate-700">
-        {text}
-      </pre>
-    </details>
-  );
-  return (
-    <section className="rounded-xl border-2 border-dashed border-slate-300 bg-white">
-      <div className="border-b border-slate-200 px-4 py-2.5 text-[13.5px] font-semibold">
-        Dry run:{" "}
-        {reportVariantLabels[result.variant as ReportVariant] ?? result.variant}
-      </div>
-      {block("System prompt", result.systemPrompt)}
-      {block("User prompt", result.userPrompt)}
-      {block("Input (JSON)", JSON.stringify(result.input, null, 2))}
-    </section>
   );
 }
 
@@ -808,15 +728,6 @@ function Builder({ input }: { input: ReportInput }) {
         ) : null}
       </Section>
 
-      {/* <details className="rounded-xl border border-dashed border-slate-300 bg-white">
-        <summary className="cursor-pointer px-4 py-2.5 text-[12px] font-semibold text-slate-600">
-          Drafter input (JSON) · {JSON.stringify(input).length.toLocaleString()}{" "}
-          characters
-        </summary>
-        <pre className="max-h-[600px] overflow-auto border-t border-slate-100 px-4 py-3 text-[11px] leading-snug text-slate-700">
-          {JSON.stringify(input, null, 2)}
-        </pre>
-      </details> */}
     </>
   );
 }

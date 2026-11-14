@@ -8,7 +8,6 @@ import {
 import { MissingPrerequisiteError } from "../errors/missingPrerequisiteError.js";
 import { caseExists } from "../queries/caseArtifactQueries.js";
 import { makeReportDraft } from "../ai/makeReportDraft.js";
-import { buildReportDraftRequest } from "../ai/reportDraftPrompt.js";
 import {
   createCaseReport,
   getLatestCaseReport,
@@ -162,7 +161,6 @@ export const reportController = {
   generateHandler: async (
     request: FastifyRequest<{
       Params: { caseId: string };
-      Querystring: { dryRun?: string };
     }>,
     reply: FastifyReply,
   ) => {
@@ -180,9 +178,6 @@ export const reportController = {
           .send({
             error: blockers[0]?.message ?? "The report input is incomplete",
           });
-      // Inspection returns the same prompts without calling the model or saving a report.
-      if (request.query.dryRun)
-        return reply.send(buildReportDraftRequest(input));
       const row = await createCaseReport(caseId, input);
       const { report, source } = await makeReportDraft(input);
       return reply.send(await saveCaseReportDraft(row.id, report, source));
