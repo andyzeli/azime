@@ -63,6 +63,11 @@ gcloud sql users create azime --instance=$SQL_INSTANCE --password=$DB_PASS
 # Cloud Run reaches Cloud SQL over a unix socket
 printf %s "postgresql://azime:${DB_PASS}@/azime?host=/cloudsql/${PROJECT_ID}:${REGION}:${SQL_INSTANCE}" \
   | gcloud secrets create database-url --data-file=-
+
+# AI provider keys, for passes switched to OpenAI or Claude (paste the key, then
+# press Enter and Ctrl-D). Deploys fail until both secrets exist.
+gcloud secrets create openai-api-key --data-file=-
+gcloud secrets create anthropic-api-key --data-file=-
 ```
 
 `db-f1-micro` is the cheapest tier (shared CPU, no SLA). Bump to `db-g1-small` if it feels slow.
@@ -84,7 +89,9 @@ gcloud iam service-accounts create azime-run --display-name="azime Cloud Run"
 gcloud projects add-iam-policy-binding $PROJECT_ID --member=serviceAccount:$SA --role=roles/cloudsql.client
 gcloud projects add-iam-policy-binding $PROJECT_ID --member=serviceAccount:$SA --role=roles/aiplatform.user
 gcloud storage buckets add-iam-policy-binding gs://$BUCKET --member=serviceAccount:$SA --role=roles/storage.objectAdmin
-gcloud secrets add-iam-policy-binding database-url --member=serviceAccount:$SA --role=roles/secretmanager.secretAccessor
+for secret in database-url openai-api-key anthropic-api-key; do
+  gcloud secrets add-iam-policy-binding $secret --member=serviceAccount:$SA --role=roles/secretmanager.secretAccessor
+done
 # No key file in prod: signing upload/download URLs goes through IAM signBlob
 gcloud iam service-accounts add-iam-policy-binding $SA --member=serviceAccount:$SA --role=roles/iam.serviceAccountTokenCreator
 
@@ -148,17 +155,16 @@ The command the script runs:
 gcloud beta run deploy $SERVICE --source . --region=$REGION \
   --service-account=$SA \
   --add-cloudsql-instances=${PROJECT_ID}:${REGION}:${SQL_INSTANCE} \
-  --set-secrets=DATABASE_URL=database-url:latest \
+  --set-secrets=DATABASE_URL=database-url:latest,OPENAI_API_KEY=openai-api-key:latest,ANTHROPIC_API_KEY=anthropic-api-key:latest \
   --env-vars-file=deploy/env.prod.yaml \
   --timeout=3600 --memory=1Gi --max-instances=2 \
   --no-allow-unauthenticated --iap
 ```
 
 Non-secret env vars live in `deploy/env.prod.yaml` (committed; every deploy replaces the
-whole set with that file). AI model/provider settings use the code defaults (Gemini via
-Vertex); to override one, add it there (names in `backend/.env.example`). Keep every
-workflow on Gemini unless OpenAI/Anthropic is also under a BAA. Secrets go in Secret Manager +
-`--set-secrets`, never in the YAML.
+whole set with that file). It lists every AI pass with its Gemini, OpenAI and Claude
+settings; switch a pass by changing its `*_PROVIDER` and redeploying. Record extraction
+(pass 1) is Gemini only. Secrets go in Secret Manager + `--set-secrets`, never in the YAML.
 
 ## 8. One-time after the first deploy
 
