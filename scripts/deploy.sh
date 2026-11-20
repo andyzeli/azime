@@ -23,7 +23,7 @@ echo "Deploying $COMMIT to $SERVICE in $PROJECT_ID"
 gcloud beta run deploy "$SERVICE" --source . --project="$PROJECT_ID" --region="$REGION" \
   --service-account="$SA" \
   --add-cloudsql-instances="${PROJECT_ID}:${REGION}:${SQL_INSTANCE}" \
-  --set-secrets=DATABASE_URL=database-url:latest \
+  --set-secrets=DATABASE_URL=database-url:latest,OPENAI_API_KEY=openai-api-key:latest,ANTHROPIC_API_KEY=anthropic-api-key:latest \
   --env-vars-file=deploy/env.prod.yaml \
   --update-labels="commit=${COMMIT}" \
   --timeout=3600 --memory=1Gi --max-instances=2 \
