@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useMutationState,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useState } from "react";
 import {
   Collapsible,
@@ -90,10 +95,11 @@ export default function RecordsPanel({ caseId }: { caseId: string }) {
   const queryClient = useQueryClient();
   const recordsQuery = useQuery(recordsQueryOptions(caseId));
 
+  // Failures also refresh: the server marks the record failed.
   const summarizeMutation = useMutation({
     mutationFn: summarizeRecord,
     mutationKey: ["records", "summarize"],
-    onSuccess: () => {
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["records"] });
     },
   });
@@ -105,6 +111,10 @@ export default function RecordsPanel({ caseId }: { caseId: string }) {
       queryClient.invalidateQueries({ queryKey: ["records"] });
     },
   });
+
+  // A mutation hook only tracks its latest call; several records can be in flight.
+  const summarizing = usePendingRecordIds(["records", "summarize"]);
+  const deleting = usePendingRecordIds(["records", "delete"]);
 
   if (recordsQuery.isPending) {
     return (
@@ -135,6 +145,9 @@ export default function RecordsPanel({ caseId }: { caseId: string }) {
   }
 
   const records = recordsQuery.data;
+  // The list isn't refetched when a summary starts, so show it as running here.
+  const summaryStatus = (record: (typeof records)[number]) =>
+    summarizing.includes(record.id) ? "processing" : record.summaryStatus;
 
   const handleViewDocument = async (recordId: number) => {
     try {
@@ -187,24 +200,20 @@ export default function RecordsPanel({ caseId }: { caseId: string }) {
                   <div className="flex flex-wrap items-center gap-3">
                     <span
                       className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${getSummaryStatusClassName(
-                        record.summaryStatus,
+                        summaryStatus(record),
                       )}`}
                     >
-                      {getSummaryStatusLabel(record.summaryStatus)}
+                      {getSummaryStatusLabel(summaryStatus(record))}
                     </span>
                     {record.url ? (
                       <>
                         <button
                           type="button"
                           onClick={() => summarizeMutation.mutate(record.id)}
-                          disabled={
-                            summarizeMutation.isPending &&
-                            summarizeMutation.variables === record.id
-                          }
+                          disabled={summarizing.includes(record.id)}
                           className="text-sm font-medium text-emerald-700 hover:text-emerald-900 disabled:text-emerald-300"
                         >
-                          {summarizeMutation.isPending &&
-                          summarizeMutation.variables === record.id
+                          {summarizing.includes(record.id)
                             ? "Summarizing..."
                             : record.summaryStatus === "completed"
                               ? "Re-run"
@@ -229,14 +238,10 @@ export default function RecordsPanel({ caseId }: { caseId: string }) {
                     <button
                       type="button"
                       onClick={() => handleDeleteRecord(record.id)}
-                      disabled={
-                        deleteRecordMutation.isPending &&
-                        deleteRecordMutation.variables === record.id
-                      }
+                      disabled={deleting.includes(record.id)}
                       className="text-sm font-medium text-red-600 hover:text-red-800 disabled:text-red-300"
                     >
-                      {deleteRecordMutation.isPending &&
-                      deleteRecordMutation.variables === record.id
+                      {deleting.includes(record.id)
                         ? "Deleting..."
                         : "Delete"}
                     </button>
@@ -267,3 +272,9 @@ export default function RecordsPanel({ caseId }: { caseId: string }) {
     </CockpitSection>
   );
 }
+
+const usePendingRecordIds = (mutationKey: string[]) =>
+  useMutationState({
+    filters: { mutationKey, status: "pending" },
+    select: (mutation) => mutation.state.variables as number,
+  });
