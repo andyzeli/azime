@@ -544,6 +544,29 @@ function AnalysisReview({
       ...d,
       treatments: { ...d.treatments, [id]: fn(d.treatments[id] ?? {}) },
     }));
+  // Review by exception: the physician overrides or prunes what's wrong, then accepts the
+  // AI's judgments on every row not yet reviewed. Existing overrides and prunes stay.
+  const agreeWithRest = () => {
+    edit((d) => ({
+      ...d,
+      treatments: {
+        ...d.treatments,
+        ...Object.fromEntries(
+          rows
+            .filter((row) => !isRowReviewed(row, d.treatments[row.id]))
+            .map((row) => {
+              const r = d.treatments[row.id] ?? {};
+              return [
+                row.id,
+                { ...r, disposition: "keep", ...agreeAll(row, r, true) },
+              ];
+            })
+        ),
+      },
+    }));
+    // Clears any row left showing "override" with nothing overridden.
+    setResetCount((n) => n + 1);
+  };
 
   // Physician-added treatments are reviewed by definition, so they show only under "All".
   // They can be assessed for analyzed diagnoses (the backend checks the snapshot scope).
@@ -587,8 +610,7 @@ function AnalysisReview({
           <div className="flex items-center gap-2.5 border-b border-slate-200 px-4 py-3">
             <h2 className="text-[13.5px] font-semibold">Treatment analysis</h2>
             <span className="text-[11px] text-slate-500">
-              Applicability per diagnosis, exhaustion per treatment · agree,
-              override, or prune each treatment
+              Override or prune what's wrong, then agree with the rest
             </span>
             <span className="flex-1" />
             <Segmented
@@ -603,6 +625,11 @@ function AnalysisReview({
                 { value: "pruned", label: `Pruned ${prunedCount}` },
               ]}
             />
+            {rows.length > reviewedCount ? (
+              <Btn onClick={agreeWithRest}>
+                Agree with the rest ({rows.length - reviewedCount})
+              </Btn>
+            ) : null}
           </div>
           {notAnalyzed.length ? (
             <div className="flex items-center gap-3 border-b border-amber-200 bg-amber-50 px-4 py-2.5 text-[12px] text-amber-900">
@@ -1061,7 +1088,7 @@ const hasOverride = (steering: RowSteering) =>
   );
 
 // Every judgment on the row (applicability per diagnosis, exhaustion) marked agree,
-// optionally keeping existing overrides.
+// optionally keeping existing overrides. Reviews for diagnoses out of scope are kept.
 const agreeAll = (
   row: TreatmentRow,
   steering: RowSteering,
@@ -1072,16 +1099,19 @@ const agreeAll = (
       ? review
       : { action: "agree" as const };
   return {
-    assessments: Object.fromEntries(
-      row.assessments.map(({ canonicalDx }) => [
-        canonicalDx,
-        {
-          applicability: keep(
-            steering.assessments?.[canonicalDx]?.applicability
-          ),
-        },
-      ])
-    ),
+    assessments: {
+      ...steering.assessments,
+      ...Object.fromEntries(
+        row.assessments.map(({ canonicalDx }) => [
+          canonicalDx,
+          {
+            applicability: keep(
+              steering.assessments?.[canonicalDx]?.applicability
+            ),
+          },
+        ])
+      ),
+    },
     exhaustion: keep(steering.exhaustion),
   };
 };
@@ -1224,43 +1254,7 @@ function TreatmentRowView({
         ) : null}
       </div>
       <div className={cn(pruned && "opacity-50")}>
-        {row.assessments.map((a, i) => {
-          const review = steering.assessments?.[a.canonicalDx];
-          const app =
-            review?.applicability?.action === "override"
-              ? review.applicability.value
-              : a.aiApplicability;
-          return (
-            <div
-              key={a.canonicalDx}
-              className={cn(
-                "grid grid-cols-[100px_auto_1fr] items-center gap-1.5 py-0.5 text-[11.5px]",
-                i > 0 && "mt-1 border-t border-dashed border-slate-200 pt-1.5",
-                lookups.notSupported.has(a.canonicalDx) && "opacity-55"
-              )}
-            >
-              <span className="text-[11px] font-semibold text-slate-500">
-                {lookups.dxLabel(a.canonicalDx)}
-                {lookups.notSupported.has(a.canonicalDx) ? (
-                  <span className="block text-[10px] font-semibold text-amber-700">
-                    dx not supported
-                  </span>
-                ) : null}
-                {/* The rest of the row was reviewed before this diagnosis was added. */}
-                {steering.disposition === "keep" && !review?.applicability ? (
-                  <span className="block text-[10px] font-semibold text-blue-700">
-                    new · unreviewed
-                  </span>
-                ) : null}
-              </span>
-              <Chip
-                value={app}
-                label={applicabilityLabel[app]}
-                overridden={review?.applicability?.action === "override"}
-              />
-            </div>
-          );
-        })}
+        <ApplicabilitySummary row={row} steering={steering} lookups={lookups} />
       </div>
       <div className={cn(pruned && "opacity-50")}>
         <Chip
@@ -1575,6 +1569,101 @@ function EpisodeCite({
     <Cite recordId={event?.id}>
       {event ? `${kind} ${event.date ?? ""}`.trim() : episodeId}
     </Cite>
+  );
+}
+
+const summaryOrder: Applicability[] = [
+  "applicable",
+  "unclear",
+  "contraIndicated",
+  "not_applicable",
+];
+
+// One chip per applicability value, naming its diagnoses. Once a treatment applies to one
+// diagnosis, "not applicable" for the others is never used downstream, so it is only shown
+// when nothing else applies or the physician overrode a diagnosis to it.
+function ApplicabilitySummary({
+  row,
+  steering,
+  lookups,
+}: {
+  row: TreatmentRow;
+  steering: RowSteering;
+  lookups: Lookups;
+}) {
+  const items = row.assessments.map((a) => {
+    const review = steering.assessments?.[a.canonicalDx]?.applicability;
+    return {
+      dx: a.canonicalDx,
+      value: review?.action === "override" ? review.value : a.aiApplicability,
+      overridden: review?.action === "override",
+      // The rest of the row was reviewed before this diagnosis was added.
+      isNew: steering.disposition === "keep" && !review,
+    };
+  });
+  const groups = summaryOrder
+    .map((value) => ({
+      value,
+      items: items.filter((i) => i.value === value),
+    }))
+    .filter(
+      (g) =>
+        g.items.length &&
+        (g.value !== "not_applicable" ||
+          g.items.length === items.length ||
+          g.items.some((i) => i.overridden))
+    );
+
+  return (
+    <div className="space-y-1">
+      {groups.map((g) => (
+        <div
+          key={g.value}
+          className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5 text-[11.5px]"
+        >
+          <Chip
+            value={g.value}
+            label={applicabilityLabel[g.value]}
+            overridden={g.items.some((i) => i.overridden)}
+          />
+          {/* Name the diagnoses whenever one is overridden or not supported. */}
+          {g.items.length === items.length &&
+          !g.items.some(
+            (i) => i.overridden || lookups.notSupported.has(i.dx)
+          ) ? (
+            items.length > 1 ? (
+              <span className="text-slate-500">all {items.length} dx</span>
+            ) : null
+          ) : (
+            g.items.map((i, n) => (
+              <span
+                key={i.dx}
+                className={cn(
+                  "text-slate-600",
+                  lookups.notSupported.has(i.dx) && "text-slate-400 line-through"
+                )}
+                title={
+                  lookups.notSupported.has(i.dx) ? "dx not supported" : undefined
+                }
+              >
+                {lookups.dxLabel(i.dx)}
+                {i.overridden ? <Pencil className="ml-0.5 inline size-2.5" /> : null}
+                {n < g.items.length - 1 ? "," : ""}
+              </span>
+            ))
+          )}
+        </div>
+      ))}
+      {items.some((i) => i.isNew) ? (
+        <span className="block text-[10px] font-semibold text-blue-700">
+          new dx since your review:{" "}
+          {items
+            .filter((i) => i.isNew)
+            .map((i) => lookups.dxLabel(i.dx))
+            .join(", ")}
+        </span>
+      ) : null}
+    </div>
   );
 }
 
