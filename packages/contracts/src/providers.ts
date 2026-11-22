@@ -6,6 +6,7 @@ export type ProviderKind = z.infer<typeof providerKindSchema>;
 export const providerDisciplineOptions = [
   { value: "primary_care", label: "Primary Care" },
   { value: "orthopedics", label: "Orthopedics" },
+  { value: "neurology", label: "Neurology" },
   { value: "physical_therapy", label: "Physical Therapy" },
   { value: "occupational_therapy", label: "Occupational Therapy" },
   { value: "sports_medicine", label: "Sports Medicine" },
@@ -13,7 +14,7 @@ export const providerDisciplineOptions = [
 ] as const;
 
 const providerDisciplineValues = providerDisciplineOptions.map(
-  ({ value }) => value,
+  ({ value }) => value
 ) as [
   (typeof providerDisciplineOptions)[number]["value"],
   ...(typeof providerDisciplineOptions)[number]["value"][],
@@ -23,7 +24,7 @@ export const providerDisciplineSchema = z.enum(providerDisciplineValues);
 export type ProviderDiscipline = z.infer<typeof providerDisciplineSchema>;
 
 const providerDisciplineLabels = new Map<ProviderDiscipline, string>(
-  providerDisciplineOptions.map(({ value, label }) => [value, label]),
+  providerDisciplineOptions.map(({ value, label }) => [value, label])
 );
 
 export const getProviderDisciplineLabel = (discipline: ProviderDiscipline) =>
