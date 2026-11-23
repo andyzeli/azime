@@ -20,7 +20,7 @@ const assessmentReviewSchema = <T extends z.ZodType>(valueSchema: T) =>
     z.object({
       action: z.literal("override"),
       value: valueSchema,
-      rationale: z.string().trim().min(1),
+      rationale: z.string().trim(), // optional (may be ""); downstream passes infer it
     }),
   ]);
 

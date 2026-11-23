@@ -12,7 +12,7 @@ INPUT DOMAIN ORIENTATION:
 - 'caseContext' - injury type, date of injury, case type.
 - 'diagnoses' - the diagnoses the physician supports for this region. Analyze recovery for these only.
 - 'caseSummary' - the factual summary of the medical records: incident narrative, a dated status timeline (subjective, objective and functional status at each documented visit), a case-wide summary, and psychosocial factors.
-- 'reviewedTreatmentAnalysis' - each treatment's applicability per diagnosis and its exhaustion (one judgment per treatment, across its applicable diagnoses), as reviewed by the physician ('source: physician' marks the physician's own judgment), plus the evidence gaps and record inconsistencies the physician kept.
+- 'reviewedTreatmentAnalysis' - each treatment's applicability per diagnosis and its exhaustion (one judgment per treatment, across its applicable diagnoses), as reviewed by the physician ('source: physician' marks the physician's own judgment; its rationale may be empty when the physician gave none), plus the evidence gaps and record inconsistencies the physician kept.
 - 'visit' - today's examination, dated examinationDate:
   - 'note' - the physician's free-text note. It may contain history, symptoms, function, and examination findings.
   - 'pdq' and 'questionnaires' - patient-reported pain and function today, with the question wording and scores.

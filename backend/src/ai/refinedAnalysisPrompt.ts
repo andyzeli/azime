@@ -44,7 +44,8 @@ INPUT DOMAIN ORIENTATION
   (further use is unlikely to give meaningful additional improvement), not_exhausted
   (a relevant, feasible opportunity remains insufficiently explored) or unclear.
   Value and rationale contain the current judgment; source and reviewStatus indicate
-  origin and review state. Unreviewed does not mean physician agreement.
+  origin and review state. Unreviewed does not mean physician agreement. A physician
+  judgment may have an empty rationale when the physician gave none.
   recordStatus and recordDetail describe documented care; inclusion in this selected
   treatment analysis does not mean a treatment was administered or is recommended.
   Exhaustion does not establish that a treatment helped, failed, or is or is not recommended.
