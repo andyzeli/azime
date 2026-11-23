@@ -79,6 +79,16 @@ const applicabilityLabel: Record<Applicability, string> = {
   contraIndicated: "Contraindicated",
   unclear: "Unclear",
 };
+// Button labels, in the order they're offered.
+const applicabilityShort: Record<Applicability, string> = {
+  applicable: "Applicable",
+  unclear: "Unclear",
+  not_applicable: "Not applicable",
+  contraIndicated: "Contraindicated",
+};
+// "Not applicable" is a judgment that reaches the report; removing drops the row from analysis.
+const notApplicableHint =
+  "Not appropriate for this diagnosis. When that holds for every diagnosis, the report lists it as inappropriate care.";
 const exhaustionLabel: Record<Exhaustion, string> = {
   exhausted: "Exhausted",
   not_exhausted: "Not exhausted",
@@ -405,6 +415,7 @@ function AnalysisReview({
   const [expanded, setExpanded] = useState<string[]>([]);
   const [filter, setFilter] = useState<"all" | "unreviewed" | "pruned">("all");
   const [adding, setAdding] = useState(false);
+  const [showObvious, setShowObvious] = useState(false);
 
   const edit = (fn: (d: PhysicianSteering) => PhysicianSteering) =>
     setDraft(fn);
@@ -477,16 +488,6 @@ function AnalysisReview({
   );
   const prepCurrent =
     prepStatus.kind === "current" && !dirty && !examPrepMutation.isPending;
-  const missingRationale = Object.values(draft.treatments).some(
-    (row) =>
-      (row.exhaustion?.action === "override" &&
-        !row.exhaustion.rationale.trim()) ||
-      Object.values(row.assessments ?? {}).some(
-        (a) =>
-          a.applicability?.action === "override" &&
-          !a.applicability.rationale.trim()
-      )
-  );
   const prepModal = useExamPrepModal();
   const busy =
     saveMutation.isPending ||
@@ -598,10 +599,25 @@ function AnalysisReview({
     if (filter === "pruned") return steering?.disposition === "prune";
     return true;
   });
-  const groups: [string, TreatmentRow[]][] = [
-    ["TRIED", visibleRows.filter(isTried)],
-    ["NOT TRIED", visibleRows.filter((row) => !isTried(row))],
-  ];
+  // Never tried and, per the AI, not applicable to any diagnosis: usually a skim of names,
+  // so these start collapsed. Grouped on AI values so overriding doesn't move a row.
+  const obvious = (row: TreatmentRow) =>
+    !isTried(row) &&
+    row.assessments.length > 0 &&
+    row.assessments.every((a) => a.aiApplicability === "not_applicable");
+  const groups: { label: string; rows: TreatmentRow[]; collapsible?: true }[] =
+    [
+      { label: "TRIED", rows: visibleRows.filter(isTried) },
+      {
+        label: "NOT TRIED",
+        rows: visibleRows.filter((row) => !isTried(row) && !obvious(row)),
+      },
+      {
+        label: "NOT TRIED · AI: NOT APPLICABLE TO ANY DIAGNOSIS",
+        rows: visibleRows.filter(obvious),
+        collapsible: true,
+      },
+    ];
 
   return (
     <>
@@ -610,7 +626,7 @@ function AnalysisReview({
           <div className="flex items-center gap-2.5 border-b border-slate-200 px-4 py-3">
             <h2 className="text-[13.5px] font-semibold">Treatment analysis</h2>
             <span className="text-[11px] text-slate-500">
-              Override or prune what's wrong, then agree with the rest
+              Override or remove what's wrong, then agree with the rest
             </span>
             <span className="flex-1" />
             <Segmented
@@ -622,7 +638,7 @@ function AnalysisReview({
                   value: "unreviewed",
                   label: `Unreviewed ${rows.length - reviewedCount}`,
                 },
-                { value: "pruned", label: `Pruned ${prunedCount}` },
+                { value: "pruned", label: `Removed ${prunedCount}` },
               ]}
             />
             {rows.length > reviewedCount ? (
@@ -645,7 +661,7 @@ function AnalysisReview({
                 ) : null}
               </span>
               <Btn
-                disabled={busy || missingRationale}
+                disabled={busy}
                 onClick={() => analyzeMutation.mutate()}
                 className="border-amber-400 bg-white"
               >
@@ -668,13 +684,48 @@ function AnalysisReview({
             <span>EXHAUSTION</span>
             <span>DECISION</span>
           </div>
-          {groups.map(([label, group]) =>
+          {groups.map(({ label, rows: group, collapsible }) =>
             group.length ? (
               <div key={label}>
-                <div className="border-b border-slate-200 bg-slate-100 px-4 py-2 text-[11px] font-bold tracking-[.04em] text-slate-700">
-                  {label}
-                </div>
-                {group.map((row) => (
+                {collapsible ? (
+                  <button
+                    type="button"
+                    onClick={() => setShowObvious((show) => !show)}
+                    className="flex w-full items-start gap-2 border-b border-slate-200 bg-slate-100 px-4 py-2 text-left hover:bg-slate-200/60"
+                  >
+                    {showObvious ? (
+                      <ChevronDown className="mt-px size-4 shrink-0 text-slate-500" />
+                    ) : (
+                      <ChevronRight className="mt-px size-4 shrink-0 text-slate-500" />
+                    )}
+                    <span>
+                      <span className="text-[11px] font-bold tracking-[.04em] text-slate-700">
+                        {label} ({group.length})
+                      </span>
+                      {showObvious ? null : (
+                        <span className="mt-0.5 block text-[11.5px] text-slate-500">
+                          {group
+                            .map((row) => {
+                              const r = draft.treatments[row.id];
+                              return `${row.treatment}${
+                                r?.disposition === "prune"
+                                  ? " (removed)"
+                                  : r && hasOverride(r)
+                                    ? " (overridden)"
+                                    : ""
+                              }`;
+                            })
+                            .join(" · ")}
+                        </span>
+                      )}
+                    </span>
+                  </button>
+                ) : (
+                  <div className="border-b border-slate-200 bg-slate-100 px-4 py-2 text-[11px] font-bold tracking-[.04em] text-slate-700">
+                    {label}
+                  </div>
+                )}
+                {(collapsible && !showObvious ? [] : group).map((row) => (
                   <TreatmentRowView
                     key={`${row.id}:${resetCount}`}
                     row={row}
@@ -873,10 +924,6 @@ function AnalysisReview({
                 postExamMutation.error
             )}
           </span>
-        ) : missingRationale ? (
-          <span className="text-[11px] font-semibold text-violet-700">
-            Add a rationale to each override
-          </span>
         ) : null}
         <span className="text-[11px] text-slate-500">
           {saveMutation.isPending
@@ -902,7 +949,7 @@ function AnalysisReview({
           </Btn>
         ) : null}
         <Btn
-          disabled={!dirty || busy || missingRationale}
+          disabled={!dirty || busy}
           onClick={() => saveMutation.mutate()}
         >
           Save review
@@ -912,7 +959,7 @@ function AnalysisReview({
         {visit && refined?.analysis ? null : (
           <Btn
             variant={visit ? "default" : "primary"}
-            disabled={busy || prepCurrent || missingRationale}
+            disabled={busy || prepCurrent}
             onClick={() => examPrepMutation.mutate()}
           >
             {examPrepMutation.isPending
@@ -929,7 +976,6 @@ function AnalysisReview({
               busy ||
               postExamMutation.isPending ||
               postExamCurrent ||
-              missingRationale ||
               !readiness.every((item) => item.ok)
             }
             onClick={() => postExamMutation.mutate()}
@@ -1185,6 +1231,38 @@ function TreatmentRowView({
     edit((filled) => ({
       assessments: { ...filled.assessments, [dx]: { applicability: review } },
     }));
+  // One value for every diagnosis: agree where the AI already says it, override elsewhere.
+  const setAllApplicability = (value: Applicability) =>
+    edit((filled) => ({
+      assessments: {
+        ...filled.assessments,
+        ...Object.fromEntries(
+          row.assessments.map((a) => {
+            const current = filled.assessments?.[a.canonicalDx]?.applicability;
+            return [
+              a.canonicalDx,
+              {
+                applicability:
+                  value === a.aiApplicability
+                    ? { action: "agree" as const }
+                    : {
+                        action: "override" as const,
+                        value,
+                        rationale:
+                          current?.action === "override"
+                            ? current.rationale
+                            : "",
+                      },
+              },
+            ];
+          })
+        ),
+      },
+    }));
+  const resolvedApplicability = row.assessments.map((a) => {
+    const review = steering.assessments?.[a.canonicalDx]?.applicability;
+    return review?.action === "override" ? review.value : a.aiApplicability;
+  });
   const setExhaustion = (review: RowSteering["exhaustion"]) =>
     edit(() => ({ exhaustion: review }));
   const exhaustion =
@@ -1286,7 +1364,9 @@ function TreatmentRowView({
             },
             {
               value: "prune",
-              label: "Prune",
+              label: "Remove",
+              title:
+                "Wrong or not worth considering. Dropped from the treatment analysis, prep sheet and care opinions.",
               activeClassName: "bg-red-100 text-red-700",
             },
           ]}
@@ -1307,19 +1387,53 @@ function TreatmentRowView({
             decision === "override" ? "border-violet-200" : "border-slate-200"
           )}
         >
+          <div className="text-[10.5px] font-bold tracking-[.05em] text-slate-500">
+            APPLICABILITY
+          </div>
+          {row.assessments.length > 1 ? (
+            <div className="grid grid-cols-[180px_auto_1fr] items-center gap-3 border-b border-dashed border-slate-200 pb-2 text-xs">
+              <span className="font-semibold text-slate-700">
+                All {row.assessments.length} diagnoses
+              </span>
+              <Segmented
+                value={
+                  new Set(resolvedApplicability).size === 1
+                    ? resolvedApplicability[0]
+                    : undefined
+                }
+                onChange={setAllApplicability}
+                options={(
+                  Object.entries(applicabilityShort) as [Applicability, string][]
+                ).map(([value, label]) => ({
+                  value,
+                  label,
+                  activeClassName: chipTone[value],
+                  title:
+                    value === "not_applicable" ? notApplicableHint : undefined,
+                }))}
+              />
+              <span className="text-[11px] text-slate-400">
+                sets every diagnosis at once
+              </span>
+            </div>
+          ) : null}
           {row.assessments.map((a) => (
             <ReviewEditor
               key={a.canonicalDx}
-              title={`Applicability · ${lookups.dxLabel(a.canonicalDx)}`}
-              labels={applicabilityLabel}
+              title={lookups.dxLabel(a.canonicalDx)}
+              dimmed={lookups.notSupported.has(a.canonicalDx)}
+              labels={applicabilityShort}
               aiValue={a.aiApplicability}
               aiRationale={a.aiApplicabilityRationale}
               review={steering.assessments?.[a.canonicalDx]?.applicability}
               onChange={(review) => setApplicability(a.canonicalDx, review)}
             />
           ))}
+          <div className="pt-1 text-[10.5px] font-bold tracking-[.05em] text-slate-500">
+            EXHAUSTION · ACROSS APPLICABLE DIAGNOSES
+          </div>
           <ReviewEditor
-            title="Exhaustion · across applicable diagnoses"
+            title="This treatment"
             labels={exhaustionLabel}
             aiValue={row.aiExhaustion}
             aiRationale={row.aiExhaustionRationale}
@@ -1690,10 +1804,11 @@ function Chip({
   );
 }
 
-// One judgment (applicability for a diagnosis, or the treatment's exhaustion): AI
-// rationale on the left, physician agree/override on the right.
+// One judgment (applicability for a diagnosis, or the treatment's exhaustion): one button
+// per value with the AI's pick marked, and the AI's rationale clamped to a line.
 function ReviewEditor<T extends string>({
   title,
+  dimmed = false,
   labels,
   aiValue,
   aiRationale,
@@ -1701,6 +1816,7 @@ function ReviewEditor<T extends string>({
   onChange,
 }: {
   title: string;
+  dimmed?: boolean;
   labels: Record<T, string>;
   aiValue: T;
   aiRationale: string;
@@ -1714,62 +1830,92 @@ function ReviewEditor<T extends string>({
       | { action: "override"; value: T; rationale: string }
   ) => void;
 }) {
-  // Save is blocked while an override's rationale is empty.
   const override = review?.action === "override" ? review : null;
+  // The why box opens on request; an override without one is fine (downstream infers it).
+  const [writingWhy, setWritingWhy] = useState(false);
+  const [rationaleOpen, setRationaleOpen] = useState(false);
   return (
-    <div className="grid grid-cols-2 gap-3 text-xs leading-normal text-slate-700">
+    <div
+      className={cn(
+        "grid grid-cols-[180px_auto_1fr] items-start gap-3 text-xs leading-normal text-slate-700",
+        dimmed && "opacity-60"
+      )}
+    >
+      <span
+        className={cn("pt-1 font-semibold", dimmed && "line-through")}
+        title={dimmed ? "dx not supported" : undefined}
+      >
+        {title}
+      </span>
       <div>
-        <div className="mb-1 text-[11px] font-semibold text-slate-500">
-          AI RATIONALE · {title.toUpperCase()}
-        </div>
-        <p>
-          <b>{labels[aiValue]}:</b> {aiRationale}
-        </p>
-      </div>
-      <div>
-        <div
-          className={cn(
-            "mb-1 text-[11px] font-semibold",
-            override ? "text-violet-600" : "text-slate-500"
-          )}
-        >
-          YOUR REVIEW
-        </div>
-        <select
-          value={override?.value ?? "ai"}
-          onChange={(e) =>
+        {/* Clicking the AI's pick agrees; any other button overrides. */}
+        <Segmented
+          value={override?.value ?? aiValue}
+          onChange={(value) =>
             onChange(
-              e.target.value === "ai"
+              value === aiValue
                 ? { action: "agree" }
                 : {
                     action: "override",
-                    value: e.target.value as T,
+                    value,
                     rationale: override?.rationale ?? "",
                   }
             )
           }
-          className="rounded-md border border-slate-300 bg-white px-1.5 py-1"
-        >
-          <option value="ai">Agree with AI</option>
-          {(Object.entries(labels) as [T, string][])
-            .filter(([v]) => v !== aiValue)
-            .map(([v, l]) => (
-              <option key={v} value={v}>
-                Override → {l}
-              </option>
-            ))}
-        </select>
+          options={(Object.entries(labels) as [T, string][]).map(
+            ([value, label]) => ({
+              value,
+              title: value === "not_applicable" ? notApplicableHint : undefined,
+              label: (
+                <>
+                  {label}
+                  {value === aiValue ? (
+                    <sup className="ml-0.5 text-[8.5px] font-bold opacity-60">
+                      AI
+                    </sup>
+                  ) : null}
+                </>
+              ),
+              activeClassName: cn(
+                (chipTone as Record<string, string>)[value],
+                override && "ring-1 ring-inset ring-violet-400"
+              ),
+            })
+          )}
+        />
         {override ? (
-          <textarea
-            value={override.rationale}
-            onChange={(e) =>
-              onChange({ ...override, rationale: e.target.value })
-            }
-            placeholder="Why do you disagree? (required)"
-            className="mt-1.5 h-14 w-full resize-none rounded-md border-[1.5px] border-violet-300 bg-white px-2 py-1.5 outline-none focus:border-violet-500"
-          />
+          writingWhy || override.rationale ? (
+            <input
+              autoFocus={writingWhy && !override.rationale}
+              value={override.rationale}
+              onChange={(e) =>
+                onChange({ ...override, rationale: e.target.value })
+              }
+              placeholder="Why? (optional)"
+              className="mt-1 block w-full rounded-md border border-violet-300 bg-white px-2 py-1 outline-none focus:border-violet-500"
+            />
+          ) : (
+            <button
+              type="button"
+              onClick={() => setWritingWhy(true)}
+              className="mt-1 block text-[11px] font-medium text-violet-600 hover:underline"
+            >
+              + why (optional)
+            </button>
+          )
         ) : null}
       </div>
+      <button
+        type="button"
+        onClick={() => setRationaleOpen((open) => !open)}
+        className={cn(
+          "pt-1 text-left text-slate-600 hover:text-slate-900",
+          !rationaleOpen && "line-clamp-1"
+        )}
+      >
+        <span className="font-semibold text-slate-400">AI: </span>
+        {aiRationale}
+      </button>
     </div>
   );
 }

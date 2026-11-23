@@ -31,6 +31,7 @@ This section should be presented in the exam section of the report, with the phy
 - ''care_marked_inappropriate' contains treatments assessed as not applicable or appropriate, contraindicated, or not recommended by the physician. 'decision_basis' and the accompanying rationale explain the reason and whether it concerns past treatment or future care.
 - 'care_for_unsupported_diagnoses' groups recorded treatment history by a diagnosis the physician does not support, where no supported diagnosis was assessed as applicable to that treatment. Use this history when discussing prior care. Inclusion is not a judgment that care was inappropriate or medically unnecessary. 
 - 'care_marked_exhausted' contains treatments that have been tried and found to be exhausted, with the physician's rationale for that assessment.
+- An empty applicability or exhaustion rationale means the physician gave that judgment without stating why; explain it from the records.
 - within each section, 'documentedHistory' describes treatment's presence in records.
 Consult these sections to answer referral questions about prior treatment and its assessed appropriateness or exhaustion, and whether future care is recommended / indicated.
 

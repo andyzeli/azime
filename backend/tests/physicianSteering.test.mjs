@@ -175,9 +175,15 @@ test("physician-added treatments retain their origin and do not invent record hi
   );
 });
 
-test("saves require valid judgment values and a nonblank override rationale", () => {
+test("saves require valid judgment values; an override rationale is optional", () => {
+  const blank = draft();
+  blank.treatments[rowId] = {
+    exhaustion: { action: "override", value: "not_exhausted", rationale: " " },
+  };
+  const parsed = physicianSteeringSchema.safeParse(blank);
+  assert.equal(parsed.success, true);
+  assert.equal(parsed.data.treatments[rowId].exhaustion.rationale, "");
   for (const override of [
-    { action: "override", value: "not_exhausted", rationale: " " },
     { action: "override", value: "made_up", rationale: "Reason" },
     { action: "disagree" },
   ]) {
