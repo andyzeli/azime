@@ -86,9 +86,9 @@ const applicabilityShort: Record<Applicability, string> = {
   not_applicable: "Not applicable",
   contraIndicated: "Contraindicated",
 };
-// "Not applicable" is an opinion the report states; removing a row leaves it out entirely.
+// "Not applicable" is a judgment that reaches the report; removing drops the row from analysis.
 const notApplicableHint =
-  "The report will say this isn't appropriate for this diagnosis";
+  "Not appropriate for this diagnosis. When that holds for every diagnosis, the report lists it as inappropriate care.";
 const exhaustionLabel: Record<Exhaustion, string> = {
   exhausted: "Exhausted",
   not_exhausted: "Not exhausted",
@@ -1365,7 +1365,8 @@ function TreatmentRowView({
             {
               value: "prune",
               label: "Remove",
-              title: "Wrong or not worth mentioning. Left out of the report.",
+              title:
+                "Wrong or not worth considering. Dropped from the treatment analysis, prep sheet and care opinions.",
               activeClassName: "bg-red-100 text-red-700",
             },
           ]}
