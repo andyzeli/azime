@@ -86,6 +86,9 @@ const applicabilityShort: Record<Applicability, string> = {
   not_applicable: "Not applicable",
   contraIndicated: "Contraindicated",
 };
+// "Not applicable" is an opinion the report states; removing a row leaves it out entirely.
+const notApplicableHint =
+  "The report will say this isn't appropriate for this diagnosis";
 const exhaustionLabel: Record<Exhaustion, string> = {
   exhausted: "Exhausted",
   not_exhausted: "Not exhausted",
@@ -623,7 +626,7 @@ function AnalysisReview({
           <div className="flex items-center gap-2.5 border-b border-slate-200 px-4 py-3">
             <h2 className="text-[13.5px] font-semibold">Treatment analysis</h2>
             <span className="text-[11px] text-slate-500">
-              Override or prune what's wrong, then agree with the rest
+              Override or remove what's wrong, then agree with the rest
             </span>
             <span className="flex-1" />
             <Segmented
@@ -635,7 +638,7 @@ function AnalysisReview({
                   value: "unreviewed",
                   label: `Unreviewed ${rows.length - reviewedCount}`,
                 },
-                { value: "pruned", label: `Pruned ${prunedCount}` },
+                { value: "pruned", label: `Removed ${prunedCount}` },
               ]}
             />
             {rows.length > reviewedCount ? (
@@ -706,7 +709,7 @@ function AnalysisReview({
                               const r = draft.treatments[row.id];
                               return `${row.treatment}${
                                 r?.disposition === "prune"
-                                  ? " (pruned)"
+                                  ? " (removed)"
                                   : r && hasOverride(r)
                                     ? " (overridden)"
                                     : ""
@@ -1361,7 +1364,8 @@ function TreatmentRowView({
             },
             {
               value: "prune",
-              label: "Prune",
+              label: "Remove",
+              title: "Wrong or not worth mentioning. Left out of the report.",
               activeClassName: "bg-red-100 text-red-700",
             },
           ]}
@@ -1403,6 +1407,8 @@ function TreatmentRowView({
                   value,
                   label,
                   activeClassName: chipTone[value],
+                  title:
+                    value === "not_applicable" ? notApplicableHint : undefined,
                 }))}
               />
               <span className="text-[11px] text-slate-400">
@@ -1858,6 +1864,7 @@ function ReviewEditor<T extends string>({
           options={(Object.entries(labels) as [T, string][]).map(
             ([value, label]) => ({
               value,
+              title: value === "not_applicable" ? notApplicableHint : undefined,
               label: (
                 <>
                   {label}

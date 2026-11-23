@@ -135,7 +135,12 @@ export function Segmented<T extends string>({
   onChange,
   size = "sm",
 }: {
-  options: { value: T; label: ReactNode; activeClassName?: string }[];
+  options: {
+    value: T;
+    label: ReactNode;
+    activeClassName?: string;
+    title?: string;
+  }[];
   value: T | undefined;
   onChange: (value: T) => void;
   size?: "sm" | "md";
@@ -146,6 +151,7 @@ export function Segmented<T extends string>({
         <button
           key={option.value}
           type="button"
+          title={option.title}
           onClick={() => onChange(option.value)}
           className={cn(
             "border-l border-slate-300 text-slate-600 first:border-l-0",
